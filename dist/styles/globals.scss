@@ -1,0 +1,104 @@
+@font-face {
+  font-family: 'iransans';
+  src: url(../public/fonts/IRANSansWeb.ttf) format('ttf'),
+    url(../public/fonts/IRANSansWeb.eot) format('eot'),
+    url(../public/fonts/IRANSansWeb.woff) format('woff');
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: 'iransans', -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
+    Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+  font-size: 14px;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  &:hover {
+    color: inherit;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.nav-item-dropdown {
+  position: static;
+  &-toggle {
+    display: flex;
+    align-items: center;
+    background-color: transparent !important;
+    border: 1px solid transparent !important;
+    padding: 15px;
+    color: #000000 !important;
+    > svg {
+      display: none;
+      height: 16px;
+      color: #a8a8a8;
+      margin-left: 1em;
+      @media screen and (max-width: 767px) {
+        display: block;
+      }
+    }
+    &:focus,
+    &:active {
+      color: #000000;
+      background-color: transparent;
+      border: 1px solid transparent;
+      box-shadow: none !important;
+    }
+    &::after {
+      @media screen and (max-width: 767px) {
+        display: none;
+      }
+    }
+  }
+  &-menu {
+    position: fixed !important;
+    top: 124px !important;
+    left: 7.5% !important;
+    right: 7.5% !important;
+    transform: none !important;
+    box-shadow: 0 12px 12px rgb(0 0 0 / 18%);
+    @media screen and (min-width: 767px) and (max-width: 992px) {
+      top: 80px !important;
+    }
+    @media screen and (max-width: 767px) {
+      position: absolute !important;
+      inset: 0 !important;
+      overflow-y: auto !important;
+      box-shadow: none;
+    }
+  }
+}
+
+.carousel-control-next,
+.carousel-control-prev {
+  width: 5%;
+}
+
+[dir='rtl'] .slick-prev {
+  right: 30px;
+  z-index: 1;
+  &::before {
+    color: #000000;
+  }
+}
+
+[dir='rtl'] .slick-next {
+  left: 30px;
+  z-index: 1;
+  &::before {
+    color: #000000;
+  }
+}
+
+.flex-row-on-md {
+  @media screen and (min-width: 769px) {
+    flex-direction: row !important;
+  }
+}

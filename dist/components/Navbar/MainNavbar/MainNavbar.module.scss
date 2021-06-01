@@ -1,0 +1,92 @@
+.mainNavbar {
+  padding: 20px 0;
+  height: 80px;
+  background-color: #ffffff;
+  .navItemWrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    position: static;
+    @media screen and (max-width: 767px) {
+      position: fixed;
+      bottom: 0;
+      top: 80px;
+      width: 80vw;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      transition: right cubic-bezier(0.215, 0.61, 0.355, 1) 0.5s;
+      background-color: #ffffff;
+      z-index: 999;
+    }
+    .contactUsLink {
+      display: flex;
+      align-items: center;
+      color: #000000;
+      padding: 1em;
+      white-space: nowrap;
+      > svg {
+        display: none;
+        height: 16px;
+        color: #a8a8a8;
+        margin-left: 1em;
+        @media screen and (max-width: 767px) {
+          display: block;
+        }
+      }
+    }
+    .jobsLinkOnNav {
+      display: none;
+      align-items: center;
+      color: #000000;
+      padding: 1em;
+      @media screen and (max-width: 767px) {
+        display: flex;
+      }
+      > svg {
+        display: none;
+        height: 16px;
+        color: #a8a8a8;
+        margin-left: 1em;
+        @media screen and (max-width: 767px) {
+          display: block;
+        }
+      }
+    }
+  }
+
+  .jobTitlesBtn {
+    color: #f63;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+    > svg {
+      margin-left: 0.5em;
+    }
+    @media screen and (max-width: 992px) {
+      display: none;
+    }
+  }
+  .closeSpace {
+    display: none;
+    background-color: transparent;
+    border: 1px solid transparent;
+    @media screen and (max-width: 767px) {
+      position: fixed;
+      top: 80px;
+      bottom: 0;
+      display: block;
+      width: 20vw;
+      z-index: 999;
+    }
+  }
+  .hamburgerMenuBtn {
+    display: none;
+    @media screen and (max-width: 767px) {
+      display: inline;
+    }
+    > svg {
+      height: 30px;
+    }
+  }
+}

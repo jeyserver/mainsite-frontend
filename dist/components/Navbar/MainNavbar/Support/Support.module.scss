@@ -1,0 +1,84 @@
+.linksWrapper {
+  display: flex;
+  flex-direction: column;
+  > a {
+    color: #3dc4e4;
+    padding: 1em;
+    font-size: 14px;
+    > svg {
+      color: #6b6b6c;
+      margin-left: 1em;
+    }
+  }
+}
+.userPanelInfo {
+  position: relative;
+  > h3 {
+    > a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #3dc4e4;
+      font-size: 15px;
+      padding: 1em 0;
+      border-bottom: 1px solid #e6e6e6;
+      > svg {
+        width: 16px;
+        color: #6b6b6c;
+        margin-left: 0.5em;
+      }
+    }
+  }
+  > p {
+    text-align: justify;
+  }
+  > img {
+    display: none;
+    @media screen and (max-width: 767px) {
+      display: block;
+      position: absolute;
+      left: 0;
+      bottom: 30px;
+      height: 250px;
+      opacity: 0.2;
+    }
+  }
+  .btnsWrapper {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1em;
+    > a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 50%;
+      font-size: 13px;
+      > svg {
+        width: 16px;
+        margin-left: 0.5em;
+      }
+    }
+    > a:first-child {
+      background-color: #ffc107;
+    }
+    .registerBtn {
+      background-color: transparent;
+      border: 1px solid #e67e22;
+      color: #e67e22;
+      margin-right: 0.5em;
+      &:hover {
+        background-color: #e67e22;
+        color: #ffffff;
+      }
+      &:focus,
+      &:active {
+        box-shadow: none !important;
+        border: 1px solid #e67e22;
+      }
+      @media screen and (max-width: 767px) {
+        background-color: #e67e22;
+        color: #ffffff;
+      }
+    }
+  }
+}

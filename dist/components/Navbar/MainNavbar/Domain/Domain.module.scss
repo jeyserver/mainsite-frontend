@@ -1,0 +1,119 @@
+.tableHeader {
+  display: flex;
+  align-items: center;
+  border-top: 1px solid #dee2e6;
+  border-bottom: 1px solid #dee2e6;
+  > div {
+    text-align: right;
+    width: 50%;
+    padding: 0.5rem 0.5rem;
+    &:first-child {
+      padding-right: 2rem;
+    }
+  }
+}
+.tableWrapper {
+  height: 198px;
+  overflow-y: auto;
+  table {
+    tbody {
+      tr {
+        td {
+          text-align: center;
+        }
+      }
+    }
+  }
+}
+
+.domainCheck {
+  background-color: #113a65;
+  box-shadow: 0 3px 11px rgb(0 0 0 / 20%);
+  height: 100%;
+  padding: 0 1em;
+  > h4 {
+    color: #ffffff;
+    padding-top: 1.5rem;
+    text-align: center;
+    @media screen and (max-width: 1200px) {
+      font-size: 15px;
+    }
+  }
+  > form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    .formInputGroup {
+      height: 33px;
+      > select {
+        width: 4em;
+        height: 100%;
+        flex: unset;
+        background-color: #ffffff;
+        border: 1px solid #ffffff;
+        border-bottom-right-radius: 5px;
+        border-top-right-radius: 5px;
+        &:focus {
+          box-shadow: none;
+        }
+      }
+      > input {
+        border: 1px solid #ffffff;
+        height: 100%;
+        flex: 1 1 auto;
+        direction: ltr;
+        padding-left: 0;
+        &:focus {
+          box-shadow: none;
+          border: 1px solid #ffffff;
+        }
+      }
+      > div:last-child {
+        height: 100%;
+        background-color: #ffffff;
+        border: 1px solid #ffffff;
+        border-radius: 0;
+        border-bottom-left-radius: 5px;
+        border-top-left-radius: 5px;
+        > span {
+          background-color: #ffffff;
+          border: 1px solid #ffffff;
+          border-radius: 0;
+          border-bottom-left-radius: 5px;
+          border-top-left-radius: 5px;
+          height: 100%;
+        }
+      }
+    }
+    .searchDomainBtn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.5em 1em;
+      margin: 1.5rem 1em;
+      width: 100%;
+      > svg {
+        width: 18px;
+        margin-left: 0.5em;
+      }
+    }
+  }
+}
+.backgroundImage {
+  position: absolute;
+  left: 30px;
+  top: 0;
+  height: 250px;
+  z-index: -1;
+  opacity: 0.175;
+  @media screen and (max-width: 767px) {
+    height: 200px;
+  }
+}
+
+.paragraph {
+  text-align: justify;
+  text-justify: inter-word;
+  color: #717171;
+  overflow: hidden;
+}

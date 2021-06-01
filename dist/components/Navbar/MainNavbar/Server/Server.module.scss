@@ -1,0 +1,112 @@
+.rightSide {
+  margin-top: 1.5rem;
+  .title {
+    font-size: 15px;
+    text-align: center;
+    color: #0b3c5d;
+    margin-bottom: 1.5rem;
+    > svg {
+      height: 25px;
+      margin-left: 0.5em;
+      color: #6b6b6c;
+    }
+  }
+  .professionalServerBtn,
+  .economicServerBtn,
+  .largeServerBtn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 160px;
+    width: 100%;
+    border-radius: 5px;
+    margin-bottom: 1.5rem;
+    > .iconWrapper {
+      height: 55px;
+      width: 55px;
+      border: 1px solid rgba(0, 0, 0, 0.5);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1em;
+      > svg {
+        height: 18px;
+      }
+    }
+  }
+  .professionalServerBtn {
+    border: 1px solid #59d2ef;
+    &:hover {
+      background-color: #b6ebf8;
+    }
+    @media screen and(max-width: 992px) {
+      background-color: #b6ebf8;
+    }
+  }
+  .economicServerBtn {
+    border: 1px solid #fc0;
+    &:hover {
+      background-color: #ffeb99;
+    }
+    @media screen and(max-width: 992px) {
+      background-color: #ffeb99;
+    }
+  }
+  .largeServerBtn {
+    border: 1px solid #477583;
+    &:hover {
+      background-color: #79a8b7;
+    }
+    @media screen and(max-width: 992px) {
+      background-color: #79a8b7;
+    }
+  }
+}
+
+.leftSide {
+  background-color: #0b3c5d;
+  box-shadow: 4px 1px 5px rgb(11 60 9 / 50%);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  @media screen and (max-width: 767px) {
+    box-shadow: none;
+  }
+  .title {
+    font-size: 15px;
+    color: #ffffff;
+    padding: 1em;
+    > svg {
+      height: 25px;
+      margin-left: 0.5em;
+      color: #ffffff;
+    }
+  }
+  .countries {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    border-top: 1px solid #e6e6e6;
+    border-bottom: 1px solid #e6e6e6;
+    @media screen and (max-width: 767px) {
+      justify-content: center;
+    }
+    .countryBox {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 56px;
+      height: 56px;
+      margin: 1em;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.75);
+    }
+  }
+  > p {
+    color: rgba(255, 255, 255, 0.75);
+    text-align: justify;
+    padding: 1em;
+  }
+}

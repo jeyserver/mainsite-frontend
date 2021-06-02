@@ -15,16 +15,6 @@ export default function Home() {
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
         />
         <link
-          href="http://www.fontonline.ir/css/BYekan.css"
-          rel="stylesheet"
-          type="text/css"
-        ></link>
-        <link
-          href="http://www.fontonline.ir/css/BKoodakBold.css"
-          rel="stylesheet"
-          type="text/css"
-        ></link>
-        <link
           href="http://www.fontonline.ir/css/BNazanin.css"
           rel="stylesheet"
           type="text/css"

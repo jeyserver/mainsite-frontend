@@ -1,15 +1,21 @@
 @font-face {
-  font-family: 'yekan';
+  font-family: BYekan;
+  src: url(../public/fonts/Yekan.ttf);
+  src: url(../public/fonts/Yekan.woff) format('woff'),
+    url(../public/fonts/Yekan.ttf) format('truetype');
+}
 
-  src: url(../public/fonts/Yekan.eot);
+@font-face {
+  font-family: BNazanin;
+  src: url(../public/fonts/BNazanin.ttf);
+  src: url(../public/fonts/BNazanin.ttf) format('truetype');
+}
 
-  src: url(../public/fonts/Yekan.eot?#iefix) format(“embedded-opentype”),
-    url(../public/fonts/Yekan.woff) format(“woff”),
-    url(../public/fonts/Yekan.ttf) format(“truetype”);
-
-  font-weight: normal;
-
-  font-style: normal;
+@font-face {
+  font-family: BKoodakBold;
+  src: url(../public/fonts/BKoodakBold.ttf);
+  src: url(../public/fonts/BKoodakBold.woff) format('woff'),
+    url(../public/fonts/BKoodakBold.ttf) format('truetype');
 }
 
 @font-face {

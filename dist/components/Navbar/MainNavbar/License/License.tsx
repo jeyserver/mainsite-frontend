@@ -158,6 +158,7 @@ const License: React.FC<Props> = (props) => {
                   className={styles.btn}
                   onMouseEnter={() => handleChangeHoveredLicense('directadmin')}
                   data-active={hoveredLicense === 'directadmin'}
+                  href="/fa/licenses/directadmin"
                 >
                   <div className={styles.imageAndNameWrapper}>
                     <div className={styles.imgWrapper}>
@@ -180,6 +181,7 @@ const License: React.FC<Props> = (props) => {
                   className={styles.btn}
                   onMouseEnter={() => handleChangeHoveredLicense('cpanel')}
                   data-active={hoveredLicense === 'cpanel'}
+                  href="/fa/licenses/cpanel"
                 >
                   <div className={styles.imageAndNameWrapper}>
                     <div className={styles.imgWrapper}>
@@ -202,6 +204,7 @@ const License: React.FC<Props> = (props) => {
                   className={styles.btn}
                   onMouseEnter={() => handleChangeHoveredLicense('litespeed')}
                   data-active={hoveredLicense === 'litespeed'}
+                  href="/fa/licenses/litespeed"
                 >
                   <div className={styles.imageAndNameWrapper}>
                     <div className={styles.imgWrapper}>
@@ -224,6 +227,7 @@ const License: React.FC<Props> = (props) => {
                   className={styles.btn}
                   onMouseEnter={() => handleChangeHoveredLicense('whmcs')}
                   data-active={hoveredLicense === 'whmcs'}
+                  href="/fa/licenses/whmcs"
                 >
                   <div className={styles.imageAndNameWrapper}>
                     <div className={styles.imgWrapper}>
@@ -246,6 +250,7 @@ const License: React.FC<Props> = (props) => {
                   className={styles.btn}
                   onMouseEnter={() => handleChangeHoveredLicense('cloudlinux')}
                   data-active={hoveredLicense === 'cloudlinux'}
+                  href="/fa/licenses/cloudlinux"
                 >
                   <div className={styles.imageAndNameWrapper}>
                     <div className={styles.imgWrapper}>

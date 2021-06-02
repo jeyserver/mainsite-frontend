@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './MainNavbar.module.scss';
 import Image from 'next/image';
 import { Button, Container } from 'react-bootstrap';
@@ -9,9 +9,29 @@ import License from './License/License';
 import Support from './Support/Support';
 import Link from 'next/link';
 
+function useWindowSize() {
+  const [windowSize, setWindowSize] = useState({
+    width: undefined,
+    height: undefined,
+  });
+  useEffect(() => {
+    function handleResize() {
+      setWindowSize({
+        width: window.innerWidth,
+        height: window.innerHeight,
+      });
+    }
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  return windowSize;
+}
+
 const MainNavbar = () => {
   const [isMenuOpen, setMenuOpen] = useState<boolean>(false);
   const [dropDownOpend, setDropDownOpend] = useState<boolean>(false);
+  const size = useWindowSize();
 
   const changeShowDropDown = () => {
     setDropDownOpend((prevState) => !prevState);
@@ -19,6 +39,26 @@ const MainNavbar = () => {
 
   const changeShowMenu = () => {
     setMenuOpen((prevState) => !prevState);
+  };
+
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.querySelector('body').style.overflow = 'hidden';
+    } else {
+      document.querySelector('body').style.overflow = 'auto';
+    }
+  }, [isMenuOpen]);
+
+  useEffect(() => {
+    document.querySelector('body').style.overflow = 'auto';
+  }, [size]);
+
+  const closeSpace = () => {
+    if (!dropDownOpend) {
+      changeShowMenu();
+    } else {
+      changeShowDropDown();
+    }
   };
 
   return (
@@ -53,7 +93,7 @@ const MainNavbar = () => {
             </div>
             <button
               className={styles.closeSpace}
-              onClick={changeShowMenu}
+              onClick={closeSpace}
               style={{ left: isMenuOpen ? 0 : '-100%' }}
             ></button>
           </div>

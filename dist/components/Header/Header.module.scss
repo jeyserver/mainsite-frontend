@@ -45,6 +45,7 @@
       @media screen and (max-width: 767px) {
         font-size: 25px;
         text-align: center;
+        margin-top: 9px;
       }
     }
     > h4 {
@@ -54,7 +55,7 @@
       margin-top: 1em;
       @media screen and (max-width: 767px) {
         text-align: center;
-        margin-top: 29em;
+        margin-top: 24em;
       }
     }
     > p {
@@ -88,6 +89,8 @@
       font-weight: 600;
       @media screen and (max-width: 767px) {
         width: 100%;
+        width: 231px;
+        height: 56px;
       }
       > i {
         margin-left: 0.5em;
@@ -99,7 +102,8 @@
       margin-left: 0.5em;
       @media screen and (max-width: 767px) {
         margin-left: 0;
-        margin-bottom: 1em;
+        margin-bottom: 25px;
+        margin-top: 50px;
       }
       > i {
         animation: heartBeat 1s infinite both 2s;
@@ -149,6 +153,9 @@
   @media screen and (max-width: 767px) {
     height: 824px;
   }
+  @media screen and (max-width: 540px) {
+    height: 750px;
+  }
 }
 
 .deliveryVirtualServersCaption {
@@ -189,7 +196,10 @@
         width: 100%;
         justify-content: flex-end;
         padding-right: 2em;
-        margin-top: 32em;
+        margin-top: 33em;
+      }
+      @media screen and (max-width: 540px) {
+        margin-top: 27em;
       }
       > li {
         display: flex;
@@ -243,9 +253,9 @@
       top: 84px;
     }
     @media screen and (max-width: 400px) {
-      width: 139%;
-      left: 3%;
-      top: 110px;
+      width: 113%;
+      left: 10%;
+      top: 95px;
     }
     .robotImg {
       height: 493px;

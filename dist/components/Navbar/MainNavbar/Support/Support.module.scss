@@ -68,11 +68,23 @@
     > a:first-child {
       background-color: #ffc107;
     }
+    .loginBtn {
+      border-color: #f1c40f;
+      background-color: transparent !important;
+      color: #f1c40f;
+      &:hover {
+        background-color: #f1c40f !important;
+        color: #ffffff;
+      }
+      &:focus {
+        box-shadow: none;
+      }
+    }
     .registerBtn {
       background-color: transparent;
       border: 1px solid #e67e22;
       color: #e67e22;
-      margin-right: 0.5em;
+      margin-right: 5px;
       &:hover {
         background-color: #e67e22;
         color: #ffffff;

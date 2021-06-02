@@ -77,6 +77,7 @@ const Support: React.FC<Props> = (props) => {
                   <Button
                     href="/fa/userpanel/login"
                     variant="outline-md-warning"
+                    className={styles.loginBtn}
                   >
                     <i className="fas fa-sign-in-alt"></i>
                     <span>ورود به سامانه</span>

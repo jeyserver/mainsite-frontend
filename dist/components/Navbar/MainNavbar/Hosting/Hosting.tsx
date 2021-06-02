@@ -1,22 +1,19 @@
-import { faLinux, faWindows } from '@fortawesome/free-brands-svg-icons';
-import {
-  faCubes,
-  faDatabase,
-  faFileDownload,
-  faServer,
-  faUniversity,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Link from 'next/link';
 import { Col, Image, Dropdown, Row, Container } from 'react-bootstrap';
 import styles from './Hosting.module.scss';
 
-const Hosting = () => {
+interface Props {
+  changeShowDropDown: () => void;
+}
+
+const Hosting: React.FC<Props> = (props) => {
   return (
     <Dropdown className="nav-item-dropdown">
       <Dropdown.Toggle id="nav-dropdown" className="nav-item-dropdown-toggle">
-        <FontAwesomeIcon icon={faDatabase} />
-        هاست میزبانی
+        <div onClick={props.changeShowDropDown}>
+          <i className="fas fa-database"></i>
+          هاست میزبانی
+        </div>
       </Dropdown.Toggle>
 
       <Dropdown.Menu className="nav-item-dropdown-menu px-3">
@@ -24,7 +21,7 @@ const Hosting = () => {
           <Row className="flex-column-reverse flex-md-row">
             <Col xs={12} md={4} className="pt-4">
               <h3 className={styles.title}>
-                <FontAwesomeIcon icon={faLinux} />
+                <i className="fab fa-linux"></i>
                 <span>هاست اشتراکی لینوکس</span>
               </h3>
               <ul className={styles.list}>
@@ -40,7 +37,7 @@ const Hosting = () => {
                 </li>
               </ul>
               <h3 className={styles.title}>
-                <FontAwesomeIcon icon={faWindows} />
+                <i className="fab fa-windows"></i>
                 <span>هاست اشتراکی ویندوز</span>
               </h3>
               <ul className={styles.list}>
@@ -56,12 +53,12 @@ const Hosting = () => {
                 </li>
               </ul>
             </Col>
-            <Col xs={12} md={4}>
+            <Col xs={12} md={4} className={styles.mildleCol}>
               <div className="pt-4">
                 <Link href="#">
                   <a>
-                    <h3 className={styles.midleTitle}>
-                      <FontAwesomeIcon icon={faCubes} />
+                    <h3 className={`${styles.midleTitle} ${styles.firstTitle}`}>
+                      <i className="fas fa-cubes"></i>
                       <span>هاست نیمه اختصاصی لینوکس</span>
                     </h3>
                   </a>
@@ -69,7 +66,7 @@ const Hosting = () => {
                 <Link href="#">
                   <a>
                     <h3 className={styles.midleTitle}>
-                      <FontAwesomeIcon icon={faServer} />
+                      <i className="fas fa-server"></i>
                       <span>هاست اختصاصی لینوکس</span>
                     </h3>
                   </a>
@@ -77,7 +74,7 @@ const Hosting = () => {
                 <Link href="#">
                   <a>
                     <h3 className={styles.midleTitle}>
-                      <FontAwesomeIcon icon={faFileDownload} />
+                      <i className="fas fa-download"></i>
                       <span>هاست دانلود</span>
                     </h3>
                   </a>
@@ -85,7 +82,7 @@ const Hosting = () => {
                 <Link href="#">
                   <a>
                     <h3 className={styles.midleTitle}>
-                      <FontAwesomeIcon icon={faDatabase} />
+                      <i className="fas fa-database"></i>
                       <span>هاست پشتیبان</span>
                     </h3>
                   </a>
@@ -93,7 +90,7 @@ const Hosting = () => {
                 <Link href="#">
                   <a>
                     <h3 className={styles.midleTitle}>
-                      <FontAwesomeIcon icon={faUniversity} />
+                      <i className="fas fa-university"></i>
                       <span>نمایندگی هاست اشتراکی</span>
                     </h3>
                   </a>
@@ -101,8 +98,8 @@ const Hosting = () => {
               </div>
             </Col>
             <Col xs={12} md={4}>
-              <div className="position-relative overflow-hidden">
-                <p className={styles.paragraph}>
+              <div className={styles.infoWrapper}>
+                <p>
                   سرویس های هاست اشتراکی اولین و ساده ترین راه برای میزبانی فایل
                   ها و وب سایت ها شما در سطح اینترنت است.در هاست اشتراکی شما
                   بدون دانش های پیچیده مدیریت سرور میتوانید کد و برنامه های خود

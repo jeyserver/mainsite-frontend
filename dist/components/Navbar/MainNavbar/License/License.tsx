@@ -1,10 +1,6 @@
-import { faAddressCard } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { Container, Dropdown, Row, Col } from 'react-bootstrap';
-import { useStore } from '../../../../redux/store';
 import styles from './License.module.scss';
 
 type licenses = 'directadmin' | 'cpanel' | 'litespeed' | 'whmcs' | 'cloudlinux';
@@ -13,11 +9,11 @@ const renderLicense = (license: licenses) => {
   if (license === 'directadmin') {
     return (
       <div className={styles.renderedLicenseWrapper}>
-        <Image
+        <img
           src="/images/directadmin.png"
           alt="لایسنس دایرکت ادمین"
-          height="40px"
-          width="57px"
+          height="61px"
+          width="87px"
         />
         <p>
           دایرکت ادمین که بسیار ساده ، کاربردی و انعطاف پذیر است این روز ها
@@ -30,11 +26,11 @@ const renderLicense = (license: licenses) => {
   } else if (license === 'cpanel') {
     return (
       <div className={styles.renderedLicenseWrapper}>
-        <Image
+        <img
           src="/images/cpanel.png"
           alt="لایسنس دایرکت ادمین"
-          height="40px"
-          width="60px"
+          height="59px"
+          width="88px"
         />
         <p>
           سی پنل را همه میشناسند!سی پنل بسیار پویا و خوش ظاهر است،بسیاری از
@@ -47,11 +43,11 @@ const renderLicense = (license: licenses) => {
   } else if (license === 'litespeed') {
     return (
       <div className={styles.renderedLicenseWrapper}>
-        <Image
+        <img
           src="/images/litespeed.png"
           alt="لایسنس دایرکت ادمین"
-          height="40px"
-          width="57px"
+          height="59px"
+          width="88px"
         />
         <p>
           وب سرور LiteSpeed ، یک وب سرور با کارایی بالا و مقیاس پذیری بالا هست.
@@ -65,11 +61,11 @@ const renderLicense = (license: licenses) => {
   } else if (license === 'whmcs') {
     return (
       <div className={styles.renderedLicenseWrapper}>
-        <Image
+        <img
           src="/images/whmcs.png"
           alt="لایسنس دایرکت ادمین"
-          height="40px"
-          width="40px"
+          height="75px"
+          width="75px"
         />
         <p>
           همان سیستمی است که تاکنون در بازار فروش جهانی جای خود را باز کرده و
@@ -82,11 +78,11 @@ const renderLicense = (license: licenses) => {
   } else if (license === 'cloudlinux') {
     return (
       <div className={styles.renderedLicenseWrapper}>
-        <Image
+        <img
           src="/images/cloudlinux.png"
           alt="لایسنس دایرکت ادمین"
-          height="38px"
-          width="40px"
+          height="69px"
+          width="66px"
         />
         <p>
           کلاود لینوکس،اولین توزیع تجاری لینوکس، برای بهبود و کنترل شرایط سرور
@@ -103,7 +99,11 @@ const renderLicense = (license: licenses) => {
 
 let interval;
 
-const License = () => {
+interface Props {
+  changeShowDropDown: () => void;
+}
+
+const License: React.FC<Props> = (props) => {
   const [hoveredLicense, setHoveredLicense] = useState<licenses>('directadmin');
 
   const handleChangeHoveredLicense = (license: licenses) => {
@@ -143,13 +143,15 @@ const License = () => {
   return (
     <Dropdown className="nav-item-dropdown">
       <Dropdown.Toggle id="nav-dropdown" className="nav-item-dropdown-toggle">
-        <FontAwesomeIcon icon={faAddressCard} />
-        لایسنس
+        <div onClick={props.changeShowDropDown}>
+          <i className="far fa-address-card"></i>
+          لایسنس
+        </div>
       </Dropdown.Toggle>
 
       <Dropdown.Menu className="nav-item-dropdown-menu p-0">
         <Container fluid>
-          <Row className="flex-column-reverse flex-md-row">
+          <Row>
             <Col xs={12} md={6} className="px-0">
               <div className={styles.btnsWrapper}>
                 <Button
@@ -159,7 +161,7 @@ const License = () => {
                 >
                   <div className={styles.imageAndNameWrapper}>
                     <div className={styles.imgWrapper}>
-                      <Image
+                      <img
                         src="/images/directadmin.png"
                         alt="لایسنس دایرکت ادمین"
                         height="40px"
@@ -181,7 +183,7 @@ const License = () => {
                 >
                   <div className={styles.imageAndNameWrapper}>
                     <div className={styles.imgWrapper}>
-                      <Image
+                      <img
                         src="/images/cpanel.png"
                         alt="لایسنس دایرکت ادمین"
                         height="40px"
@@ -203,7 +205,7 @@ const License = () => {
                 >
                   <div className={styles.imageAndNameWrapper}>
                     <div className={styles.imgWrapper}>
-                      <Image
+                      <img
                         src="/images/litespeed.png"
                         alt="لایسنس دایرکت ادمین"
                         height="40px"
@@ -225,7 +227,7 @@ const License = () => {
                 >
                   <div className={styles.imageAndNameWrapper}>
                     <div className={styles.imgWrapper}>
-                      <Image
+                      <img
                         src="/images/whmcs.png"
                         alt="لایسنس دایرکت ادمین"
                         height="40px"
@@ -247,7 +249,7 @@ const License = () => {
                 >
                   <div className={styles.imageAndNameWrapper}>
                     <div className={styles.imgWrapper}>
-                      <Image
+                      <img
                         src="/images/cloudlinux.png"
                         alt="لایسنس دایرکت ادمین"
                         height="38px"

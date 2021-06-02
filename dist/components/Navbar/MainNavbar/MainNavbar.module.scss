@@ -2,6 +2,8 @@
   padding: 20px 0;
   height: 80px;
   background-color: #ffffff;
+  display: flex;
+  align-items: center;
   .navItemWrapper {
     display: flex;
     flex-direction: row;
@@ -15,9 +17,10 @@
       display: flex;
       flex-direction: column;
       align-items: flex-start;
-      transition: right cubic-bezier(0.215, 0.61, 0.355, 1) 0.5s;
+      transition: right ease-in-out 0.5s;
       background-color: #ffffff;
       z-index: 999;
+      box-shadow: -3px 7px 3px 3px rgb(0 0 0 / 9%);
     }
     .contactUsLink {
       display: flex;
@@ -25,14 +28,20 @@
       color: #000000;
       padding: 1em;
       white-space: nowrap;
-      > svg {
+      font-family: BYekan, 'BYekan';
+      font-weight: 400;
+      font-size: 13px;
+      > i {
         display: none;
-        height: 16px;
         color: #a8a8a8;
         margin-left: 1em;
+        font-size: 18px;
         @media screen and (max-width: 767px) {
           display: block;
         }
+      }
+      @media screen and (max-width: 767px) {
+        font-size: 15px;
       }
     }
     .jobsLinkOnNav {
@@ -40,14 +49,16 @@
       align-items: center;
       color: #000000;
       padding: 1em;
+      font-family: BYekan, 'BYekan';
+      font-size: 15px;
       @media screen and (max-width: 767px) {
         display: flex;
       }
-      > svg {
+      > i {
         display: none;
-        height: 16px;
         color: #a8a8a8;
         margin-left: 1em;
+        font-size: 18px;
         @media screen and (max-width: 767px) {
           display: block;
         }
@@ -60,8 +71,12 @@
     display: flex;
     align-items: center;
     white-space: nowrap;
-    > svg {
+    font-family: BYekan, 'BYekan';
+    font-weight: 400;
+    font-size: 13px;
+    > i {
       margin-left: 0.5em;
+      animation: bounce 1s linear 2;
     }
     @media screen and (max-width: 992px) {
       display: none;
@@ -82,11 +97,62 @@
   }
   .hamburgerMenuBtn {
     display: none;
+    height: 40px;
+    width: 40px;
+    border: 1px solid #ddd;
+    background-color: transparent;
     @media screen and (max-width: 767px) {
-      display: inline;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
-    > svg {
-      height: 30px;
+    > i {
+      font-size: 17px;
     }
+  }
+}
+
+.closeSpaceForDropDown {
+  position: fixed;
+  top: 12px;
+  left: 5px;
+  width: 53px;
+  height: 56px;
+  display: none;
+  background-color: #ffffff;
+  opacity: 0;
+  cursor: pointer;
+  @media screen and (max-width: 767px) {
+    display: block;
+  }
+}
+
+@keyframes bounce {
+  20%,
+  53%,
+  80%,
+  from,
+  to {
+    -webkit-animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+  40%,
+  43% {
+    -webkit-animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+    -webkit-transform: translate3d(0, -30px, 0);
+    transform: translate3d(0, -30px, 0);
+  }
+  70% {
+    -webkit-animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+    animation-timing-function: cubic-bezier(0.755, 0.05, 0.855, 0.06);
+    -webkit-transform: translate3d(0, -15px, 0);
+    transform: translate3d(0, -15px, 0);
+  }
+  90% {
+    -webkit-transform: translate3d(0, -4px, 0);
+    transform: translate3d(0, -4px, 0);
   }
 }

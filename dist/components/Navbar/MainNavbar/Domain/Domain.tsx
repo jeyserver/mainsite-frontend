@@ -1,6 +1,5 @@
-import { faGlobeAsia, faSearch } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Link from 'next/link';
+import React, { useEffect, useState } from 'react';
 import {
   Col,
   Image,
@@ -13,12 +12,34 @@ import {
 } from 'react-bootstrap';
 import styles from './Domain.module.scss';
 
-const Domain = () => {
+interface Props {
+  changeShowDropDown: () => void;
+}
+
+const Domain: React.FC<Props> = (props) => {
+  const [selectedDomain, setSelectedDomain] = useState<string | null>(null);
+
+  useEffect(() => {
+    const tr = document.querySelectorAll(
+      'tr > td[data-selected="true"]'
+    ) as any;
+    if (selectedDomain) {
+      const tableWrapper = document.querySelector('#tableWrapper') as any;
+      tableWrapper.scrollTop = tr[0].parentElement.offsetTop;
+    }
+  }, [selectedDomain]);
+
+  const changeSelectedDomain = (e: any) => {
+    setSelectedDomain(e.target.value);
+  };
+
   return (
     <Dropdown className="nav-item-dropdown">
       <Dropdown.Toggle id="nav-dropdown" className="nav-item-dropdown-toggle">
-        <FontAwesomeIcon icon={faGlobeAsia} />
-        دامنه
+        <div onClick={props.changeShowDropDown}>
+          <i className="fas fa-globe-asia"></i>
+          دامنه
+        </div>
       </Dropdown.Toggle>
 
       <Dropdown.Menu className="nav-item-dropdown-menu px-3 py-0">
@@ -27,9 +48,14 @@ const Domain = () => {
             <Col xs={12} md={4}>
               <div className="d-flex flex-column justify-content-between mt-4">
                 <div className="d-flex align-items-center justify-content-between">
-                  <h4>تعرفه ثبت دامنه</h4>
+                  <h4 className={styles.tableTitle}>تعرفه ثبت دامنه</h4>
                   <Link href="#">
-                    <Button as="a" type="submit" variant="success">
+                    <Button
+                      as="a"
+                      type="submit"
+                      variant="success"
+                      className={styles.moreBtn}
+                    >
                       <span>بیشتر</span>
                     </Button>
                   </Link>
@@ -39,48 +65,72 @@ const Domain = () => {
                     <div>پسوند</div>
                     <div>قیمت ثبت</div>
                   </div>
-                  <div className={styles.tableWrapper}>
+                  <div className={styles.tableWrapper} id="tableWrapper">
                     <table className="table">
                       <tbody>
                         <tr>
-                          <td>com</td>
-                          <td>247,520 تومان</td>
+                          <td data-selected={selectedDomain === 'com'}>com</td>
+                          <td data-selected={selectedDomain === 'com'}>
+                            247,520 تومان
+                          </td>
                         </tr>
                         <tr>
-                          <td>net</td>
-                          <td>257,920 تومان</td>
+                          <td data-selected={selectedDomain === 'net'}>net</td>
+                          <td data-selected={selectedDomain === 'net'}>
+                            257,920 تومان
+                          </td>
                         </tr>
                         <tr>
-                          <td>org</td>
-                          <td>303,420 تومان</td>
+                          <td data-selected={selectedDomain === 'org'}>org</td>
+                          <td data-selected={selectedDomain === 'org'}>
+                            303,420 تومان
+                          </td>
                         </tr>
                         <tr>
-                          <td>info</td>
-                          <td>104,520 تومان</td>
+                          <td data-selected={selectedDomain === 'info'}>
+                            info
+                          </td>
+                          <td data-selected={selectedDomain === 'info'}>
+                            104,520 تومان
+                          </td>
                         </tr>
                         <tr>
-                          <td>asia</td>
-                          <td>388,700 تومان</td>
+                          <td data-selected={selectedDomain === 'asia'}>
+                            asia
+                          </td>
+                          <td data-selected={selectedDomain === 'asia'}>
+                            388,700 تومان
+                          </td>
                         </tr>
                         <tr>
-                          <td>co</td>
-                          <td>814,060 تومان</td>
+                          <td data-selected={selectedDomain === 'co'}>co</td>
+                          <td data-selected={selectedDomain === 'co'}>
+                            814,060 تومان
+                          </td>
                         </tr>
                         <tr>
-                          <td>ir</td>
-                          <td>14,000 تومان</td>
+                          <td data-selected={selectedDomain === 'ir'}>ir</td>
+                          <td data-selected={selectedDomain === 'ir'}>
+                            14,000 تومان
+                          </td>
                         </tr>
                         <tr>
-                          <td>cc</td>
-                          <td>355,420 تومان</td>
+                          <td data-selected={selectedDomain === 'cc'}>cc</td>
+                          <td data-selected={selectedDomain === 'cc'}>
+                            355,420 تومان
+                          </td>
                         </tr>
                         <tr>
-                          <td>ca</td>
-                          <td>346,320 تومان</td>
+                          <td data-selected={selectedDomain === 'ca'}>ca</td>
+                          <td data-selected={selectedDomain === 'ca'}>
+                            346,320 تومان
+                          </td>
                         </tr>
                         <tr>
-                          <td>de</td>
-                          <td>215,020 تومان</td>
+                          <td data-selected={selectedDomain === 'de'}>de</td>
+                          <td data-selected={selectedDomain === 'de'}>
+                            215,020 تومان
+                          </td>
                         </tr>
                       </tbody>
                     </table>
@@ -93,11 +143,22 @@ const Domain = () => {
                 <h4>نقطه شروع همه چیز اینجاست!</h4>
                 <form className="mt-5">
                   <InputGroup className={styles.formInputGroup}>
-                    <FormControl as="select" className="mr-sm-2" dir="ltr">
+                    <FormControl
+                      as="select"
+                      className="mr-sm-2"
+                      dir="ltr"
+                      onChange={(e) => changeSelectedDomain(e)}
+                    >
                       <option value="com">.com</option>
                       <option value="net">.net</option>
                       <option value="org">.org</option>
                       <option value="info">.info</option>
+                      <option value="asia">.asia</option>
+                      <option value="co">co</option>
+                      <option value="ir">ir</option>
+                      <option value="cc">cc</option>
+                      <option value="ca">ca</option>
+                      <option value="de">de</option>
                     </FormControl>
                     <FormControl placeholder="Your Domain" />
                     <InputGroup.Prepend>
@@ -109,15 +170,19 @@ const Domain = () => {
                     variant="success"
                     className={styles.searchDomainBtn}
                   >
-                    <FontAwesomeIcon icon={faSearch} />
+                    <i className="fas fa-search"></i>
                     <span>بررسی کن</span>
                   </Button>
                 </form>
               </div>
             </Col>
             <Col xs={12} md={4}>
-              <div className="position-relative mt-4">
-                <p className={styles.paragraph}>
+              <div className={styles.infoWrapper}>
+                <Image
+                  src="/images/domain-menu.png"
+                  className={styles.backgroundImage}
+                />
+                <p>
                   دامنه یا دامین یا domain نامی یکتا و بیانگر هویت و نشانی
                   دسترسی یک وب سایت است. هر دامنه از دو بخش تشکیل شده است؛ بخش
                   اول نامی است انتخابی، که هر فرد می‌تواند بسته به موضوع وب‌سایت
@@ -125,10 +190,6 @@ const Domain = () => {
                   بخش اول جدا می‌شود، پسوندی است و هر فرد می‌تواند بسته به موضوع
                   وب‌سایت و سلیقۀ خود یکی از آن‌ها را انتخاب نماید.
                 </p>
-                <Image
-                  src="/images/domain-menu.png"
-                  className={styles.backgroundImage}
-                />
               </div>
             </Col>
           </Row>

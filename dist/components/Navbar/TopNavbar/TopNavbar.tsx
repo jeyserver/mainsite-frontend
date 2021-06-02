@@ -1,20 +1,8 @@
 import { Dropdown, Container } from 'react-bootstrap';
 import Link from 'next/link';
 import styles from './TopNavbar.module.scss';
-import {
-  faEnvelope,
-  faGlobeAsia,
-  faPhone,
-  faRegistered,
-  faSignInAlt,
-  faSignOutAlt,
-  faUserCircle,
-  faUserPlus,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { connect } from 'react-redux';
 import { signUp, logout } from '../../../redux/actions';
-import Image from 'next/image';
 
 const TopNavbar = (props) => {
   console.log(props);
@@ -29,7 +17,7 @@ const TopNavbar = (props) => {
                 className={styles.langDropDown}
                 id="dropdown-basic"
               >
-                <FontAwesomeIcon icon={faGlobeAsia} />
+                <i className="fas fa-globe-asia"></i>
                 زبان: <span>فارسی</span>
               </Dropdown.Toggle>
 
@@ -39,12 +27,12 @@ const TopNavbar = (props) => {
               </Dropdown.Menu>
             </Dropdown>
             <div>
-              <FontAwesomeIcon icon={faPhone} />
+              <i className="fas fa-phone-alt"></i>
               <span>تلفن:</span>
               <a href="tel:+3134420301">03134420301</a>
             </div>
             <div>
-              <FontAwesomeIcon icon={faEnvelope} />
+              <i className="far fa-envelope"></i>
               <span>ایمیل:</span>
               <a href="mailto:info@jeyserver.com">info@jeyserver.com</a>
             </div>
@@ -67,7 +55,7 @@ const TopNavbar = (props) => {
                   className={styles.authLink}
                   onClick={() => props.logout()}
                 >
-                  <FontAwesomeIcon icon={faSignOutAlt} />
+                  <i className="fas fa-sign-out-alt"></i>
                   <span>خروج</span>
                 </button>
               </>
@@ -75,7 +63,7 @@ const TopNavbar = (props) => {
               <>
                 <Link href="#login">
                   <a className={styles.authLink}>
-                    <FontAwesomeIcon icon={faSignInAlt} />
+                    <i className="fas fa-sign-in-alt"></i>
                     <span>ورود</span>
                   </a>
                 </Link>
@@ -83,7 +71,7 @@ const TopNavbar = (props) => {
                   className={styles.authLink}
                   onClick={() => props.signUp()}
                 >
-                  <FontAwesomeIcon icon={faUserPlus} />
+                  <i className="fas fa-user-plus"></i>
                   <span>ثبت نام</span>
                 </button>
               </>

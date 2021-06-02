@@ -3,27 +3,31 @@
   flex-direction: column;
   > a {
     color: #3dc4e4;
-    padding: 1em;
-    font-size: 14px;
-    > svg {
+    padding: 10px 0;
+    font-size: 17px;
+    font-family: BYekan;
+    padding-top: 1em;
+    > i {
       color: #6b6b6c;
-      margin-left: 1em;
+      margin: 0 10px;
+      font: 14px/1;
     }
   }
 }
 .userPanelInfo {
   position: relative;
   > h3 {
+    font-size: 18px;
+    font-family: BYekan;
     > a {
       display: flex;
       align-items: center;
       justify-content: center;
       color: #3dc4e4;
-      font-size: 15px;
       padding: 1em 0;
       border-bottom: 1px solid #e6e6e6;
-      > svg {
-        width: 16px;
+      > i {
+        font-size: 15px;
         color: #6b6b6c;
         margin-left: 0.5em;
       }
@@ -31,6 +35,7 @@
   }
   > p {
     text-align: justify;
+    color: #717171;
   }
   > img {
     display: none;
@@ -41,6 +46,7 @@
       bottom: 30px;
       height: 250px;
       opacity: 0.2;
+      margin-bottom: 0.5em;
     }
   }
   .btnsWrapper {
@@ -52,9 +58,10 @@
       align-items: center;
       justify-content: center;
       width: 50%;
-      font-size: 13px;
-      > svg {
-        width: 16px;
+      font-size: 14px;
+      font-family: BYekan;
+      > i {
+        font-size: 14px;
         margin-left: 0.5em;
       }
     }

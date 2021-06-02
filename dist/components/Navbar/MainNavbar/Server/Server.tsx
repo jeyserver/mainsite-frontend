@@ -1,24 +1,20 @@
-import {
-  faCubes,
-  faHdd,
-  faMicrochip,
-  faMoneyBill,
-  faMoneyBillAlt,
-  faServer,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Button } from 'react-bootstrap';
 import { Dropdown, Container, Row, Col } from 'react-bootstrap';
 import styles from './Server.module.scss';
 
-const Server = () => {
+interface Props {
+  changeShowDropDown: () => void;
+}
+
+const Server: React.FC<Props> = (props) => {
   return (
     <Dropdown className="nav-item-dropdown">
       <Dropdown.Toggle id="nav-dropdown" className="nav-item-dropdown-toggle">
-        <FontAwesomeIcon icon={faServer} />
-        سرور
+        <div onClick={props.changeShowDropDown}>
+          <i className="fas fa-server"></i>
+          سرور
+        </div>
       </Dropdown.Toggle>
 
       <Dropdown.Menu className="nav-item-dropdown-menu py-0">
@@ -29,7 +25,7 @@ const Server = () => {
                 <Link href="#">
                   <a>
                     <h4 className={styles.title}>
-                      <FontAwesomeIcon icon={faCubes} />
+                      <i className="fas fa-cubes"></i>
                       سرور مجازی
                     </h4>
                   </a>
@@ -40,7 +36,7 @@ const Server = () => {
                       <Link href="#">
                         <a className={styles.professionalServerBtn}>
                           <div className={styles.iconWrapper}>
-                            <FontAwesomeIcon icon={faMicrochip} />
+                            <i className="fas fa-microchip"></i>
                           </div>
                           <div>سرور‌های حرفه‌ای</div>
                         </a>
@@ -50,7 +46,7 @@ const Server = () => {
                       <Link href="#">
                         <a className={styles.economicServerBtn}>
                           <div className={styles.iconWrapper}>
-                            <FontAwesomeIcon icon={faMoneyBillAlt} />
+                            <i className="far fa-money-bill-alt"></i>
                           </div>
                           <div>سرور‌های حرفه‌ای</div>
                         </a>
@@ -60,7 +56,7 @@ const Server = () => {
                       <Link href="#">
                         <a className={styles.largeServerBtn}>
                           <div className={styles.iconWrapper}>
-                            <FontAwesomeIcon icon={faHdd} />
+                            <i className="far fa-hdd"></i>
                           </div>
                           <div>سرور‌های حرفه‌ای</div>
                         </a>
@@ -75,7 +71,7 @@ const Server = () => {
                 <Link href="#">
                   <a>
                     <h4 className={styles.title}>
-                      <FontAwesomeIcon icon={faServer} />
+                      <i className="fas fa-server"></i>
                       سرور اختصاصی
                     </h4>
                   </a>

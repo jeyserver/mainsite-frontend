@@ -1,27 +1,21 @@
-import {
-  faChartArea,
-  faDatabase,
-  faPencilAlt,
-  faQuestionCircle,
-  faRss,
-  faSignInAlt,
-  faUniversity,
-  faUserAlt,
-  faUserPlus,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from 'react-bootstrap';
 import { Dropdown, Container, Row, Col } from 'react-bootstrap';
 import styles from './Support.module.scss';
 
-const Support = () => {
+interface Props {
+  changeShowDropDown: () => void;
+}
+
+const Support: React.FC<Props> = (props) => {
   return (
     <Dropdown className="nav-item-dropdown">
       <Dropdown.Toggle id="nav-dropdown" className="nav-item-dropdown-toggle">
-        <FontAwesomeIcon icon={faQuestionCircle} />
-        پشتیبانی
+        <div onClick={props.changeShowDropDown}>
+          <i className="fas fa-question-circle"></i>
+          پشتیبانی
+        </div>
       </Dropdown.Toggle>
 
       <Dropdown.Menu className="nav-item-dropdown-menu p-0">
@@ -31,31 +25,31 @@ const Support = () => {
               <div className={styles.linksWrapper}>
                 <Link href="/fa/blog">
                   <a>
-                    <FontAwesomeIcon width="18px" icon={faPencilAlt} />
+                    <i className="far fa-edit"></i>
                     <span>وبلاگ</span>
                   </a>
                 </Link>
                 <Link href="/fa/news">
                   <a>
-                    <FontAwesomeIcon width="18px" icon={faRss} />
+                    <i className="fas fa-rss"></i>
                     <span>اخبار</span>
                   </a>
                 </Link>
                 <Link href="/fa/faqs">
                   <a>
-                    <FontAwesomeIcon width="18px" icon={faQuestionCircle} />
+                    <i className="fas fa-question-circle"></i>
                     <span>سوالات متداول</span>
                   </a>
                 </Link>
                 <Link href="/fa/bankaccounts">
                   <a>
-                    <FontAwesomeIcon width="18px" icon={faUniversity} />
+                    <i className="fas fa-university"></i>
                     <span>شماره حساب ها</span>
                   </a>
                 </Link>
                 <Link href="/fa/server-status">
                   <a>
-                    <FontAwesomeIcon width="18px" icon={faChartArea} />
+                    <i className="fas fa-chart-area"></i>
                     <span>وضعیت سرور ها</span>
                   </a>
                 </Link>
@@ -66,7 +60,7 @@ const Support = () => {
                 <h3>
                   <Link href="/fa/userpanel">
                     <a>
-                      <FontAwesomeIcon icon={faUserAlt} />
+                      <i className="fas fa-user"></i>
                       <span>پنل کاربری</span>
                     </a>
                   </Link>
@@ -84,7 +78,7 @@ const Support = () => {
                     href="/fa/userpanel/login"
                     variant="outline-md-warning"
                   >
-                    <FontAwesomeIcon icon={faSignInAlt} />
+                    <i className="fas fa-sign-in-alt"></i>
                     <span>ورود به سامانه</span>
                   </Button>
                   <Button
@@ -92,7 +86,7 @@ const Support = () => {
                     variant="warning"
                     className={styles.registerBtn}
                   >
-                    <FontAwesomeIcon icon={faUserPlus} />
+                    <i className="fas fa-user-plus"></i>
                     <span>ثبت نام در سامانه</span>
                   </Button>
                 </div>

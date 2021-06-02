@@ -2,13 +2,6 @@ import React, { useState } from 'react';
 import styles from './MainNavbar.module.scss';
 import Image from 'next/image';
 import { Button, Container } from 'react-bootstrap';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faBars,
-  faBriefcase,
-  faChevronRight,
-  faPhoneAlt,
-} from '@fortawesome/free-solid-svg-icons';
 import Hosting from './Hosting/Hosting';
 import Domain from './Domain/Domain';
 import Server from './Server/Server';
@@ -18,35 +11,42 @@ import Link from 'next/link';
 
 const MainNavbar = () => {
   const [isMenuOpen, setMenuOpen] = useState<boolean>(false);
+  const [dropDownOpend, setDropDownOpend] = useState<boolean>(false);
+
+  const changeShowDropDown = () => {
+    setDropDownOpend((prevState) => !prevState);
+  };
 
   const changeShowMenu = () => {
     setMenuOpen((prevState) => !prevState);
   };
 
   return (
-    <div className={styles.mainNavbar}>
+    <div className={styles.mainNavbar} id="mainNavbar">
       <Container fluid="md">
         <div className="d-flex align-items-center justify-content-between">
           <div className="d-flex align-items-center">
-            <Image src="/logo-header.png" width={171} height={35} />
+            <a href="/">
+              <Image src="/logo-header.png" width={171} height={35} />
+            </a>
             <div
               className={styles.navItemWrapper}
               style={{ right: isMenuOpen ? 0 : '-100%' }}
             >
-              <Hosting />
-              <Domain />
-              <Server />
-              <License />
-              <Support />
+              <Hosting changeShowDropDown={changeShowDropDown} />
+              <Domain changeShowDropDown={changeShowDropDown} />
+              <Server changeShowDropDown={changeShowDropDown} />
+              <License changeShowDropDown={changeShowDropDown} />
+              <Support changeShowDropDown={changeShowDropDown} />
               <Link href="/fa/contact">
                 <a className={styles.jobsLinkOnNav}>
-                  <FontAwesomeIcon icon={faBriefcase} />
+                  <i className="fas fa-briefcase"></i>
                   فرصت‌های شغلی
                 </a>
               </Link>
               <Link href="/fa/contact">
                 <a className={styles.contactUsLink}>
-                  <FontAwesomeIcon icon={faPhoneAlt} />
+                  <i className="fas fa-phone-alt"></i>
                   تماس با ما
                 </a>
               </Link>
@@ -59,7 +59,7 @@ const MainNavbar = () => {
           </div>
           <Link href="/fa/jobs">
             <a className={styles.jobTitlesBtn}>
-              <FontAwesomeIcon icon={faBriefcase} height="16px" />
+              <i className="fas fa-briefcase"></i>
               <span>فرصت‌های شغلی</span>
             </a>
           </Link>
@@ -67,13 +67,22 @@ const MainNavbar = () => {
             variant="light"
             className={styles.hamburgerMenuBtn}
             onClick={changeShowMenu}
+            data-close
           >
             {isMenuOpen ? (
-              <FontAwesomeIcon icon={faChevronRight} />
+              <i className="fas fa-chevron-right"></i>
             ) : (
-              <FontAwesomeIcon icon={faBars} />
+              <i className="fas fa-bars"></i>
             )}
           </Button>
+          {dropDownOpend ? (
+            <div
+              className={styles.closeSpaceForDropDown}
+              onClick={changeShowDropDown}
+            ></div>
+          ) : (
+            <div className="d-none"></div>
+          )}
         </div>
       </Container>
     </div>

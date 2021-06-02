@@ -1,16 +1,4 @@
-import {
-  faCheckSquare,
-  faChevronLeft,
-  faChevronRight,
-  faHandPointUp,
-  faRocket,
-  faUserSecret,
-} from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Image from 'next/image';
 import Link from 'next/link';
-import { Button } from 'react-bootstrap';
-import { Carousel } from 'react-bootstrap';
 import styles from './Header.module.scss';
 import Slider from 'react-slick';
 import { useEffect, useState } from 'react';
@@ -43,7 +31,7 @@ function NextArrow(props) {
       style={{ ...style }}
       onClick={onClick}
     >
-      <FontAwesomeIcon icon={faChevronLeft} width={18} />
+      <i className="fas fa-chevron-left"></i>
     </div>
   );
 }
@@ -57,7 +45,7 @@ function PrevArrow(props) {
       style={{ ...style }}
       onClick={onClick}
     >
-      <FontAwesomeIcon icon={faChevronRight} width={18} />
+      <i className="fas fa-chevron-right"></i>
     </div>
   );
 }
@@ -100,35 +88,27 @@ const Header = () => {
   };
 
   return (
-    <header>
+    <header className={styles.header}>
       <Slider {...settings}>
         <div className="position-relative overflow-hidden target-slide-box">
-          <img
-            className={styles.backupSlideBG}
-            src="/images/upload-bg.png"
-            alt="First slide"
-          />
-          <div className={styles.backupSlideCaption}>
-            <div>
-              <h3>بکاپ اتوماتیک</h3>
-              <p>امنیت اطلاعات سازمان خود را بیمه کنید</p>
-              <Link href="/fa/hosting/linux/professional">
-                <a>
-                  <span>خرید هاست میزبانی</span>
-                  <FontAwesomeIcon icon={faRocket} />
-                </a>
-              </Link>
+          <div className="slide" id="slide-hosts-auto-backuping">
+            <div className="text-center text-container">
+              <h2 className="fnt-35 text-bold text-white">بکاپ اتوماتیک</h2>
+              <h3 className="fnt-16 text-bold text-yellow">
+                امنیت اطلاعات سازمان خود را بیمه کنید
+              </h3>
+              <a
+                href="/fa/hosting/linux/professional"
+                className="btn bg-yellow text-white fnt-16"
+              >
+                <i className="fa fa-rocket" aria-hidden="true"></i>
+                خرید هاست میزبانی
+              </a>
             </div>
-            <img
-              src="/images/cload.png"
-              alt="بکاپگیری اتوماتیک"
-              className={styles.cloadImg}
-            />
-            <img
-              src="/images/laptop.png"
-              alt="بکاپ اتوماتیک"
-              className={styles.laptopImg}
-            />
+            <div className="images">
+              <img src="/images/cload.png" alt="بکاپگیری اتوماتیک" />
+              <img src="/images/laptop.png" alt="بکاپ اتوماتیک" />
+            </div>
           </div>
         </div>
         <div className="position-relative overflow-hidden target-slide-box">
@@ -142,13 +122,13 @@ const Header = () => {
                 <Link href="/fa/hosting/linux/professional">
                   <a className={styles.professionalLink}>
                     <span>برای حرفه ای ها </span>
-                    <FontAwesomeIcon icon={faUserSecret} />
+                    <i className="fas fa-user-secret"></i>
                   </a>
                 </Link>
                 <Link href="/fa/hosting/linux/standard">
                   <a className={styles.newcomersLink}>
                     <span>برای تازه وارد‌ها</span>
-                    <FontAwesomeIcon icon={faHandPointUp} />
+                    <i className="far fa-hand-point-up"></i>
                   </a>
                 </Link>
               </div>
@@ -165,25 +145,25 @@ const Header = () => {
               <h3>تحویل آنی سرور های مجازی</h3>
               <ul>
                 <li>
-                  <FontAwesomeIcon icon={faCheckSquare} width="12" />
+                  <i className="fas fa-check-square"></i>
                   <span>نصب خودکار تمام نسخه های CentOS ، Ubuntu ، Debian</span>
                 </li>
                 <li>
-                  <FontAwesomeIcon icon={faCheckSquare} width="12" />
+                  <i className="fas fa-check-square"></i>
                   <span> نصب دستی و سفارشی توسط شما</span>
                 </li>
                 <li>
-                  <FontAwesomeIcon icon={faCheckSquare} width="12" />
+                  <i className="fas fa-check-square"></i>
                   <span>نصب هر سیستم عامل دلخواه دیگر</span>
                 </li>
                 <li>
-                  <FontAwesomeIcon icon={faCheckSquare} width="12" />
+                  <i className="fas fa-check-square"></i>
                   <span>دسترسی VNC</span>
                 </li>
               </ul>
               <Link href="/fa/server/vps">
                 <a className={styles.linkBuyVirtualServers}>
-                  <FontAwesomeIcon icon={faHandPointUp} width="16" />
+                  <i className="far fa-hand-point-up"></i>
                   <span> خرید یک سرور مجازی جدید</span>
                 </a>
               </Link>

@@ -6,13 +6,12 @@
   color: #3dc4e4;
   padding-bottom: 1em;
   border-bottom: 1px solid #e6e6e6;
-  @media screen and (max-width: 1200px) {
-    font-size: 15px;
-  }
-  > svg {
-    height: 25px;
-    margin-left: 8px;
+  font-family: BNazanin;
+  font-size: 18px;
+  > i {
+    margin-left: 10px;
     color: #6b6b6c;
+    font: 14px/1;
   }
 }
 
@@ -23,25 +22,25 @@
   font-size: 18px;
   color: #3dc4e4;
   padding-bottom: 1em;
-  @media screen and (max-width: 1200px) {
-    font-size: 15px;
-  }
-  > svg {
-    height: 25px;
-    margin-left: 15px;
+  font-family: BNazanin;
+  > i {
+    margin-left: 10px;
     color: #6b6b6c;
+    font: 15px/1;
   }
-  &:hover {
+}
+
+.firstTitle {
+  color: #f63;
+  > i {
     color: #f63;
-    > svg {
-      color: #f63;
-    }
   }
 }
 
 .list {
   > li {
     margin-bottom: 0.5em;
+    font-family: BKoodakBold;
     &:last-child {
       margin-bottom: 0;
     }
@@ -49,15 +48,45 @@
 }
 
 .backgroundImage {
+  color: #313131;
+  line-height: 20px;
+  direction: rtl;
+  font-size: 14px;
+  list-style: none;
+  text-align: center;
+  box-sizing: border-box;
+  border: 0;
+  vertical-align: middle;
+  height: 250px;
+  opacity: 0.175;
   position: absolute;
   top: 0;
-  z-index: -1;
-  opacity: 0.175;
-  height: 250px;
   left: calc(100% - 300px);
-  @media screen and (max-width: 992px) {
-    height: 150px;
-    left: 30px;
+  @media screen and (max-width: 767px) {
+    left: 0;
+  }
+}
+
+.infoWrapper {
+  color: #313131;
+  line-height: 20px;
+  direction: rtl;
+  font-size: 14px;
+  list-style: none;
+  box-sizing: border-box;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  > p {
+    list-style: none;
+    box-sizing: border-box;
+    margin: 0 0 10px;
+    color: #717171;
+    line-height: 24px;
+    font-family: 'iransans';
+    font-size: 13px;
+    padding: 15px;
+    text-align: justify;
   }
 }
 
@@ -65,4 +94,10 @@
   text-align: justify;
   text-justify: inter-word;
   padding-top: 1.5rem;
+}
+
+.mildleCol {
+  @media screen and (max-width: 767px) {
+    order: -1;
+  }
 }

@@ -1,19 +1,22 @@
 .topNav {
   background-color: #fafafa;
   border-bottom: 1px solid #e6e6e6;
+  font-family: BYekan, 'BYekan';
   .rightItems {
     display: flex;
     align-items: center;
     > div {
       color: #737373;
       border-right: 1px solid #e6e6e6;
-      padding: 0.8em;
+      padding: 12px 15px 10px;
+      font-size: 12px;
       &:first-child {
         border-right: none;
       }
-      > svg {
-        width: 14px;
-        margin-left: 0.5em;
+      > i {
+        margin-left: 5px;
+        line-height: 1.42857143;
+        font-size: 14xp;
       }
       > span {
         margin: 0 0.3em;
@@ -23,10 +26,16 @@
       background-color: transparent;
       border: 1px solid transparent;
       color: #737373;
+      font-size: 14px;
+      font-weight: 400;
       padding: 0;
-      > svg {
-        width: 14px;
-        margin-left: 0.5em;
+      > span {
+        color: #3dc4e4;
+      }
+      > i {
+        margin-left: 5px;
+        line-height: 1.42857143;
+        font-size: 14xp;
       }
       &:focus {
         box-shadow: none;
@@ -47,13 +56,14 @@
       border-left: 1px solid #e6e6e6;
       padding: 0.8em;
       background-color: transparent;
+      font-size: 12px;
       &:last-child {
         border-left: none;
       }
-      > svg {
-        width: 14px;
-        margin-left: 0.5em;
-        margin-right: 0.5em;
+      > i {
+        margin-left: 5px;
+        line-height: 1.42857143;
+        font-size: 14xp;
       }
     }
   }

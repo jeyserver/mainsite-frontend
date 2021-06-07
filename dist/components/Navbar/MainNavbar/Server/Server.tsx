@@ -18,7 +18,7 @@ const Server: React.FC<Props> = (props) => {
       </Dropdown.Toggle>
 
       <Dropdown.Menu className="nav-item-dropdown-menu py-0">
-        <Container fluid className="pe-0">
+        <Container fluid className={styles.serverContainer}>
           <Row>
             <Col xs={12} md={6}>
               <div className={styles.rightSide}>
@@ -30,9 +30,15 @@ const Server: React.FC<Props> = (props) => {
                     </h4>
                   </a>
                 </Link>
-                <Container fluid>
+                <Container fluid className={styles.serverLinksContainer}>
                   <Row>
-                    <Col xs={12} md={6} lg={4}>
+                    <Col
+                      xs={12}
+                      md={6}
+                      lg={6}
+                      xl={4}
+                      className="d-flex align-items-cenetr justify-content-center"
+                    >
                       <Link href="#">
                         <a className={styles.professionalServerBtn}>
                           <div className={styles.iconWrapper}>
@@ -42,23 +48,35 @@ const Server: React.FC<Props> = (props) => {
                         </a>
                       </Link>
                     </Col>
-                    <Col xs={6} md={6} lg={4}>
+                    <Col
+                      xs={6}
+                      md={6}
+                      lg={6}
+                      xl={4}
+                      className="d-flex align-items-cenetr justify-content-center"
+                    >
                       <Link href="#">
                         <a className={styles.economicServerBtn}>
                           <div className={styles.iconWrapper}>
                             <i className="far fa-money-bill-alt"></i>
                           </div>
-                          <div>سرور‌های حرفه‌ای</div>
+                          <div>سرور‌های اقتصادی</div>
                         </a>
                       </Link>
                     </Col>
-                    <Col xs={6} md={6} lg={4}>
+                    <Col
+                      xs={6}
+                      md={6}
+                      lg={6}
+                      xl={4}
+                      className="d-flex align-items-cenetr justify-content-center"
+                    >
                       <Link href="#">
                         <a className={styles.largeServerBtn}>
                           <div className={styles.iconWrapper}>
                             <i className="far fa-hdd"></i>
                           </div>
-                          <div>سرور‌های حرفه‌ای</div>
+                          <div>سرور‌های حجیم</div>
                         </a>
                       </Link>
                     </Col>
@@ -69,12 +87,12 @@ const Server: React.FC<Props> = (props) => {
             <Col xs={12} md={6}>
               <div className={styles.leftSide}>
                 <Link href="#">
-                  <a>
-                    <h4 className={styles.title}>
+                  <div className={styles.title}>
+                    <a href="/fa/server/dedicated">
                       <i className="fas fa-server"></i>
                       سرور اختصاصی
-                    </h4>
-                  </a>
+                    </a>
+                  </div>
                 </Link>
                 <div className={styles.countries}>
                   <Link href="#">

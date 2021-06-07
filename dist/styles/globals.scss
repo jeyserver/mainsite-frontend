@@ -1,36 +1,9 @@
-@font-face {
-  font-family: BYekan;
-  src: url(../public/fonts/Yekan.ttf);
-  src: url(../public/fonts/Yekan.woff) format('woff'),
-    url(../public/fonts/Yekan.ttf) format('truetype');
-}
-
-@font-face {
-  font-family: BNazanin;
-  src: url(../public/fonts/BNazanin.ttf);
-  src: url(../public/fonts/BNazanin.ttf) format('truetype');
-}
-
-@font-face {
-  font-family: BKoodakBold;
-  src: url(../public/fonts/BKoodakBold.ttf);
-  src: url(../public/fonts/BKoodakBold.woff) format('woff'),
-    url(../public/fonts/BKoodakBold.ttf) format('truetype');
-}
-
-@font-face {
-  font-family: 'iransans';
-  src: url(../public/fonts/IRANSansWeb.ttf) format('ttf'),
-    url(../public/fonts/IRANSansWeb.eot) format('eot'),
-    url(../public/fonts/IRANSansWeb.woff) format('woff');
-}
+@import './fonts';
 
 html,
 body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
-    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   font-size: 14px;
 }
 
@@ -48,10 +21,13 @@ a {
 
 html:not([data-scroll='0']) {
   #mainNavbar {
-    position: fixed;
+    position: absolute;
     top: 0;
     right: 0;
     left: 0;
+  }
+  #top-nav {
+    display: none !important;
   }
   .nav-item-dropdown {
     &-menu {
@@ -64,12 +40,25 @@ html:not([data-scroll='0']) {
 
 .nav-item-dropdown {
   position: static;
+  &:first-child {
+    & .nav-item-dropdown-toggle {
+      margin-right: 45px;
+      @media screen and (max-width: 767px) {
+        margin-right: 15px;
+      }
+    }
+  }
   &-toggle {
     display: flex;
     align-items: center;
     background-color: transparent !important;
     border: 1px solid transparent !important;
-    padding: 15px;
+    padding: 0;
+    margin-left: 15px;
+    margin-right: 15px;
+    > div {
+      padding: 15px 0;
+    }
     &:focus,
     &:active {
       color: #000000;
@@ -108,7 +97,7 @@ html:not([data-scroll='0']) {
   }
   &-menu {
     position: fixed !important;
-    top: 125px !important;
+    top: 122px !important;
     left: 7.5% !important;
     right: 7.5% !important;
     transform: none !important;

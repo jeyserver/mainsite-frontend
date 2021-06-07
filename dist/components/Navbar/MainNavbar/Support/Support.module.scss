@@ -6,11 +6,12 @@
     padding: 10px 0;
     font-size: 17px;
     font-family: BYekan;
-    padding-top: 1em;
+    height: 44px;
+    margin-bottom: 5px;
     > i {
       color: #6b6b6c;
-      margin: 0 10px;
-      font: 14px/1;
+      margin: 0 15px;
+      font-size: 17px;
     }
   }
 }
@@ -26,6 +27,9 @@
       color: #3dc4e4;
       padding: 1em 0;
       border-bottom: 1px solid #e6e6e6;
+      @media screen and (max-width: 767px) {
+        border-bottom: none;
+      }
       > i {
         font-size: 15px;
         color: #6b6b6c;
@@ -36,6 +40,9 @@
   > p {
     text-align: justify;
     color: #717171;
+    font-family: IRANSans;
+    font-size: 13px;
+    line-height: 1.8;
   }
   > img {
     display: none;
@@ -46,13 +53,14 @@
       bottom: 30px;
       height: 250px;
       opacity: 0.2;
-      margin-bottom: 0.5em;
+      margin-bottom: -94px;
     }
   }
   .btnsWrapper {
     display: flex;
     align-items: center;
     margin-bottom: 1em;
+    position: relative;
     > a {
       display: flex;
       align-items: center;
@@ -72,6 +80,8 @@
       border-color: #f1c40f;
       background-color: transparent !important;
       color: #f1c40f;
+      border-bottom-left-radius: 0;
+      border-top-left-radius: 0;
       &:hover {
         background-color: #f1c40f !important;
         color: #ffffff;
@@ -79,12 +89,18 @@
       &:focus {
         box-shadow: none;
       }
+      @media screen and (max-width: 767px) {
+        background-color: #f1c40f !important;
+        color: #ffffff;
+        white-space: nowrap;
+      }
     }
     .registerBtn {
       background-color: transparent;
       border: 1px solid #e67e22;
       color: #e67e22;
-      margin-right: 5px;
+      border-bottom-right-radius: 0;
+      border-top-right-radius: 0;
       &:hover {
         background-color: #e67e22;
         color: #ffffff;
@@ -97,6 +113,7 @@
       @media screen and (max-width: 767px) {
         background-color: #e67e22;
         color: #ffffff;
+        white-space: nowrap;
       }
     }
   }

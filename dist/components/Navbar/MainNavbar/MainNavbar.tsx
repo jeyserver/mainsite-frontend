@@ -9,49 +9,45 @@ import License from './License/License';
 import Support from './Support/Support';
 import Link from 'next/link';
 
-function useWindowSize() {
-  const [windowSize, setWindowSize] = useState({
-    width: undefined,
-    height: undefined,
-  });
-  useEffect(() => {
-    function handleResize() {
-      setWindowSize({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      });
-    }
-    window.addEventListener('resize', handleResize);
-    handleResize();
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-  return windowSize;
-}
-
 const MainNavbar = () => {
   const [isMenuOpen, setMenuOpen] = useState<boolean>(false);
   const [dropDownOpend, setDropDownOpend] = useState<boolean>(false);
-  const size = useWindowSize();
 
   const changeShowDropDown = () => {
     setDropDownOpend((prevState) => !prevState);
   };
 
-  const changeShowMenu = () => {
-    setMenuOpen((prevState) => !prevState);
-  };
-
   useEffect(() => {
-    if (isMenuOpen) {
-      document.querySelector('body').style.overflow = 'hidden';
+    let prevScrollpos = window.pageYOffset;
+    if (
+      document.querySelectorAll('.nav-item-dropdown-menu.show').length !== 0
+    ) {
+      window.onscroll = function () {};
     } else {
-      document.querySelector('body').style.overflow = 'auto';
+      window.onscroll = function () {
+        const currentScrollPos = window.pageYOffset;
+        if (prevScrollpos > currentScrollPos) {
+          document.getElementById('mainNavbar').style.top = '0';
+        } else {
+          document.getElementById('mainNavbar').style.top = '-100px';
+        }
+        prevScrollpos = currentScrollPos;
+      };
     }
-  }, [isMenuOpen]);
+  }, [dropDownOpend]);
 
-  useEffect(() => {
-    document.querySelector('body').style.overflow = 'auto';
-  }, [size]);
+  const changeShowMenu = () => {
+    setMenuOpen((prevState) => {
+      if (window.innerWidth <= 768) {
+        if (!prevState) {
+          document.querySelector('body').style.overflow = 'hidden';
+        } else {
+          document.querySelector('body').style.overflow = '';
+        }
+      }
+      return !prevState;
+    });
+  };
 
   const closeSpace = () => {
     if (!dropDownOpend) {

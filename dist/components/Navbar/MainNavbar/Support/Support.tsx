@@ -21,7 +21,7 @@ const Support: React.FC<Props> = (props) => {
       <Dropdown.Menu className="nav-item-dropdown-menu p-0">
         <Container fluid>
           <Row>
-            <Col xs={12} md={4}>
+            <Col xs={12} md={3}>
               <div className={styles.linksWrapper}>
                 <Link href="/fa/blog">
                   <a>
@@ -55,7 +55,7 @@ const Support: React.FC<Props> = (props) => {
                 </Link>
               </div>
             </Col>
-            <Col xs={12} md={4}>
+            <Col xs={12} md={5}>
               <div className={styles.userPanelInfo}>
                 <h3>
                   <Link href="/fa/userpanel">

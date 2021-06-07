@@ -20,9 +20,17 @@
   align-items: center;
   font-weight: 700;
   font-size: 18px;
+  line-height: 37px;
   color: #3dc4e4;
-  padding-bottom: 1em;
   font-family: BNazanin;
+  margin-bottom: 8px !important;
+  @media screen and (max-width: 767px) {
+    border-bottom: 1px solid #e6e6e6;
+    margin-bottom: 20px !important;
+  }
+  &:last-child {
+    margin-bottom: 0;
+  }
   > i {
     margin-left: 10px;
     color: #6b6b6c;
@@ -40,7 +48,9 @@
 .list {
   > li {
     margin-bottom: 0.5em;
+    margin-top: 10px;
     font-family: BKoodakBold;
+    color: #2c3e50;
     &:last-child {
       margin-bottom: 0;
     }
@@ -60,10 +70,17 @@
   height: 250px;
   opacity: 0.175;
   position: absolute;
-  top: 0;
+  top: -17px;
   left: calc(100% - 300px);
+  @media screen and (max-width: 991px) {
+    top: 20px;
+  }
   @media screen and (max-width: 767px) {
     left: 0;
+    top: -11px;
+  }
+  @media screen and (max-width: 575px) {
+    left: -15px;
   }
 }
 
@@ -77,16 +94,25 @@
   text-align: center;
   position: relative;
   overflow: hidden;
+  @media screen and (max-width: 767px) {
+    overflow: hidden;
+    margin-bottom: 30px;
+  }
   > p {
     list-style: none;
     box-sizing: border-box;
     margin: 0 0 10px;
     color: #717171;
     line-height: 24px;
-    font-family: 'iransans';
+    font-family: IRANSans;
     font-size: 13px;
     padding: 15px;
     text-align: justify;
+    padding-top: 30px;
+    @media screen and (max-width: 767px) {
+      padding: 7px;
+      padding-top: 15px;
+    }
   }
 }
 
@@ -97,6 +123,7 @@
 }
 
 .mildleCol {
+  padding: 0 15px;
   @media screen and (max-width: 767px) {
     order: -1;
   }

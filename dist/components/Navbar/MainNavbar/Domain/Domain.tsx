@@ -36,7 +36,10 @@ const Domain: React.FC<Props> = (props) => {
   return (
     <Dropdown className="nav-item-dropdown">
       <Dropdown.Toggle id="nav-dropdown" className="nav-item-dropdown-toggle">
-        <div onClick={props.changeShowDropDown}>
+        <div
+          onClick={props.changeShowDropDown}
+          style={{ height: '100%', width: '100%' }}
+        >
           <i className="fas fa-globe-asia"></i>
           دامنه
         </div>
@@ -48,7 +51,9 @@ const Domain: React.FC<Props> = (props) => {
             <Col xs={12} md={4}>
               <div className="d-flex flex-column justify-content-between mt-4">
                 <div className="d-flex align-items-center justify-content-between">
-                  <h4 className={styles.tableTitle}>تعرفه ثبت دامنه</h4>
+                  <a href="/fa/domain" className={styles.tableTitle}>
+                    تعرفه ثبت دامنه
+                  </a>
                   <Link href="#">
                     <Button
                       as="a"
@@ -138,7 +143,7 @@ const Domain: React.FC<Props> = (props) => {
                 </div>
               </div>
             </Col>
-            <Col xs={12} md={4} className="px-0">
+            <Col xs={12} md={4} className={styles.centerCol}>
               <div className={styles.domainCheck}>
                 <h4>نقطه شروع همه چیز اینجاست!</h4>
                 <form className="mt-5">

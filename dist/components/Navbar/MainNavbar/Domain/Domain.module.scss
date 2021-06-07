@@ -2,6 +2,9 @@
   font-size: 18px;
   font-family: BYekan;
   color: #3dc4e4;
+  &:hover {
+    color: #3dc4e4;
+  }
 }
 .moreBtn {
   display: flex;
@@ -89,7 +92,7 @@
     .formInputGroup {
       height: 33px;
       > select {
-        width: 4em;
+        width: min-content;
         height: 100%;
         flex: unset;
         background-color: #ffffff;
@@ -164,7 +167,7 @@
   box-sizing: border-box;
   position: relative;
   right: auto;
-  font-family: 'iransans';
+  font-family: IRANSans;
   font-size: 13px;
   overflow: hidden;
   > p {
@@ -179,5 +182,14 @@
     @media screen and (max-width: 767px) {
       margin-top: 0;
     }
+  }
+}
+
+.centerCol {
+  padding-left: 15px;
+  padding-right: 15px;
+  @media screen and (max-width: 991px) {
+    padding-left: 0;
+    padding-right: 0;
   }
 }

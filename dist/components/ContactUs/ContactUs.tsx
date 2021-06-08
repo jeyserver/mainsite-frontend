@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { InputGroup } from 'react-bootstrap';
+import { Card, InputGroup } from 'react-bootstrap';
 import { Button } from 'react-bootstrap';
 import { Container, Row, Form, Col } from 'react-bootstrap';
 import styles from './ContactUs.module.scss';
 import dynamic from 'next/dynamic';
+import { Accordion } from 'react-bootstrap';
 
 const Map = dynamic(import('../Map/Map'), {
   ssr: false,
@@ -28,6 +29,7 @@ const ContactUs = () => {
   const [nameError, setNameError] = useState<error>('data_validation');
   const [subjectError, setSubjectError] = useState<error>('data_validation');
   const [emailError, setEmailError] = useState<error>('data_validation');
+  const [textError, setTextError] = useState<error>('data_validation');
 
   const [validated, setValidated] = useState(false);
 
@@ -201,6 +203,12 @@ const ContactUs = () => {
                           placeholder="متن پیام..."
                           required
                         ></Form.Control>
+                        <Form.Control.Feedback
+                          type="invalid"
+                          className={styles.invalidFeedbackMsg}
+                        >
+                          {showError(textError)}
+                        </Form.Control.Feedback>
                         <div className={styles.textareaPrepend}>
                           <i className="far fa-file-alt"></i>
                         </div>
@@ -242,17 +250,32 @@ const ContactUs = () => {
           </div>
         </Container>
       </div>
-      <div className={styles.callToAction}>
-        <a className={styles.mapBlock} href="#">
-          <div className={styles.mapTxt}>ما اینجا هستیم!</div>
-          <div className={styles.mapArrow}>
-            <i className="fa fa-chevron-up"></i>
-          </div>
-        </a>
-      </div>
-      <div className={styles.mapContainer}>
-        <Map />
-      </div>
+      <Accordion defaultActiveKey="0">
+        <Card className={styles.mapAccordionCard}>
+          <Card.Header className={styles.callToAction}>
+            <Accordion.Toggle
+              as={Button}
+              variant="link"
+              eventKey="0"
+              className={styles.mapBlockBtn}
+            >
+              <div className={styles.mapBlock}>
+                <div className={styles.mapTxt}>ما اینجا هستیم!</div>
+                <div className={styles.mapArrow}>
+                  <i className="fa fa-chevron-up"></i>
+                </div>
+              </div>
+            </Accordion.Toggle>
+          </Card.Header>
+          <Accordion.Collapse eventKey="0">
+            <Card.Body className={styles.mapContainerBody}>
+              <div className={styles.mapContainer}>
+                <Map />
+              </div>
+            </Card.Body>
+          </Accordion.Collapse>
+        </Card>
+      </Accordion>
     </section>
   );
 };

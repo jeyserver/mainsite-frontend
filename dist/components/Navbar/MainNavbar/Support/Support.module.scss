@@ -8,6 +8,9 @@
     font-family: BYekan;
     height: 44px;
     margin-bottom: 5px;
+    @media screen and (max-width: 767px) {
+      margin-bottom: 30px;
+    }
     > i {
       color: #6b6b6c;
       margin: 0 15px;
@@ -50,7 +53,7 @@
       display: block;
       position: absolute;
       left: 0;
-      bottom: 30px;
+      bottom: 65px;
       height: 250px;
       opacity: 0.2;
       margin-bottom: -94px;

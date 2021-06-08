@@ -34,7 +34,7 @@ const MainNavbar = () => {
         prevScrollpos = currentScrollPos;
       };
     }
-  }, [dropDownOpend]);
+  }, [dropDownOpend, isMenuOpen]);
 
   const changeShowMenu = () => {
     setMenuOpen((prevState) => {

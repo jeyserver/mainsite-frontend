@@ -153,10 +153,18 @@
   vertical-align: middle;
   height: 250px;
   position: absolute;
-  top: 0;
+  top: 3px;
   left: 30px;
   opacity: 0.175;
   z-index: 0;
+  @media screen and (min-width: 768px) and (max-width: 991px) {
+    left: 10px;
+    height: 200px;
+  }
+}
+
+.infoCol {
+  overflow: hidden;
 }
 
 .infoWrapper {
@@ -169,7 +177,6 @@
   right: auto;
   font-family: IRANSans;
   font-size: 13px;
-  overflow: hidden;
   > p {
     font-size: 13px;
     box-sizing: border-box;

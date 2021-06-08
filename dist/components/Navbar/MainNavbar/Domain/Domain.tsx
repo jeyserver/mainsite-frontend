@@ -181,7 +181,7 @@ const Domain: React.FC<Props> = (props) => {
                 </form>
               </div>
             </Col>
-            <Col xs={12} md={4}>
+            <Col xs={12} md={4} className={styles.infoCol}>
               <div className={styles.infoWrapper}>
                 <Image
                   src="/images/domain-menu.png"

@@ -28,10 +28,10 @@ const MainNavbar = () => {
         const currentScrollPos = window.pageYOffset;
         if (prevScrollpos > currentScrollPos) {
           (document.querySelector('#mainNavbar') as HTMLDivElement).style.top =
-            '-100px';
+            '0';
         } else {
           (document.querySelector('#mainNavbar') as HTMLDivElement).style.top =
-            '0';
+            '-100px';
         }
         prevScrollpos = currentScrollPos;
       };

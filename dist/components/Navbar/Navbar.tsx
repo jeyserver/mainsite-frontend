@@ -19,22 +19,18 @@ const Navbar = () => {
 
     const storeScroll = () => {
       (document.documentElement as any).dataset.scroll = window.scrollY;
-      if (scrollY > 44) {
+      if (scrollY > 43) {
         (
           document.querySelector('#mainNavbar') as HTMLDivElement
         ).style.position = 'fixed';
-        (document.querySelector('#top-nav') as HTMLDivElement).setAttribute(
-          'style',
-          'height: 0;'
-        );
+        (document.querySelector('#top-nav') as HTMLDivElement).style.display =
+          'none';
       } else {
         (
           document.querySelector('#mainNavbar') as HTMLDivElement
         ).style.position = 'static';
-        (document.querySelector('#top-nav') as HTMLDivElement).setAttribute(
-          'style',
-          'height: 43px;'
-        );
+        (document.querySelector('#top-nav') as HTMLDivElement).style.display =
+          'block';
       }
     };
 

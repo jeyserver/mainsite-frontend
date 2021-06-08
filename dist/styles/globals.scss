@@ -21,7 +21,6 @@ a {
 
 #top-nav {
   overflow: hidden;
-  transition: height 0.6s;
 }
 
 #mainNavbar {
@@ -39,12 +38,13 @@ html:not([data-scroll='0']) {
     }
   }
 }
-
-html[data-scroll='0'] {
-  #top-nav {
-    height: 43px;
-    overflow: hidden;
-    transition: height 0.4s;
+@for $i from 1 through 20 {
+  html[data-scroll='#{$i}'] {
+    .nav-item-dropdown {
+      &-menu {
+        top: 106px !important;
+      }
+    }
   }
 }
 

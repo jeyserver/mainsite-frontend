@@ -1,8 +1,123 @@
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 import { Form } from 'react-bootstrap';
 import { Col, Container, FormGroup, Row, Table } from 'react-bootstrap';
 import styles from './BankAccounts.module.scss';
 
+interface bankAccount {
+  id: number;
+  title: string;
+  owner: string;
+  account: string;
+  cart: string;
+  sheba: string;
+}
+
+type error = 'data_validation' | 'data_duplicate';
+
+const showError = (error: error | null) => {
+  if (error === 'data_duplicate') {
+    return 'داده وارد شده تکراری است';
+  } else if (error === 'data_validation' || error === null) {
+    return 'داده وارد شده معتبر نیست';
+  }
+};
+
 const BankAccounts = () => {
+  const [validated, setValidated] = useState(false);
+  const [bankAccounts, setBankAccounts] = useState<bankAccount[]>([]);
+
+  const [phoneNumber, setPhoneNumber] = useState<string>('');
+  const [selectedAccount, setSelectedAccount] = useState<string>('1');
+
+  const [isBtnDisabled, setIsBtnDisabled] = useState<boolean>(false);
+  const [isBtnLoading, setIsBtnLoading] = useState<boolean>(false);
+  const [phoneNumberError, setPhoneNumberError] = useState<error | null>(null);
+  const [selectedAccountError, setselectedAccountError] =
+    useState<error | null>(null);
+
+  const submitForm = (e) => {
+    const form = e.currentTarget;
+    if (form.checkValidity() === false) {
+      e.preventDefault();
+      e.stopPropagation();
+    } else {
+      e.preventDefault();
+      setIsBtnLoading(true);
+      setIsBtnDisabled(true);
+      axios
+        .post('https://www.jeyserver.com/fa/bankaccounts?ajax=1', {
+          account: '1',
+          cellPhone: '09123456789',
+        })
+        .then((res) => {
+          setIsBtnDisabled(true);
+          setIsBtnLoading(false);
+
+          setPhoneNumber('');
+          setSelectedAccount('1');
+          setValidated(false);
+
+          setselectedAccountError(null);
+          setPhoneNumberError(null);
+          setTimeout(() => {
+            setIsBtnDisabled(false);
+          }, 15000);
+        })
+        .catch((error) => {});
+    }
+    setValidated(true);
+  };
+
+  const onChangePhoneNumber = (e) => {
+    setPhoneNumber(e.target.value);
+    setIsBtnDisabled(false);
+  };
+
+  const onChangeSelectedAccount = (e) => {
+    setSelectedAccount(e.target.value);
+    setIsBtnDisabled(false);
+  };
+
+  useEffect(() => {
+    axios(
+      'https://jsonblob.com/api/jsonBlob/8f150852-c849-11eb-ba15-3ffb1391eb2c'
+    ).then((response) => {
+      setBankAccounts(response.data.accounts);
+    });
+    // axios
+    //   .get(
+    //     `${process.env.SCHEMA}://${process.env.DOMAIN}/fa/bankaccounts?ajax=1`
+    //   )
+    //   .then(function (response) {
+    //     console.log(response.data);
+    //   });
+  }, []);
+
+  const showBtnContent = () => {
+    if (isBtnLoading) {
+      return (
+        <div className={styles.loadingBtn}>
+          <span className={styles.loadingBox}></span>
+          <span className={styles.loadingTxt}>لطفا صبر کنید...</span>
+        </div>
+      );
+    } else if (isBtnDisabled) {
+      return (
+        <div className={styles.sentTxt}>
+          <i className="far fa-check-square"></i>
+          <span>ارسال شد</span>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <i className="fas fa-paper-plane"></i> ارسال
+        </div>
+      );
+    }
+  };
+
   return (
     <section className="BankAccounts">
       <div className={styles.innerBanner} id="top" data-ix="shotop-btn">
@@ -60,60 +175,35 @@ const BankAccounts = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>1</td>
-                    <td>بانک ملی ایران</td>
-                    <td>امیرحسین یگانه مهر</td>
-                    <td className={styles.ltr}>0343840500006</td>
-                    <td className={styles.ltr}>6037-9974-7736-4179</td>
-                    <td className={styles.ltr}>IR020170000000343840500006</td>
-                  </tr>
-                  <tr>
-                    <td>2</td>
-                    <td>بانک ملت</td>
-                    <td>امیرحسین یگانه مهر</td>
-                    <td className={styles.ltr}>4776975560</td>
-                    <td className={styles.ltr}>6104-3372-5138-7211</td>
-                    <td className={styles.ltr}>IR950120010000004776975560</td>
-                  </tr>
-                  <tr>
-                    <td>3</td>
-                    <td>بانک تجارت</td>
-                    <td>امیرحسین یگانه مهر</td>
-                    <td className={styles.ltr}>4416592425</td>
-                    <td className={styles.ltr}>6273-5319-9932-9867</td>
-                    <td className={styles.ltr}>IR230180000000004416592425</td>
-                  </tr>
-                  <tr>
-                    <td>4</td>
-                    <td>بانک قوامین</td>
-                    <td>امیرحسین یگانه مهر</td>
-                    <td className={styles.ltr}>104580500755466</td>
-                    <td className={styles.ltr}>6395-9911-5909-7187</td>
-                    <td className={styles.ltr}>IR840520000104580500755466</td>
-                  </tr>
-                  <tr>
-                    <td>5</td>
-                    <td>مؤسسه اعتباری عسگریه</td>
-                    <td>امیرحسین یگانه مهر</td>
-                    <td className={`${styles.ltr} text-center`}>-</td>
-                    <td className={styles.ltr}>6062-5611-9858-5880</td>
-                    <td className={`${styles.ltr} text-center`}>-</td>
-                  </tr>
-                  <tr>
-                    <td>6</td>
-                    <td>بانک مهر اقتصاد</td>
-                    <td>امیرحسین یگانه مهر</td>
-                    <td className={styles.ltr}>8361-874-13745658-1</td>
-                    <td className={styles.ltr}>6393-7050-3892-9234</td>
-                    <td className={`${styles.ltr} text-center`}>-</td>
-                  </tr>
+                  {bankAccounts &&
+                    bankAccounts.map((bankAccount) => (
+                      <tr key={bankAccount.id}>
+                        <td>{bankAccount.id}</td>
+                        <td>{bankAccount.title}</td>
+                        <td>{bankAccount.owner}</td>
+                        {bankAccount.account.length > 0 ? (
+                          <td className={styles.ltr}>{bankAccount.account}</td>
+                        ) : (
+                          <td className={styles.ltr + ' text-center'}>-</td>
+                        )}
+                        {bankAccount.cart.length > 0 ? (
+                          <td className={styles.ltr}>{bankAccount.cart}</td>
+                        ) : (
+                          <td className={styles.ltr + ' text-center'}>-</td>
+                        )}
+                        {bankAccount.sheba.length > 0 ? (
+                          <td className={styles.ltr}>{bankAccount.sheba}</td>
+                        ) : (
+                          <td className={styles.ltr + ' text-center'}>-</td>
+                        )}
+                      </tr>
+                    ))}
                 </tbody>
               </Table>
             </Col>
             <Col xs={12} lg={3}>
               <div className={styles.panelSend}>
-                <form action="/fa/bankaccounts" method="POST">
+                <Form onSubmit={submitForm} noValidate validated={validated}>
                   <div className={styles.panelHeading}>
                     <i className="far fa-paper-plane"></i>
                     <span>ارسال با پیام</span>
@@ -121,35 +211,50 @@ const BankAccounts = () => {
                   <div className={styles.panelBody}>
                     <FormGroup className={styles.formGroup}>
                       <Form.Label>حساب</Form.Label>
-                      <select name="account" className="form-control">
-                        <option value="1">
-                          بانک ملی ایران (0343840500006)
-                        </option>
-                        <option value="2">بانک ملت (4776975560)</option>
-                        <option value="3">بانک تجارت (4416592425)</option>
-                        <option value="4">بانک قوامین (104580500755466)</option>
-                        <option value="5">مؤسسه اعتباری عسگریه ()</option>
-                        <option value="6">
-                          بانک مهر اقتصاد (8361-874-13745658-1)
-                        </option>
-                      </select>
+                      <Form.Control
+                        as="select"
+                        name="account"
+                        value={selectedAccount}
+                        onChange={onChangeSelectedAccount}
+                        isInvalid={Boolean(selectedAccountError !== null)}
+                      >
+                        {bankAccounts &&
+                          bankAccounts.map((bankAccount) => (
+                            <option value={bankAccount.id}>
+                              {bankAccount.title} ({bankAccount.account})
+                            </option>
+                          ))}
+                      </Form.Control>
+                      <Form.Control.Feedback type="invalid">
+                        {showError(selectedAccountError)}
+                      </Form.Control.Feedback>
                     </FormGroup>
                     <FormGroup className={styles.formGroup}>
                       <Form.Label>شماره همراه</Form.Label>
                       <Form.Control
                         type="text"
                         name="cellphone"
-                        className="form-control ltr"
                         placeholder="09123456789"
+                        value={phoneNumber}
+                        onChange={onChangePhoneNumber}
+                        isInvalid={Boolean(phoneNumberError !== null)}
+                        required
                       />
+                      <Form.Control.Feedback type="invalid">
+                        {showError(phoneNumberError)}
+                      </Form.Control.Feedback>
                     </FormGroup>
                   </div>
                   <div className={styles.panelFooter}>
-                    <button type="submit" className="btn btn-success btn-block">
-                      <i className="fas fa-paper-plane"></i> ارسال
+                    <button
+                      disabled={isBtnDisabled}
+                      type="submit"
+                      className="btn btn-success btn-block"
+                    >
+                      {showBtnContent()}
                     </button>
                   </div>
-                </form>
+                </Form>
               </div>
             </Col>
           </Row>

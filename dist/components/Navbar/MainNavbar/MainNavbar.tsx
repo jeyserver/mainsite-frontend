@@ -27,9 +27,11 @@ const MainNavbar = () => {
       window.onscroll = function () {
         const currentScrollPos = window.pageYOffset;
         if (prevScrollpos > currentScrollPos) {
-          document.getElementById('mainNavbar').style.top = '0';
+          (document.querySelector('#mainNavbar') as HTMLDivElement).style.top =
+            '-100px';
         } else {
-          document.getElementById('mainNavbar').style.top = '-100px';
+          (document.querySelector('#mainNavbar') as HTMLDivElement).style.top =
+            '0';
         }
         prevScrollpos = currentScrollPos;
       };

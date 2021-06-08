@@ -22,6 +22,7 @@ const MainNavbar = () => {
     if (
       document.querySelectorAll('.nav-item-dropdown-menu.show').length !== 0
     ) {
+      (document.querySelector('#mainNavbar') as HTMLDivElement).style.top = '0';
       window.onscroll = function () {};
     } else {
       window.onscroll = function () {

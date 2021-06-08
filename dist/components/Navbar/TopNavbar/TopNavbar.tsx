@@ -8,7 +8,7 @@ const TopNavbar = (props) => {
   console.log(props);
 
   return (
-    <div id="top-nav" className={styles.topNav + ' d-none d-lg-block'}>
+    <div id="top-nav" className={styles.topNav}>
       <Container>
         <div className="d-flex align-items-center justify-content-between">
           <div className={styles.rightItems}>

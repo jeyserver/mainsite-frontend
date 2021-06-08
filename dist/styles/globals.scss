@@ -38,11 +38,83 @@ html:not([data-scroll='0']) {
     }
   }
 }
-@for $i from 1 through 20 {
+
+@for $i from 1 through 123 {
   html[data-scroll='#{$i}'] {
     .nav-item-dropdown {
-      &-menu {
-        top: 106px !important;
+      &[data-down='true'] {
+        .nav-item-dropdown-menu {
+          top: 120px - $i !important;
+        }
+      }
+    }
+  }
+}
+
+@for $i from 1 through 80 {
+  html[data-scroll='#{$i}'] {
+    .nav-item-dropdown {
+      &[data-down='true'] {
+        .nav-item-dropdown-menu {
+          @media screen and (min-width: 768px) and (max-width: 991px) {
+            top: 78px - $i !important;
+          }
+        }
+      }
+    }
+  }
+}
+
+@for $i from 80 through 123 {
+  html[data-scroll='#{$i}'] {
+    .nav-item-dropdown {
+      &[data-down='true'],
+      &[data-down='false'] {
+        .nav-item-dropdown-menu {
+          @media screen and (min-width: 768px) and (max-width: 991px) {
+            top: 79px !important;
+          }
+        }
+      }
+    }
+  }
+}
+
+@for $i from 0 through 80 {
+  html[data-scroll='#{$i}'] {
+    .nav-item-dropdown {
+      &[data-down='false'] {
+        .nav-item-dropdown-menu {
+          @media screen and (min-width: 768px) and (max-width: 991px) {
+            top: 79px !important;
+          }
+        }
+      }
+    }
+  }
+}
+
+@for $i from 1 through 11 {
+  html[data-scroll='#{$i}'] {
+    .nav-item-dropdown {
+      &[data-down='false'] {
+        .nav-item-dropdown-menu {
+          top: 120px - $i !important;
+        }
+      }
+    }
+  }
+}
+
+@for $i from 1 through 11 {
+  html[data-scroll='#{$i}'] {
+    .nav-item-dropdown {
+      &[data-down='false'] {
+        .nav-item-dropdown-menu {
+          @media screen and (min-width: 768px) and (max-width: 991px) {
+            top: 79px - $i !important;
+          }
+        }
       }
     }
   }
@@ -115,8 +187,8 @@ html:not([data-scroll='0']) {
     border: 1px solid transparent;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
-    @media screen and (min-width: 767px) and (max-width: 992px) {
-      top: 80px !important;
+    @media screen and (min-width: 768px) and (max-width: 991px) {
+      top: 79px !important;
     }
     @media screen and (max-width: 767px) {
       position: absolute !important;

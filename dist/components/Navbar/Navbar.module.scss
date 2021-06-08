@@ -1,5 +1,8 @@
-// .nav {
-//   position: sticky;
-//   top: 0;
-//   z-index: 999;
-// }
+.navbarTopSpace {
+  height: 80px;
+  width: 100%;
+  display: none;
+  @media screen and (min-width: 991px) {
+    display: none !important;
+  }
+}

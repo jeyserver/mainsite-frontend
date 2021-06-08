@@ -17,21 +17,72 @@ const Navbar = () => {
       };
     };
 
+    const mainNavbar = document.querySelector('#mainNavbar') as HTMLDivElement;
+    const topNav = document.querySelector('#top-nav') as HTMLDivElement;
+    const navItemDropdown = document.querySelectorAll(
+      '.nav-item-dropdown'
+    ) as any;
+    const navbarTopSpace = document.querySelector(
+      '#navbar-top-space'
+    ) as HTMLDivElement;
+
+    var lastScrollTop = 0;
+
     const storeScroll = () => {
       (document.documentElement as any).dataset.scroll = window.scrollY;
-      if (scrollY > 43) {
-        (
-          document.querySelector('#mainNavbar') as HTMLDivElement
-        ).style.position = 'fixed';
-        (document.querySelector('#top-nav') as HTMLDivElement).style.display =
-          'none';
+      var st = window.pageYOffset || document.documentElement.scrollTop;
+
+      if (st > lastScrollTop) {
+        // Downscroll
+        navItemDropdown.forEach(
+          (dropdownMenu) => (dropdownMenu.dataset.down = 'true')
+        );
+        if (window.innerWidth > 991) {
+          if (scrollY > 123) {
+            mainNavbar.style.position = 'fixed';
+            topNav.style.opacity = '0';
+            topNav.style.marginBottom = '80px';
+          } else {
+            mainNavbar.style.position = 'static';
+            topNav.style.opacity = '1';
+            topNav.style.marginBottom = '0';
+          }
+        } else {
+          if (scrollY > 80) {
+            mainNavbar.style.position = 'fixed';
+            navbarTopSpace.style.display = 'block';
+          } else {
+            mainNavbar.style.position = 'static';
+            navbarTopSpace.style.display = 'none';
+          }
+        }
       } else {
-        (
-          document.querySelector('#mainNavbar') as HTMLDivElement
-        ).style.position = 'static';
-        (document.querySelector('#top-nav') as HTMLDivElement).style.display =
-          'block';
+        // upscroll code
+        navItemDropdown.forEach(
+          (dropdownMenu) => (dropdownMenu.dataset.down = 'false')
+        );
+        if (window.innerWidth > 991) {
+          if (scrollY > 43) {
+            mainNavbar.style.position = 'fixed';
+            topNav.style.opacity = '0';
+            topNav.style.marginBottom = '80px';
+          } else {
+            mainNavbar.style.position = 'static';
+            topNav.style.opacity = '1';
+            topNav.style.marginBottom = '0';
+          }
+        } else {
+          if (scrollY > 0) {
+            mainNavbar.style.position = 'fixed';
+            navbarTopSpace.style.display = 'block';
+          } else {
+            mainNavbar.style.position = 'static';
+            navbarTopSpace.style.display = 'none';
+          }
+        }
       }
+
+      lastScrollTop = st <= 0 ? 0 : st;
     };
 
     document.addEventListener('scroll', debounce(storeScroll), {
@@ -42,6 +93,7 @@ const Navbar = () => {
   return (
     <nav className={styles.nav}>
       <TopNavbar />
+      <div id="navbar-top-space" className={styles.navbarTopSpace}></div>
       <MainNavbar />
     </nav>
   );

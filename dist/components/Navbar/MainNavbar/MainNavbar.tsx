@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styles from './MainNavbar.module.scss';
 import Image from 'next/image';
 import { Button, Container } from 'react-bootstrap';
@@ -16,28 +16,6 @@ const MainNavbar = () => {
   const changeShowDropDown = () => {
     setDropDownOpend((prevState) => !prevState);
   };
-
-  useEffect(() => {
-    let prevScrollpos = window.pageYOffset;
-    if (
-      document.querySelectorAll('.nav-item-dropdown-menu.show').length !== 0
-    ) {
-      (document.querySelector('#mainNavbar') as HTMLDivElement).style.top = '0';
-      window.onscroll = function () {};
-    } else {
-      window.onscroll = function () {
-        const currentScrollPos = window.pageYOffset;
-        if (prevScrollpos > currentScrollPos) {
-          (document.querySelector('#mainNavbar') as HTMLDivElement).style.top =
-            '0';
-        } else {
-          (document.querySelector('#mainNavbar') as HTMLDivElement).style.top =
-            '-100px';
-        }
-        prevScrollpos = currentScrollPos;
-      };
-    }
-  }, [dropDownOpend, isMenuOpen]);
 
   const changeShowMenu = () => {
     setMenuOpen((prevState) => {

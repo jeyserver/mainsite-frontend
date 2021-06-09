@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import MainNavbar from './MainNavbar/MainNavbar';
 import TopNavbar from './TopNavbar/TopNavbar';
 import styles from './Navbar.module.scss';
@@ -22,6 +22,7 @@ const Navbar = () => {
     const navItemDropdown = document.querySelectorAll(
       '.nav-item-dropdown'
     ) as any;
+
     const navbarTopSpace = document.querySelector(
       '#navbar-top-space'
     ) as HTMLDivElement;
@@ -30,13 +31,27 @@ const Navbar = () => {
 
     const storeScroll = () => {
       (document.documentElement as any).dataset.scroll = window.scrollY;
-      var st = window.pageYOffset || document.documentElement.scrollTop;
+      const st = window.pageYOffset || document.documentElement.scrollTop;
 
       if (st > lastScrollTop) {
         // Downscroll
         navItemDropdown.forEach(
           (dropdownMenu) => (dropdownMenu.dataset.down = 'true')
         );
+        const dropDownMenuShowing = document.querySelectorAll(
+          '.nav-item-dropdown-menu.show'
+        ) as any;
+
+        if (dropDownMenuShowing) {
+          if (dropDownMenuShowing.length === 0) {
+            mainNavbar.style.top = '-100px';
+          } else {
+            mainNavbar.style.top = '0';
+          }
+        } else {
+          mainNavbar.style.top = '-100px';
+        }
+
         if (window.innerWidth > 991) {
           if (scrollY > 123) {
             mainNavbar.style.position = 'fixed';
@@ -61,6 +76,8 @@ const Navbar = () => {
         navItemDropdown.forEach(
           (dropdownMenu) => (dropdownMenu.dataset.down = 'false')
         );
+        mainNavbar.style.top = '0';
+
         if (window.innerWidth > 991) {
           if (scrollY > 43) {
             mainNavbar.style.position = 'fixed';
@@ -88,7 +105,6 @@ const Navbar = () => {
     document.addEventListener('scroll', debounce(storeScroll), {
       passive: true,
     });
-    storeScroll();
   }, []);
   return (
     <nav className={styles.nav}>

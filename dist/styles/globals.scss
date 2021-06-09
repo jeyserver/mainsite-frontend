@@ -27,6 +27,7 @@ a {
   right: 0;
   left: 0;
   z-index: 9999;
+  top: -100px;
 }
 
 html:not([data-scroll='0']) {
@@ -94,7 +95,19 @@ html:not([data-scroll='0']) {
   }
 }
 
-@for $i from 1 through 11 {
+@for $i from 1 through 55 {
+  html[data-scroll='#{$i}'] {
+    .nav-item-dropdown {
+      &[data-down='false'] {
+        .nav-item-dropdown-menu {
+          top: 79px !important;
+        }
+      }
+    }
+  }
+}
+
+@for $i from 1 through 40 {
   html[data-scroll='#{$i}'] {
     .nav-item-dropdown {
       &[data-down='false'] {
@@ -106,13 +119,27 @@ html:not([data-scroll='0']) {
   }
 }
 
-@for $i from 1 through 11 {
+// @for $i from 1 through 11 {
+//   html[data-scroll='#{$i}'] {
+//     .nav-item-dropdown {
+//       &[data-down='false'] {
+//         .nav-item-dropdown-menu {
+//           @media screen and (min-width: 768px) and (max-width: 991px) {
+//             top: 79px - $i !important;
+//           }
+//         }
+//       }
+//     }
+//   }
+// }
+
+@for $i from 1 through 55 {
   html[data-scroll='#{$i}'] {
     .nav-item-dropdown {
       &[data-down='false'] {
         .nav-item-dropdown-menu {
           @media screen and (min-width: 768px) and (max-width: 991px) {
-            top: 79px - $i !important;
+            top: 79px !important;
           }
         }
       }

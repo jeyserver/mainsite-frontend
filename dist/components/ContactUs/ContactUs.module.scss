@@ -127,6 +127,12 @@
             &::placeholder {
               color: #909090;
             }
+            &:valid {
+              border-color: #ccc !important;
+              &:focus {
+                border-color: #198754 !important;
+              }
+            }
           }
         }
         .inputGroupLtr {
@@ -370,6 +376,12 @@
   color: #555;
   &::placeholder {
     color: #909090;
+  }
+  &:valid {
+    border-color: #ccc !important;
+    &:focus {
+      border-color: #198754 !important;
+    }
   }
 }
 

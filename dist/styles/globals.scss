@@ -500,3 +500,49 @@ html:not([data-scroll]) {
   justify-content: center;
   align-items: center;
 }
+
+.form-control.is-invalid,
+.was-validated .form-control:invalid {
+  border-color: #a94442 !important;
+  background-image: none !important;
+}
+
+.form-control.is-valid,
+.was-validated .form-control:valid {
+  background-image: none !important;
+}
+
+.leaflet-control-container {
+  .leaflet-top .leaflet-left {
+    right: 0;
+    margin-right: 25px;
+    bottom: 0;
+    margin-bottom: 21px;
+    top: unset;
+    left: unset;
+  }
+}
+
+.leaflet-left {
+  right: 0 !important;
+  left: unset !important;
+  bottom: 0 !important;
+  top: unset !important;
+  > div {
+    margin-right: 10px !important;
+    margin-bottom: 20px !important;
+  }
+}
+
+.notification {
+  direction: rtl;
+  font-family: IRANSans;
+  .title {
+    margin-bottom: 15px;
+    font-size: 14px;
+  }
+  .message {
+    line-height: 22px;
+    font-size: 12px;
+  }
+}

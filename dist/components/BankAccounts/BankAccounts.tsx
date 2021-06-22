@@ -76,19 +76,35 @@ class BankAccounts extends React.Component<
           }
         )
         .then((res) => {
-          this.setState({
-            isBtnLoading: false,
-            isBtnDisabled: true,
-            phoneNumber: '',
-            selectedAccount: '1',
-            validated: false,
-            selectedAccountError: null,
-            phoneNumberError: null,
-          });
+          if (res.data.status) {
+            this.setState({
+              isBtnLoading: false,
+              isBtnDisabled: true,
+              phoneNumber: '',
+              selectedAccount: '1',
+              validated: false,
+              selectedAccountError: null,
+              phoneNumberError: null,
+            });
 
-          setTimeout(() => {
-            this.setState({ isBtnDisabled: false });
-          }, 15000);
+            setTimeout(() => {
+              this.setState({ isBtnDisabled: false });
+            }, 15000);
+          } else if (!res.data.status) {
+            res.data.error.forEach((errorItem) => {
+              if (errorItem.input === 'account') {
+                this.setState({
+                  selectedAccountError: errorItem.code,
+                  selectedAccount: '1',
+                });
+              } else if (errorItem.input === 'cellPhone') {
+                this.setState({
+                  phoneNumberError: errorItem.code,
+                  phoneNumber: '',
+                });
+              }
+            });
+          }
         })
         .catch((error) => {
           this.setState({ isBtnLoading: false, isBtnDisabled: false });

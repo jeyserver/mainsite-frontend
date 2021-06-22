@@ -32,6 +32,10 @@
     }
   }
   box-shadow: 0 0 0 rgb(204 169 44 / 40%);
+  &:hover {
+    background-color: #5cb85c;
+    border: 1px solid #5cb85c;
+  }
 }
 .tableHeader {
   display: flex;
@@ -198,5 +202,26 @@
   @media screen and (max-width: 991px) {
     padding-left: 0;
     padding-right: 0;
+  }
+}
+
+.moreBtnDominToolpit {
+  font-family: BYekan;
+  margin-bottom: 5px;
+  margin-right: 2px;
+  display: block;
+  font-size: 11px;
+  @media screen and (max-width: 767px) {
+    display: none;
+  }
+  &::after {
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    font-size: 18px;
+    content: '\f0d7';
+    position: absolute;
+    bottom: -9px;
+    left: 45%;
+    color: #000000;
   }
 }

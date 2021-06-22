@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 import { Container, Dropdown, Row, Col } from 'react-bootstrap';
@@ -99,185 +100,264 @@ const renderLicense = (license: licenses) => {
 
 let interval;
 
-interface Props {
+export interface LicenseProps {
   changeShowDropDown: () => void;
 }
 
-const License: React.FC<Props> = (props) => {
-  const [hoveredLicense, setHoveredLicense] = useState<licenses>('directadmin');
+export interface LicenseState {
+  hoveredLicense: licenses;
+}
 
-  const handleChangeHoveredLicense = (license: licenses) => {
+class License extends React.Component<LicenseProps, LicenseState> {
+  constructor(props: LicenseProps) {
+    super(props);
+    this.state = {
+      hoveredLicense: 'directadmin',
+    };
+    this.goAutoToNextLicense = this.goAutoToNextLicense.bind(this);
+    this.handleChangeHoveredLicense =
+      this.handleChangeHoveredLicense.bind(this);
+  }
+
+  componentDidMount() {
+    interval = setInterval(() => {
+      this.goAutoToNextLicense(this.state.hoveredLicense);
+    }, 8000);
+  }
+
+  componentWillUnmount() {
     clearInterval(interval);
-    setHoveredLicense(license);
-  };
+  }
 
-  const goAutoToNextLicense = (license: licenses) => {
+  goAutoToNextLicense(license: licenses) {
     switch (license) {
       case 'directadmin':
-        setHoveredLicense('cpanel');
+        this.setState({ hoveredLicense: 'cpanel' });
         break;
       case 'cpanel':
-        setHoveredLicense('litespeed');
+        this.setState({ hoveredLicense: 'litespeed' });
         break;
       case 'litespeed':
-        setHoveredLicense('whmcs');
+        this.setState({ hoveredLicense: 'whmcs' });
         break;
       case 'whmcs':
-        setHoveredLicense('cloudlinux');
+        this.setState({ hoveredLicense: 'cloudlinux' });
         break;
       case 'cloudlinux':
-        setHoveredLicense('directadmin');
+        this.setState({ hoveredLicense: 'directadmin' });
         break;
       default:
         break;
     }
-  };
+  }
 
-  useEffect(() => {
-    interval = setInterval(() => {
-      goAutoToNextLicense(hoveredLicense);
-    }, 8000);
-    return () => clearInterval(interval);
-  }, [hoveredLicense]);
+  handleChangeHoveredLicense(license: licenses) {
+    clearInterval(interval);
+    this.setState({ hoveredLicense: license }, () => {
+      interval = setInterval(() => {
+        this.goAutoToNextLicense(this.state.hoveredLicense);
+      }, 8000);
+    });
+  }
 
-  return (
-    <Dropdown className="nav-item-dropdown">
-      <Dropdown.Toggle id="nav-dropdown" className="nav-item-dropdown-toggle">
-        <div onClick={props.changeShowDropDown}>
-          <i className="far fa-address-card"></i>
-          لایسنس
-        </div>
-      </Dropdown.Toggle>
+  render() {
+    return (
+      <Dropdown className="nav-item-dropdown">
+        <Dropdown.Toggle id="nav-dropdown" className="nav-item-dropdown-toggle">
+          <div onClick={this.props.changeShowDropDown}>
+            <i className="far fa-address-card"></i>
+            لایسنس
+          </div>
+        </Dropdown.Toggle>
 
-      <Dropdown.Menu className="nav-item-dropdown-menu p-0">
-        <Container fluid>
-          <Row>
-            <Col xs={12} md={6} className="px-0">
-              <div className={styles.btnsWrapper}>
-                <Button
-                  className={styles.btn}
-                  onMouseEnter={() => handleChangeHoveredLicense('directadmin')}
-                  data-active={hoveredLicense === 'directadmin'}
-                  href="/fa/licenses/directadmin"
-                >
-                  <div className={styles.imageAndNameWrapper}>
-                    <div className={styles.imgWrapper}>
-                      <img
-                        src="/images/directadmin.png"
-                        alt="لایسنس دایرکت ادمین"
-                        height="40px"
-                        width="57px"
-                      />
+        <Dropdown.Menu className="nav-item-dropdown-menu p-0">
+          <Container fluid>
+            <Row>
+              <Col xs={12} md={6} className="px-0">
+                <div className={styles.btnsWrapper}>
+                  <Button
+                    className={styles.btn}
+                    onMouseEnter={() =>
+                      this.handleChangeHoveredLicense('directadmin')
+                    }
+                    data-active={this.state.hoveredLicense === 'directadmin'}
+                    href="/fa/licenses/directadmin"
+                  >
+                    <div className={styles.imageAndNameWrapper}>
+                      <div className={styles.imgWrapper}>
+                        <img
+                          src="/images/directadmin.png"
+                          alt="لایسنس دایرکت ادمین"
+                          height="40px"
+                          width="57px"
+                        />
+                      </div>
+                      <span>DirectAdmin</span>
                     </div>
-                    <span>DirectAdmin</span>
-                  </div>
-                  <div>
-                    <span>از 28,200 تومان</span>
-                    <span> در ماه</span>
-                  </div>
-                </Button>
-
-                <Button
-                  className={styles.btn}
-                  onMouseEnter={() => handleChangeHoveredLicense('cpanel')}
-                  data-active={hoveredLicense === 'cpanel'}
-                  href="/fa/licenses/cpanel"
-                >
-                  <div className={styles.imageAndNameWrapper}>
-                    <div className={styles.imgWrapper}>
-                      <img
-                        src="/images/cpanel.png"
-                        alt="لایسنس دایرکت ادمین"
-                        height="40px"
-                        width="60px"
-                      />
+                    <div>
+                      <span>از 28,200 تومان</span>
+                      <span> در ماه</span>
                     </div>
-                    <span>Cpanel</span>
-                  </div>
-                  <div>
-                    <span>از 28,200 تومان</span>
-                    <span> در ماه</span>
-                  </div>
-                </Button>
+                  </Button>
 
-                <Button
-                  className={styles.btn}
-                  onMouseEnter={() => handleChangeHoveredLicense('litespeed')}
-                  data-active={hoveredLicense === 'litespeed'}
-                  href="/fa/licenses/litespeed"
-                >
-                  <div className={styles.imageAndNameWrapper}>
-                    <div className={styles.imgWrapper}>
-                      <img
-                        src="/images/litespeed.png"
-                        alt="لایسنس دایرکت ادمین"
-                        height="40px"
-                        width="57px"
-                      />
+                  <Button
+                    className={styles.btn}
+                    onMouseEnter={() =>
+                      this.handleChangeHoveredLicense('cpanel')
+                    }
+                    data-active={this.state.hoveredLicense === 'cpanel'}
+                    href="/fa/licenses/cpanel"
+                  >
+                    <div className={styles.imageAndNameWrapper}>
+                      <div className={styles.imgWrapper}>
+                        <img
+                          src="/images/cpanel.png"
+                          alt="لایسنس دایرکت ادمین"
+                          height="40px"
+                          width="60px"
+                        />
+                      </div>
+                      <span>Cpanel</span>
                     </div>
-                    <span>LiteSpeed</span>
-                  </div>
-                  <div>
-                    <span>از 51,000 تومان</span>
-                    <span> در ماه</span>
-                  </div>
-                </Button>
+                    <div>
+                      <span>از 28,200 تومان</span>
+                      <span> در ماه</span>
+                    </div>
+                  </Button>
 
-                <Button
-                  className={styles.btn}
-                  onMouseEnter={() => handleChangeHoveredLicense('whmcs')}
-                  data-active={hoveredLicense === 'whmcs'}
-                  href="/fa/licenses/whmcs"
-                >
-                  <div className={styles.imageAndNameWrapper}>
-                    <div className={styles.imgWrapper}>
-                      <img
-                        src="/images/whmcs.png"
-                        alt="لایسنس دایرکت ادمین"
-                        height="40px"
-                        width="40px"
-                      />
+                  <Button
+                    className={styles.btn}
+                    onMouseEnter={() =>
+                      this.handleChangeHoveredLicense('litespeed')
+                    }
+                    data-active={this.state.hoveredLicense === 'litespeed'}
+                    href="/fa/licenses/litespeed"
+                  >
+                    <div className={styles.imageAndNameWrapper}>
+                      <div className={styles.imgWrapper}>
+                        <img
+                          src="/images/litespeed.png"
+                          alt="لایسنس دایرکت ادمین"
+                          height="40px"
+                          width="57px"
+                        />
+                      </div>
+                      <span>LiteSpeed</span>
                     </div>
-                    <span>WHMCS</span>
-                  </div>
-                  <div>
-                    <span>از 137,500 تومان</span>
-                    <span> در ماه</span>
-                  </div>
-                </Button>
+                    <div>
+                      <span>از 51,000 تومان</span>
+                      <span> در ماه</span>
+                    </div>
+                  </Button>
 
-                <Button
-                  className={styles.btn}
-                  onMouseEnter={() => handleChangeHoveredLicense('cloudlinux')}
-                  data-active={hoveredLicense === 'cloudlinux'}
-                  href="/fa/licenses/cloudlinux"
-                >
-                  <div className={styles.imageAndNameWrapper}>
-                    <div className={styles.imgWrapper}>
-                      <img
-                        src="/images/cloudlinux.png"
-                        alt="لایسنس دایرکت ادمین"
-                        height="38px"
-                        width="40px"
-                      />
+                  <Button
+                    className={styles.btn}
+                    onMouseEnter={() =>
+                      this.handleChangeHoveredLicense('whmcs')
+                    }
+                    data-active={this.state.hoveredLicense === 'whmcs'}
+                    href="/fa/licenses/whmcs"
+                  >
+                    <div className={styles.imageAndNameWrapper}>
+                      <div className={styles.imgWrapper}>
+                        <img
+                          src="/images/whmcs.png"
+                          alt="لایسنس دایرکت ادمین"
+                          height="40px"
+                          width="40px"
+                        />
+                      </div>
+                      <span>WHMCS</span>
                     </div>
-                    <span>CloudLinux</span>
-                  </div>
-                  <div>
-                    <span>از 56,400 تومان</span>
-                    <span> در ماه</span>
-                  </div>
-                </Button>
-              </div>
-            </Col>
-            <Col xs={12} md={6} className="px-0">
-              {renderLicense(hoveredLicense)}
-            </Col>
-          </Row>
-        </Container>
-      </Dropdown.Menu>
-    </Dropdown>
-  );
-};
+                    <div>
+                      <span>از 137,500 تومان</span>
+                      <span> در ماه</span>
+                    </div>
+                  </Button>
+
+                  <Button
+                    className={styles.btn}
+                    onMouseEnter={() =>
+                      this.handleChangeHoveredLicense('cloudlinux')
+                    }
+                    data-active={this.state.hoveredLicense === 'cloudlinux'}
+                    href="/fa/licenses/cloudlinux"
+                  >
+                    <div className={styles.imageAndNameWrapper}>
+                      <div className={styles.imgWrapper}>
+                        <img
+                          src="/images/cloudlinux.png"
+                          alt="لایسنس دایرکت ادمین"
+                          height="38px"
+                          width="40px"
+                        />
+                      </div>
+                      <span>CloudLinux</span>
+                    </div>
+                    <div>
+                      <span>از 56,400 تومان</span>
+                      <span> در ماه</span>
+                    </div>
+                  </Button>
+                </div>
+              </Col>
+              <Col xs={12} md={6} className="px-0">
+                {renderLicense(this.state.hoveredLicense)}
+              </Col>
+            </Row>
+          </Container>
+        </Dropdown.Menu>
+      </Dropdown>
+    );
+  }
+}
 
 export default License;
+
+// interface Props {
+//   changeShowDropDown: () => void;
+// }
+
+// const License: React.FC<Props> = (props) => {
+//   const [hoveredLicense, setHoveredLicense] = useState<licenses>('directadmin');
+
+//   const handleChangeHoveredLicense = (license: licenses) => {
+//     clearInterval(interval);
+//     setHoveredLicense(license);
+//   };
+
+//   const goAutoToNextLicense = (license: licenses) => {
+//     switch (license) {
+//       case 'directadmin':
+//         setHoveredLicense('cpanel');
+//         break;
+//       case 'cpanel':
+//         setHoveredLicense('litespeed');
+//         break;
+//       case 'litespeed':
+//         setHoveredLicense('whmcs');
+//         break;
+//       case 'whmcs':
+//         setHoveredLicense('cloudlinux');
+//         break;
+//       case 'cloudlinux':
+//         setHoveredLicense('directadmin');
+//         break;
+//       default:
+//         break;
+//     }
+//   };
+
+//   useEffect(() => {
+//     interval = setInterval(() => {
+//       goAutoToNextLicense(hoveredLicense);
+//     }, 8000);
+//     return () => clearInterval(interval);
+//   }, [hoveredLicense]);
+
+//   return (
+
+//   );
+// };
+
+// export default License;

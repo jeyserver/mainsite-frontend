@@ -40,6 +40,16 @@ html:not([data-scroll='0']) {
   }
 }
 
+html:not([data-scroll]) {
+  .nav-item-dropdown {
+    &-menu {
+      @media screen and (min-width: 991px) {
+        top: 122px !important;
+      }
+    }
+  }
+}
+
 @for $i from 1 through 123 {
   html[data-scroll='#{$i}'] {
     .nav-item-dropdown {

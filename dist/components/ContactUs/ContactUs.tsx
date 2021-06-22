@@ -4,17 +4,18 @@ import { Card, InputGroup } from 'react-bootstrap';
 import { Button } from 'react-bootstrap';
 import { Container, Row, Form, Col } from 'react-bootstrap';
 import styles from './ContactUs.module.scss';
-import dynamic from 'next/dynamic';
 import { Accordion } from 'react-bootstrap';
+import { NotificationManager } from 'react-notifications';
+// import dynamic from 'next/dynamic';
 
-const Map = dynamic(import('../Map/Map'), {
-  ssr: false,
-  loading: () => (
-    <div style={{ textAlign: 'center', paddingTop: 20 }}>
-      در حال دریافت نقشه...
-    </div>
-  ),
-});
+// const Map = dynamic(import('../Map/Map'), {
+//   ssr: false,
+//   loading: () => (
+//     <div style={{ textAlign: 'center', paddingTop: 20 }}>
+//       در حال دریافت نقشه...
+//     </div>
+//   ),
+// });
 
 type error = 'data_validation' | 'data_duplicate';
 
@@ -35,6 +36,7 @@ export interface ContactUsState {
   textError: error;
   formValidated: boolean;
   isMapOpen: boolean;
+  sendBtnLoading: boolean;
 }
 
 class ContactUs extends React.Component<ContactUsProps, ContactUsState> {
@@ -47,6 +49,7 @@ class ContactUs extends React.Component<ContactUsProps, ContactUsState> {
       textError: 'data_validation',
       formValidated: false,
       isMapOpen: true,
+      sendBtnLoading: false,
     };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.toggleMap = this.toggleMap.bind(this);
@@ -59,6 +62,7 @@ class ContactUs extends React.Component<ContactUsProps, ContactUsState> {
     if (form.checkValidity() === false) {
       event.stopPropagation();
     } else {
+      this.setState({ sendBtnLoading: true });
       axios
         .post(
           `${process.env.SCHEMA}://${process.env.DOMAIN}/fa/bankaccounts?ajax=1`,
@@ -70,22 +74,40 @@ class ContactUs extends React.Component<ContactUsProps, ContactUsState> {
           }
         )
         .then((respone) => {
-          if (!respone.data.status) {
-            respone.data.error.map((errorItem) => {
+          if (respone.data.status) {
+            form.elements[0].value = '';
+            form.elements[1].value = '';
+            form.elements[2].value = '';
+            form.elements[3].value = '';
+            NotificationManager.success(
+              'کارشناسان ما در اولین فرصت پیام شما را بررسی و پاسخ خواهند داد. از صبر شما متشکریم.',
+              'پیام شما دریافت شد.'
+            );
+            this.setState({ formValidated: false, sendBtnLoading: false });
+          } else if (!respone.data.status) {
+            respone.data.error.forEach((errorItem) => {
               if (errorItem.input === 'name') {
-                this.setState({ nameError: errorItem.error });
+                form.elements[0].value = '';
+                this.setState({ nameError: errorItem.code });
               } else if (errorItem.input === 'subject') {
-                this.setState({ subjectError: errorItem.error });
+                form.elements[1].value = '';
+                this.setState({ subjectError: errorItem.code });
               } else if (errorItem.input === 'email') {
-                this.setState({ emailError: errorItem.error });
+                form.elements[2].value = '';
+                this.setState({ emailError: errorItem.code });
               } else if (errorItem.input === 'text') {
-                this.setState({ textError: errorItem.error });
+                form.elements[3].value = '';
+                this.setState({ textError: errorItem.code });
               }
             });
           }
         })
         .catch((error) => {
-          console.log(error);
+          this.setState({ sendBtnLoading: false });
+          NotificationManager.error(
+            'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
+            'خطا'
+          );
         });
     }
 
@@ -268,11 +290,26 @@ class ContactUs extends React.Component<ContactUsProps, ContactUsState> {
                     </Row>
                     <Row className="align-items-center justify-content-center">
                       <Col xs={12} md={6} className="col-sm-offset-3">
-                        <Button type="submit" className={styles.sendBtn}>
-                          <div className={styles.btnIco}>
-                            <i className="fas fa-paper-plane"></i>
-                          </div>
-                          ارسال
+                        <Button
+                          type="submit"
+                          disabled={this.state.sendBtnLoading}
+                          className={styles.sendBtn}
+                        >
+                          {this.state.sendBtnLoading ? (
+                            <div>
+                              <div className={styles.loading}>
+                                <div className={styles.loadingBox}></div>
+                                لطفا صبر کنید...
+                              </div>
+                            </div>
+                          ) : (
+                            <div>
+                              <div className={styles.btnIco}>
+                                <i className="fas fa-paper-plane"></i>
+                              </div>
+                              ارسال
+                            </div>
+                          )}
                         </Button>
                       </Col>
                     </Row>
@@ -326,7 +363,10 @@ class ContactUs extends React.Component<ContactUsProps, ContactUsState> {
             <Accordion.Collapse eventKey="0">
               <Card.Body className={styles.mapContainerBody}>
                 <div className={styles.mapContainer}>
-                  <Map />
+                  <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3357.1408949069337!2d51.65846731518039!3d32.70888358099266!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3fbc353824657c8b%3A0x8b8d863f6bed2059!2sJeyServer+Ltd.!5e0!3m2!1sen!2sde!4v1473845192355"
+                    className={styles.map}
+                  ></iframe>
                 </div>
               </Card.Body>
             </Accordion.Collapse>

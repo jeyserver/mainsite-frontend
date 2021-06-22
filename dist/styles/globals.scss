@@ -414,3 +414,16 @@ html:not([data-scroll='0']) {
     margin-bottom: 20px !important;
   }
 }
+
+.notification {
+  direction: rtl;
+  font-family: IRANSans;
+  .title {
+    margin-bottom: 15px;
+    font-size: 14px;
+  }
+  .message {
+    line-height: 22px;
+    font-size: 12px;
+  }
+}

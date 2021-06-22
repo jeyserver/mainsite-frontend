@@ -280,6 +280,27 @@
     line-height: 9px;
     font-size: 15px;
   }
+  .loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .loadingBox {
+      display: inline-block;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      border: 1px solid transparent;
+      border-top-color: #ffffff;
+      border-right-color: #ffffff;
+      animation: spin 1s infinite linear;
+      margin-left: 10px;
+    }
+    @keyframes spin {
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  }
 }
 
 .mapAccordionCard {
@@ -398,12 +419,16 @@
 
 .mapContainerBody {
   padding: 0;
-}
-
-.mapContainer {
-  height: 350px;
-  padding: 0;
-  > div {
+  .mapContainer {
     height: 350px;
+    padding: 0;
+    // > div {
+    //   height: 350px;
+    // }
+    .map {
+      height: 100%;
+      width: 100%;
+      border: none;
+    }
   }
 }

@@ -1,10 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import MainNavbar from './MainNavbar/MainNavbar';
 import TopNavbar from './TopNavbar/TopNavbar';
 import styles from './Navbar.module.scss';
 
-const Navbar = () => {
-  useEffect(() => {
+export interface NavbarProps {}
+
+export interface NavbarState {}
+
+class Navbar extends React.Component<NavbarProps, NavbarState> {
+  constructor(props: NavbarProps) {
+    super(props);
+    this.state = {};
+  }
+
+  componentDidMount() {
     const debounce = (fn) => {
       let frame;
       return (...params) => {
@@ -105,14 +114,17 @@ const Navbar = () => {
     document.addEventListener('scroll', debounce(storeScroll), {
       passive: true,
     });
-  }, []);
-  return (
-    <nav className={styles.nav}>
-      <TopNavbar />
-      <div id="navbar-top-space" className={styles.navbarTopSpace}></div>
-      <MainNavbar />
-    </nav>
-  );
-};
+  }
+
+  render() {
+    return (
+      <nav className={styles.nav}>
+        <TopNavbar />
+        <div id="navbar-top-space" className={styles.navbarTopSpace}></div>
+        <MainNavbar />
+      </nav>
+    );
+  }
+}
 
 export default Navbar;

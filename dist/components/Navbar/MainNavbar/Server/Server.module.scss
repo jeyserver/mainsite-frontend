@@ -1,0 +1,194 @@
+.serverContainer {
+  padding-left: 0;
+  overflow: hidden;
+  > div {
+    > div {
+      &:nth-child(1) {
+        padding-left: 0;
+      }
+      &:nth-child(2) {
+        @media screen and (max-width: 767px) {
+          padding-right: 0;
+        }
+      }
+    }
+  }
+}
+
+.rightSide {
+  .title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #0b3c5d;
+    margin-bottom: 1.5rem;
+    font-size: 20px;
+    font-family: BNazanin;
+    height: 51.17px;
+    margin-bottom: 25px;
+    @media screen and (max-width: 767px) {
+      margin-top: 20px;
+    }
+    > i {
+      margin-left: 0.5em;
+      color: #6b6b6c;
+      font-size: 31px;
+    }
+  }
+  .serverLinksContainer {
+    padding: 0 7px;
+    @media screen and (max-width: 767px) {
+      padding-left: 28px;
+      margin-bottom: 10px;
+    }
+  }
+  .professionalServerBtn,
+  .economicServerBtn,
+  .largeServerBtn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 159px;
+    width: 160px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    font-family: BYekan;
+    font-size: 16px;
+    @media screen and(max-width: 767px) {
+      width: 100%;
+    }
+    > .iconWrapper {
+      height: 55px;
+      width: 55px;
+      border: 1px solid rgba(0, 0, 0, 0.5);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1em;
+      background-color: #ffffff;
+      > i {
+        font-size: 15px;
+        color: #000000;
+      }
+    }
+  }
+  .professionalServerBtn {
+    border: 1px solid #59d2ef;
+    > div {
+      &:nth-child(2) {
+        color: #000000;
+      }
+    }
+    &:hover {
+      background-color: #b6ebf8;
+      > .iconWrapper {
+        background-color: #ffffff;
+      }
+    }
+    @media screen and(max-width: 767px) {
+      background-color: #b6ebf8;
+      font-size: 14px;
+      margin-bottom: 15px;
+    }
+  }
+  .economicServerBtn {
+    border: 1px solid #fc0;
+    > div {
+      &:nth-child(2) {
+        color: #000000;
+      }
+    }
+    &:hover {
+      background-color: #ffeb99;
+      > .iconWrapper {
+        background-color: #ffffff;
+      }
+    }
+    @media screen and(max-width: 767px) {
+      background-color: #ffeb99;
+      font-size: 14px;
+    }
+  }
+  .largeServerBtn {
+    border: 1px solid #477583;
+    > div {
+      &:nth-child(2) {
+        color: #000000;
+      }
+    }
+    &:hover {
+      background-color: #79a8b7;
+      > .iconWrapper {
+        background-color: #ffffff;
+      }
+    }
+    @media screen and(max-width: 767px) {
+      background-color: #79a8b7;
+      font-size: 14px;
+    }
+  }
+}
+
+.leftSide {
+  background-color: #0b3c5d;
+  box-shadow: 4px 1px 5px rgb(11 60 9 / 50%);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  @media screen and (max-width: 767px) {
+    box-shadow: none;
+  }
+  .title {
+    font-size: 20px;
+    color: #ffffff;
+    font-family: BNazanin;
+    padding-right: 20px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    padding-right: 20px;
+    > a {
+      > i {
+        margin: 0 10px;
+        color: #ffffff;
+        font-size: 25px;
+      }
+    }
+  }
+  .countries {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    border-top: 1px solid #e6e6e6;
+    border-bottom: 1px solid #e6e6e6;
+    padding-right: 15px;
+    @media screen and (max-width: 767px) {
+      justify-content: center;
+      padding-right: 0;
+    }
+    .countryBox {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 56px;
+      height: 56px;
+      margin: 15px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.75);
+    }
+  }
+  > p {
+    color: rgba(255, 255, 255, 0.75);
+    text-align: justify;
+    padding: 10px 6px;
+    font-family: IRANSans;
+    font-weight: 200;
+    font-size: 13px;
+    line-height: 24px;
+    font-weight: 200;
+    margin-bottom: 0;
+  }
+}

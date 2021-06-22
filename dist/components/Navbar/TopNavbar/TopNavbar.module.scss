@@ -1,0 +1,101 @@
+.topNav {
+  background-color: #fafafa;
+  border-bottom: 1px solid #e6e6e6;
+  height: 43px;
+  display: block;
+  @media screen and (max-width: 991px) {
+    display: none !important;
+  }
+  .rightItems {
+    display: flex;
+    align-items: center;
+    > div {
+      color: #919191;
+      border-right: 1px solid #e6e6e6;
+      padding: 3px 10px;
+      &:first-child {
+        border-right: none;
+      }
+      &:nth-child(2) {
+        > a {
+          font-size: 12px;
+          font-family: BKoodakBold;
+          line-height: 20px;
+        }
+        > i {
+          font-size: 10px;
+        }
+      }
+      &:nth-child(3) {
+        > a {
+          font-size: 12px;
+          font-family: Segoe UI;
+          line-height: 20px;
+        }
+        > i {
+          font-size: 13px;
+        }
+      }
+      > i {
+        margin-left: 5px;
+        vertical-align: middle;
+      }
+      > span {
+        margin: 0 0.3em;
+        font-size: 12px;
+        font-family: BKoodakBold;
+        line-height: 20px;
+      }
+    }
+    .langDropDown {
+      background-color: transparent;
+      border: 1px solid transparent;
+      color: #737373;
+      font-family: BYekan, 'BYekan';
+      font-size: 14px;
+      font-weight: 400;
+      padding: 0;
+      > span {
+        color: #3dc4e4;
+      }
+      > i {
+        margin-left: 5px;
+        line-height: 1.42857143;
+        font-size: 14xp;
+        vertical-align: middle;
+      }
+      &:focus {
+        box-shadow: none;
+      }
+      &::after {
+        vertical-align: middle;
+      }
+    }
+  }
+  .leftItems {
+    display: flex;
+    align-items: center;
+    .authLink {
+      display: flex;
+      align-items: center;
+      color: #919191;
+      border: none;
+      border-left: 1px solid #e6e6e6;
+      padding: 12px 15px 10px;
+      background-color: transparent;
+      font-size: 12px;
+      font-family: BKoodakBold;
+      line-height: 20px;
+      &:last-child {
+        border-left: none;
+        padding-left: 0;
+      }
+      > i {
+        margin-left: 5px;
+        line-height: 1.42857143;
+        font-size: 14xp;
+        vertical-align: middle;
+      }
+    }
+  }
+}

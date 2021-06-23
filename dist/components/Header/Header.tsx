@@ -2,6 +2,7 @@ import Link from 'next/link';
 import styles from './Header.module.scss';
 import Slider from 'react-slick';
 import { useEffect, useState } from 'react';
+import HetzenerBanner from './HetzenerBanner/HetzenerBanner';
 
 function useWindowSize() {
   const [windowSize, setWindowSize] = useState({
@@ -71,7 +72,7 @@ const Header = () => {
     slidesToShow: 1,
     slidesToScroll: 1,
     rtl: true,
-    autoplay: false,
+    autoplay: true,
     autoplaySpeed: 5000,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
@@ -172,6 +173,9 @@ const Header = () => {
               <img src="/images/robot-2.png" className={styles.robotImg} />
             </div>
           </div>
+        </div>
+        <div className="position-relative overflow-hidden target-slide-box">
+          <HetzenerBanner />
         </div>
       </Slider>
     </header>

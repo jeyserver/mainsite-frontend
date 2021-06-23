@@ -2,6 +2,7 @@ import Link from 'next/link';
 import styles from './Header.module.scss';
 import Slider from 'react-slick';
 import { useEffect, useState } from 'react';
+import OVHBanner from './OVHBanner/OVHBanner';
 
 function useWindowSize() {
   const [windowSize, setWindowSize] = useState({
@@ -172,6 +173,9 @@ const Header = () => {
               <img src="/images/robot-2.png" className={styles.robotImg} />
             </div>
           </div>
+        </div>
+        <div className="position-relative overflow-hidden target-slide-box">
+          <OVHBanner />
         </div>
       </Slider>
     </header>

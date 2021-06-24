@@ -1,0 +1,38 @@
+.questionWrapper {
+  box-shadow: 3px 2px 8px rgba(0, 0, 0, 0.06);
+  margin-bottom: 15px;
+  border: none;
+  font-family: IRANSans;
+  .cardHeader {
+    background-color: #fff;
+    color: #333;
+    padding: 0;
+    border: none;
+  }
+  .cardBody {
+    color: #333;
+    padding: 15px;
+    padding-top: 0;
+    font-size: 14px;
+    line-height: 25px;
+  }
+  .question {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    transition: color 0.3s;
+    font-size: 16px;
+    padding: 15px;
+    i {
+      color: #25335e;
+    }
+    &.active {
+      color: #499cef;
+      i {
+        color: #499cef !important;
+      }
+    }
+  }
+}

@@ -1,0 +1,189 @@
+.plan {
+  padding-bottom: 25px;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 25px;
+  &:last-child {
+    border-bottom: none;
+  }
+  .planTitle {
+    position: relative;
+    min-height: 1px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-left: 1px solid #ddd;
+    text-align: center;
+    display: flex;
+    height: 212.5px;
+    @media screen and (max-width: 767px) {
+      height: min-content;
+      border-right: 1px solid #ddd;
+    }
+    > div {
+      font-size: 13px;
+      line-height: 20px;
+      text-align: center;
+      margin: auto;
+      > a {
+        line-height: 20px;
+        direction: rtl;
+        text-align: center;
+        background-color: transparent;
+        text-decoration: none;
+        color: #122844;
+        font-family: Tahoma, sans-serif;
+        font-size: 20px;
+        margin-top: 10px;
+      }
+    }
+  }
+  .planHardware {
+    color: #313131;
+    font-size: 13px;
+    line-height: 20px;
+    position: relative;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-left: 1px solid #ddd;
+    @media screen and (max-width: 767px) {
+      margin-top: 10px;
+      height: min-content;
+      border-right: 1px solid #ddd;
+    }
+    > div {
+      margin-bottom: 10px;
+      > div {
+        &:first-child {
+          color: #313131;
+          font-size: 13px;
+          line-height: 20px;
+          position: relative;
+          min-height: 1px;
+          padding-left: 15px;
+          padding-right: 15px;
+          font-family: BYekan;
+          font-weight: 700;
+        }
+        &:nth-child(2) {
+          a {
+            color: #00db40;
+            &:hover {
+              color: #c96a00;
+            }
+          }
+        }
+      }
+    }
+    .jUnlimited {
+      font-family: BKoodakBold;
+      color: #798f0e;
+    }
+  }
+  .planPrice {
+    font-family: Tahoma, sans-serif;
+    color: #313131;
+    font-size: 13px;
+    line-height: 20px;
+    border-left: 1px solid #ddd;
+    text-align: center;
+    display: flex;
+    height: 212.5px;
+    @media screen and (max-width: 767px) {
+      margin-top: 10px;
+      height: min-content;
+      border-right: 1px solid #ddd;
+    }
+    > div {
+      font-family: Tahoma, sans-serif;
+      color: #313131;
+      font-size: 13px;
+      line-height: 20px;
+      direction: rtl;
+      text-align: center;
+      box-sizing: border-box;
+      margin: auto;
+    }
+  }
+  .planAction {
+    height: 212.5px;
+    @media screen and (max-width: 767px) {
+      height: min-content;
+    }
+    > div {
+      color: #313131;
+      font-size: 13px;
+      line-height: 20px;
+      text-align: center;
+      margin: auto;
+      height: 212.5px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      @media screen and (max-width: 767px) {
+        height: min-content;
+      }
+      .moreInfoBtn,
+      .orderBtn,
+      .disabledOrderBtn {
+        white-space: nowrap;
+        display: inline-block;
+        margin-bottom: 0;
+        font-weight: 400;
+        text-align: center;
+        border: 1px solid transparent;
+        padding: 5px 10px;
+        font-size: 12px;
+        line-height: 1.5;
+        border-radius: 3px;
+        font-family: BYekan;
+        margin-top: 10px;
+        width: min-content;
+        @media screen and (max-width: 767px) {
+          width: 100%;
+        }
+        > i {
+          text-align: center;
+          white-space: nowrap;
+          cursor: pointer;
+          user-select: none;
+          color: #fff;
+          box-sizing: border-box;
+          display: inline-block;
+          position: relative;
+          margin-left: 9px;
+          padding-left: 9px;
+          border-left: 1px solid hsla(0, 0%, 100%, 0.29);
+          font-size: 15px;
+          line-height: 18px;
+        }
+      }
+      .moreInfoBtn {
+        color: #fff;
+        background-color: #f0ad4e;
+        border-color: #eea236;
+        &:hover,
+        &:focus {
+          color: #fff;
+          background-color: #ec971f;
+          border-color: #d58512;
+        }
+      }
+      .orderBtn {
+        color: #fff;
+        background-color: #5bc0de;
+        border-color: #46b8da;
+
+        &:hover,
+        &:focus {
+          color: #fff;
+          background-color: #31b0d5;
+          border-color: #269abc;
+        }
+      }
+      .disabledOrderBtn {
+        background-color: #98d7ea;
+      }
+    }
+  }
+}

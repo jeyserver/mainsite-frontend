@@ -1,0 +1,242 @@
+.franceBannerWrapper {
+  .wrapper {
+    width: 100%;
+    min-height: 500px;
+    @media screen and (max-width: 992px) {
+      min-height: 640px;
+      max-height: 640px;
+    }
+    background: url(/images/OVHBanner/back-server.png) center center no-repeat;
+    @media screen and (max-width: 456px) {
+      background: url(/images/OVHBanner/Untitled-4.png) left center no-repeat;
+    }
+    background-origin: right;
+    background-size: cover;
+    position: relative;
+    color: #fff;
+    .right,
+    .left {
+      position: absolute;
+      top: 0;
+      height: 100%;
+      width: 40%;
+    }
+    .right {
+      background: #fb1540;
+      right: 0;
+      padding-top: 180px;
+      padding-left: 150px;
+      padding-right: 15px;
+      clip-path: polygon(50% 0, 100% 0, 100% 100%, 0 100%);
+      @media screen and (max-width: 992px) {
+        padding-left: 120px;
+        clip-path: polygon(100% 0, 0 0, 100% 50%);
+        width: 100%;
+        padding-top: 15px;
+        padding-right: 20px;
+      }
+      h2 {
+        text-align: center;
+        @media screen and (max-width: 992px) {
+          text-align: right;
+        }
+        p {
+          font-size: 5rem;
+          @media screen and (max-width: 1110px) {
+            font-size: 4.5rem;
+          }
+          @media screen and (max-width: 992px) {
+            font-size: 3.5rem;
+          }
+          @media screen and (max-width: 456px) {
+            font-size: 3rem;
+          }
+          &:nth-child(1) {
+            font-weight: 400;
+            font-size: 1.8rem;
+            font-family: BYekan;
+            @media screen and (max-width: 1110px) {
+              font-size: 1.5rem;
+            }
+            @media screen and (max-width: 456px) {
+              font-size: 1.2rem;
+            }
+          }
+          &:nth-child(2) {
+            font-family: Arial, Helvetica, sans-serif;
+            font-weight: 700;
+          }
+          &:nth-child(3) {
+            font-size: 3.5rem;
+            color: #070708;
+            @media screen and (max-width: 1110px) {
+              font-size: 3rem;
+            }
+            @media screen and (max-width: 992px) {
+              font-size: 2.5rem;
+            }
+            @media screen and (max-width: 456px) {
+              font-size: 2rem;
+            }
+          }
+        }
+      }
+    }
+    .left {
+      width: 45%;
+      background: #111d75;
+      left: 0;
+      padding-left: 30px;
+      padding-top: 72px;
+      clip-path: polygon(0 0, 100% 0, 50% 100%, 0 100%);
+      @media screen and (max-width: 992px) {
+        width: 100%;
+        clip-path: polygon(0 40%, 100% 91%, 100% 100%, 0% 100%);
+        display: flex;
+        flex-direction: column-reverse;
+        padding-left: 15px;
+        padding-top: 100px;
+      }
+      ul {
+        list-style: none;
+        padding-left: 1rem;
+        @media screen and (max-width: 992px) {
+          padding-left: 0;
+        }
+        @media screen and (max-width: 456px) {
+          display: flex;
+          flex-direction: column-reverse;
+        }
+        li {
+          font-size: 1.8rem;
+          font-weight: bold;
+          padding: 10px 5px;
+          @media screen and (max-width: 1200px) {
+            font-size: 1.3rem;
+          }
+          @media screen and (max-width: 1110px) {
+            font-size: 1.3rem;
+          }
+          @media screen and (max-width: 682px) {
+            font-size: 1rem;
+          }
+          @media screen and (max-width: 456px) {
+            padding: 5px;
+            font-size: 0.9rem;
+          }
+          position: relative;
+          &::before {
+            content: '\f105';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            display: inline-block;
+            color: #fb1540;
+            vertical-align: -8px;
+            // font-size: 1.8rem;
+            font-size: 2.4rem;
+            margin-right: 8px;
+            @media screen and (max-width: 1110px) {
+              font-size: 1.8rem;
+            }
+          }
+          &::after {
+            content: '';
+            display: inline-block;
+            position: absolute;
+            bottom: -2px;
+            left: 50px;
+            height: 2px;
+            width: 50%;
+            background-color: #253a76;
+            @media screen and (min-width: 456px) and (max-width: 992px) {
+              width: 27%;
+            }
+            @media screen and (max-width: 456px) {
+              left: 27px;
+              bottom: 50px;
+              width: 45%;
+            }
+          }
+          &:nth-child(2)::after {
+            width: 45%;
+            @media screen and (min-width: 457px) and (max-width: 992px) {
+              width: 25%;
+            }
+            @media screen and (max-width: 456px) {
+              width: 34%;
+            }
+          }
+          &:nth-child(3)::after {
+            width: 40%;
+            @media screen and (min-width: 456px) and (max-width: 992px) {
+              width: 23%;
+            }
+            @media screen and (max-width: 456px) {
+              width: 24%;
+            }
+          }
+          &:last-child::after {
+            display: none;
+          }
+        }
+      }
+      .showPannelsBtn {
+        text-decoration: none;
+        color: #fff;
+        background: #fb1540;
+        padding: 3px 15px;
+        border-radius: 5px;
+        font-size: 27px;
+        font-weight: bold;
+        display: inline-block;
+        margin-top: 30px;
+        transition: color 0.5s, background-color 0.4s;
+        margin-left: 65px;
+        &:hover {
+          color: #fb1540;
+          background-color: #fff;
+        }
+        @media screen and (max-width: 1200px) {
+          margin-left: 60px;
+          font-size: 1.5rem;
+        }
+        @media screen and (max-width: 992px) {
+          margin-left: 5px;
+        }
+        @media screen and (max-width: 682px) {
+          padding: 3px 8px;
+          font-size: 1.2rem;
+          margin-top: 10px;
+          margin-bottom: 15px;
+        }
+      }
+    }
+    .specialSales {
+      position: absolute;
+      top: 20px;
+      left: 38%;
+      @media screen and (max-width: 992px) {
+        img {
+          width: 161px !important;
+        }
+        top: 28%;
+        left: 70%;
+      }
+      @media screen and (max-width: 682px) {
+        left: 50%;
+      }
+    }
+    .cpuCloud {
+      position: absolute;
+      bottom: 20px;
+      right: 35%;
+      @media screen and (max-width: 992px) {
+        img {
+          width: 119px !important;
+        }
+        bottom: 140px;
+        right: 8%;
+      }
+    }
+  }
+}

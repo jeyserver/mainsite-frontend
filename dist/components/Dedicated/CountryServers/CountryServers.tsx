@@ -1,6 +1,6 @@
 import moment from 'jalali-moment';
 import * as React from 'react';
-import { Container, Row, Col, Form } from 'react-bootstrap';
+import { Container, Row, Col, Form, Image } from 'react-bootstrap';
 import { countries } from '../lib/countries';
 import styles from './CountryServers.module.scss';
 import Plan from './Plan/Plan';
@@ -280,42 +280,30 @@ class CountryServer extends React.Component<
   }
 
   render() {
+    const targetCountry =
+      countries[this.props.countryPlans.plans[0].datacenter.country.code];
     return (
       <div>
         <div className={styles.innerBanner}>
           <Container>
-            <h2>سرور اختصاصی ایران</h2>
+            <h2>سرور اختصاصی {targetCountry.title_fa}</h2>
           </Container>
         </div>
         <div className={styles.wrapper}>
           <Container fluid="lg">
             <Row className={styles.summary}>
               <Col md={4}>
-                <img
-                  className="image-responsive"
+                <Image
                   src="/images/dedicated/dedicated_255x255.jpg"
-                  title="سرور اختصاصی ایران"
-                  alt="سرور اختصاصی ایران"
+                  title={`سرور اختصاصی ${targetCountry.title_fa}`}
+                  alt={`سرور اختصاصی ${targetCountry.title_fa}`}
                   width="255"
                   height="255"
                 />
               </Col>
               <Col md={8} className={styles.left}>
-                <h3>
-                  سرور اختصاصی{' '}
-                  {
-                    countries[
-                      this.props.countryPlans.plans[0].datacenter.country.code
-                    ].title_fa
-                  }
-                </h3>
-                <>
-                  {
-                    countries[
-                      this.props.countryPlans.plans[0].datacenter.country.code
-                    ].largeInfo
-                  }
-                </>
+                <h3>سرور اختصاصی {targetCountry.title_fa}</h3>
+                <>{targetCountry.largeInfo}</>
                 <div className="alert alert-info">
                   قیمت های موجود براساس آخرین قیمت ارز در تاریخ{' '}
                   <span className="ltr" style={{ display: 'inline-block' }}>

@@ -110,6 +110,10 @@ class CountryServer extends React.Component<
             if (this.state.sortAscOrDesc === 'asc') {
               if (this.state.sortName === 'price') {
                 return a.price - b.price;
+              } else if (this.state.sortName === 'cpu') {
+                const aCpuScore = a.cpu.cores * a.cpu.speed * a.cpu.threads;
+                const bCpuScore = b.cpu.cores * b.cpu.speed * b.cpu.threads;
+                return aCpuScore - bCpuScore;
               } else if (this.state.sortName === 'ram') {
                 return a.ram - b.ram;
               } else if (this.state.sortName === 'bandwidth') {
@@ -122,6 +126,10 @@ class CountryServer extends React.Component<
             } else if (this.state.sortAscOrDesc === 'desc') {
               if (this.state.sortName === 'price') {
                 return b.price - a.price;
+              } else if (this.state.sortName === 'cpu') {
+                const aCpuScore = a.cpu.cores * a.cpu.speed * a.cpu.threads;
+                const bCpuScore = b.cpu.cores * b.cpu.speed * b.cpu.threads;
+                return bCpuScore - aCpuScore;
               } else if (this.state.sortName === 'ram') {
                 return b.ram - a.ram;
               } else if (this.state.sortName === 'bandwidth') {
@@ -178,6 +186,10 @@ class CountryServer extends React.Component<
             if (this.state.sortAscOrDesc === 'asc') {
               if (this.state.sortName === 'price') {
                 return a.price - b.price;
+              } else if (this.state.sortName === 'cpu') {
+                const aCpuScore = a.cpu.cores * a.cpu.speed * a.cpu.threads;
+                const bCpuScore = b.cpu.cores * b.cpu.speed * b.cpu.threads;
+                return aCpuScore - bCpuScore;
               } else if (this.state.sortName === 'ram') {
                 return a.ram - b.ram;
               } else if (this.state.sortName === 'bandwidth') {
@@ -190,6 +202,10 @@ class CountryServer extends React.Component<
             } else if (this.state.sortAscOrDesc === 'desc') {
               if (this.state.sortName === 'price') {
                 return b.price - a.price;
+              } else if (this.state.sortName === 'cpu') {
+                const aCpuScore = a.cpu.cores * a.cpu.speed * a.cpu.threads;
+                const bCpuScore = b.cpu.cores * b.cpu.speed * b.cpu.threads;
+                return bCpuScore - aCpuScore;
               } else if (this.state.sortName === 'ram') {
                 return b.ram - a.ram;
               } else if (this.state.sortName === 'bandwidth') {
@@ -216,6 +232,10 @@ class CountryServer extends React.Component<
             if (prev.sortAscOrDesc === 'asc') {
               if (e.target.value === 'price') {
                 return a.price - b.price;
+              } else if (e.target.value === 'cpu') {
+                const aCpuScore = a.cpu.cores * a.cpu.speed * a.cpu.threads;
+                const bCpuScore = b.cpu.cores * b.cpu.speed * b.cpu.threads;
+                return aCpuScore - bCpuScore;
               } else if (e.target.value === 'ram') {
                 return a.ram - b.ram;
               } else if (e.target.value === 'bandwidth') {
@@ -228,6 +248,10 @@ class CountryServer extends React.Component<
             } else if (prev.sortAscOrDesc === 'desc') {
               if (e.target.value === 'price') {
                 return b.price - a.price;
+              } else if (e.target.value === 'cpu') {
+                const aCpuScore = a.cpu.cores * a.cpu.speed * a.cpu.threads;
+                const bCpuScore = b.cpu.cores * b.cpu.speed * b.cpu.threads;
+                return bCpuScore - aCpuScore;
               } else if (e.target.value === 'ram') {
                 return b.ram - a.ram;
               } else if (e.target.value === 'bandwidth') {
@@ -252,6 +276,10 @@ class CountryServer extends React.Component<
           if (e.target.value === 'asc') {
             if (this.state.sortName === 'price') {
               return a.price - b.price;
+            } else if (this.state.sortName === 'cpu') {
+              const aCpuScore = a.cpu.cores * a.cpu.speed * a.cpu.threads;
+              const bCpuScore = b.cpu.cores * b.cpu.speed * b.cpu.threads;
+              return aCpuScore - bCpuScore;
             } else if (this.state.sortName === 'ram') {
               return a.ram - b.ram;
             } else if (this.state.sortName === 'bandwidth') {
@@ -264,6 +292,10 @@ class CountryServer extends React.Component<
           } else if (e.target.value === 'desc') {
             if (this.state.sortName === 'price') {
               return b.price - a.price;
+            } else if (this.state.sortName === 'cpu') {
+              const aCpuScore = a.cpu.cores * a.cpu.speed * a.cpu.threads;
+              const bCpuScore = b.cpu.cores * b.cpu.speed * b.cpu.threads;
+              return bCpuScore - aCpuScore;
             } else if (this.state.sortName === 'ram') {
               return b.ram - a.ram;
             } else if (this.state.sortName === 'bandwidth') {

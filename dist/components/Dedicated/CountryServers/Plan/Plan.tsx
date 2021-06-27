@@ -186,17 +186,16 @@ class Plan extends React.Component<PlanProps, PlanState> {
             <Col xs={7}>
               {this.props.plan.setup === 0
                 ? '-'
-                : this.props.plan.currency.title === 'ریال'
-                ? `${this.addCommas(this.props.plan.price / 10)} تومان`
-                : `${this.props.plan.price} ${this.props.plan.currency.title}`}
+                : `${this.addCommas(this.props.plan.price)} ${
+                    this.props.plan.currency.title
+                  }`}
             </Col>
           </Row>
         </Col>
         <Col md={2} className={styles.planPrice}>
           <div>
-            {this.props.plan.currency.title === 'ریال'
-              ? `${this.addCommas(this.props.plan.price / 10)} تومان`
-              : `${this.props.plan.price} ${this.props.plan.currency.title}`}
+            {this.addCommas(this.props.plan.price)}{' '}
+            {this.props.plan.currency.title}
             <br />
             <span>ماهیانه</span>
           </div>

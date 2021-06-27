@@ -154,18 +154,18 @@ class Recommended extends React.Component<RecommendedProps, RecommendedState> {
                   </td>
                   <td>18 ساعت</td>
                   <td style={{ height: '67px' }}>
-                    {recommended.currency.title === 'ریال'
-                      ? `${this.addCommas(recommended.setup / 10)} تومان`
-                      : `${recommended.setup} ${recommended.currency.title}`}
+                    {recommended.setup
+                      ? `${this.addCommas(recommended.setup)} ${
+                          recommended.currency.title
+                        }`
+                      : '-'}
                   </td>
                   <td>
-                    {recommended.currency.title === 'ریال'
-                      ? `${this.addCommas(recommended.price / 10)} تومان`
-                      : `${recommended.price} ${recommended.currency.title}`}
+                    {this.addCommas(recommended.price)}{' '}
+                    {recommended.currency.title}
                     <span> ماهیانه</span> <br />
-                    {recommended.currency.title === 'ریال'
-                      ? `${this.addCommas(recommended.price / 10)} تومان`
-                      : `${recommended.price} ${recommended.currency.title}`}
+                    {this.addCommas(recommended.price * 12)}{' '}
+                    {recommended.currency.title}
                     <span> سالیانه</span>
                   </td>
                   <td>

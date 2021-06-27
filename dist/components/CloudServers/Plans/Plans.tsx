@@ -3,7 +3,10 @@ import { Container, Col, Row, Nav, Tab } from 'react-bootstrap';
 import Plan from '../Plan/Plan';
 import styles from './Plans.module.scss';
 
-export interface PlansProps {}
+export interface PlansProps {
+  defaultPlans: any;
+  specialCpu: any;
+}
 
 export interface PlansState {}
 
@@ -30,10 +33,10 @@ class Plans extends React.Component<PlansProps, PlansState> {
               {/* Plans Menu */}
               <Nav className={styles.plansMenu} as="ul">
                 <Nav.Item as="li" dir="rtl">
-                  <Nav.Link eventKey="defaultPlans">پلن های پیشفرض</Nav.Link>
+                  <Nav.Link eventKey="specialCpu">CPU اختصاصی</Nav.Link>
                 </Nav.Item>
                 <Nav.Item as="li" dir="rtl">
-                  <Nav.Link eventKey="specialCpu">CPU اختصاصی</Nav.Link>
+                  <Nav.Link eventKey="defaultPlans">پلن های پیشفرض</Nav.Link>
                 </Nav.Item>
               </Nav>
               <Row>
@@ -43,31 +46,9 @@ class Plans extends React.Component<PlansProps, PlansState> {
                     <Tab.Pane eventKey="defaultPlans">
                       <Row dir="rtl">
                         <Col xl={1}></Col>
-                        {Array(5)
-                          .fill({
-                            name: 'CX11',
-                            monthly: '1,000,000',
-                            hourly: '50,000',
-                            cpu: 2,
-                            ram: 2,
-                            diskSpace: 40,
-                            traffic: 20,
-                            location:
-                              '/images/cloud-servers/Country flags/France.png',
-                          })
-                          .map((plan, index) => (
-                            <Plan
-                              key={index}
-                              name={plan.name}
-                              monthly={plan.monthly}
-                              hourly={plan.hourly}
-                              cpu={plan.cpu}
-                              ram={plan.ram}
-                              diskSpace={plan.diskSpace}
-                              traffic={plan.traffic}
-                              location={plan.location}
-                            />
-                          ))}
+                        {this.props.defaultPlans.map((plan, index) => (
+                          <Plan key={index} plan={plan} />
+                        ))}
                       </Row>
                     </Tab.Pane>
                     {/* Special Cpu */}
@@ -75,31 +56,9 @@ class Plans extends React.Component<PlansProps, PlansState> {
                       <Row dir="rtl">
                         <Col xl={1}></Col>
 
-                        {Array(5)
-                          .fill({
-                            name: 'CX11',
-                            monthly: '1,000,000',
-                            hourly: '50,000',
-                            cpu: 4,
-                            ram: 2,
-                            diskSpace: 40,
-                            traffic: 20,
-                            location:
-                              '/images/cloud-servers/Country flags/France.png',
-                          })
-                          .map((plan, index) => (
-                            <Plan
-                              key={index}
-                              name={plan.name}
-                              monthly={plan.monthly}
-                              hourly={plan.hourly}
-                              cpu={plan.cpu}
-                              ram={plan.ram}
-                              diskSpace={plan.diskSpace}
-                              traffic={plan.traffic}
-                              location={plan.location}
-                            />
-                          ))}
+                        {this.props.specialCpu.map((plan, index) => (
+                          <Plan key={index} plan={plan} />
+                        ))}
                       </Row>
                     </Tab.Pane>
                   </Tab.Content>

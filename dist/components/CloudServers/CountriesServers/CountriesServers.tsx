@@ -2,7 +2,9 @@ import * as React from 'react';
 import { Dropdown, Image, Container, Button } from 'react-bootstrap';
 import styles from './CountriesServers.module.scss';
 
-export interface CountriesServersProps {}
+export interface CountriesServersProps {
+  countries: any;
+}
 
 export interface CountriesServersState {
   activeCountry: string;
@@ -15,7 +17,7 @@ class CountriesServers extends React.Component<
   constructor(props: CountriesServersProps) {
     super(props);
     this.state = {
-      activeCountry: 'german',
+      activeCountry: this.props.countries[0].title_en,
     };
     this.changeActiveCountry = this.changeActiveCountry.bind(this);
   }
@@ -32,30 +34,23 @@ class CountriesServers extends React.Component<
         fluid="xl"
         className={styles.countryServer}
       >
-        <Button
-          data-active={this.state.activeCountry === 'german'}
-          onClick={() => this.changeActiveCountry('german')}
-          className={styles.serverLink}
-        >
-          <Image src="/images/cloud-servers/Country flags/german.png" alt="" />
-          <span className={styles.text}>سرورهای مجازی آلمان</span>
-        </Button>
-        <Button
-          data-active={this.state.activeCountry === 'france'}
-          onClick={() => this.changeActiveCountry('france')}
-          className={styles.serverLink}
-        >
-          <Image src="/images/cloud-servers/Country flags/France.png" alt="" />
-          <span className={styles.text}>سرورهای مجازی فرانسه</span>
-        </Button>
-        <Button
-          data-active={this.state.activeCountry === 'iran'}
-          onClick={() => this.changeActiveCountry('iran')}
-          className={styles.serverLink}
-        >
-          <Image src="/images/cloud-servers/Country flags/iran.png" alt="" />
-          <span className={styles.text}>سرورهای مجازی ایران</span>
-        </Button>
+        {this.props.countries.map((country, index) => {
+          if (index < 3) {
+            return (
+              <Button
+                key={index}
+                data-active={this.state.activeCountry === country.title_en}
+                onClick={() => this.changeActiveCountry(country.title_en)}
+                className={styles.serverLink}
+              >
+                <Image src={country.img} alt="" />
+                <span className={styles.text}>
+                  سرورهای مجازی {country.title_fa}
+                </span>
+              </Button>
+            );
+          }
+        })}
         <Dropdown style={{ padding: '0' }} className={styles.serverLink}>
           <Dropdown.Toggle
             className={`${styles.serverLink} ${styles.dropdownToggle}`}
@@ -72,48 +67,26 @@ class CountriesServers extends React.Component<
           </Dropdown.Toggle>
 
           <Dropdown.Menu className={styles.dropdownMenu}>
-            <Dropdown.Item
-              eventKey="1"
-              data-active={this.state.activeCountry === 'finland'}
-              onClick={() => this.changeActiveCountry('finland')}
-              className={`${styles.serverLink} ${styles.dropdownLinksBtn}`}
-            >
-              <span className={styles.imgWrapper}>
-                <Image
-                  src="/images/cloud-servers/Country flags/finland.png"
-                  alt=""
-                />
-              </span>
-              <span className={styles.text}>پلن های فنلاند</span>
-            </Dropdown.Item>
-            <Dropdown.Item
-              eventKey="2"
-              data-active={this.state.activeCountry === 'netherland'}
-              onClick={() => this.changeActiveCountry('netherland')}
-              className={`${styles.serverLink} ${styles.dropdownLinksBtn}`}
-            >
-              <span className={styles.imgWrapper}>
-                <Image
-                  src="/images/cloud-servers/Country flags/netherland.png"
-                  alt=""
-                />
-              </span>
-              <span className={styles.text}>پلن های هلند</span>
-            </Dropdown.Item>
-            <Dropdown.Item
-              eventKey="3"
-              data-active={this.state.activeCountry === 'america'}
-              onClick={() => this.changeActiveCountry('america')}
-              className={`${styles.serverLink} ${styles.dropdownLinksBtn}`}
-            >
-              <span className={styles.imgWrapper}>
-                <Image
-                  src="/images/cloud-servers/Country flags/america.png"
-                  alt=""
-                />
-              </span>
-              <span className={styles.text}>پلن های آمریکا</span>
-            </Dropdown.Item>
+            {this.props.countries.map((country, index) => {
+              if (index > 3) {
+                return (
+                  <Dropdown.Item
+                    eventKey={index}
+                    key={index}
+                    data-active={this.state.activeCountry === country.title_en}
+                    onClick={() => this.changeActiveCountry(country.title_en)}
+                    className={`${styles.serverLink} ${styles.dropdownLinksBtn}`}
+                  >
+                    <span className={styles.imgWrapper}>
+                      <Image src={country.img} alt="" />
+                    </span>
+                    <span className={styles.text}>
+                      پلن های {country.title_fa}
+                    </span>
+                  </Dropdown.Item>
+                );
+              }
+            })}
           </Dropdown.Menu>
         </Dropdown>
       </Container>

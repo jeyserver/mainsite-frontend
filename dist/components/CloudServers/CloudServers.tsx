@@ -6,9 +6,15 @@ import Plans from './Plans/Plans';
 import Price from './Price/Price';
 import Faq from './Faq/Faq';
 
-export interface CloudServersProps {}
+export interface CloudServersProps {
+  plans: any;
+  countries: any;
+}
 
-export interface CloudServersState {}
+export interface CloudServersState {
+  defaultPlans: any;
+  specialCpu: any;
+}
 
 class CloudServers extends React.Component<
   CloudServersProps,
@@ -16,7 +22,10 @@ class CloudServers extends React.Component<
 > {
   constructor(props: CloudServersProps) {
     super(props);
-    this.state = {};
+    this.state = {
+      defaultPlans: this.props.plans,
+      specialCpu: this.props.plans,
+    };
   }
 
   render() {
@@ -24,8 +33,11 @@ class CloudServers extends React.Component<
       <React.Fragment>
         <Header />
         <Advantages />
-        <CountriesServers />
-        <Plans />
+        <CountriesServers countries={this.props.countries} />
+        <Plans
+          defaultPlans={this.state.defaultPlans}
+          specialCpu={this.state.specialCpu}
+        />
         <Price />
         <Faq />
       </React.Fragment>

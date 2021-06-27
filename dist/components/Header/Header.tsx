@@ -32,7 +32,7 @@ function NextArrow(props) {
       style={{ ...style }}
       onClick={onClick}
     >
-      <i className="fas fa-chevron-left"></i>
+      <i className="fas fa-chevron-right"></i>
     </div>
   );
 }
@@ -46,7 +46,7 @@ function PrevArrow(props) {
       style={{ ...style }}
       onClick={onClick}
     >
-      <i className="fas fa-chevron-right"></i>
+      <i className="fas fa-chevron-left"></i>
     </div>
   );
 }

@@ -35,12 +35,12 @@ class HetzenerBanner extends React.Component<
           </div>
           {/* Left Section */}
           <div className={styles.left}>
-            <Image src="/Images/hetzener/special-sales.png" alt="" />
-            <Image src="/Images/hetzener/server.png" alt="" />
-            <Image src="/Images/hetzener/big-server.png" alt="" />
-            <Image src="/Images/hetzener/server.png" alt="" />
-            <Image src="/Images/hetzener/big-cloud.png" alt="" />
-            <Image src="/Images/hetzener/small-cloud.png" alt="" />
+            <Image src="/images/hetzener/special-sales.png" alt="" />
+            <Image src="/images/hetzener/server.png" alt="" />
+            <Image src="/images/hetzener/big-server.png" alt="" />
+            <Image src="/images/hetzener/server.png" alt="" />
+            <Image src="/images/hetzener/big-cloud.png" alt="" />
+            <Image src="/images/hetzener/small-cloud.png" alt="" />
             <Link href="#">
               <a className={styles.showPannelsBtn}>مشاهده پلن ها</a>
             </Link>

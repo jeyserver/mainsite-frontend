@@ -180,7 +180,7 @@
         &:nth-child(4) {
           left: 444px;
           top: 190px;
-          @media screen and (max-width: 1096px) {
+          @media screen and (max-width: 1169px) {
             display: none;
           }
         }
@@ -192,7 +192,7 @@
           @media screen and (max-width: 470px) {
             right: -100px;
             left: unset;
-            bottom: -22px;
+            bottom: -26px;
             width: 30em;
           }
         }

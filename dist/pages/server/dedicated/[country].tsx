@@ -79,6 +79,12 @@ export async function getServerSideProps(context) {
   );
   const countryPlans = await countryPlansRes.json();
 
+  if (!countryPlans.plans) {
+    return {
+      notFound: true,
+    };
+  }
+
   return {
     props: {
       countryPlans: countryPlans,

@@ -1,3 +1,4 @@
+import moment from 'jalali-moment';
 import * as React from 'react';
 import { Container } from 'react-bootstrap';
 import styles from './ServerStatus.module.scss';
@@ -65,7 +66,8 @@ class ServerStatus extends React.Component<
             </p>
             <p>
               میزان <strong>Uptime</strong> و <strong>Downtime</strong> سرور ها
-              از ابتدای تیر ماه (به صورت ماهیانه) محاسبه شده .
+              از ابتدای {moment().locale('fa').format('MMM')} ماه (به صورت
+              ماهیانه) محاسبه شده .
             </p>
           </div>
         </Container>

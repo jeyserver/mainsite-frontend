@@ -2,6 +2,7 @@ import Link from 'next/link';
 import styles from './Header.module.scss';
 import Slider from 'react-slick';
 import { useEffect, useState } from 'react';
+import HetzenerBanner from './HetzenerBanner/HetzenerBanner';
 import OVHBanner from './OVHBanner/OVHBanner';
 
 function useWindowSize() {
@@ -32,7 +33,7 @@ function NextArrow(props) {
       style={{ ...style }}
       onClick={onClick}
     >
-      <i className="fas fa-chevron-left"></i>
+      <i className="fas fa-chevron-right"></i>
     </div>
   );
 }
@@ -46,7 +47,7 @@ function PrevArrow(props) {
       style={{ ...style }}
       onClick={onClick}
     >
-      <i className="fas fa-chevron-right"></i>
+      <i className="fas fa-chevron-left"></i>
     </div>
   );
 }
@@ -72,7 +73,7 @@ const Header = () => {
     slidesToShow: 1,
     slidesToScroll: 1,
     rtl: true,
-    autoplay: false,
+    autoplay: true,
     autoplaySpeed: 5000,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
@@ -173,6 +174,9 @@ const Header = () => {
               <img src="/images/robot-2.png" className={styles.robotImg} />
             </div>
           </div>
+        </div>
+        <div className="position-relative overflow-hidden target-slide-box">
+          <HetzenerBanner />
         </div>
         <div className="position-relative overflow-hidden target-slide-box">
           <OVHBanner />

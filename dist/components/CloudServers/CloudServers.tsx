@@ -9,6 +9,7 @@ import Faq from './Faq/Faq';
 export interface CloudServersProps {
   plans: any;
   countries: any;
+  country: string;
 }
 
 export interface CloudServersState {
@@ -33,10 +34,15 @@ class CloudServers extends React.Component<
       <React.Fragment>
         <Header />
         <Advantages />
-        <CountriesServers countries={this.props.countries} />
+        <CountriesServers
+          country={this.props.country}
+          countries={this.props.countries}
+        />
         <Plans
           defaultPlans={this.state.defaultPlans}
           specialCpu={this.state.specialCpu}
+          countries={this.props.countries}
+          country={this.props.country}
         />
         <Price />
         <Faq />

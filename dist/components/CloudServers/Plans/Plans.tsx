@@ -6,6 +6,8 @@ import styles from './Plans.module.scss';
 export interface PlansProps {
   defaultPlans: any;
   specialCpu: any;
+  country: string;
+  countries: any;
 }
 
 export interface PlansState {}
@@ -47,7 +49,12 @@ class Plans extends React.Component<PlansProps, PlansState> {
                       <Row dir="rtl">
                         <Col xl={1}></Col>
                         {this.props.defaultPlans.map((plan, index) => (
-                          <Plan key={index} plan={plan} />
+                          <Plan
+                            key={index}
+                            plan={plan}
+                            country={this.props.country}
+                            countries={this.props.countries}
+                          />
                         ))}
                       </Row>
                     </Tab.Pane>
@@ -57,7 +64,12 @@ class Plans extends React.Component<PlansProps, PlansState> {
                         <Col xl={1}></Col>
 
                         {this.props.specialCpu.map((plan, index) => (
-                          <Plan key={index} plan={plan} />
+                          <Plan
+                            key={index}
+                            plan={plan}
+                            country={this.props.country}
+                            countries={this.props.countries}
+                          />
                         ))}
                       </Row>
                     </Tab.Pane>

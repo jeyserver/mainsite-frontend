@@ -4,6 +4,8 @@ import styles from './Plan.module.scss';
 
 export interface PlanProps {
   plan: any;
+  country: string;
+  countries: any;
 }
 
 export interface PlanState {}
@@ -63,10 +65,20 @@ class Plan extends React.Component<PlanProps, PlanState> {
                 <span>
                   <OverlayTrigger
                     key="France"
-                    overlay={<Tooltip id="tooltip-france">France</Tooltip>}
+                    overlay={
+                      <Tooltip id="tooltip-france">
+                        {!this.props.country
+                          ? this.props.countries[0].title_en
+                          : this.props.country}
+                      </Tooltip>
+                    }
                   >
                     <Image
-                      src={this.props.plan.img}
+                      src={`/images/cloud-servers/Country flags/${
+                        !this.props.country
+                          ? this.props.countries[0].title_en
+                          : this.props.country
+                      }.png`}
                       data-toggle="tooltip"
                       data-placement="top"
                       title="France"

@@ -1,9 +1,11 @@
 import * as React from 'react';
 import { Dropdown, Image, Container, Button } from 'react-bootstrap';
+import Link from 'next/link';
 import styles from './CountriesServers.module.scss';
 
 export interface CountriesServersProps {
   countries: any;
+  country: string;
 }
 
 export interface CountriesServersState {
@@ -37,17 +39,21 @@ class CountriesServers extends React.Component<
         {this.props.countries.map((country, index) => {
           if (index < 3) {
             return (
-              <Button
-                key={index}
-                data-active={this.state.activeCountry === country.title_en}
-                onClick={() => this.changeActiveCountry(country.title_en)}
-                className={styles.serverLink}
-              >
-                <Image src={country.img} alt="" />
-                <span className={styles.text}>
-                  سرورهای مجازی {country.title_fa}
-                </span>
-              </Button>
+              <Link key={index} href={`/cloud-servers/${country.title_en}`}>
+                <a
+                  data-active={
+                    this.props.country === country.title_en ||
+                    (country.title_en === this.props.countries[0].title_en &&
+                      this.props.country === undefined)
+                  }
+                  className={styles.serverLink}
+                >
+                  <Image src={country.img} alt="" />
+                  <span className={styles.text}>
+                    سرورهای مجازی {country.title_fa}
+                  </span>
+                </a>
+              </Link>
             );
           }
         })}
@@ -70,20 +76,19 @@ class CountriesServers extends React.Component<
             {this.props.countries.map((country, index) => {
               if (index > 3) {
                 return (
-                  <Dropdown.Item
-                    eventKey={index}
-                    key={index}
-                    data-active={this.state.activeCountry === country.title_en}
-                    onClick={() => this.changeActiveCountry(country.title_en)}
-                    className={`${styles.serverLink} ${styles.dropdownLinksBtn}`}
-                  >
-                    <span className={styles.imgWrapper}>
-                      <Image src={country.img} alt="" />
-                    </span>
-                    <span className={styles.text}>
-                      پلن های {country.title_fa}
-                    </span>
-                  </Dropdown.Item>
+                  <Link key={index} href={`/cloud-servers/${country.title_en}`}>
+                    <a
+                      data-active={this.props.country === country.title_en}
+                      className={`${styles.serverLink} ${styles.dropdownLinksBtn}`}
+                    >
+                      <span className={styles.imgWrapper}>
+                        <Image src={country.img} alt="" />
+                      </span>
+                      <span className={styles.text}>
+                        پلن های {country.title_fa}
+                      </span>
+                    </a>
+                  </Link>
                 );
               }
             })}

@@ -129,16 +129,26 @@ class ServerStatusCard extends React.Component<
               </div>
             </div>
             <div className={styles.btns}>
-              {this.props.server.monthly.map((a, index) => (
-                <Button
+              {this.props.server.monthly.map((day, index) => (
+                <OverlayTrigger
                   key={index}
-                  className={classNames({
-                    [styles.statusBtn]: true,
-                    [styles.up]: a.status === 'up',
-                    [styles.down]: a.status === 'down',
-                    [styles.warn]: a.status === 'warn',
-                  })}
-                ></Button>
+                  placement="top"
+                  overlay={
+                    <Tooltip className={styles.tooltip} id={`tooltip-${index}`}>
+                      <div>{moment(day.time).locale('fa').format('l')}</div>
+                      <div>UpTime: {day.uptime}%</div>
+                    </Tooltip>
+                  }
+                >
+                  <Button
+                    className={classNames({
+                      [styles.statusBtn]: true,
+                      [styles.up]: day.status === 'up',
+                      [styles.down]: day.status === 'down',
+                      [styles.warn]: day.status === 'warn',
+                    })}
+                  ></Button>
+                </OverlayTrigger>
               ))}
             </div>
             <div className={styles.lastCheck}>

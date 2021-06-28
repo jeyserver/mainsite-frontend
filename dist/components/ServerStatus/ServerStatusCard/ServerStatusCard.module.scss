@@ -8,7 +8,7 @@
     margin-top: 40px;
     margin-right: 5px;
     @media screen and (max-width: 767px) {
-      margin-right: 10px;
+      margin-right: 35px;
     }
     .iconWrapper {
       margin-left: 8px;
@@ -34,7 +34,7 @@
     margin-top: 10px;
     margin-right: 25px;
     @media screen and (max-width: 767px) {
-      margin-right: 30px;
+      margin-right: 55px;
     }
   }
   .chartWrapper {
@@ -91,7 +91,7 @@
           padding-right: 0;
         }
         @media screen and (max-width: 767px) {
-          padding-right: 10px;
+          padding-right: 33px;
         }
       }
       &:nth-child(2) {
@@ -100,7 +100,7 @@
         font-family: IRANSans;
         direction: ltr;
         @media screen and (max-width: 767px) {
-          padding-left: 20px;
+          padding-left: 40px;
         }
       }
     }
@@ -111,8 +111,8 @@
     margin-left: 5px;
     @media screen and (max-width: 767px) {
       width: 100%;
-      padding-left: 5px;
-      padding-right: 10px;
+      padding-left: 30px;
+      padding-right: 35px;
       margin-left: 0;
     }
     > h3 {
@@ -143,8 +143,8 @@
         margin-left: 5px;
         padding: 0;
         @media screen and (max-width: 576px) {
-          height: 25px;
-          width: 4px;
+          height: 30px;
+          width: 5px;
         }
         &:focus,
         &:active {
@@ -207,8 +207,9 @@
 .tooltip {
   font-family: IRANSans;
   margin-bottom: 10px;
-  @media screen and (max-width: 576px) {
-    display: none;
+  font-size: 11px;
+  > div {
+    text-align: left;
   }
   &::after {
     content: '\f0d7';

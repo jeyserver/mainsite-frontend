@@ -2,6 +2,7 @@ export const countries = {
   IR: {
     title_fa: 'ایران',
     flag: '/images/countries/48/Iran.png',
+    flag24: '/images/countries/Iran.png',
     link: '/server/dedicated/iran',
     recommended: false,
     info: 'ایران بهترین مکان برای میزبانی سایت های دولتی و حکومتی است که از حساسیت های زیادی برخوردارند.علاوه بر امنیت اطلاعات شما در سرور های وطنی سرعت بالای انتقال اطلاعات را برای کاربرانتان مهیا میکنید',
@@ -18,6 +19,7 @@ export const countries = {
   FR: {
     title_fa: 'فرانسه',
     flag: '/images/countries/48/France.png',
+    flag24: '/images/countries/France.png',
     link: '/server/dedicated/france',
     recommended: true,
     info: 'فرانسه با سهم بیش از 4 درصد از مراکز داده ی جهان و کیفیت مناسب سرور ها و وضعیت خوب شبکه نسبت به ایران همواره یکی از کاندید های انتخاب ما ایرانیان است',
@@ -48,6 +50,7 @@ export const countries = {
   DE: {
     title_fa: 'آلمان',
     flag: '/images/countries/48/Germany.png',
+    flag24: '/images/countries/Germany.png',
     link: '/server/dedicated/germany',
     recommended: false,
     info: 'شاید از بین کشور های خارجی آلمان بهترین پینگ را نسبت به ایران دارد و این دلیل محبوبیت سرور های این کشور حتی با قیمت های زیاد و سخت افزار های قدیمی است',
@@ -76,6 +79,7 @@ export const countries = {
   NL: {
     title_fa: 'هلند',
     flag: '/images/countries/48/Netherlands.png',
+    flag24: '/images/countries/Netherlands.png',
     link: '/server/dedicated/netherlands',
     recommended: false,
     info: 'پینگ خوب نسبت به ایران و عدم حساسیت به قوانین کپی رایت ، سرور های هلندی را حتی با قیمت های کمی گرانتر و سخت افزار های قدیمی تر محبوب میکند',
@@ -102,6 +106,7 @@ export const countries = {
   CA: {
     title_fa: 'کانادا',
     flag: '/images/countries/48/Canada.png',
+    flag24: '/images/countries/Canada.png',
     link: '/server/dedicated/canada',
     recommended: false,
     info: 'کانادا با دارا بودن زیر ساخت های مخابراتی پیشرفته در حال حاضر 100 دیتاسنتر را در خود جای داده که از تنوع محصولات بسیاری برخوردار است.همچنین اکثر دیتاسنتر های این کشور مشتری را از پرداختن مالیات معاف میکند',
@@ -131,6 +136,7 @@ export const countries = {
   FI: {
     title_fa: 'فنلاند',
     flag: '/images/countries/48/Finland.png',
+    flag24: '/images/countries/Finland.png',
     link: '/server/dedicated/finland',
     recommended: false,
     info: 'فنلاند، با زیرساختی قوی و سخت افزار های نو و جدید رقیب سر سخت دیتاسنتر های اروپایی شده و با کاهش قیمت ها برنده تمامی معیار های اقتصادی و فنی شده است.',
@@ -162,6 +168,7 @@ export const countries = {
   US: {
     title_fa: 'آمریکا',
     flag: '/images/countries/48/United.States.of.America.USA.png',
+    flag24: '/images/countries/usa.png',
     link: '/server/dedicated/usa',
     recommended: false,
     info: 'آمریکا به عنوان بزرگترین کشور میزبانی وب دارای بیش از 1000 دیتاسنتر بوده و تنوع محصولات و قیمت ها بسیار زیاد است و به دلیل قیمت کمتر،سخت افزار جدید و قوی و پهنای بالاتر مشتری های زیادی را به طرف خود کشاندهاست',

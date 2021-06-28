@@ -79,7 +79,7 @@ export async function getServerSideProps(context) {
   );
   const countryPlans = await countryPlansRes.json();
 
-  if (!countryPlans.plans) {
+  if (!countryPlans.status) {
     return {
       notFound: true,
     };

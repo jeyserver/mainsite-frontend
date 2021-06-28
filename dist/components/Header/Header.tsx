@@ -3,6 +3,7 @@ import styles from './Header.module.scss';
 import Slider from 'react-slick';
 import { useEffect, useState } from 'react';
 import HetzenerBanner from './HetzenerBanner/HetzenerBanner';
+import OVHBanner from './OVHBanner/OVHBanner';
 
 function useWindowSize() {
   const [windowSize, setWindowSize] = useState({
@@ -176,6 +177,9 @@ const Header = () => {
         </div>
         <div className="position-relative overflow-hidden target-slide-box">
           <HetzenerBanner />
+        </div>
+        <div className="position-relative overflow-hidden target-slide-box">
+          <OVHBanner />
         </div>
       </Slider>
     </header>

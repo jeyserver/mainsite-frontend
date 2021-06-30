@@ -74,18 +74,18 @@ class Price extends React.Component<PriceProps, PriceState> {
                 <div className={styles.ratePickerWrapper}>
                   <div className={styles.ratePicker}>
                     <Image
-                      src="images/cloud-servers/Intersection 1@2x.png"
+                      src="/images/cloud-servers/Intersection 1@2x.png"
                       alt=""
                     />
                     <Image
                       className={styles.back}
-                      src="images/cloud-servers/rate1.png"
+                      src="/images/cloud-servers/rate1.png"
                       alt=""
                     />
                     <Image
                       className={styles.angle}
                       id="angle"
-                      src="images/cloud-servers/rate2.png"
+                      src="/images/cloud-servers/rate2.png"
                       alt=""
                     />
                   </div>

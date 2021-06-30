@@ -5,16 +5,20 @@ import Header from './Header/Header';
 import Plans from './Plans/Plans';
 import Price from './Price/Price';
 import Faq from './Faq/Faq';
+import { withRouter, NextRouter } from 'next/router';
+import PlansLoading from './PlansLoading/PlansLoading';
 
 export interface CloudServersProps {
   plans: any;
   countries: any;
   country: string;
+  router: NextRouter;
 }
 
 export interface CloudServersState {
   defaultPlans: any;
   specialCpu: any;
+  loading: boolean;
 }
 
 class CloudServers extends React.Component<
@@ -26,7 +30,30 @@ class CloudServers extends React.Component<
     this.state = {
       defaultPlans: this.props.plans,
       specialCpu: this.props.plans,
+      loading: false,
     };
+  }
+
+  componentDidMount() {
+    const handleStart = (url) =>
+      url !== this.props.router.asPath && this.setState({ loading: true });
+    const handleComplete = (url) =>
+      url === this.props.router.asPath && this.setState({ loading: false });
+
+    this.props.router.events.on('routeChangeStart', handleStart);
+    this.props.router.events.on('routeChangeComplete', handleComplete);
+    this.props.router.events.on('routeChangeError', handleComplete);
+  }
+
+  componentWillUnmount() {
+    const handleStart = (url) =>
+      url !== this.props.router.asPath && this.setState({ loading: true });
+    const handleComplete = (url) =>
+      url === this.props.router.asPath && this.setState({ loading: false });
+
+    this.props.router.events.on('routeChangeStart', handleStart);
+    this.props.router.events.on('routeChangeComplete', handleComplete);
+    this.props.router.events.on('routeChangeError', handleComplete);
   }
 
   render() {
@@ -38,12 +65,16 @@ class CloudServers extends React.Component<
           country={this.props.country}
           countries={this.props.countries}
         />
-        <Plans
-          defaultPlans={this.state.defaultPlans}
-          specialCpu={this.state.specialCpu}
-          countries={this.props.countries}
-          country={this.props.country}
-        />
+        {this.state.loading ? (
+          <PlansLoading />
+        ) : (
+          <Plans
+            defaultPlans={this.state.defaultPlans}
+            specialCpu={this.state.specialCpu}
+            countries={this.props.countries}
+            country={this.props.country}
+          />
+        )}
         <Price />
         <Faq />
       </React.Fragment>
@@ -51,4 +82,4 @@ class CloudServers extends React.Component<
   }
 }
 
-export default CloudServers;
+export default withRouter(CloudServers);

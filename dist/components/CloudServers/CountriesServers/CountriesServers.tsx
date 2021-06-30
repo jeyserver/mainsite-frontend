@@ -2,15 +2,15 @@ import * as React from 'react';
 import { Dropdown, Image, Container, Button } from 'react-bootstrap';
 import Link from 'next/link';
 import styles from './CountriesServers.module.scss';
+import { NextRouter, withRouter } from 'next/router';
 
 export interface CountriesServersProps {
   countries: any;
   country: string;
+  router: NextRouter;
 }
 
-export interface CountriesServersState {
-  activeCountry: string;
-}
+export interface CountriesServersState {}
 
 class CountriesServers extends React.Component<
   CountriesServersProps,
@@ -18,14 +18,11 @@ class CountriesServers extends React.Component<
 > {
   constructor(props: CountriesServersProps) {
     super(props);
-    this.state = {
-      activeCountry: this.props.countries[0].title_en,
-    };
-    this.changeActiveCountry = this.changeActiveCountry.bind(this);
+    this.state = {};
   }
 
-  changeActiveCountry(countryName: string) {
-    this.setState({ activeCountry: countryName });
+  closeDropDown() {
+    document.querySelector('body').click();
   }
 
   render() {
@@ -39,7 +36,11 @@ class CountriesServers extends React.Component<
         {this.props.countries.map((country, index) => {
           if (index < 3) {
             return (
-              <Link key={index} href={`/cloud-servers/${country.title_en}`}>
+              <Link
+                key={index}
+                scroll={false}
+                href={`/cloud-servers/${country.title_en}`}
+              >
                 <a
                   data-active={
                     this.props.country === country.title_en ||
@@ -76,10 +77,15 @@ class CountriesServers extends React.Component<
             {this.props.countries.map((country, index) => {
               if (index > 3) {
                 return (
-                  <Link key={index} href={`/cloud-servers/${country.title_en}`}>
+                  <Link
+                    key={index}
+                    scroll={false}
+                    href={`/cloud-servers/${country.title_en}`}
+                  >
                     <a
                       data-active={this.props.country === country.title_en}
                       className={`${styles.serverLink} ${styles.dropdownLinksBtn}`}
+                      onClick={this.closeDropDown}
                     >
                       <span className={styles.imgWrapper}>
                         <Image src={country.img} alt="" />
@@ -99,4 +105,4 @@ class CountriesServers extends React.Component<
   }
 }
 
-export default CountriesServers;
+export default withRouter(CountriesServers);

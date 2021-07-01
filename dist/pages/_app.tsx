@@ -3,6 +3,7 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import '../public/packages/leaflet/dist/leaflet.css';
 import 'react-notifications/lib/notifications.css';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import '../styles/rtl-bootstrap.scss';
 import '../styles/globals.scss';
 import { Provider } from 'react-redux';

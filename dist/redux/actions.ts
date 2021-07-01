@@ -2,7 +2,21 @@ import {
   RESTORE_AUTH_STATE,
   AUTHENTICATE,
   DEAUTHENTICATE,
+  TOGGLE_THEME,
+  GET_THEME_FROM_LOCALSTORAGE,
 } from './constants/actionsConstants';
+
+export const getThemeFromLocalStorageAction = () => {
+  return {
+    type: GET_THEME_FROM_LOCALSTORAGE,
+  };
+};
+
+export const toggleThemeAction = () => {
+  return {
+    type: TOGGLE_THEME,
+  };
+};
 
 export const authenticateAction = (user) => {
   return {
@@ -21,6 +35,18 @@ export const restoreState = (authState) => {
   return {
     type: RESTORE_AUTH_STATE,
     payload: authState,
+  };
+};
+
+export const getThemeFromLocalStorage = () => {
+  return async (dispath) => {
+    dispath(getThemeFromLocalStorageAction());
+  };
+};
+
+export const toggleTheme = () => {
+  return async (dispath) => {
+    dispath(toggleThemeAction());
   };
 };
 

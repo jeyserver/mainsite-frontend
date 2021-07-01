@@ -77,6 +77,25 @@ class CountryPlan extends React.Component<CountryPlanProps, CountryPlanState> {
     );
   }
 
+  getCpuLink(cpu: {
+    type: string;
+    title: string;
+    cores: number;
+    threads: number;
+    speed: number;
+    num: number;
+  }) {
+    if (cpu.type.toLowerCase() === 'intel') {
+      return `https://ark.intel.com/search/?_charset_=UTF-8&q=${encodeURI(
+        cpu.title
+      )}`;
+    }
+    if (cpu.type.toLowerCase() === 'amd') {
+      return `https://www.amd.com/en/search?keyword=${encodeURI(cpu.title)}`;
+    }
+    return null;
+  }
+
   render() {
     const targetCountry =
       countries[this.props.countryPlan.datacenter.country.code];
@@ -179,9 +198,9 @@ class CountryPlan extends React.Component<CountryPlanProps, CountryPlanState> {
                         </p>
                         <p className={styles.setup}>
                           {!this.props.countryPlan.setup
-                            ? '-'
-                            : this.addCommas(this.props.countryPlan.setup)}{' '}
-                          تومان{' '}
+                            ? 'مهمان ما باشید'
+                            : this.addCommas(this.props.countryPlan.setup) +
+                              ' تومان'}{' '}
                         </p>
                       </li>
                       <li>
@@ -268,9 +287,21 @@ class CountryPlan extends React.Component<CountryPlanProps, CountryPlanState> {
                         <ul className={styles.list}>
                           <li>
                             <p className={styles.title}> CPU </p>
-                            <p className={styles.value}>
-                              {this.props.countryPlan.cpu.title}
-                            </p>
+                            {this.getCpuLink(this.props.countryPlan.cpu) ? (
+                              <a
+                                target="_blank"
+                                className={`${styles.value} ${styles.link}`}
+                                href={this.getCpuLink(
+                                  this.props.countryPlan.cpu
+                                )}
+                              >
+                                {this.props.countryPlan.cpu.title}
+                              </a>
+                            ) : (
+                              <p className={styles.value}>
+                                {this.props.countryPlan.cpu.title}
+                              </p>
+                            )}
                             <p></p>
                             <p className={styles.value}>
                               Cores:{this.props.countryPlan.cpu.cores},Threads:

@@ -75,6 +75,25 @@ class Plan extends React.Component<PlanProps, PlanState> {
     );
   }
 
+  getCpuLink(cpu: {
+    type: string;
+    title: string;
+    cores: number;
+    threads: number;
+    speed: number;
+    num: number;
+  }) {
+    if (cpu.type.toLowerCase() === 'intel') {
+      return `https://ark.intel.com/search/?_charset_=UTF-8&q=${encodeURI(
+        cpu.title
+      )}`;
+    }
+    if (cpu.type.toLowerCase() === 'amd') {
+      return `https://www.amd.com/en/search?keyword=${encodeURI(cpu.title)}`;
+    }
+    return null;
+  }
+
   render() {
     let allHards = [];
 
@@ -119,12 +138,13 @@ class Plan extends React.Component<PlanProps, PlanState> {
           <Row>
             <Col xs={4}>پردازشگر:</Col>
             <Col xs={8} className="ltr">
-              <a
-                target="_blank"
-                href="http://ark.intel.com/products/71053/Intel-Core-i3-3210-Processor-3M-Cache-3_20-GHz"
-              >
-                {this.props.plan.cpu.title}
-              </a>{' '}
+              {this.getCpuLink(this.props.plan.cpu) ? (
+                <a target="_blank" href={this.getCpuLink(this.props.plan.cpu)}>
+                  {this.props.plan.cpu.title}
+                </a>
+              ) : (
+                <span>{this.props.plan.cpu.title}</span>
+              )}{' '}
               - {this.props.plan.cpu.cores} c / {this.props.plan.cpu.threads} t
               - {this.props.plan.cpu.speed} GHz
             </Col>

@@ -68,8 +68,6 @@ class Index extends React.Component<IndexProps, IndexState> {
 
           <Navbar />
 
-          <div>سرور</div>
-
           <CountryServer countryPlans={this.props.countryPlans} />
 
           <Footer />

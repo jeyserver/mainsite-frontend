@@ -84,6 +84,25 @@ class Recommended extends React.Component<RecommendedProps, RecommendedState> {
     return str.join('.');
   }
 
+  getCpuLink(cpu: {
+    type: string;
+    title: string;
+    cores: number;
+    threads: number;
+    speed: number;
+    num: number;
+  }) {
+    if (cpu.type.toLowerCase() === 'intel') {
+      return `https://ark.intel.com/search/?_charset_=UTF-8&q=${encodeURI(
+        cpu.title
+      )}`;
+    }
+    if (cpu.type.toLowerCase() === 'amd') {
+      return `https://www.amd.com/en/search?keyword=${encodeURI(cpu.title)}`;
+    }
+    return null;
+  }
+
   render() {
     return (
       <Row>
@@ -114,7 +133,17 @@ class Recommended extends React.Component<RecommendedProps, RecommendedState> {
                 <tr key={recommended.id}>
                   <td className="ltr">{recommended.title}</td>
                   <td className="ltr">
-                    {recommended.cpu.title} <br />
+                    {this.getCpuLink(recommended.cpu) ? (
+                      <a
+                        target="_blank"
+                        href={this.getCpuLink(recommended.cpu)}
+                      >
+                        {recommended.cpu.title}
+                      </a>
+                    ) : (
+                      recommended.cpu.title
+                    )}
+                    <br />
                     Cores : {recommended.cpu.cores}, Threads :{' '}
                     {recommended.cpu.threads} <br />
                     Frequency : {recommended.cpu.speed} GHz

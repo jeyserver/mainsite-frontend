@@ -3,10 +3,6 @@
     .post {
       padding-top: 35px;
       padding-bottom: 35px;
-      @media screen and (max-width: 992px) {
-        padding-left: 10px;
-        padding-right: 10px;
-      }
 
       .title {
         font-size: 18px;
@@ -15,12 +11,22 @@
         color: #000000;
 
         margin-bottom: 18px;
+
+        @media screen and (max-width: 767px) {
+          padding-left: 20px;
+          padding-right: 20px;
+        }
       }
 
       .post-info {
         display: flex;
         align-items: center;
         margin-bottom: 30px;
+
+        @media screen and (max-width: 767px) {
+          padding-left: 20px;
+          padding-right: 20px;
+        }
 
         .author-wrapper {
           margin-left: 22px;
@@ -56,13 +62,17 @@
 
       .post-image {
         width: 100%;
-        height: 458px;
       }
 
       .post-categories,
       .post-sources {
         margin-top: 25px;
         margin-bottom: 25px;
+
+        @media screen and (max-width: 767px) {
+          padding-left: 20px;
+          padding-right: 20px;
+        }
 
         > span {
           font-size: 12px;
@@ -82,6 +92,11 @@
       }
 
       > .content {
+        @media screen and (max-width: 767px) {
+          padding-left: 20px;
+          padding-right: 20px;
+        }
+
         p {
           font-size: 13px;
           font-family: IRANSans;
@@ -110,6 +125,11 @@
 
         border-top: 1px solid #dddddd;
 
+        @media screen and (max-width: 767px) {
+          margin-left: 20px;
+          margin-right: 20px;
+        }
+
         > span {
           font-size: 13px;
           font-family: IRANSans;
@@ -136,10 +156,21 @@
 
         font-size: 12px;
         font-family: IRANSans;
+
+        @media screen and (max-width: 767px) {
+          margin-left: 20px;
+          margin-right: 20px;
+        }
       }
 
       .comments {
         margin-top: 35px;
+
+        @media screen and (max-width: 767px) {
+          margin-left: 20px;
+          margin-right: 20px;
+        }
+
         > h3 {
           font-size: 18px;
           font-family: IRANSans;
@@ -297,6 +328,8 @@
         color: #4b4b4b;
 
         margin-bottom: 10px;
+
+        width: 219px;
       }
 
       .form {
@@ -415,6 +448,20 @@
             font-family: IRANSans;
           }
         }
+      }
+    }
+
+    .newslettersFormOnMobile {
+      display: none;
+      border-top: 1px solid #dddddd;
+      padding-top: 20px;
+      margin: 0 20px;
+
+      @media screen and (max-width: 992px) {
+        display: block;
+      }
+      > div {
+        padding: 0;
       }
     }
 

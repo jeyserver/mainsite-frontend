@@ -148,6 +148,8 @@
         color: #4b4b4b;
 
         margin-bottom: 10px;
+
+        width: 219px;
       }
 
       .form {
@@ -302,6 +304,21 @@
           }
         }
       }
+    }
+  }
+
+  .newslettersFormOnMobile {
+    display: none;
+    border-top: 1px solid #dddddd;
+    padding-top: 20px;
+    margin: 0 20px;
+
+    @media screen and (max-width: 992px) {
+      display: block;
+    }
+
+    > div {
+      padding: 0 !important;
     }
   }
 

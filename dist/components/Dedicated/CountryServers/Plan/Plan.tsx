@@ -82,10 +82,12 @@ class Plan extends React.Component<PlanProps, PlanState> {
     speed: number;
     num: number;
   }) {
-    if (cpu.title.toLowerCase().lastIndexOf("intel") === 0) {
-      return `https://ark.intel.com/search/?_charset_=UTF-8&q=${encodeURI(cpu.title)}`;
+    if (cpu.title.toLowerCase().lastIndexOf('intel') === 0) {
+      return `https://ark.intel.com/search/?_charset_=UTF-8&q=${encodeURI(
+        cpu.title
+      )}`;
     }
-    if (cpu.title.toLowerCase().lastIndexOf("amd") === 0) {
+    if (cpu.title.toLowerCase().lastIndexOf('amd') === 0) {
       return `https://www.amd.com/en/search?keyword=${encodeURI(cpu.title)}`;
     }
     return null;
@@ -126,7 +128,7 @@ class Plan extends React.Component<PlanProps, PlanState> {
       <Row className={styles.plan}>
         <Col md={2} className={styles.planTitle}>
           <div>
-            <Link href={`/fa/server/dedicated/${this.props.plan.id}`}>
+            <Link href={`/server/dedicated/${this.props.plan.id}`}>
               <a>{this.props.plan.title}</a>
             </Link>
           </div>

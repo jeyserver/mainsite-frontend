@@ -5,7 +5,9 @@ import styles from './Footer.module.scss';
 import axios from 'axios';
 import { NotificationManager } from 'react-notifications';
 
-export interface FooterProps {}
+export interface FooterProps {
+  posts?: { title: string; link: string }[];
+}
 
 export interface FooterState {
   newsLettersbtnLoading: boolean;

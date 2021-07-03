@@ -271,6 +271,13 @@
         text-align: center;
         font-size: 11px;
       }
+      @media screen and (max-width: 375px) {
+        white-space: normal;
+      }
+
+      > a {
+        white-space: nowrap;
+      }
     }
     .bottomLinksList {
       list-style-type: none;

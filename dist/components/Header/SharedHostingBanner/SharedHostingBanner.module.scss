@@ -1,0 +1,195 @@
+.realSharedHostingBG {
+  background: linear-gradient(90deg, #135d65 0, #2aadb9 60%);
+  height: 480px;
+  width: 100%;
+  @media screen and (max-width: 767px) {
+    height: 920px;
+  }
+}
+
+.sharedHostingCaption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  @media screen and (max-width: 767px) {
+    top: 0;
+    bottom: 0;
+  }
+  > div {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    padding: 5em;
+    z-index: 2;
+    position: absolute;
+    right: 0;
+    color: #ffffff;
+    @media screen and (max-width: 767px) {
+      align-items: center;
+      padding: 1em;
+      width: 100%;
+    }
+    > h3 {
+      font-weight: 700;
+      font-size: 33px;
+      text-shadow: 1px 1px 4px #333;
+      @media screen and (max-width: 767px) {
+        font-size: 25px;
+        text-align: center;
+        margin-top: 9px;
+      }
+    }
+    > h4 {
+      font-weight: 400;
+      font-size: 20px;
+      text-shadow: 1px 1px 4px #333;
+      margin-top: 1em;
+      @media screen and (max-width: 767px) {
+        text-align: center;
+        margin-top: 24em;
+      }
+    }
+    > p {
+      font-weight: 600;
+      font-size: 16px;
+      margin-top: 30px;
+      margin-bottom: 6em;
+      line-height: 24px;
+      @media screen and (max-width: 767px) {
+        margin-bottom: 2em;
+        text-align: center;
+      }
+    }
+  }
+  .btns {
+    display: flex;
+    align-items: center;
+    @media screen and (max-width: 767px) {
+      width: 100%;
+      flex-direction: column-reverse;
+    }
+    > .newcomersLink,
+    > .professionalLink {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #fdc400;
+      color: #383838;
+      padding: 1.5em 2.5em;
+      border-radius: 5px;
+      font-weight: 600;
+      @media screen and (max-width: 767px) {
+        width: 100%;
+        width: 231px;
+        height: 56px;
+      }
+      > i {
+        margin-left: 0.5em;
+        animation: heartBeat 1s infinite both 2s;
+        font-size: 17px;
+      }
+    }
+    > .newcomersLink {
+      margin-left: 0.5em;
+      @media screen and (max-width: 767px) {
+        margin-left: 0;
+        margin-bottom: 25px;
+        margin-top: 50px;
+      }
+      > i {
+        animation: heartBeat 1s infinite both 2s;
+      }
+    }
+    > .professionalLink {
+      > i {
+        animation: tada 1s infinite both 3s;
+      }
+    }
+  }
+  .robotImgWrapper {
+    position: absolute;
+    left: 0;
+    bottom: 42px;
+    width: 65%;
+    height: 524px;
+    display: flex;
+    align-items: flex-start;
+    z-index: 1;
+    @media screen and (max-width: 767px) {
+      bottom: unset;
+      top: 37px;
+      left: 12%;
+      right: 0;
+      width: 78%;
+      > img {
+        height: auto;
+        width: 100%;
+      }
+    }
+    @media screen and (max-width: 600px) {
+      left: 5%;
+      width: 101%;
+    }
+    @media screen and (max-width: 400px) {
+      left: -2%;
+      width: 120%;
+    }
+  }
+}
+
+@keyframes heartBeat {
+  0% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+  14% {
+    -webkit-transform: scale(1.3);
+    transform: scale(1.3);
+  }
+  28% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+  42% {
+    -webkit-transform: scale(1.3);
+    transform: scale(1.3);
+  }
+  70% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+}
+
+@keyframes tada {
+  from {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+  }
+  10%,
+  20% {
+    -webkit-transform: scale3d(0.9, 0.9, 0.9) rotate3d(0, 0, 1, -3deg);
+    transform: scale3d(0.9, 0.9, 0.9) rotate3d(0, 0, 1, -3deg);
+  }
+  30%,
+  50%,
+  70%,
+  90% {
+    -webkit-transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);
+    transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, 3deg);
+  }
+  40%,
+  60%,
+  80% {
+    -webkit-transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);
+    transform: scale3d(1.1, 1.1, 1.1) rotate3d(0, 0, 1, -3deg);
+  }
+  to {
+    -webkit-transform: scale3d(1, 1, 1);
+    transform: scale3d(1, 1, 1);
+  }
+}

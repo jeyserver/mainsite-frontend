@@ -5,8 +5,16 @@ import { connect } from 'react-redux';
 import { toggleTheme } from '../../../redux/actions';
 import { Button } from 'react-bootstrap';
 
+interface param {
+  category?: string[];
+  tag?: string;
+  search?: string;
+}
+
 export interface TopNavProps {
   title: string;
+  page: 'blog' | 'post' | 'category' | 'tag' | 'search';
+  param?: param;
   categories: any;
   nightMode: boolean;
   store: { theme: string };
@@ -36,6 +44,45 @@ class TopNav extends React.Component<TopNavProps, TopNavState> {
   }
 
   render() {
+    const showBreedcrumb = (param: param) => {
+      if (param.category) {
+        return (
+          <h3 className="title-under-links">
+            <span>
+              <Link href="/blog">
+                <a>آموزش ها</a>
+              </Link>
+            </span>
+            <i className="fas fa-chevron-left"></i>
+            {param.category.map((category, index) => {
+              if (index !== param.category.length - 1) {
+                return (
+                  <span key={category}>
+                    <Link href={`/blog/category/${encodeURI(category)}`}>
+                      <a>{category}</a>
+                    </Link>
+                    <i className="fas fa-chevron-left"></i>
+                  </span>
+                );
+              } else {
+                return (
+                  <span key={category}>
+                    <Link href={`/blog/category/${encodeURI(category)}`}>
+                      <a>{category}</a>
+                    </Link>
+                  </span>
+                );
+              }
+            })}
+          </h3>
+        );
+      } else if (param.search) {
+        return null;
+      } else if (param.tag) {
+        return null;
+      }
+    };
+
     return (
       <section className="topNav">
         <Container fluid="md">
@@ -43,6 +90,7 @@ class TopNav extends React.Component<TopNavProps, TopNavState> {
             <div className="top">
               <div className="right">
                 <h1 className="headerTitle">{this.props.title}</h1>
+                {this.props.param && showBreedcrumb(this.props.param)}
               </div>
 
               <div className="left">
@@ -72,41 +120,7 @@ class TopNav extends React.Component<TopNavProps, TopNavState> {
               </div>
             </div>
           </Row>
-          {/* <Row>
-            <div className="linksWrapper">
-              {this.props.categories.map((category, index) => {
-                if (category.subCategories) {
-                  return (
-                    <Dropdown key={index}>
-                      <Dropdown.Toggle
-                        id={`${category.name}-category-dropdown`}
-                        className="dropdownToggle"
-                      >
-                        {category.name}
-                      </Dropdown.Toggle>
 
-                      <Dropdown.Menu
-                        className="dropdownMenu"
-                        renderOnMount={true}
-                      >
-                        {category.subCategories.map((subCategory) => (
-                          <Link href={`/blog/category/${subCategory}`}>
-                            <a>{subCategory}</a>
-                          </Link>
-                        ))}
-                      </Dropdown.Menu>
-                    </Dropdown>
-                  );
-                } else {
-                  return (
-                    <Link href={`/blog/category/${category.name}`} key={index}>
-                      <a className="link">{category.name}</a>
-                    </Link>
-                  );
-                }
-              })}
-            </div>
-          </Row> */}
           <Row>
             <div className="overflow-hidden">
               <div
@@ -147,6 +161,7 @@ class TopNav extends React.Component<TopNavProps, TopNavState> {
               </div>
             </div>
           </Row>
+
           <Row>
             <div className="showOnMobile">
               {this.props.nightMode && (

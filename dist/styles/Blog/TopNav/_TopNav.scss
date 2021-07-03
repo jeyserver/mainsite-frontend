@@ -22,7 +22,22 @@
       font-size: 18px;
       font-family: IRANSans;
 
+      margin-bottom: 0;
+
       color: #212240;
+    }
+    .title-under-links {
+      color: #4b4b4b;
+      font-size: 12px;
+      font-family: IRANSans;
+
+      margin-bottom: 0;
+      margin-top: 15px;
+
+      i {
+        margin: 0 8px;
+        font-size: 8px;
+      }
     }
   }
 
@@ -384,6 +399,9 @@
     .right {
       .headerTitle {
         color: #fffcfc;
+      }
+      .title-under-links {
+        color: #dddddd;
       }
     }
 

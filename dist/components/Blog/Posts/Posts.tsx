@@ -8,7 +8,7 @@ import {
   InputGroup,
   FormControl,
 } from 'react-bootstrap';
-import PostCategory from './PostCategory/PostCategory';
+import Post from './Post/Post';
 import { Button } from 'react-bootstrap';
 import Link from 'next/link';
 import MostViewedPosts from '../MostViewedPosts/MostViewedPosts';
@@ -18,7 +18,8 @@ import ReactPaginate from 'react-paginate';
 import { NextRouter, withRouter } from 'next/router';
 
 export interface BlogCategoryProps {
-  category: any;
+  param: { category?: string[]; tag?: string; search?: string };
+  topNavTitle: string;
   categories: any;
   posts: any;
   router: NextRouter;
@@ -75,16 +76,23 @@ class BlogCategory extends React.Component<
   }
 
   changePage(page) {
-    this.props.router.push({ query: { page: page.selected + 1 } });
+    this.props.router.push({
+      query: { ...this.props.router.query, page: page.selected + 1 },
+    });
   }
 
   render() {
+    const curPage = this.props.page.currentPage
+      ? this.props.page.currentPage - 1
+      : 0;
     return (
       <section className="blogCategory">
         <TopNav
           nightMode={true}
+          page="post"
           categories={this.props.categories}
-          title={this.props.category}
+          title={this.props.topNavTitle}
+          param={this.props.param}
         />
         <Container fluid>
           <Row>
@@ -93,7 +101,7 @@ class BlogCategory extends React.Component<
               <div className="posts">
                 {this.props.posts.mostViewedPosts.map((post, index) => {
                   if (index < 3) {
-                    return <PostCategory post={post} key={index} />;
+                    return <Post post={post} key={index} />;
                   }
                 })}
               </div>
@@ -104,14 +112,11 @@ class BlogCategory extends React.Component<
                 breakLabel={'...'}
                 breakClassName={'break-me'}
                 pageCount={this.props.page.all}
-                initialPage={
-                  this.props.page.currentPage
-                    ? this.props.page.currentPage - 1
-                    : 0
-                }
+                initialPage={curPage}
                 marginPagesDisplayed={2}
                 pageRangeDisplayed={5}
                 onPageChange={(page) => this.changePage(page)}
+                disableInitialCallback={true}
                 containerClassName={'pagination'}
                 activeClassName={'active'}
               />

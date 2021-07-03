@@ -39,6 +39,13 @@ class Index extends React.Component<IndexProps, IndexState> {
 export async function getServerSideProps(context) {
   const postTitle = context.query.post;
 
+  // 404
+  if (postTitle === 'tag') {
+    return {
+      notFound: true,
+    };
+  }
+
   const categoriesRes = await fetch(
     'https://jsonblob.com/api/jsonBlob/7bc3650b-d8c2-11eb-8f97-fba7e85c29a8'
   );

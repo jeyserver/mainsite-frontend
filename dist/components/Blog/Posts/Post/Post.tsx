@@ -3,17 +3,14 @@ import Link from 'next/link';
 import { Image } from 'react-bootstrap';
 import moment from 'jalali-moment';
 
-export interface PostCategoryProps {
+export interface PostProps {
   post: any;
 }
 
-export interface PostCategoryState {}
+export interface PostState {}
 
-class PostCategory extends React.Component<
-  PostCategoryProps,
-  PostCategoryState
-> {
-  constructor(props: PostCategoryProps) {
+class Post extends React.Component<PostProps, PostState> {
+  constructor(props: PostProps) {
     super(props);
     this.state = {};
   }
@@ -68,4 +65,4 @@ class PostCategory extends React.Component<
   }
 }
 
-export default PostCategory;
+export default Post;

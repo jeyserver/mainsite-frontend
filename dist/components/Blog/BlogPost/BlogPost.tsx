@@ -73,6 +73,7 @@ class BlogPost extends React.Component<BlogPostProps, BlogPostState> {
         <TopNav
           nightMode={true}
           categories={this.props.categories}
+          page="post"
           title="آموزش ها و مقالات کاربردی برای وبمستران"
         />
 

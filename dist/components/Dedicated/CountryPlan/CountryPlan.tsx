@@ -78,19 +78,18 @@ class CountryPlan extends React.Component<CountryPlanProps, CountryPlanState> {
   }
 
   getCpuLink(cpu: {
-    type: string;
     title: string;
     cores: number;
     threads: number;
     speed: number;
     num: number;
   }) {
-    if (cpu.type.toLowerCase() === 'intel') {
+    if (cpu.title.toLowerCase().lastIndexOf('intel') === 0) {
       return `https://ark.intel.com/search/?_charset_=UTF-8&q=${encodeURI(
         cpu.title
       )}`;
     }
-    if (cpu.type.toLowerCase() === 'amd') {
+    if (cpu.title.toLowerCase().lastIndexOf('amd') === 0) {
       return `https://www.amd.com/en/search?keyword=${encodeURI(cpu.title)}`;
     }
     return null;

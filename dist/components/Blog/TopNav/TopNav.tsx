@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { connect } from 'react-redux';
 import { toggleTheme } from '../../../redux/actions';
 import { Button } from 'react-bootstrap';
+import { NextRouter, withRouter } from 'next/router';
 
 interface param {
   category?: string[];
@@ -19,6 +20,7 @@ export interface TopNavProps {
   nightMode: boolean;
   store: { theme: string };
   toggleTheme: () => void;
+  router: NextRouter;
 }
 
 export interface TopNavState {}
@@ -41,6 +43,16 @@ class TopNav extends React.Component<TopNavProps, TopNavState> {
         }px)`;
       }
     }
+  }
+
+  submitSearchForm(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const form = e.currentTarget;
+    this.props.router
+      .push(`/blog/search?word=${encodeURI(form.word.value)}`)
+      .then(() => {
+        form.word.value = '';
+      });
   }
 
   render() {
@@ -107,9 +119,13 @@ class TopNav extends React.Component<TopNavProps, TopNavState> {
                   </button>
                 )}
 
-                <form className="searchForm">
+                <form
+                  className="searchForm"
+                  onSubmit={(e) => this.submitSearchForm(e)}
+                >
                   <input
                     type="text"
+                    name="word"
                     placeholder="جستجوی مطلب"
                     className="searchInput"
                   />
@@ -177,9 +193,13 @@ class TopNav extends React.Component<TopNavProps, TopNavState> {
                 </button>
               )}
 
-              <form className="searchForm">
+              <form
+                className="searchForm"
+                onSubmit={(e) => this.submitSearchForm(e)}
+              >
                 <input
                   type="text"
+                  name="word"
                   placeholder="جستجوی مطلب"
                   className="searchInput"
                 />
@@ -202,4 +222,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { toggleTheme })(TopNav);
+export default connect(mapStateToProps, { toggleTheme })(withRouter(TopNav));

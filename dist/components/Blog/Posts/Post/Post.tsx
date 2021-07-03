@@ -26,7 +26,7 @@ class Post extends React.Component<PostProps, PostState> {
               <i className="far fa-user"></i>
               <span>نویسنده: </span>
             </span>
-            <Link href="">
+            <Link href={`/blog/author/${this.props.post.author}`}>
               <a>{this.props.post.author}</a>
             </Link>
           </div>

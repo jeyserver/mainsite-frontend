@@ -1,0 +1,158 @@
+.view {
+  position: relative;
+  overflow: hidden;
+  font-family: IRANSans;
+  font-weight: 300;
+
+  img {
+    position: relative;
+    display: block;
+  }
+
+  .mask {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.75);
+    display: flex;
+    align-items: center;
+
+    > div {
+      > div {
+        > div {
+          @media screen and (max-width: 576px) {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+          }
+        }
+      }
+    }
+
+    .formWrapper {
+      margin-top: 3em;
+
+      @media screen and (max-width: 992px) {
+        margin-top: 0;
+      }
+
+      label {
+        font-family: IRANSans;
+        font-weight: bold;
+        margin-bottom: 1em;
+
+        @media screen and (max-width: 992px) {
+          font-size: 20px;
+        }
+
+        .textOrange {
+          color: #f27e0a;
+        }
+      }
+      .form {
+        display: flex;
+        align-items: center;
+        height: 48px;
+
+        @media screen and (max-width: 576px) {
+          flex-direction: column;
+          height: 100%;
+          width: 100%;
+        }
+
+        > div {
+          display: flex;
+          align-items: center;
+          flex-grow: 1;
+          height: 48px;
+
+          @media screen and (max-width: 576px) {
+            width: 100%;
+            margin-bottom: 15px;
+          }
+
+          > select {
+            width: max-content;
+            height: 48px;
+            direction: ltr;
+            border-radius: 0;
+            border: none;
+            border-left: none;
+
+            &:focus {
+              box-shadow: none;
+              border-color: #dddddd;
+            }
+          }
+          .inputGroup {
+            height: 48px;
+            display: flex;
+
+            > input {
+              height: 48px;
+              border-radius: 0;
+              border-left: none;
+              border-right: none;
+              direction: ltr;
+              padding-left: 0;
+
+              &:focus {
+                box-shadow: none;
+                border-color: #dddddd;
+              }
+            }
+            > div {
+              height: 48px;
+              border-right: none;
+
+              > span {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                direction: ltr;
+                background-color: #ffffff;
+                padding-right: 0;
+
+                border-radius: 0;
+                height: 100%;
+              }
+            }
+          }
+        }
+
+        > button {
+          width: 15em;
+          height: 48px;
+          color: #ffffff;
+          background-color: #f27e0a;
+          border: 1px solid #f27e0a;
+
+          @media screen and (max-width: 767px) {
+            width: 12em;
+          }
+          @media screen and (max-width: 576px) {
+            width: 100%;
+          }
+        }
+      }
+    }
+
+    .headerLeftImage {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      > img {
+        @media screen and (max-width: 576px) {
+          width: 300px;
+        }
+      }
+    }
+  }
+}

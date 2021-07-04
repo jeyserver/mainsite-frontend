@@ -2,7 +2,15 @@ import {
   RESTORE_AUTH_STATE,
   AUTHENTICATE,
   DEAUTHENTICATE,
+  SET_DOMAIN_FOR_SHOP,
 } from './constants/actionsConstants';
+
+export const setDomainForShopAction = (domain) => {
+  return {
+    type: SET_DOMAIN_FOR_SHOP,
+    payload: domain,
+  };
+};
 
 export const authenticateAction = (user) => {
   return {
@@ -21,6 +29,12 @@ export const restoreState = (authState) => {
   return {
     type: RESTORE_AUTH_STATE,
     payload: authState,
+  };
+};
+
+export const setDomainForShop = (domain) => {
+  return async (dispatch) => {
+    dispatch(setDomainForShopAction(domain));
   };
 };
 

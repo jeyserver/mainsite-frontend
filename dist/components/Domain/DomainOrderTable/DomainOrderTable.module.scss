@@ -1,0 +1,96 @@
+.orderTable {
+  margin-bottom: 5em;
+  border: 1px solid #24374a;
+  position: relative;
+  height: min-content;
+  @media screen and (max-width: 767px) {
+    margin-bottom: 1em;
+    border-left: none;
+    border-right: none;
+  }
+
+  > img {
+    position: absolute;
+    top: -15px;
+    left: -22px;
+
+    @media screen and (max-width: 991px) {
+      position: static;
+      float: left;
+      margin-top: 0.5em;
+      margin-left: 0.5em;
+    }
+  }
+
+  > .tableOrderTitle {
+    float: right;
+    font-weight: bold;
+    font-size: 20px;
+    margin-right: 1em;
+    margin-bottom: 3.4em;
+    text-align: right;
+    position: absolute;
+    top: 140px;
+    font-family: IRANSans;
+  }
+
+  > div {
+    margin-top: 16.5em;
+    color: #7b7b7b;
+    .table {
+      font-family: IRANSans;
+      margin-bottom: 0;
+
+      tr {
+        &:nth-of-type(2n + 1) {
+          background-color: #f9f9f9;
+        }
+      }
+
+      thead {
+        tr {
+          background-color: #ffffff !important;
+          th {
+            height: 63px;
+            border: 0;
+            vertical-align: middle;
+            text-align: center;
+            font-weight: 700;
+            font-size: 13px;
+            border-left: 1px solid #ddd;
+            color: rgb(123, 123, 123);
+
+            &:first-child {
+              @media screen and (max-width: 767px) {
+                border-right: none;
+              }
+            }
+          }
+        }
+      }
+
+      td {
+        text-align: center;
+        font-size: 13px;
+        font-weight: 400;
+        vertical-align: middle;
+        white-space: nowrap;
+        color: rgb(123, 123, 123);
+
+        &:first-child {
+          @media screen and (max-width: 767px) {
+            border-right: none;
+          }
+        }
+
+        > button {
+          color: #ffffff;
+          background-color: #5cb85c;
+          border-color: #4cae4c;
+          font-family: BYekan;
+          font-size: 14px;
+        }
+      }
+    }
+  }
+}

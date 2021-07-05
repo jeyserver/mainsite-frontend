@@ -1,10 +1,11 @@
 import * as React from 'react';
-import { Container, Row, Dropdown } from 'react-bootstrap';
+import { Container, Row, Dropdown, Accordion } from 'react-bootstrap';
 import Link from 'next/link';
 import { connect } from 'react-redux';
 import { toggleTheme } from '../../../redux/actions';
 import { Button } from 'react-bootstrap';
 import { NextRouter, withRouter } from 'next/router';
+import CategoryAccordion from './CategoryAccordion';
 
 interface param {
   category?: string[];
@@ -23,15 +24,23 @@ export interface TopNavProps {
   router: NextRouter;
 }
 
-export interface TopNavState {}
+export interface TopNavState {
+  isPageLoading: boolean;
+  showCategoriesDropDownOnMobile: boolean;
+}
 
 class TopNav extends React.Component<TopNavProps, TopNavState> {
   constructor(props: TopNavProps) {
     super(props);
-    this.state = {};
+    this.state = {
+      isPageLoading: false,
+      showCategoriesDropDownOnMobile: false,
+    };
+    this.hideDropdownOnMobile = this.hideDropdownOnMobile.bind(this);
   }
 
   componentDidMount() {
+    // For categories menu on desktop
     const scroller = document.querySelector('#top-nav-links-and-dropdowns');
     const dropDown = document.querySelectorAll('.top-nav-dropdown-menu') as any;
     scroller.addEventListener('scroll', checkScroll);
@@ -43,6 +52,31 @@ class TopNav extends React.Component<TopNavProps, TopNavState> {
         }px)`;
       }
     }
+
+    // watch page is loading
+    const handleStart = (url) =>
+      url !== this.props.router.asPath &&
+      this.setState({ isPageLoading: true });
+    const handleComplete = (url) =>
+      url === this.props.router.asPath &&
+      this.setState({ isPageLoading: false });
+
+    this.props.router.events.on('routeChangeStart', handleStart);
+    this.props.router.events.on('routeChangeComplete', handleComplete);
+    this.props.router.events.on('routeChangeError', handleComplete);
+  }
+
+  componentWillUnmount() {
+    const handleStart = (url) =>
+      url !== this.props.router.asPath &&
+      this.setState({ isPageLoading: true });
+    const handleComplete = (url) =>
+      url === this.props.router.asPath &&
+      this.setState({ isPageLoading: false });
+
+    this.props.router.events.off('routeChangeStart', handleStart);
+    this.props.router.events.off('routeChangeComplete', handleComplete);
+    this.props.router.events.off('routeChangeError', handleComplete);
   }
 
   submitSearchForm(e: React.FormEvent<HTMLFormElement>) {
@@ -53,6 +87,12 @@ class TopNav extends React.Component<TopNavProps, TopNavState> {
       .then(() => {
         form.word.value = '';
       });
+  }
+
+  hideDropdownOnMobile() {
+    this.setState({
+      showCategoriesDropDownOnMobile: false,
+    });
   }
 
   render() {
@@ -96,7 +136,7 @@ class TopNav extends React.Component<TopNavProps, TopNavState> {
     };
 
     return (
-      <section className="topNav">
+      <div className="topNav">
         <Container fluid="md">
           <Row>
             <div className="top">
@@ -128,6 +168,7 @@ class TopNav extends React.Component<TopNavProps, TopNavState> {
                     name="word"
                     placeholder="جستجوی مطلب"
                     className="searchInput"
+                    required
                   />
                   <button type="submit" className="searchBtn">
                     <i className="fas fa-search"></i>
@@ -137,7 +178,7 @@ class TopNav extends React.Component<TopNavProps, TopNavState> {
             </div>
           </Row>
 
-          <Row>
+          <Row className="d-none d-md-flex">
             <div className="overflow-hidden">
               <div
                 id="top-nav-links-and-dropdowns"
@@ -147,16 +188,23 @@ class TopNav extends React.Component<TopNavProps, TopNavState> {
                   if (category.subCategories) {
                     return (
                       <button className="item dropDownToggle" key={index}>
-                        {category.name}
+                        <Link
+                          href={`/blog/category/${encodeURI(category.name)}`}
+                          key={index}
+                        >
+                          <a>{category.name}</a>
+                        </Link>
                         <span className="top-nav-dropdown-menu">
                           {category.subCategories.map((subCategory, index) => (
                             <Link
-                              href={`/blog/category/${subCategory}`}
+                              href={`/blog/category/${encodeURI(
+                                subCategory.name
+                              )}`}
                               key={index}
                             >
                               <a>
                                 <i className="fas fa-angle-left"></i>
-                                {subCategory}
+                                {subCategory.name}
                               </a>
                             </Link>
                           ))}
@@ -169,7 +217,7 @@ class TopNav extends React.Component<TopNavProps, TopNavState> {
                         href={`/blog/category/${category.name}`}
                         key={index}
                       >
-                        <a className="item">{category.name}</a>
+                        <a className="link">{category.name}</a>
                       </Link>
                     );
                   }
@@ -177,41 +225,134 @@ class TopNav extends React.Component<TopNavProps, TopNavState> {
               </div>
             </div>
           </Row>
-
-          <Row>
-            <div className="showOnMobile">
-              {this.props.nightMode && (
-                <button
-                  className="nightModeBtn"
-                  onClick={this.props.toggleTheme}
-                >
-                  {this.props.store.theme === 'dark' ? (
-                    <i className="far fa-sun"></i>
-                  ) : (
-                    <i className="far fa-moon"></i>
-                  )}
-                </button>
-              )}
-
-              <form
-                className="searchForm"
-                onSubmit={(e) => this.submitSearchForm(e)}
-              >
-                <input
-                  type="text"
-                  name="word"
-                  placeholder="جستجوی مطلب"
-                  className="searchInput"
-                />
-                <button type="submit" className="searchBtn">
-                  <i className="fas fa-search"></i>
-                </button>
-              </form>
-            </div>
-          </Row>
         </Container>
+
+        <div className="show-categories-on-mobile">
+          <Dropdown
+            onToggle={(isOpen) =>
+              this.setState((prev) => {
+                return {
+                  showCategoriesDropDownOnMobile: isOpen,
+                };
+              })
+            }
+            show={this.state.showCategoriesDropDownOnMobile}
+          >
+            <Dropdown.Toggle className="categoriesToggle">
+              <div>
+                <span>دسته بندی مطالب</span>
+                {this.state.showCategoriesDropDownOnMobile ? (
+                  <i className="fas fa-chevron-up"></i>
+                ) : (
+                  <i className="fas fa-chevron-down"></i>
+                )}
+              </div>
+            </Dropdown.Toggle>
+
+            {!this.state.isPageLoading && (
+              <Dropdown.Menu className="categoriesMenu">
+                {this.props.categories.map((category, index) => {
+                  if (category.subCategories) {
+                    return (
+                      <CategoryAccordion
+                        changeDropdown={this.hideDropdownOnMobile}
+                        param={this.props.param}
+                        categoryName={category.name}
+                      >
+                        {category.subCategories.map((subCategory, index) => {
+                          if (subCategory.subCategories) {
+                            return (
+                              <CategoryAccordion
+                                changeDropdown={this.hideDropdownOnMobile}
+                                param={this.props.param}
+                                categoryName={category.name}
+                              >
+                                {subCategory.subCategories.map(
+                                  (insideSubCategory, index) => (
+                                    <Link
+                                      href={`/blog/category/${insideSubCategory.name}`}
+                                      key={insideSubCategory}
+                                    >
+                                      <a
+                                        className="linkInCategoryAccordion"
+                                        onClick={this.hideDropdownOnMobile}
+                                      >
+                                        {insideSubCategory.name}
+                                      </a>
+                                    </Link>
+                                  )
+                                )}
+                              </CategoryAccordion>
+                            );
+                          } else {
+                            return (
+                              <Link
+                                href={`/blog/category/${subCategory.name}`}
+                                key={index}
+                              >
+                                <a
+                                  className="linkInCategoryAccordion"
+                                  onClick={this.hideDropdownOnMobile}
+                                >
+                                  {subCategory.name}
+                                </a>
+                              </Link>
+                            );
+                          }
+                        })}
+                      </CategoryAccordion>
+                    );
+                  } else {
+                    return (
+                      <Link
+                        href={`/blog/category/${category.name}`}
+                        key={index}
+                      >
+                        <a className="item">
+                          <span onClick={this.hideDropdownOnMobile}>
+                            {category.name}
+                          </span>
+                        </a>
+                      </Link>
+                    );
+                  }
+                })}
+              </Dropdown.Menu>
+            )}
+          </Dropdown>
+        </div>
+
+        <div className="searchAndNightModeOnMobileWrapper">
+          <div className="showOnMobile">
+            {this.props.nightMode && (
+              <button className="nightModeBtn" onClick={this.props.toggleTheme}>
+                {this.props.store.theme === 'dark' ? (
+                  <i className="far fa-sun"></i>
+                ) : (
+                  <i className="far fa-moon"></i>
+                )}
+              </button>
+            )}
+
+            <form
+              className="searchForm"
+              onSubmit={(e) => this.submitSearchForm(e)}
+            >
+              <input
+                type="text"
+                name="word"
+                placeholder="جستجوی مطلب"
+                className="searchInput"
+                required
+              />
+              <button type="submit" className="searchBtn">
+                <i className="fas fa-search"></i>
+              </button>
+            </form>
+          </div>
+        </div>
         <div className="line"></div>
-      </section>
+      </div>
     );
   }
 }

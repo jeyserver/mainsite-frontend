@@ -48,9 +48,6 @@ export async function getServerSideProps(context) {
   const category = context.query.category;
   const currentPage = context.query.page ? context.query.page : null;
 
-  const topNavTitle = category;
-  const param = { category: [category] };
-
   const postsRes = await fetch(
     'https://jsonblob.com/api/jsonBlob/d8eccd84-d821-11eb-9f33-07821a14b37b'
   );
@@ -60,6 +57,9 @@ export async function getServerSideProps(context) {
     'https://jsonblob.com/api/jsonBlob/7bc3650b-d8c2-11eb-8f97-fba7e85c29a8'
   );
   const categoriesData = await categoriesRes.json();
+
+  const topNavTitle = category;
+  const param = { category: categoriesData.paths[category] };
 
   return {
     props: {

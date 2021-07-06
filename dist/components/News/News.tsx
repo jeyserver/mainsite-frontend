@@ -87,7 +87,7 @@ class News extends React.Component<NewsProps, NewsState> {
                         </Col>
                         <Col md={9}>
                           <div className={styles.mediaBody}>
-                            <Link href={`/fa/news/view/${post.id}`}>
+                            <Link href={`/news/view/${post.id}`}>
                               <a>
                                 <h4 className={styles.mediaHeading}>
                                   {post.title}
@@ -96,7 +96,7 @@ class News extends React.Component<NewsProps, NewsState> {
                             </Link>
                             <ul className={styles.list}>
                               <li>
-                                <Link href={`/fa/news/author/${post.user.id}`}>
+                                <Link href={`/news/author/${post.user.id}`}>
                                   <a>
                                     <i className="fa fa-user" />{' '}
                                     {post.user.name}{' '}
@@ -182,9 +182,7 @@ class News extends React.Component<NewsProps, NewsState> {
                     </button>
 
                     <button className={styles.currentPage}>
-                      <Link href="/fisrtone">
-                        <a>{currentPage}</a>
-                      </Link>
+                      <span>{currentPage}</span>
                     </button>
 
                     <button

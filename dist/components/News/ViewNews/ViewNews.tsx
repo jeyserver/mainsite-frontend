@@ -168,16 +168,14 @@ class ViewNews extends React.Component<ViewNewsProps, ViewNewsState> {
                     : 'بدون نظر'}{' '}
                 </div>
 
-                <div className={styles.imgWrapper}>
-                  <Image
-                    src={
-                      this.props.postData.image
-                        ? `${process.env.SCHEMA}://${process.env.DOMAIN}/packages/news/${this.props.postData.image}`
-                        : '/images/defaultimage.jpg'
-                    }
-                    alt={this.props.postData.title}
-                  />
-                </div>
+                {this.props.postData.image && (
+                  <div className={styles.imgWrapper}>
+                    <Image
+                      src={this.props.postData.image}
+                      alt={this.props.postData.title}
+                    />
+                  </div>
+                )}
 
                 <div
                   className={styles.newsText}

@@ -13,7 +13,6 @@
 
     a {
       color: #00db40;
-      cursor: pointer;
 
       &:hover {
         color: #c96a00;
@@ -65,12 +64,19 @@
             display: block;
             padding: 11px 25px;
             color: #fff;
+            transition: all 0.4s ease;
           }
 
           &.active {
             background-color: #3dc4e4;
             > a {
               color: #fff;
+            }
+          }
+
+          &:hover {
+            > a {
+              color: #10ffbc;
             }
           }
         }
@@ -148,5 +154,30 @@
       //   background-color: transparent;
       // }
     }
+  }
+}
+
+.stickyNav {
+  z-index: 2;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin: 30px 0;
+  background-color: #f8f8f8;
+  max-height: 106px;
+  transition: top 0.5s;
+
+  @media screen and (max-width: 768px) {
+    position: static !important;
+    margin: 30px 0 !important;
+    max-height: max-content;
+
+    li {
+      float: unset;
+    }
+  }
+
+  &::stuck {
+    position: fixed;
   }
 }

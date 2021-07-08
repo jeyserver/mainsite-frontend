@@ -6,6 +6,7 @@ import VpsPricing from '../../components/VpsPricing/VpsPricing';
 
 export interface IndexProps {
   vpsData: any;
+  topNav: any;
 }
 
 export interface IndexState {}
@@ -26,7 +27,11 @@ class Index extends React.Component<IndexProps, IndexState> {
 
         <Navbar />
 
-        <VpsPricing vpsData={this.props.vpsData} type="professional" />
+        <VpsPricing
+          vpsData={this.props.vpsData}
+          topNav={this.props.topNav}
+          type="professional"
+        />
 
         <Footer />
       </div>
@@ -44,8 +49,14 @@ export async function getServerSideProps(context) {
   );
   const vpsData = await vpsDataRes.json();
 
+  const topNavRes = await fetch(
+    'https://jsonblob.com/api/jsonBlob/3156ddcb-df56-11eb-b7ed-bd16078826a6'
+  );
+
+  const topNav = await topNavRes.json();
+
   return {
-    props: { vpsData },
+    props: { vpsData, topNav },
   };
 }
 

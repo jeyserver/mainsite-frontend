@@ -1,5 +1,12 @@
 import * as React from 'react';
-import { Row, Col, Table } from 'react-bootstrap';
+import {
+  Row,
+  Col,
+  Table,
+  OverlayTrigger,
+  Tooltip,
+  Button,
+} from 'react-bootstrap';
 import Link from 'next/link';
 import styles from './CountryPricing.module.scss';
 import classNames from 'classnames';
@@ -56,22 +63,41 @@ class CountryPricing extends React.Component<
   render() {
     return (
       <Row
-        id={`server_vps_professional_${this.props.countryData.country_title_en}`}
+        id={`server_vps_${this.props.type}_${this.props.countryData.country_title_en}`}
       >
         <Col xs={12}>
           <div className={styles.tittleLine}>
             <h5>
               سرور مجازی {this.getType(this.props.type)} <br />
-              <img
-                className="tooltips"
-                src={this.props.countryData.flag}
-                alt={this.props.countryData.country_title_en}
-              />
+              <OverlayTrigger
+                placement="top"
+                overlay={
+                  <Tooltip
+                    id={`${this.props.countryData.country_title_en}-tooltip`}
+                    className={styles.tooltip}
+                  >
+                    {this.props.countryData.country_title_en}
+                  </Tooltip>
+                }
+              >
+                <img
+                  src={this.props.countryData.flag}
+                  alt={this.props.countryData.country_title_en}
+                />
+              </OverlayTrigger>
               {this.props.countryData.country}
             </h5>
             <div className={styles.divider}>
               <div />
             </div>
+            {this.props.countryData.info && (
+              <div
+                className={styles.content}
+                dangerouslySetInnerHTML={{
+                  __html: this.props.countryData.info,
+                }}
+              ></div>
+            )}
           </div>
           <Table className={styles.table}>
             <thead>
@@ -232,16 +258,50 @@ class CountryPricing extends React.Component<
                     سالیانه{' '}
                   </td>
                   <td>
-                    <Link href={`/order/server/vps/${plan.price.id}`}>
-                      <a className={styles.orderLink}>
-                        <img
-                          className="btn-ico tooltips"
-                          src={this.props.countryData.flag}
-                          alt={this.props.countryData.country_title_en}
-                        />
-                        سفارش{' '}
-                      </a>
-                    </Link>
+                    {plan.active ? (
+                      <Link href={`/order/server/vps/${plan.id}`}>
+                        <a className={styles.orderLink}>
+                          <OverlayTrigger
+                            placement="top"
+                            overlay={
+                              <Tooltip
+                                id={`${this.props.countryData.country_title_en}-tooltip`}
+                                className={styles.tooltip}
+                              >
+                                {this.props.countryData.country_title_en}
+                              </Tooltip>
+                            }
+                          >
+                            <img
+                              src={this.props.countryData.flag}
+                              alt={this.props.countryData.country_title_en}
+                            />
+                          </OverlayTrigger>
+                          <span>سفارش</span>{' '}
+                        </a>
+                      </Link>
+                    ) : (
+                      <OverlayTrigger
+                        overlay={
+                          <Tooltip
+                            id="tooltip-disabled"
+                            className={styles.tooltip}
+                          >
+                            این پلن در حال حاظر برای فروش فعال نمیباشد
+                          </Tooltip>
+                        }
+                      >
+                        <span className={styles.tooltipWrapper}>
+                          <Button className={styles.orderLink} disabled>
+                            <img
+                              src={this.props.countryData.flag}
+                              alt={this.props.countryData.country_title_en}
+                            />
+                            سفارش{' '}
+                          </Button>
+                        </span>
+                      </OverlayTrigger>
+                    )}
                   </td>
                 </tr>
               ))}

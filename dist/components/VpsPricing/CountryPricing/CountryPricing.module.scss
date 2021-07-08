@@ -40,6 +40,13 @@
       margin: 0 auto;
     }
   }
+
+  > .content {
+    margin-top: 30px;
+    p {
+      text-align: right;
+    }
+  }
 }
 
 .table {
@@ -264,13 +271,13 @@
           border: 1px solid transparent;
           padding: 6px 12px;
           font-size: 14px;
-          line-height: 1.42857143;
           border-radius: 4px;
           user-select: none;
           color: #fff;
           background-color: #5bc0de;
           border-color: #46b8da;
-          display: block;
+          display: grid;
+          grid-template-columns: 30px 1fr;
           width: 100%;
           font-family: BYekan;
 
@@ -294,15 +301,35 @@
             vertical-align: middle;
             position: relative;
             margin-left: 9px;
-            padding-left: 9px;
             float: right;
-            border-left: 1px solid hsla(0, 0%, 100%, 0.29);
             line-height: 9px;
             font-size: 15px;
             height: 24px;
           }
+          > span {
+            border-right: 1px solid hsla(0, 0%, 100%, 0.29);
+          }
         }
       }
     }
+  }
+}
+
+.tooltipWrapper {
+  display: inline-block;
+  width: 100%;
+}
+
+.tooltip {
+  &::after {
+    color: #000000;
+    content: '\f0d7';
+    font-weight: 900;
+    font-family: 'Font Awesome 5 Free';
+    font-size: 15px;
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translate(-50%);
   }
 }

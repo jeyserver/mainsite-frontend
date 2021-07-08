@@ -6,9 +6,107 @@ import CountryPricing from './CountryPricing/CountryPricing';
 import styles from './VpsPricing.module.scss';
 import classNames from 'classnames';
 
+const renderTopNavLinks = (type, data) => {
+  switch (type) {
+    case 'professional':
+      return (
+        <ul className={styles.nav}>
+          {data.professionals.map((nav) => (
+            <li key={nav.title_en}>
+              <a href={`#server_vps_professional_${nav.title_en}`}>
+                سرور مجازی حرفه ای {nav.title_fa}
+              </a>
+            </li>
+          ))}
+          {data.economics.map((nav) => (
+            <li key={nav.title_en}>
+              <Link
+                href={`/server/vps/economic#server_vps_economic_${nav.title_en}`}
+              >
+                <a>سرور مجازی اقتصادی {nav.title_fa}</a>
+              </Link>
+            </li>
+          ))}
+          {data.storages.map((nav) => (
+            <li key={nav.title_en}>
+              <Link
+                href={`/server/vps/storage#server_vps_storage_${nav.title_en}`}
+              >
+                <a>سرور مجازی حجیم {nav.title_fa}</a>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      );
+    case 'storage':
+      return (
+        <ul className={styles.nav}>
+          {data.storages.map((nav) => (
+            <li key={nav.title_en}>
+              <a href={`#server_vps_storage_${nav.title_en}`}>
+                سرور مجازی حجیم {nav.title_fa}
+              </a>
+            </li>
+          ))}
+          {data.professionals.map((nav) => (
+            <li key={nav.title_en}>
+              <Link
+                href={`/server/vps/professional#server_vps_professional_${nav.title_en}`}
+              >
+                <a>سرور مجازی حرفه ای {nav.title_fa}</a>
+              </Link>
+            </li>
+          ))}
+          {data.economics.map((nav) => (
+            <li key={nav.title_en}>
+              <Link
+                href={`/server/vps/economic#server_vps_economic_${nav.title_en}`}
+              >
+                <a>سرور مجازی اقتصادی {nav.title_fa}</a>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      );
+    case 'economic':
+      return (
+        <ul className={styles.nav}>
+          {data.economics.map((nav) => (
+            <li key={nav.title_en}>
+              <a href={`#server_vps_economic_${nav.title_en}`}>
+                سرور مجازی اقتصادی {nav.title_fa}
+              </a>
+            </li>
+          ))}
+          {data.professionals.map((nav) => (
+            <li key={nav.title_en}>
+              <Link
+                href={`/server/vps/professional#server_vps_professional_${nav.title_en}`}
+              >
+                <a>سرور مجازی حرفه ای {nav.title_fa}</a>
+              </Link>
+            </li>
+          ))}
+          {data.storages.map((nav) => (
+            <li key={nav.title_en}>
+              <Link
+                href={`/server/vps/storage#server_vps_storage_${nav.title_en}`}
+              >
+                <a>سرور مجازی حجیم {nav.title_fa}</a>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      );
+    default:
+      break;
+  }
+};
+
 export interface VpsPricingProps {
   vpsData: any;
   type: 'professional' | 'storage' | 'economic';
+  topNav: any;
 }
 
 export interface VpsPricingState {}
@@ -35,10 +133,18 @@ class VpsPricing extends React.Component<VpsPricingProps, VpsPricingState> {
           nav.style.top = '0px';
         } else {
           // upscroll code
-          nav.style.top = '90px';
+          nav.style.top = '80px';
         }
 
         let fromTop = window.scrollY;
+
+        if (fromTop > 750) {
+          nav.style.position = 'fixed';
+          nav.style.margin = '0';
+        } else {
+          nav.style.position = 'static';
+          nav.style.margin = '30px 0';
+        }
 
         mainNavLinks.forEach((link: any) => {
           let section = document.querySelector(link.hash);
@@ -64,7 +170,11 @@ class VpsPricing extends React.Component<VpsPricingProps, VpsPricingState> {
   render() {
     return (
       <section>
-        <PagesHeader title="سرور مجازی" />
+        <PagesHeader
+          title={
+            this.props.type === 'storage' ? 'سرور مجازی حجیم' : 'سرور مجازی'
+          }
+        />
         <div className={styles.mainContent}>
           <Container fluid="lg">
             <div className={styles.innerHard}>
@@ -133,57 +243,9 @@ class VpsPricing extends React.Component<VpsPricingProps, VpsPricingState> {
                   </div>
                 </div>
               </div>
-              <Row
-                style={{
-                  position: 'sticky',
-                  top: '0',
-                  margin: '30px 0',
-                  backgroundColor: '#f8f8f8',
-                  maxHeight: '106px',
-                }}
-                id="vps-nav"
-              >
+              <Row className={styles.stickyNav} id="vps-nav">
                 <Col xs={12} className={styles.mnavigation}>
-                  <ul className={styles.nav}>
-                    <li>
-                      <a
-                        href="#server_vps_professional_France"
-                        data-active="true"
-                      >
-                        سرور مجازی حرفه ای فرانسه
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#server_vps_professional_Germany">
-                        سرور مجازی حرفه ای آلمان
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#server_vps_professional_Iran">
-                        سرور مجازی حرفه ای ایران
-                      </a>
-                    </li>
-                    <li>
-                      <a href="/server/vps/economic#server_vps_economic_fr">
-                        سرور مجازی اقتصادی فرانسه
-                      </a>
-                    </li>
-                    <li>
-                      <a href="/server/vps/economic#server_vps_economic_de">
-                        سرور مجازی اقتصادی آلمان
-                      </a>
-                    </li>
-                    <li>
-                      <a href="/server/vps/economic#server_vps_economic_ir">
-                        سرور مجازی اقتصادی ایران
-                      </a>
-                    </li>
-                    <li>
-                      <a href="/server/vps/storage#server_vps_storage_fr">
-                        سرور مجازی حجیم فرانسه
-                      </a>
-                    </li>
-                  </ul>
+                  {renderTopNavLinks(this.props.type, this.props.topNav)}
                 </Col>
               </Row>
               {this.props.vpsData.map((countryData) => (

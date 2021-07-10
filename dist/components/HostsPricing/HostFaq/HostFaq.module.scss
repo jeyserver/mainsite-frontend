@@ -1,0 +1,122 @@
+.title {
+  margin: 30px 0;
+  text-align: center;
+
+  a {
+    h5 {
+      text-align: center;
+      margin-bottom: 10px;
+      line-height: 24px;
+      letter-spacing: 1px;
+      margin-top: 0;
+      font-size: 15px;
+      font-weight: 400;
+      font-family: BKoodakBold;
+      color: #313131;
+    }
+    &:hover {
+      h5 {
+        color: #00c6ff;
+      }
+    }
+  }
+
+  > .divider {
+    color: #313131;
+    line-height: 20px;
+    direction: rtl;
+    font-family: IRANSans;
+    text-align: center;
+    box-sizing: border-box;
+    font-size: 85%;
+    width: 100%;
+    height: 1px;
+    background-color: #e1e1e1;
+    margin-bottom: -1px;
+
+    > div {
+      width: 98px;
+      height: 1px;
+      background-color: #00c6ff;
+      margin: 0 auto;
+    }
+  }
+}
+
+.faqBox {
+  color: #313131;
+  font-size: 13px;
+  line-height: 20px;
+  direction: rtl;
+  box-sizing: border-box;
+  margin-top: 15px;
+  overflow: hidden;
+  zoom: 1;
+  margin-bottom: 25px;
+
+  .body {
+    font-family: Tahoma, sans-serif;
+    color: #313131;
+    font-size: 13px;
+    line-height: 20px;
+    direction: rtl;
+    box-sizing: border-box;
+    overflow: hidden;
+    display: table-cell;
+    vertical-align: top;
+
+    .question {
+      direction: rtl;
+      box-sizing: border-box;
+      font-weight: 400;
+      font-size: 17px;
+      line-height: 24px;
+      margin-top: 0;
+      margin-bottom: 5px;
+      letter-spacing: 0;
+      color: #333;
+      font-family: BKoodakBold;
+    }
+
+    .answer {
+      color: #313131;
+      font-size: 13px;
+      line-height: 20px;
+      direction: rtl;
+      box-sizing: border-box;
+      position: relative;
+      min-height: 1px;
+      float: right;
+      margin-right: 8.33333333%;
+      margin-left: 0;
+      border: 1px solid #eee;
+      border-radius: 3px;
+      padding: 10px 15px;
+      font-family: IRANSans;
+
+      @media screen and (max-width: 767px) {
+        margin-right: 0;
+      }
+      p {
+        color: #717171;
+        text-align: justify;
+        line-height: 24px;
+        margin: 0 0 10px;
+      }
+    }
+  }
+}
+
+.moreQLink {
+  display: block;
+  text-align: center;
+  font-size: 25px;
+  font-family: BYekan;
+  color: #337ab7;
+  margin: 15px;
+  margin-bottom: 40px;
+
+  &:hover {
+    color: #337ab7;
+  }
+}

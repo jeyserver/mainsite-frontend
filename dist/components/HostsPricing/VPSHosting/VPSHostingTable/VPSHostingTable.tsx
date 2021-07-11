@@ -164,6 +164,7 @@ class SharedHostingTable extends React.Component<
                 >
                   <th style={{ lineHeight: '50px' }}>Ram</th>
                 </OverlayTrigger>
+                <th>آی پی اختصاصی</th>
                 <th>وب سرور</th>
                 <th>هارد سرور</th>
                 <th style={{ lineHeight: '50px' }}>هزینه راه اندازی</th>
@@ -209,17 +210,31 @@ class SharedHostingTable extends React.Component<
                       [styles.open]: this.state.isMoreInfoOpen,
                     })}
                   >
-                    {panel.park_domains} عدد
+                    {panel.park_domains === '-' ? (
+                      <span className={styles.jUnlimited}>بدون محدودیت</span>
+                    ) : (
+                      `${panel.park_domains} عدد`
+                    )}
                   </td>
 
-                  <td>{panel.additional_sites} عدد</td>
+                  <td>
+                    {panel.additional_sites === '-' ? (
+                      <span className={styles.jUnlimited}>بدون محدودیت</span>
+                    ) : (
+                      `${panel.additional_sites} عدد`
+                    )}
+                  </td>
 
                   <td
                     className={classNames(styles.jHidden, {
                       [styles.open]: this.state.isMoreInfoOpen,
                     })}
                   >
-                    {panel.subdomains}
+                    {panel.subdomains === '-' ? (
+                      <span className={styles.jUnlimited}>بدون محدودیت</span>
+                    ) : (
+                      `${panel.subdomains} عدد`
+                    )}
                   </td>
                   <td
                     className={classNames(styles.jHidden, {
@@ -342,7 +357,11 @@ class SharedHostingTable extends React.Component<
                     )}
                   </td>
                   <td>
-                    {panel.cpu.value}
+                    {panel.cpu.value === '-' ? (
+                      <span className={styles.jUnlimited}>بدون محدودیت</span>
+                    ) : (
+                      `${panel.cpu.value}`
+                    )}
                     <br />
                     <div className={styles.scoreWrapper}>
                       <ReactStars
@@ -363,7 +382,11 @@ class SharedHostingTable extends React.Component<
                     </div>
                   </td>
                   <td>
-                    {panel.ram.value}
+                    {panel.ram.value === '-' ? (
+                      <span className={styles.jUnlimited}>بدون محدودیت</span>
+                    ) : (
+                      `${panel.ram.value}`
+                    )}
                     <br />
                     <div className={styles.scoreWrapper}>
                       <ReactStars
@@ -383,15 +406,24 @@ class SharedHostingTable extends React.Component<
                       />
                     </div>
                   </td>
+                  <td>
+                    {panel.dedicated_IP ? (
+                      <i
+                        className={classNames(
+                          'far fa-check-square',
+                          styles.check
+                        )}
+                      ></i>
+                    ) : (
+                      <i className="fa fa-times fa-lg" />
+                    )}
+                  </td>
                   <td>{panel.web_server}</td>
                   <td>{panel.hard_server}</td>
                   <td>
-                    {this.addCommas(50000)} {panel.currency.title} ماهیانه
+                    {this.addCommas(panel.price)} {panel.currency.title} ماهیانه
                     <br />
                     یکبار پرداخت ماه اول
-                    {/* {panel.startـup_costs.first_month_payment &&
-                      'یکبار پرداخت ماه اول'}{' '}
-                    سالیانه */}
                   </td>
                   <td>
                     {this.addCommas(panel.price)} {panel.currency.title} ماهیانه

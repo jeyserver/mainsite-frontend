@@ -11,15 +11,11 @@ import Link from 'next/link';
 import styles from './SharedHostingTable.module.scss';
 import ReactStars from 'react-rating-stars-component';
 import classNames from 'classnames';
-
-type os = 'windows' | 'linux';
-type planType = 'standard' | 'professional';
-
-type typeSt = `${os}_${planType}`;
+import { page, getPage } from '../utils';
 
 export interface SharedHostingTableProps {
   data: any;
-  type: typeSt;
+  page: page;
 }
 
 export interface SharedHostingTableState {
@@ -53,31 +49,16 @@ class SharedHostingTable extends React.Component<
     return str.join('.');
   }
 
-  getType(type: typeSt) {
-    switch (type) {
-      case 'linux_professional':
-        return 'لینوکس حرفه ای';
-      case 'linux_standard':
-        return 'لینوکس ساده';
-      case 'windows_professional':
-        return 'ویندوز حرفه ای';
-      case 'windows_standard':
-        return 'ویندوز ساده';
-      default:
-        return '';
-    }
-  }
-
   render() {
     return (
       <Row
-        id={`server_vps_${this.props.type}_${this.props.data.license_en}_${this.props.data.country_name_en}`}
+        id={`${this.props.page}_${this.props.data.country_name_en}_${this.props.data.license_en}`}
       >
         <Col xs={12}>
           <div className={styles.tittleLine}>
             <h5>
-              میزبانی {this.getType(this.props.type)}{' '}
-              {this.props.data.license_fa} <br />
+              میزبانی {getPage(this.props.page)} {this.props.data.license_fa}
+              <br />
               <OverlayTrigger
                 placement="top"
                 overlay={
@@ -94,10 +75,9 @@ class SharedHostingTable extends React.Component<
                     src={this.props.data.flag}
                     alt={this.props.data.country_name_en}
                   />
-                  {this.props.data.country_name_fa}
                 </span>
               </OverlayTrigger>
-              {this.props.data.country}
+              {this.props.data.country_name_fa}
             </h5>
             <div className={styles.divider}>
               <div />
@@ -281,17 +261,30 @@ class SharedHostingTable extends React.Component<
                       [styles.open]: this.state.isMoreInfoOpen,
                     })}
                   >
-                    {panel.park_domains} عدد
+                    {panel.park_domains === '-' ? (
+                      <span className={styles.jUnlimited}>بدون محدودیت</span>
+                    ) : (
+                      `${panel.park_domains} عدد`
+                    )}
                   </td>
 
-                  <td>{panel.additional_sites} عدد</td>
-
+                  <td>
+                    {panel.additional_sites === '-' ? (
+                      <span className={styles.jUnlimited}>بدون محدودیت</span>
+                    ) : (
+                      `${panel.additional_sites} عدد`
+                    )}
+                  </td>
                   <td
                     className={classNames(styles.jHidden, {
                       [styles.open]: this.state.isMoreInfoOpen,
                     })}
                   >
-                    {panel.subdomains}
+                    {panel.subdomains === '-' ? (
+                      <span className={styles.jUnlimited}>بدون محدودیت</span>
+                    ) : (
+                      `${panel.subdomains} عدد`
+                    )}
                   </td>
                   <td
                     className={classNames(styles.jHidden, {
@@ -414,7 +407,11 @@ class SharedHostingTable extends React.Component<
                     )}
                   </td>
                   <td>
-                    {panel.cpu.value}
+                    {panel.cpu.value === '-' ? (
+                      <span className={styles.jUnlimited}>بدون محدودیت</span>
+                    ) : (
+                      `${panel.cpu.value}`
+                    )}
                     <br />
                     <div className={styles.scoreWrapper}>
                       <ReactStars
@@ -435,7 +432,11 @@ class SharedHostingTable extends React.Component<
                     </div>
                   </td>
                   <td>
-                    {panel.ram.value}
+                    {panel.ram.value === '-' ? (
+                      <span className={styles.jUnlimited}>بدون محدودیت</span>
+                    ) : (
+                      `${panel.ram.value}`
+                    )}
                     <br />
                     <div className={styles.scoreWrapper}>
                       <ReactStars
@@ -456,7 +457,11 @@ class SharedHostingTable extends React.Component<
                     </div>
                   </td>
                   <td>
-                    {panel.io.value}
+                    {panel.io.value === '-' ? (
+                      <span className={styles.jUnlimited}>بدون محدودیت</span>
+                    ) : (
+                      `${panel.io.value}`
+                    )}
                     <br />
                     <div className={styles.scoreWrapper}>
                       <ReactStars
@@ -477,7 +482,11 @@ class SharedHostingTable extends React.Component<
                     </div>
                   </td>
                   <td>
-                    {panel.entry_process.value}
+                    {panel.entry_process.value === '-' ? (
+                      <span className={styles.jUnlimited}>بدون محدودیت</span>
+                    ) : (
+                      `${panel.entry_process.value}`
+                    )}
                     <br />
                     <div className={styles.scoreWrapper}>
                       <ReactStars

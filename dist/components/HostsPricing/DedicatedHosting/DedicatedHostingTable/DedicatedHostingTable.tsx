@@ -380,24 +380,15 @@ class DedicatedHostingTable extends React.Component<
                   <td>{panel.web_server}</td>
                   <td>{panel.hard_server}</td>
                   <td>
-                    {this.addCommas(50000)} {panel.currency.title} ماهیانه
+                    {this.addCommas(panel.price)} {panel.currency.title} ماهیانه
                     <br />
                     یکبار پرداخت ماه اول
-                    {/* {panel.startـup_costs.first_month_payment &&
-                      'یکبار پرداخت ماه اول'}{' '}
-                    سالیانه */}
                   </td>
-                  <td>
+                  <td style={{ height: '67px' }}>
                     {this.addCommas(panel.price)} {panel.currency.title} ماهیانه
-                    <br />
-                    {this.addCommas(panel.price * 12)} {panel.currency.title}{' '}
-                    سالیانه
                   </td>
-                  <td>
+                  <td style={{ height: '67px' }}>
                     {this.addCommas(panel.price)} {panel.currency.title} ماهیانه
-                    <br />
-                    {this.addCommas(panel.price * 12)} {panel.currency.title}{' '}
-                    سالیانه
                   </td>
                   <td>
                     <div className={styles.btnsWrapper}>

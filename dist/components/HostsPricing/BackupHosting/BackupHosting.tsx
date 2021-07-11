@@ -79,7 +79,7 @@ class BackupHosting extends React.Component<
   render() {
     return (
       <section>
-        <PagesHeader title="هاست دانلود" />
+        <PagesHeader title="هاست بکاپ" />
 
         <Container>
           <div className={styles.mainContent}>
@@ -144,7 +144,7 @@ class BackupHosting extends React.Component<
                 {this.props.backupHosts.map((panels, index) => (
                   <li key={panels.country_name_en}>
                     <a href={`#${panels.country_name_en}`}>
-                      هاست دانلود {panels.country_name_fa}
+                      هاست پشتیبان {panels.country_name_fa}
                     </a>
                   </li>
                 ))}

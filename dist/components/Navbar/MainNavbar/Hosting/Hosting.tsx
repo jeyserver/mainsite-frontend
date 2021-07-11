@@ -37,13 +37,13 @@ class Hosting extends React.Component<HostingProps, HostingState> {
                     </h3>
                     <ul className={styles.list}>
                       <li>
-                        <Link href="#">
+                        <Link href="/hosting/linux/standard">
                           <a>هاست اشتراکی لینوکس ساده</a>
                         </Link>
                       </li>
                       <li>
-                        <Link href="#">
-                          <a href="">هاست اشتراکی لینوکس حرفه ای</a>
+                        <Link href="/hosting/linux/professional">
+                          <a>هاست اشتراکی لینوکس حرفه ای</a>
                         </Link>
                       </li>
                     </ul>
@@ -53,20 +53,20 @@ class Hosting extends React.Component<HostingProps, HostingState> {
                     </h3>
                     <ul className={styles.list}>
                       <li>
-                        <Link href="#">
+                        <Link href="/hosting/windows/standard">
                           <a>هاست اشتراکی ویندوز ساده</a>
                         </Link>
                       </li>
                       <li>
-                        <Link href="#">
-                          <a href="">هاست اشتراکی ویندوز حرفه ای</a>
+                        <Link href="/hosting/windows/professional">
+                          <a>هاست اشتراکی ویندوز حرفه ای</a>
                         </Link>
                       </li>
                     </ul>
                   </Col>
                   <Col xs={12} md={6} className={styles.mildleCol}>
                     <div>
-                      <Link href="#">
+                      <Link href="/hosting/linux/vps">
                         <a>
                           <h3
                             className={`${styles.midleTitle} ${styles.firstTitle}`}
@@ -76,7 +76,7 @@ class Hosting extends React.Component<HostingProps, HostingState> {
                           </h3>
                         </a>
                       </Link>
-                      <Link href="#">
+                      <Link href="/hosting/linux/dedicated">
                         <a>
                           <h3 className={styles.midleTitle}>
                             <i className="fas fa-server"></i>
@@ -84,7 +84,7 @@ class Hosting extends React.Component<HostingProps, HostingState> {
                           </h3>
                         </a>
                       </Link>
-                      <Link href="#">
+                      <Link href="/hosting/file">
                         <a>
                           <h3 className={styles.midleTitle}>
                             <i className="fas fa-download"></i>
@@ -92,7 +92,7 @@ class Hosting extends React.Component<HostingProps, HostingState> {
                           </h3>
                         </a>
                       </Link>
-                      <Link href="#">
+                      <Link href="/hosting/backup">
                         <a>
                           <h3 className={styles.midleTitle}>
                             <i className="fas fa-database"></i>
@@ -100,7 +100,7 @@ class Hosting extends React.Component<HostingProps, HostingState> {
                           </h3>
                         </a>
                       </Link>
-                      <Link href="#">
+                      <Link href="/reseller/hosting/linux">
                         <a>
                           <h3 className={styles.midleTitle}>
                             <i className="fas fa-university"></i>

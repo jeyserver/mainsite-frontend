@@ -70,10 +70,9 @@ class DownloadHostingTable extends React.Component<
                     src={this.props.data.flag}
                     alt={this.props.data.country_name_en}
                   />
-                  {this.props.data.country_name_fa}
                 </span>
               </OverlayTrigger>
-              {this.props.data.country}
+              {this.props.data.country_name_fa}
             </h5>
             <div className={styles.divider}>
               <div />

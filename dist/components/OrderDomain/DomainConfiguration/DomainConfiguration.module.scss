@@ -1,0 +1,64 @@
+.domainConfiguration {
+  .title {
+    margin-bottom: 10px;
+    font-family: BYekan, sans-serif;
+    margin-top: 0;
+    font-weight: 400;
+    line-height: 36px;
+    letter-spacing: 1px;
+    font-size: 25px;
+    padding-top: 25px;
+    border-bottom: 1px dashed #3dc4e4;
+  }
+
+  .info {
+    font-size: 13px;
+    font-family: BYekan, sans-serif;
+    margin: 0 0 10px;
+    color: #717171;
+    line-height: 24px;
+  }
+}
+
+.continueBtn {
+  margin: 0;
+  margin-top: 10px;
+  overflow: visible;
+  text-transform: none;
+  margin-bottom: 0;
+  font-weight: 400;
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+  border: 1px solid transparent;
+  padding: 6px 12px;
+  font-size: 14px;
+  line-height: 1.42857143;
+  border-radius: 4px;
+  user-select: none;
+  color: #fff;
+  background-color: #5cb85c;
+  border-color: #4cae4c;
+  display: block;
+  width: 100%;
+  font-family: BYekan;
+
+  &:hover {
+    color: #fff;
+    background-color: #449d44;
+    border-color: #398439;
+  }
+
+  &:focus {
+    color: #fff;
+    background-color: #449d44;
+    border-color: #255625;
+    box-shadow: none;
+  }
+
+  &:active {
+    color: #fff;
+    background-color: #449d44;
+    border-color: #398439;
+  }
+}

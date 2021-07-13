@@ -85,9 +85,15 @@
       color: #f1c40f;
       border-bottom-left-radius: 0;
       border-top-left-radius: 0;
+      i {
+        color: #f1c40f !important;
+      }
       &:hover {
         background-color: #f1c40f !important;
         color: #ffffff;
+        > i {
+          color: #ffffff !important;
+        }
       }
       &:focus {
         box-shadow: none;
@@ -104,9 +110,15 @@
       color: #e67e22;
       border-bottom-right-radius: 0;
       border-top-right-radius: 0;
+      i {
+        color: #e67e22 !important;
+      }
       &:hover {
         background-color: #e67e22;
         color: #ffffff;
+        > i {
+          color: #ffffff !important;
+        }
       }
       &:focus,
       &:active {

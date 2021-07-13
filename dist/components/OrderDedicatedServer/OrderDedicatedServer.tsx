@@ -115,8 +115,6 @@ class OrderDedicatedServer extends React.Component<
   }
 
   render() {
-    console.log(this.props);
-
     return (
       <section>
         <PagesHeader
@@ -221,7 +219,7 @@ class OrderDedicatedServer extends React.Component<
                     <Row className={styles.paymentPeriodRow}>
                       <Col md={4}>دوره پرداخت:</Col>
                       <Col md={8}>
-                        <Form.Control as="select" name="payment_period">
+                        <Form.Control as="select" name="payment_period" custom>
                           {this.props.serviceData.payment_periods.map(
                             (period) => (
                               <option value={period.id} key={period.id}>
@@ -254,6 +252,7 @@ class OrderDedicatedServer extends React.Component<
                                   as="select"
                                   onChange={this.onChangeLicense}
                                   name="license"
+                                  custom
                                 >
                                   <option value="-">لازم ندارم</option>
                                   {this.props.serviceData.licenses.map(
@@ -281,6 +280,7 @@ class OrderDedicatedServer extends React.Component<
                                   as="select"
                                   name="backupSpace"
                                   onChange={this.onChangeBackupSpace}
+                                  custom
                                 >
                                   <option value="-">لازم ندارم</option>
                                   {this.props.serviceData.backup_spaces.map(
@@ -304,6 +304,7 @@ class OrderDedicatedServer extends React.Component<
                               </div>
                             </div>
                           )}
+
                           <div
                             className={classNames(styles.row, {
                               [styles.hidden]: this.state.backupSpace === '-',
@@ -346,6 +347,7 @@ class OrderDedicatedServer extends React.Component<
                           as="select"
                           name="os"
                           onChange={this.onChangeOs}
+                          custom
                         >
                           <optgroup label="Windows">
                             {this.props.serviceData.oses

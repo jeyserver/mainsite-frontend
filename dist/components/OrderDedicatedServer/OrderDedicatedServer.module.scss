@@ -80,6 +80,19 @@
 
     select {
       color: #555;
+      font-size: 1rem;
+      width: 100%;
+      border: 1px solid #ced4da;
+      border-radius: 0.25rem;
+      padding: 0.375rem 0.75rem;
+      transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+      &:focus {
+        background-color: #fff;
+        border-color: #86b7fe;
+        outline: 0;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+      }
     }
   }
 
@@ -140,6 +153,23 @@
               width: 100%;
               @media screen and (max-width: 767px) {
                 margin-left: 10px;
+              }
+            }
+
+            select {
+              font-size: 1rem;
+              width: 100%;
+              border: 1px solid #ced4da;
+              border-radius: 0.25rem;
+              padding: 0.375rem 0.75rem;
+              transition: border-color 0.15s ease-in-out,
+                box-shadow 0.15s ease-in-out;
+
+              &:focus {
+                background-color: #fff;
+                border-color: #86b7fe;
+                outline: 0;
+                box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
               }
             }
           }
@@ -204,6 +234,20 @@
           color: #555;
           min-width: 200px;
           direction: ltr;
+          font-size: 1rem;
+          width: 100%;
+          border: 1px solid #ced4da;
+          border-radius: 0.25rem;
+          padding: 0.375rem 0.75rem;
+          transition: border-color 0.15s ease-in-out,
+            box-shadow 0.15s ease-in-out;
+
+          &:focus {
+            background-color: #fff;
+            border-color: #86b7fe;
+            outline: 0;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+          }
         }
       }
     }

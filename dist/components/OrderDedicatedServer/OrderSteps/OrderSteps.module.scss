@@ -1,4 +1,7 @@
 .orderSteps {
+  @media screen and (max-width: 767px) {
+    padding: 0 10px;
+  }
   .title {
     margin-bottom: 10px;
     font-family: BYekan, sans-serif;

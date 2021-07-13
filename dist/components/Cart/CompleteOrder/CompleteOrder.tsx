@@ -75,19 +75,6 @@ class CompleteOrder extends React.Component<
                     <Row
                       className={classNames(
                         {
-                          [styles.show]: this.state.loginMethod === 'signup',
-                          [styles.hidden]: this.state.loginMethod === 'signin',
-                        },
-                        styles.signup
-                      )}
-                    >
-                      <Col md={12}>
-                        <SignupForm />
-                      </Col>
-                    </Row>
-                    <Row
-                      className={classNames(
-                        {
                           [styles.show]: this.state.loginMethod === 'signin',
                           [styles.hidden]: this.state.loginMethod === 'signup',
                         },
@@ -97,6 +84,19 @@ class CompleteOrder extends React.Component<
                     >
                       <Col md={8} className="d-flex justify-content-center">
                         <SigninForm />
+                      </Col>
+                    </Row>
+                    <Row
+                      className={classNames(
+                        {
+                          [styles.show]: this.state.loginMethod === 'signup',
+                          [styles.hidden]: this.state.loginMethod === 'signin',
+                        },
+                        styles.signup
+                      )}
+                    >
+                      <Col md={12}>
+                        <SignupForm />
                       </Col>
                     </Row>
                   </Row>

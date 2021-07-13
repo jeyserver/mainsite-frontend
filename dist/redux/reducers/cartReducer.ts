@@ -1,11 +1,14 @@
 let initialState = {
   cart: [],
+  loading: false,
 };
 
 const cartReducer = (state = initialState, action) => {
   switch (action.type) {
+    case 'TOGGLE_CART_LOADING':
+      return { ...state, loading: !state.loading };
     case 'ADD_TO_CART':
-      return { ...state, cart: [...state.cart, action.payload.products] };
+      return { ...state, cart: [...state.cart, ...action.payload.products] };
     case 'DELETE_FROM_CART':
       if (action.payload.id) {
         const productIndexInCart = state.cart.findIndex(

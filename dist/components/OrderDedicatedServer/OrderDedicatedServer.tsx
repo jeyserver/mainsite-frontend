@@ -1,30 +1,29 @@
 import * as React from 'react';
-import {
-  Container,
-  Row,
-  Col,
-  Form,
-  Image,
-  Button,
-  Tooltip,
-} from 'react-bootstrap';
+import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import PagesHeader from '../PagesHeader/PagesHeader';
 import OrderSteps from './OrderSteps/OrderSteps';
 import styles from './OrderDedicatedServer.module.scss';
 import { formatHards } from '../helper/formatHards';
 import { formatSpaceInEnglish } from '../helper/formatSpace';
 import { formatPrice } from '../helper/formatPrice';
-import { OverlayTrigger } from 'react-bootstrap';
 import classNames from 'classnames';
+import { connect } from 'react-redux';
+import { addToCart } from '../../redux/actions';
+import { Alert } from 'react-bootstrap';
+import CountryFlagTooltip from '../helper/components/CountryFlagTooltip';
 
 export interface OrderDedicatedServerProps {
   serviceData: any;
+  addToCart: (product: any) => void;
+  cart: { cart: any; loading: boolean };
 }
 
 export interface OrderDedicatedServerState {
   backupSpace: string;
   license: string;
   os: { type: string; name: string };
+  formValidated: boolean;
+  isFormInvalid: boolean;
 }
 
 class OrderDedicatedServer extends React.Component<
@@ -37,10 +36,13 @@ class OrderDedicatedServer extends React.Component<
       backupSpace: '-',
       os: this.props.serviceData.oses[0],
       license: '-',
+      formValidated: false,
+      isFormInvalid: false,
     };
     this.onChangeLicense = this.onChangeLicense.bind(this);
     this.onChangeBackupSpace = this.onChangeBackupSpace.bind(this);
     this.onChangeOs = this.onChangeOs.bind(this);
+    this.onSubmitForm = this.onSubmitForm.bind(this);
   }
 
   onChangeLicense(e) {
@@ -58,9 +60,62 @@ class OrderDedicatedServer extends React.Component<
     this.setState({ os: selected });
   }
 
+  onSubmitForm(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const form = e.currentTarget;
+    this.setState({ isFormInvalid: false });
+
+    if (form.checkValidity() === false) {
+      this.setState({ isFormInvalid: true });
+      e.stopPropagation();
+    } else {
+      const domainHostingBackup = form.domainHostingBackup
+        ? form.domainHostingBackup.value
+        : null;
+      const description = form.description.value;
+      const os = form.os.value;
+
+      const payment_period = this.props.serviceData.payment_periods.find(
+        (payment_period) =>
+          payment_period.id === Number(form.payment_period.value)
+      );
+      const licenseFromData = this.props.serviceData.licenses.find(
+        (license) => license.id === Number(form.license.value)
+      );
+      const backupSpaceFromData = this.props.serviceData.backup_spaces.find(
+        (backupSpace) => backupSpace.id === Number(form.backupSpace.value)
+      );
+
+      this.props.addToCart([
+        {
+          ...this.props.serviceData,
+          description,
+          os,
+          payment_period,
+          productType: 'dedicated_server',
+        },
+        licenseFromData && {
+          ...licenseFromData,
+          productType: 'license',
+          currency: this.props.serviceData.currency,
+          payment_period,
+        },
+        backupSpaceFromData && {
+          ...backupSpaceFromData,
+          productType: 'backup_space',
+          domain: domainHostingBackup,
+          country: this.props.serviceData.datacenter.country,
+          currency: this.props.serviceData.currency,
+          payment_period,
+        },
+      ]);
+    }
+
+    this.setState({ formValidated: true });
+  }
+
   render() {
-    const isAlertOpen =
-      this.state.os.type === 'windows' && this.state.license !== '-';
+    console.log(this.props);
 
     return (
       <section>
@@ -75,7 +130,11 @@ class OrderDedicatedServer extends React.Component<
                 <OrderSteps step="configuration" />
               </Col>
               <Col md={9}>
-                <Form>
+                <Form
+                  onSubmit={this.onSubmitForm}
+                  noValidate
+                  validated={this.state.formValidated}
+                >
                   <div className={styles.service}>
                     <h2 className={styles.title}>
                       {this.props.serviceData.title}
@@ -84,6 +143,26 @@ class OrderDedicatedServer extends React.Component<
                       <p>
                         سرویسی که انتخاب کردید دارای امکانات ساختاری زیر است :
                       </p>
+                      {this.state.isFormInvalid && (
+                        <Alert
+                          variant="danger"
+                          onClose={() =>
+                            this.setState({ isFormInvalid: false })
+                          }
+                          className={styles.backupDangerAlert}
+                          dismissible
+                        >
+                          <Alert.Heading>
+                            <i className="fas fa-times-circle"></i>
+                            <span>خطا</span>
+                          </Alert.Heading>
+                          <p>
+                            لطفا برای ایجاد فضای بکاپ، آدرس دامنه خود را وارد
+                            نمایید.
+                          </p>
+                        </Alert>
+                      )}
+
                       <p>{this.props.serviceData.title}</p>
                       <div>
                         <div>
@@ -120,29 +199,21 @@ class OrderDedicatedServer extends React.Component<
                           {this.props.serviceData.currency.title}
                         </div>
                         <div>
-                          موقعیت{' '}
-                          {this.props.serviceData.datacenter.country.name_fa}
-                          <OverlayTrigger
-                            overlay={
-                              <Tooltip
-                                id={
-                                  this.props.serviceData.datacenter.country.name
-                                }
-                                className="tooltip"
-                              >
-                                {this.props.serviceData.datacenter.country.name}
-                              </Tooltip>
+                          <span className={styles.location}>
+                            موقعیت{' '}
+                            {this.props.serviceData.datacenter.country.name_fa}
+                          </span>
+                          <CountryFlagTooltip
+                            name={
+                              this.props.serviceData.datacenter.country.name
                             }
-                          >
-                            <Image
-                              width="24px"
-                              height="24px"
-                              className={styles.flag}
-                              src={
-                                this.props.serviceData.datacenter.country.flag
-                              }
-                            />
-                          </OverlayTrigger>
+                            flag={{
+                              address:
+                                this.props.serviceData.datacenter.country.flag,
+                              width: 24,
+                              height: 24,
+                            }}
+                          />
                         </div>
                       </div>
                     </div>
@@ -150,7 +221,7 @@ class OrderDedicatedServer extends React.Component<
                     <Row className={styles.paymentPeriodRow}>
                       <Col md={4}>دوره پرداخت:</Col>
                       <Col md={8}>
-                        <Form.Control as="select">
+                        <Form.Control as="select" name="payment_period">
                           {this.props.serviceData.payment_periods.map(
                             (period) => (
                               <option value={period.id} key={period.id}>
@@ -182,6 +253,7 @@ class OrderDedicatedServer extends React.Component<
                                 <Form.Control
                                   as="select"
                                   onChange={this.onChangeLicense}
+                                  name="license"
                                 >
                                   <option value="-">لازم ندارم</option>
                                   {this.props.serviceData.licenses.map(
@@ -207,6 +279,7 @@ class OrderDedicatedServer extends React.Component<
                               <div>
                                 <Form.Control
                                   as="select"
+                                  name="backupSpace"
                                   onChange={this.onChangeBackupSpace}
                                 >
                                   <option value="-">لازم ندارم</option>
@@ -238,7 +311,18 @@ class OrderDedicatedServer extends React.Component<
                           >
                             <div>دامنه هاست بکاپ</div>
                             <div>
-                              <Form.Control type="text" />
+                              {this.state.backupSpace !== '-' && (
+                                <>
+                                  <Form.Control
+                                    type="text"
+                                    required
+                                    name="domainHostingBackup"
+                                  />
+                                  <Form.Control.Feedback type="invalid">
+                                    لطفا دامنه هاست بکاپ خود را وارد کنید
+                                  </Form.Control.Feedback>
+                                </>
+                              )}
                             </div>
                           </div>
 
@@ -247,6 +331,7 @@ class OrderDedicatedServer extends React.Component<
                             <div>
                               <Form.Control
                                 as="textarea"
+                                name="description"
                                 placeholder="درصورتی که میخواید توضیح خاصی در مورد آماده سازی سرور به ما بدهید لطفا آن را در اینجا ذکر کنید"
                               />
                             </div>
@@ -257,7 +342,11 @@ class OrderDedicatedServer extends React.Component<
                     <div className={styles.osRow}>
                       <div>سیستم عامل</div>
                       <div>
-                        <Form.Control as="select" onChange={this.onChangeOs}>
+                        <Form.Control
+                          as="select"
+                          name="os"
+                          onChange={this.onChangeOs}
+                        >
                           <optgroup label="Windows">
                             {this.props.serviceData.oses
                               .filter((i) => i.type === 'windows')
@@ -291,7 +380,17 @@ class OrderDedicatedServer extends React.Component<
                     </div>
                     <Row className="justify-content-center">
                       <Col md={6}>
-                        <Button className={styles.nextStepBtn}>ادامه</Button>
+                        <Button
+                          className={styles.nextStepBtn}
+                          type="submit"
+                          disabled={this.props.cart.loading}
+                        >
+                          {this.props.cart.loading ? (
+                            <i className="fas fa-spinner"></i>
+                          ) : (
+                            'ادامه'
+                          )}
+                        </Button>
                       </Col>
                     </Row>
                   </div>
@@ -305,4 +404,8 @@ class OrderDedicatedServer extends React.Component<
   }
 }
 
-export default OrderDedicatedServer;
+const mapStateToProps = (state) => {
+  return { cart: state.cart };
+};
+
+export default connect(mapStateToProps, { addToCart })(OrderDedicatedServer);

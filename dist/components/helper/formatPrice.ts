@@ -1,10 +1,16 @@
-export const formatPrice = (num: number) => {
-  let str = num.toString().split('.');
-  if (str[0].length >= 5) {
-    str[0] = str[0].replace(/(\d)(?=(\d{3})+$)/g, '$1,');
-  }
-  if (str[1] && str[1].length >= 5) {
-    str[1] = str[1].replace(/(\d{3})/g, '$1 ');
-  }
-  return str.join('.');
+export const formatPrice = (addad: number) => {
+  return addad.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+};
+
+export const formatDecimalNumber = (addad: number) => {
+  const split = addad.toString().split('.');
+  const int = parseInt(split[0].toString().replace(/\D/g, ''), 10);
+  const number = isNaN(int)
+    ? 0
+    : int.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+  const decimal =
+    split.length > 1 ? split[1].toString().replace(/\D/g, '') : '';
+  const javab = number + (decimal.length ? '.' + decimal : '');
+
+  return javab;
 };

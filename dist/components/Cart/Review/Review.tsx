@@ -1,11 +1,17 @@
 import * as React from 'react';
 import { Form, Table } from 'react-bootstrap';
 import { Container, Row, Col } from 'react-bootstrap';
+import { connect } from 'react-redux';
 import PagesHeader from '../../PagesHeader/PagesHeader';
 import OrderSteps from '../OrderSteps/OrderSteps';
+import BackupSpaceRow from './BackupSpaceRow/BackupSpaceRow';
+import DedicatedServerRow from './DedicatedServerRow/DedicatedServerRow';
+import LicenseRow from './LicenseRow/LicenseRow';
 import styles from './Review.module.scss';
 
-export interface ReviewProps {}
+export interface ReviewProps {
+  cart: { cart: any; loading: boolean };
+}
 
 export interface ReviewState {}
 
@@ -14,6 +20,21 @@ class Review extends React.Component<ReviewProps, ReviewState> {
     super(props);
     this.state = {};
   }
+
+  renderRow(row, data) {
+    console.log(row);
+    switch (row) {
+      case 'license':
+        return <LicenseRow data={data} />;
+      case 'backup_space':
+        return <BackupSpaceRow data={data} />;
+      case 'dedicated_server':
+        return <DedicatedServerRow data={data} />;
+      default:
+        return null;
+    }
+  }
+
   render() {
     return (
       <section>
@@ -40,20 +61,13 @@ class Review extends React.Component<ReviewProps, ReviewState> {
                       </tr>
                     </thead>
                     <tbody className="text-align">
-                      <tr>
-                        <td>
-                          سرور اختصاصی EX52-NVMe <br />
-                        </td>
-                        <td className="noper"></td>
-                        <td>برای 1 ماه </td>
-                        <td>0 تومان </td>
-                        <td>6446500 تومان </td>
-                        <td>
-                          <button type="button" className={styles.deleteBtn}>
-                            حذف
-                          </button>
-                        </td>
-                      </tr>
+                      {this.props.cart.cart.map((cartItem) => {
+                        return (
+                          <tr>
+                            {this.renderRow(cartItem.productType, cartItem)}
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </Table>
                   <Row className="justify-content-end">
@@ -111,4 +125,10 @@ class Review extends React.Component<ReviewProps, ReviewState> {
   }
 }
 
-export default Review;
+const mapStateToProps = (state) => {
+  return {
+    cart: state.cart,
+  };
+};
+
+export default connect(mapStateToProps)(Review);

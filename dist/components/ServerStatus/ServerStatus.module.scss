@@ -1,0 +1,37 @@
+.innerBanner {
+  color: #313131;
+  height: 116px;
+  background-color: #3dc4e4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  h2 {
+    font-family: IRANSans;
+    color: #fff;
+    font-size: 20px;
+    font-weight: normal;
+  }
+}
+
+.topInfo {
+  margin: 26px 0;
+  > h3 {
+    margin-bottom: 20px;
+    color: #000000;
+    font-size: 18px;
+    font-family: IRANSans;
+  }
+  > p {
+    color: #333333;
+    font-family: IRANSans;
+    font-size: 13px;
+  }
+}
+
+.downInfo {
+  font-family: IRANSans;
+  font-size: 13px;
+  color: #717171;
+  padding-bottom: 70px;
+  padding-top: 20px;
+}

@@ -16,6 +16,10 @@ a {
   }
 }
 
+.ltr {
+  direction: ltr !important;
+}
+
 * {
   box-sizing: border-box;
 }

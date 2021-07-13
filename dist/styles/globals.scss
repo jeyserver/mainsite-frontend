@@ -249,7 +249,8 @@ html:not([data-scroll]) {
 }
 
 [dir='rtl'] .slick-prev {
-  right: 13px;
+  left: 13px;
+  right: unset;
   z-index: 1;
   &::before {
     color: #000000;
@@ -257,7 +258,8 @@ html:not([data-scroll]) {
 }
 
 [dir='rtl'] .slick-next {
-  left: 13px;
+  right: 13px;
+  left: unset;
   z-index: 1;
   &::before {
     color: #000000;

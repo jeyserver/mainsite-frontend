@@ -1,0 +1,123 @@
+.countryServer {
+  display: flex;
+  flex-direction: row;
+  font-family: IRANSans;
+  @media screen and (max-width: 960px) {
+    flex-direction: column;
+  }
+  padding: 0 15px;
+  .serverLink {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    width: 25%;
+    padding: 15px;
+    text-align: center;
+    font-size: 14px;
+    position: relative;
+    z-index: 1;
+    background-color: hsl(228, 85%, 13%);
+    border: none;
+    color: #ffffff;
+    border-radius: 0;
+    &:hover {
+      font-weight: 600;
+      color: #fff;
+    }
+    &:focus {
+      box-shadow: none;
+    }
+    &[data-active='true'] {
+      font-weight: 800;
+      color: #fff;
+    }
+    img {
+      width: 30px;
+      height: 18px;
+      margin-left: 0.9em;
+    }
+    .icon {
+      width: 0.625em;
+      margin-top: 0.5em;
+      margin-right: 0.8em;
+    }
+    &:nth-child(2) {
+      background-color: #045b8c;
+    }
+    &:nth-child(3) {
+      background-color: #0b7bba;
+    }
+    &:nth-child(4) {
+      background-color: #209de1;
+    }
+
+    .dropdownMenu {
+      width: 100%;
+      padding: 0;
+    }
+    .dropdownToggle {
+      background-color: #209de1;
+      cursor: pointer;
+      &::after {
+        display: none;
+      }
+    }
+    &.dropdownLinksBtn {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      background: #ffffff;
+      color: #000;
+      &:hover {
+        background-color: #ef6f1a;
+        color: #ffffff;
+      }
+      &[data-active='true'] {
+        font-weight: 800;
+        background-color: #ef6f1a;
+        color: #ffffff;
+      }
+      span.text {
+        width: 128px !important;
+        @media screen and (min-width: 993px) {
+          width: 98px !important;
+        }
+      }
+      .imgWrapper {
+        width: 50px;
+        display: flex;
+        justify-content: center;
+        margin-left: 20px;
+        > img {
+          display: block;
+          width: 30px;
+          margin-left: 0;
+        }
+      }
+    }
+    @media screen and (max-width: 960px) {
+      width: 100%;
+      > span.text {
+        display: inline-block;
+        width: 135px;
+      }
+      &:nth-child(4) {
+        > span.text {
+          width: 122px;
+        }
+      }
+    }
+  }
+  img {
+    margin-left: 10px;
+  }
+  .dropdownToggle {
+    .text {
+      width: 116px !important;
+      @media screen and (min-width: 993px) {
+        width: 86px !important;
+      }
+    }
+  }
+}

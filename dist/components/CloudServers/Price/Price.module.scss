@@ -1,0 +1,151 @@
+.priceRange {
+  font-family: IRANSans;
+  font-size: 14px;
+  min-height: 400px;
+  background: hsl(228, 85%, 13%);
+  margin-top: 100px;
+  margin-bottom: 50px;
+  padding-top: 30px;
+  position: relative;
+  overflow: hidden;
+  .priceRateWrapper {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-around;
+    align-items: center;
+    @media screen and (max-width: 992px) {
+      flex-direction: column-reverse;
+      justify-content: center;
+    }
+    .right {
+      width: 40%;
+      @media screen and (max-width: 992px) {
+        width: 100%;
+      }
+      > h2 {
+        font-weight: bold;
+        font-size: 30px;
+        color: #ffffff;
+        margin-top: 20px;
+        margin-bottom: 22px;
+      }
+      > p {
+        color: #ffffff;
+        font-size: 16px;
+        margin-bottom: 10px;
+        line-height: 25px;
+      }
+    }
+    .left {
+      padding-top: 30px;
+      width: 40%;
+      @media screen and (max-width: 992px) {
+        width: 100%;
+      }
+      .ratePickerWrapper {
+        position: relative;
+        min-height: 300px;
+        padding-top: 30px;
+        @media screen and (min-width: 405px) {
+          margin-top: 40px;
+        }
+        .ratePicker {
+          img {
+            position: absolute;
+            bottom: -1px;
+            max-width: 450px;
+            @media screen and (max-width: 450px) {
+              width: 100%;
+              // max-width: 320px;
+            }
+            left: 50%;
+            transform: translateX(-50%);
+            &.back {
+              max-width: 280px;
+              @media screen and (max-width: 405px) {
+                max-width: 200px;
+              }
+              bottom: 150px;
+            }
+            &.angle {
+              max-width: 130px;
+              bottom: 137px;
+              left: 47%;
+              transform: rotate(-170deg);
+              transform-origin: 18px 23px;
+              transition: transform 0.3s;
+              @media screen and (max-width: 405px) {
+                max-width: 80px;
+                bottom: 142px;
+                transform-origin: 11px 14px;
+              }
+            }
+          }
+        }
+        .range {
+          position: absolute;
+          left: 50%;
+          transform: translateX(-50%);
+          bottom: 90px;
+          width: 300px;
+          @media screen and (max-width: 405px) {
+            width: 220px;
+          }
+          input[type='range'] {
+            direction: ltr;
+            position: relative;
+            cursor: pointer;
+            outline: none;
+            width: 100%;
+          }
+          input[type='range']::-moz-range-track {
+            height: 10px;
+            background: #dfe1ef;
+            border-radius: 20px;
+          }
+          input[type='range']::-moz-range-thumb {
+            background: hsl(228, 85%, 13%);
+            border: none;
+          }
+          input[type='range']::-moz-range-progress {
+            background: #0050d7;
+            height: 10px;
+            border-radius: 20px;
+          }
+          input[type='range']::-webkit-slider-thumb {
+            background: hsl(228, 85%, 13%);
+          }
+          label {
+            width: 100%;
+            position: relative;
+            span.showValue {
+              position: absolute;
+              top: -20px;
+              left: -10px;
+              direction: ltr;
+              font-weight: bold;
+            }
+          }
+        }
+        .price {
+          position: absolute;
+          left: 50%;
+          transform: translateX(-50%);
+          bottom: 20px;
+          text-align: center;
+          background: #ef6f1a;
+          color: #ffffff;
+          padding: 5px 10px;
+          border-radius: 5px;
+          p {
+            padding: 0;
+            margin: 0;
+          }
+          > span {
+            color: #ffdd00;
+          }
+        }
+      }
+    }
+  }
+}

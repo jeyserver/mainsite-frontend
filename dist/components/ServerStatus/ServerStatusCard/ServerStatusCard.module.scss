@@ -1,0 +1,225 @@
+.row {
+  background: #ffffff;
+  box-shadow: 0px 1px 20px rgba(0, 0, 0, 0.1);
+  margin-bottom: 40px;
+  .serverTitle {
+    display: flex;
+    align-items: center;
+    margin-top: 40px;
+    margin-right: 5px;
+    @media screen and (max-width: 767px) {
+      margin-right: 35px;
+    }
+    .iconWrapper {
+      margin-left: 8px;
+      > i {
+        font-size: 13px;
+        &.up {
+          color: #18a952;
+        }
+        &.down {
+          color: #be1414;
+        }
+      }
+    }
+    .title {
+      font-family: IRANSans;
+      font-size: 14px;
+      color: #333333;
+    }
+  }
+  .serverLink {
+    color: #525252;
+    font-size: 13px;
+    margin-top: 10px;
+    margin-right: 25px;
+    @media screen and (max-width: 767px) {
+      margin-right: 55px;
+    }
+  }
+  .chartWrapper {
+    height: 130px;
+    @media screen and (max-width: 992px) {
+      margin: 30px 0;
+    }
+  }
+  .chartInfo {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    > div {
+      &:nth-child(1) {
+        font-family: IRANSans;
+        font-size: 12px;
+        color: #828282;
+        margin-bottom: 5px;
+      }
+      &:nth-child(2) {
+        font-family: IRANSans;
+        font-size: 14px;
+        color: #000000;
+        direction: ltr;
+      }
+    }
+  }
+  .specificationRow {
+    margin-bottom: 15px;
+    margin-right: 15px;
+    @media screen and (max-width: 1200px) {
+      margin-right: 0;
+    }
+    @media screen and (max-width: 992px) {
+      margin-right: 5px;
+    }
+    @media screen and (max-width: 767px) {
+      margin-right: 0;
+    }
+    &:last-child {
+      margin-bottom: 0;
+    }
+    > div {
+      &:nth-child(1) {
+        color: #808080;
+        font-size: 13px;
+        font-family: IRANSans;
+        @media screen and (max-width: 992px) {
+          padding-right: 0;
+        }
+        @media screen and (max-width: 767px) {
+          padding-right: 33px;
+        }
+      }
+      &:nth-child(2) {
+        color: #000000;
+        font-size: 13px;
+        font-family: IRANSans;
+        direction: ltr;
+        @media screen and (max-width: 767px) {
+          padding-left: 40px;
+        }
+      }
+    }
+  }
+  .upTimeMonthly {
+    width: 372px;
+    margin-top: 27px;
+    margin-left: 5px;
+    @media screen and (max-width: 767px) {
+      width: 100%;
+      padding-left: 30px;
+      padding-right: 35px;
+      margin-left: 0;
+    }
+    > h3 {
+      margin-bottom: 15px;
+      color: #777777;
+      font-size: 13px;
+      font-family: IRANSans;
+    }
+    .lastAndFistTime {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #000000;
+      font-size: 10px;
+      font-family: IRANSans;
+      margin-bottom: 10px;
+      margin-left: 5px;
+    }
+    .btns {
+      direction: ltr;
+      @media screen and (max-width: 767px) {
+        display: flex;
+        justify-content: space-between;
+      }
+      .statusBtn {
+        height: 35px;
+        width: 7px;
+        margin-left: 5px;
+        padding: 0;
+        @media screen and (max-width: 576px) {
+          height: 30px;
+          width: 5px;
+        }
+        &:focus,
+        &:active {
+          box-shadow: none !important;
+        }
+        &.up {
+          background-color: #3fc715;
+          border-color: #3fc715;
+          &:hover {
+            background-color: darken(#3fc715, 5);
+            border-color: darken(#3fc715, 5);
+          }
+        }
+        &.down {
+          background-color: #be1414;
+          border-color: #be1414;
+          &:hover {
+            background-color: darken(#be1414, 5);
+            border-color: darken(#be1414, 5);
+          }
+        }
+        &.warn {
+          background-color: #e9a012;
+          border: 1px solid #e9a012;
+          &:hover {
+            background-color: darken(#e9a012, 5);
+            border-color: darken(#e9a012, 5);
+          }
+        }
+      }
+    }
+    .lastCheck {
+      display: flex;
+      justify-content: flex-end;
+      margin-left: 5px;
+      margin-top: 20px;
+      margin-bottom: 15px;
+      > div {
+        font-family: IRANSans;
+        i {
+          font-size: 10px;
+          color: #808080;
+          margin-left: 5px;
+        }
+        span {
+          font-size: 11px;
+          &:nth-child(2) {
+            color: #808080;
+            margin-left: 5px;
+          }
+          &:nth-child(3) {
+            color: #333333;
+          }
+        }
+      }
+    }
+  }
+}
+
+.tooltip {
+  font-family: IRANSans;
+  margin-bottom: 10px;
+  font-size: 11px;
+  > div {
+    text-align: left;
+  }
+  &::after {
+    content: '\f0d7';
+    color: #000000;
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    font-size: 20px;
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translate(-50%);
+  }
+}

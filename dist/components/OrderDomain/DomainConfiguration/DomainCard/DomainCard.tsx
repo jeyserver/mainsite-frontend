@@ -10,7 +10,7 @@ export interface DomainCardProps {
   domain: any;
   transfer: boolean;
   deleteOrderedDomain: (targetTld) => void;
-  state?: any;
+  store?: any;
 }
 
 export interface DomainCardState {}
@@ -36,7 +36,7 @@ class DomainCard extends React.Component<DomainCardProps, DomainCardState> {
               variant="danger"
               className={styles.deleteBtn}
               disabled={
-                this.props.state.orderedDomains.inPending.filter(
+                this.props.store.orderedDomains.inPending.filter(
                   (i) => i === this.props.domain.tld.tld
                 ).length > 0
               }
@@ -44,7 +44,7 @@ class DomainCard extends React.Component<DomainCardProps, DomainCardState> {
                 this.props.deleteOrderedDomain(this.props.domain.tld.tld)
               }
             >
-              {this.props.state.orderedDomains.inPending.filter(
+              {this.props.store.orderedDomains.inPending.filter(
                 (i) => i === this.props.domain.tld.tld
               ).length > 0 ? (
                 <>
@@ -132,12 +132,24 @@ class DomainCard extends React.Component<DomainCardProps, DomainCardState> {
                     </div>
                   </>
                 ) : (
-                  <div className={styles.dnsAlert}>
-                    <span>
-                      برای ثبت این دامنه به مالکیت شما نیاز هست تا بعد از پرداخت
-                      صورتحساب به صورتحساب بازگردید و پنل ثبت کننده ی دامنه را
-                      (از طریق دکمه ی پیکربندی مقابل محصول دامنه) مشخص کنید.
-                    </span>
+                  <div>
+                    {this.props.store.auth.isLoggedIn ? (
+                      <div className={styles.selectDomainPanel}>
+                        <div>پنل دامنه را انتخاب کنید</div>
+                        <Form.Control as="select" custom>
+                          <option value="-">هیچکدام</option>
+                        </Form.Control>
+                      </div>
+                    ) : (
+                      <div className={styles.dnsAlert}>
+                        <span>
+                          برای ثبت این دامنه به مالکیت شما نیاز هست تا بعد از
+                          پرداخت صورتحساب به صورتحساب بازگردید و پنل ثبت کننده ی
+                          دامنه را (از طریق دکمه ی پیکربندی مقابل محصول دامنه)
+                          مشخص کنید.
+                        </span>
+                      </div>
+                    )}
                   </div>
                 )}
               </Col>
@@ -200,7 +212,7 @@ class DomainCard extends React.Component<DomainCardProps, DomainCardState> {
 }
 
 const mapStateToProps = (state) => {
-  return { state };
+  return { store: state };
 };
 
 export default connect(mapStateToProps, { deleteOrderedDomain })(DomainCard);

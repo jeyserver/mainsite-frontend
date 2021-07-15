@@ -190,7 +190,7 @@ class DomainSettings extends React.Component<
           <Row className="justify-content-center">
             <Col md={8} className={styles.formInputs}>
               <InputGroup className={styles.inputGroup}>
-                <Form.Control as="select" name="tld">
+                <Form.Control as="select" name="tld" custom>
                   <optgroup label="دامنه های ارزان قیمت">
                     {getDomainsByCategory(
                       'cheap-domains',

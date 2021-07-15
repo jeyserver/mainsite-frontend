@@ -13,11 +13,7 @@ export interface IndexProps {
       id: number;
       name: string;
     };
-    comments: {
-      id: number;
-      user: string;
-      body: string;
-    }[];
+    comments: any;
     description: string;
     author: number;
     content: string;

@@ -8,6 +8,7 @@ import MostViewedNews from '../MostViewedNews/MostViewedNews';
 import NewsArchive from '../NewsArchive/NewsArchive';
 import styles from './ViewNews.module.scss';
 import axios from 'axios';
+import Comment from './Comment/Comment';
 
 export interface ViewNewsProps {
   postData: {
@@ -18,11 +19,7 @@ export interface ViewNewsProps {
       id: number;
       name: string;
     };
-    comments: {
-      id: number;
-      user: string;
-      body: string;
-    }[];
+    comments: any;
     description: string;
     author: number;
     content: string;
@@ -50,6 +47,7 @@ export interface ViewNewsState {
   nameError: error;
   emailError: error;
   textError: error;
+  selectedCommentForReply: any;
 }
 
 class ViewNews extends React.Component<ViewNewsProps, ViewNewsState> {
@@ -61,8 +59,21 @@ class ViewNews extends React.Component<ViewNewsProps, ViewNewsState> {
       nameError: 'data_validation',
       emailError: 'data_validation',
       textError: 'data_validation',
+      selectedCommentForReply: null,
     };
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.changeSelectedCommentForReply =
+      this.changeSelectedCommentForReply.bind(this);
+    this.cancelReply = this.cancelReply.bind(this);
+  }
+
+  changeSelectedCommentForReply(comment: any) {
+    this.setState({ selectedCommentForReply: comment });
+    document.querySelector('#comment-form').scrollIntoView(false);
+  }
+
+  cancelReply() {
+    this.setState({ selectedCommentForReply: null });
   }
 
   handleSubmit(event) {
@@ -73,6 +84,8 @@ class ViewNews extends React.Component<ViewNewsProps, ViewNewsState> {
       event.stopPropagation();
     } else {
       this.setState({ sendBtnLoading: true });
+
+      // this.state.selectedCommentForReply
       axios
         .post(
           `${process.env.SCHEMA}://${process.env.DOMAIN}/fa/news/view/${this.props.postData.id}?ajax=1`,
@@ -91,7 +104,11 @@ class ViewNews extends React.Component<ViewNewsProps, ViewNewsState> {
               'کارشناسان ما در اولین فرصت نظر شما را بررسی و ثبت خواهند کرد..',
               'نظر شما دریافت شد.'
             );
-            this.setState({ formValidated: false, sendBtnLoading: false });
+            this.setState({
+              formValidated: false,
+              sendBtnLoading: false,
+              selectedCommentForReply: null,
+            });
           } else if (!respone.data.status) {
             respone.data.error.forEach((errorItem) => {
               if (errorItem.input === 'name') {
@@ -163,8 +180,8 @@ class ViewNews extends React.Component<ViewNewsProps, ViewNewsState> {
                   </Link>
                   <span className={styles.blueLine}>/</span>
                   <i className="far fa-comment"></i>{' '}
-                  {this.props.postData.comments.length > 0
-                    ? `${this.props.postData.comments.length} نظر`
+                  {this.props.postData.comments.commentsNumber > 0
+                    ? `${this.props.postData.comments.commentsNumber} نظر`
                     : 'بدون نظر'}{' '}
                 </div>
 
@@ -192,15 +209,65 @@ class ViewNews extends React.Component<ViewNewsProps, ViewNewsState> {
                   <h5>نظرات: </h5>
                 </div>
 
+                <div className={styles.comments}>
+                  {this.props.postData.comments.items.map((comment) => {
+                    if (comment.answers) {
+                      return (
+                        <div>
+                          <Comment
+                            key={comment.id}
+                            comment={comment}
+                            changeSelectedCommentForReply={
+                              this.changeSelectedCommentForReply
+                            }
+                          />
+                          {comment.answers.map((answer) => (
+                            <Comment
+                              key={answer.id}
+                              comment={answer}
+                              changeSelectedCommentForReply={
+                                this.changeSelectedCommentForReply
+                              }
+                            />
+                          ))}
+                        </div>
+                      );
+                    }
+                    return (
+                      <Comment
+                        key={comment.id}
+                        comment={comment}
+                        changeSelectedCommentForReply={
+                          this.changeSelectedCommentForReply
+                        }
+                      />
+                    );
+                  })}
+                </div>
+
                 <div className={styles.sendCommentTitle}>
-                  <h5>ارسال دیدگاه</h5>
+                  <div className={styles.header}>
+                    <h5>
+                      ارسال دیدگاه{' '}
+                      {this.state.selectedCommentForReply &&
+                        `در پاسخ ${this.state.selectedCommentForReply.user}`}
+                    </h5>
+                    {this.state.selectedCommentForReply && (
+                      <button
+                        className={styles.cancelBtn}
+                        onClick={this.cancelReply}
+                      >
+                        انصراف
+                      </button>
+                    )}
+                  </div>
 
                   <div className={styles.divider}>
                     <div />
                   </div>
                 </div>
 
-                <div className={styles.newsFormWrapper}>
+                <div id="comment-form" className={styles.newsFormWrapper}>
                   <Form
                     noValidate
                     validated={this.state.formValidated}

@@ -50,7 +50,7 @@ class DomainHeader extends React.Component<
           <img src="/images/domain/datacenter.jpg" />
           <div className={styles.mask}>
             <Container>
-              <Row>
+              <Row className={styles.maskRow}>
                 <Col xs={12} lg={7}>
                   <div className={styles.formWrapper}>
                     <label htmlFor="domain" className="text-white h2">

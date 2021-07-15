@@ -35,6 +35,18 @@
       }
     }
 
+    .maskRow {
+      margin-top: 100px;
+
+      @media screen and (max-width: 992px) {
+        margin-top: 40px;
+      }
+
+      // @media screen and (max-width: 576px) {
+      //   margin-top: 0;
+      // }
+    }
+
     .formWrapper {
       margin-top: 3em;
 
@@ -44,11 +56,17 @@
 
       label {
         font-family: IRANSans;
-        font-weight: bold;
+        font-size: 30px;
+        line-height: 1.1;
+        font-weight: 500;
         margin-bottom: 1em;
 
         @media screen and (max-width: 992px) {
           font-size: 20px;
+        }
+
+        @media screen and (max-width: 576px) {
+          margin-bottom: 5px;
         }
 
         .textOrange {
@@ -74,19 +92,25 @@
 
           @media screen and (max-width: 576px) {
             width: 100%;
-            margin-bottom: 15px;
+          }
+
+          @media screen and (max-width: 350px) {
+            height: 30px;
           }
 
           > select {
-            width: max-content;
+            width: 6em;
             height: 48px;
             direction: ltr;
             border-radius: 0;
             border: none;
             border-left: none;
+            color: #555;
+            background-color: #ffffff;
 
             &:focus {
               box-shadow: none;
+              outline: none;
               border-color: #dddddd;
             }
           }
@@ -95,21 +119,27 @@
             display: flex;
 
             > input {
+              font-family: Menlo, DejaVu Sans Mono, Liberation Mono, Consolas,
+                Ubuntu Mono, Courier New, andale mono, lucida console, monospace;
               height: 48px;
               border-radius: 0;
-              border-left: none;
-              border-right: none;
+              border: none;
               direction: ltr;
               padding-left: 0;
+              color: #555;
 
               &:focus {
                 box-shadow: none;
                 border-color: #dddddd;
               }
+
+              &::placeholder {
+                color: #a599b2;
+              }
             }
             > div {
               height: 48px;
-              border-right: none;
+              border: none;
 
               > span {
                 display: flex;
@@ -117,9 +147,12 @@
                 justify-content: center;
                 direction: ltr;
                 background-color: #ffffff;
+                color: #555;
                 padding-right: 0;
+                padding-top: 7px;
 
                 border-radius: 0;
+                border: none;
                 height: 100%;
               }
             }
@@ -127,6 +160,7 @@
         }
 
         > button {
+          font-family: BYekan;
           width: 15em;
           height: 48px;
           color: #ffffff;
@@ -149,8 +183,19 @@
       align-items: center;
 
       > img {
+        margin-top: -17px;
+
+        @media screen and (max-width: 992px) {
+          margin-top: 0;
+        }
+
         @media screen and (max-width: 576px) {
           width: 300px;
+          margin-top: 30px;
+        }
+
+        @media screen and (max-width: 360px) {
+          margin-top: 47px;
         }
       }
     }

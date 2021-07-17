@@ -9,9 +9,13 @@ import styles from '../PageInfoStyles.module.scss';
 export interface BackupHostingProps {
   backupHosts: any;
   navData: any;
+  appIsScrolling: boolean;
+  switchAppIsScrolling: () => void;
 }
 
-export interface BackupHostingState {}
+export interface BackupHostingState {
+  isNavFixed: boolean;
+}
 
 class BackupHosting extends React.Component<
   BackupHostingProps,
@@ -19,26 +23,30 @@ class BackupHosting extends React.Component<
 > {
   constructor(props: BackupHostingProps) {
     super(props);
-    this.state = {};
+    this.state = {
+      isNavFixed: false,
+    };
   }
 
   componentDidMount() {
-    var lastScrollTop = 0;
+    let lastScrollTop = 0;
 
-    const nav = document.querySelector('#dedicated-nav') as HTMLDivElement;
+    const nav = document.querySelector('#backup-nav') as HTMLDivElement;
 
-    const mainNavLinks = document.querySelectorAll('#dedicated-nav li a');
+    const mainNavLinks = document.querySelectorAll('#backup-nav li a');
 
     window.addEventListener(
       'scroll',
-      function () {
+      () => {
         var st = window.pageYOffset || document.documentElement.scrollTop;
         if (st > lastScrollTop) {
           // downscroll code
           nav.style.top = '0px';
         } else {
           // upscroll code
-          nav.style.top = '80px';
+          if (!this.props.appIsScrolling) {
+            nav.style.top = '80px';
+          }
         }
 
         let fromTop = window.scrollY;
@@ -46,9 +54,11 @@ class BackupHosting extends React.Component<
         if (fromTop > 660) {
           nav.style.position = 'fixed';
           nav.style.margin = '0';
+          this.setState({ isNavFixed: true });
         } else {
           nav.style.position = 'static';
           nav.style.margin = '30px 0';
+          this.setState({ isNavFixed: false });
         }
 
         mainNavLinks.forEach((link: any) => {
@@ -58,7 +68,7 @@ class BackupHosting extends React.Component<
 
               if (section) {
                 if (
-                  section.offsetTop <= fromTop &&
+                  section.offsetTop - 10 <= fromTop &&
                   section.offsetTop + section.offsetHeight > fromTop
                 ) {
                   link.dataset.active = 'true';
@@ -122,12 +132,22 @@ class BackupHosting extends React.Component<
                 </p>
                 <p>
                   ما امنیت شمارا با آنتی ویروس معروف{' '}
-                  <a href="http://kb.jeyserver.com/fa/servers/softwares/clamav">
+                  <a
+                    href={`${process.env.SCHEMA}://kb.${process.env.DOMAIN}/fa/servers/softwares/clamav`}
+                  >
                     ClamAv
                   </a>{' '}
                   تامین میکنیم وهارد های سرورمان را به کمک تکنولوژی{' '}
-                  <a href="http://kb.jeyserver.com/fa/servers/raid">RIAD</a>{' '}
-                  <a href="http://kb.jeyserver.com/fa/servers/raid#raid1">1</a>{' '}
+                  <a
+                    href={`${process.env.SCHEMA}://kb.${process.env.DOMAIN}/fa/servers/raid`}
+                  >
+                    RIAD
+                  </a>{' '}
+                  <a
+                    href={`${process.env.SCHEMA}://kb.${process.env.DOMAIN}/fa/servers/raid#raid1`}
+                  >
+                    1
+                  </a>{' '}
                   آیینه یک دیگر میکنیم تا علاوه بر سرعت امنیت اطلاعاتتان نیز حفظ
                   شود
                 </p>
@@ -138,12 +158,31 @@ class BackupHosting extends React.Component<
           </div>
         </Container>
         <Container>
-          <Row className={styles.stickyNav} id="dedicated-nav">
+          {this.state.isNavFixed && (
+            <div
+              style={{
+                height:
+                  document.querySelector<HTMLDivElement>('#backup-nav')
+                    .clientHeight,
+              }}
+              className={styles.emptySpaceForNav}
+            ></div>
+          )}
+
+          <Row className={styles.stickyNav} id="backup-nav">
             <Col xs={12} className={styles.mnavigation}>
               <ul className={styles.nav}>
                 {this.props.backupHosts.map((panels, index) => (
                   <li key={panels.country_name_en}>
-                    <a href={`#${panels.country_name_en}`}>
+                    <a
+                      href={`#${panels.country_name_en}`}
+                      onClick={() => {
+                        document
+                          .querySelector(`#${panels.country_name_en}`)
+                          .scrollIntoView();
+                        this.props.switchAppIsScrolling();
+                      }}
+                    >
                       هاست پشتیبان {panels.country_name_fa}
                     </a>
                   </li>
@@ -179,7 +218,10 @@ class BackupHosting extends React.Component<
         <Container>
           <Row>
             <Col>
-              <Row id={`${this.props.backupHosts[0].country_name_en}`}>
+              <Row
+                id={`${this.props.backupHosts[0].country_name_en}`}
+                className={styles.tableWrapper}
+              >
                 <BackupHostingTable
                   data={this.props.backupHosts[0]}
                   hideTopInfo={false}

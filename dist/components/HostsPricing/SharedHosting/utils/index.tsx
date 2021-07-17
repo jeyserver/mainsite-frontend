@@ -222,26 +222,42 @@ export const getPageInfo = (type: page) => {
 export const getScrollTopForFixNav = (type: page) => {
   switch (type) {
     case 'linux_professional':
-      return 680;
+      return 600;
     case 'linux_standard':
-      return 680;
+      return 685;
     case 'windows_professional':
-      return 555;
+      return 600;
     case 'windows_standard':
-      return 555;
+      return 590;
     default:
       return '';
   }
 };
 
-export const renderTopNav = (type: page, topNavData: any) => {
+const scrollToTargetElement = (targetElementId, appIsScrollingFunction) => {
+  document.querySelector(`#${targetElementId}`).scrollIntoView();
+  appIsScrollingFunction();
+};
+
+export const renderTopNav = (
+  type: page,
+  topNavData: any,
+  appIsScrollingFunction?: () => void
+) => {
   switch (type) {
     case 'linux_professional':
       return (
         <ul className={styles.nav}>
           {topNavData.professional_linux_shared_hosts.map((host) => (
             <li key={host.title}>
-              <a href={`#${host.link}`}>هاست اشتراکی حرفه ای {host.title}</a>
+              <a
+                href={`#${host.link}`}
+                onClick={() =>
+                  scrollToTargetElement(host.link, appIsScrollingFunction)
+                }
+              >
+                هاست اشتراکی حرفه ای {host.title}
+              </a>
             </li>
           ))}
           <li>
@@ -253,7 +269,7 @@ export const renderTopNav = (type: page, topNavData: any) => {
                 {topNavData.standard_linux_shared_hosts.map((host) => (
                   <Link
                     key={host.link}
-                    href={`/hosting/linux/professional#${host.link}`}
+                    href={`/hosting/linux/standard#${host.link}`}
                   >
                     <a>هاست اشتراکی ساده {host.title}</a>
                   </Link>
@@ -290,7 +306,14 @@ export const renderTopNav = (type: page, topNavData: any) => {
         <ul className={styles.nav}>
           {topNavData.standard_linux_shared_hosts.map((host) => (
             <li key={host.title}>
-              <a href={`#${host.link}`}>هاست اشتراکی ساده {host.title}</a>
+              <a
+                href={`#${host.link}`}
+                onClick={() =>
+                  scrollToTargetElement(host.link, appIsScrollingFunction)
+                }
+              >
+                هاست اشتراکی ساده {host.title}
+              </a>
             </li>
           ))}
           <li>
@@ -339,7 +362,14 @@ export const renderTopNav = (type: page, topNavData: any) => {
         <ul className={styles.nav}>
           {topNavData.professional_windows_shared_hosts.map((host) => (
             <li key={host.title}>
-              <a href={`#${host.link}`}>هاست اشتراکی ساده {host.title}</a>
+              <a
+                href={`#${host.link}`}
+                onClick={() =>
+                  scrollToTargetElement(host.link, appIsScrollingFunction)
+                }
+              >
+                هاست اشتراکی ساده {host.title}
+              </a>
             </li>
           ))}
           <li>
@@ -400,7 +430,14 @@ export const renderTopNav = (type: page, topNavData: any) => {
         <ul className={styles.nav}>
           {topNavData.standard_windows_shared_hosts.map((host) => (
             <li key={host.title}>
-              <a href={`#${host.link}`}>هاست اشتراکی ساده {host.title}</a>
+              <a
+                href={`#${host.link}`}
+                onClick={() =>
+                  scrollToTargetElement(host.link, appIsScrollingFunction)
+                }
+              >
+                هاست اشتراکی ساده {host.title}
+              </a>
             </li>
           ))}
           <li>

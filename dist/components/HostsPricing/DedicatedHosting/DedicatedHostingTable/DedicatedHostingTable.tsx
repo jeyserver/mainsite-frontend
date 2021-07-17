@@ -4,6 +4,7 @@ import Link from 'next/link';
 import styles from './DedicatedHostingTable.module.scss';
 import ReactStars from 'react-rating-stars-component';
 import classNames from 'classnames';
+import { formatPrice } from '../../../helper/formatPrice';
 
 export interface DedicatedHostingTableProps {
   data: any;
@@ -29,20 +30,9 @@ class DedicatedHostingTable extends React.Component<
     });
   }
 
-  addCommas(num: number) {
-    let str = num.toString().split('.');
-    if (str[0].length >= 5) {
-      str[0] = str[0].replace(/(\d)(?=(\d{3})+$)/g, '$1,');
-    }
-    if (str[1] && str[1].length >= 5) {
-      str[1] = str[1].replace(/(\d{3})/g, '$1 ');
-    }
-    return str.join('.');
-  }
-
   render() {
     return (
-      <Row id={this.props.data.country_name_en}>
+      <Row id={this.props.data.country_name_en} className={styles.tableWrapper}>
         <Col xs={12}>
           <div className={styles.tittleLine}>
             <h5>هاست میزبانی اختصاصی {this.props.data.country_name_fa}</h5>
@@ -380,15 +370,15 @@ class DedicatedHostingTable extends React.Component<
                   <td>{panel.web_server}</td>
                   <td>{panel.hard_server}</td>
                   <td>
-                    {this.addCommas(panel.price)} {panel.currency.title} ماهیانه
+                    {formatPrice(panel.price)} {panel.currency.title} ماهیانه
                     <br />
                     یکبار پرداخت ماه اول
                   </td>
                   <td style={{ height: '67px' }}>
-                    {this.addCommas(panel.price)} {panel.currency.title} ماهیانه
+                    {formatPrice(panel.price)} {panel.currency.title} ماهیانه
                   </td>
                   <td style={{ height: '67px' }}>
-                    {this.addCommas(panel.price)} {panel.currency.title} ماهیانه
+                    {formatPrice(panel.price)} {panel.currency.title} ماهیانه
                   </td>
                   <td>
                     <div className={styles.btnsWrapper}>

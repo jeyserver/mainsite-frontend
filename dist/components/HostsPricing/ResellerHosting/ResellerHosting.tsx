@@ -10,9 +10,13 @@ import HostFaq from '../HostFaq/HostFaq';
 export interface ResellerHostingProps {
   resellerHosts: any;
   navData: any;
+  appIsScrolling: boolean;
+  switchAppIsScrolling: () => void;
 }
 
-export interface ResellerHostingState {}
+export interface ResellerHostingState {
+  isNavFixed: boolean;
+}
 
 class ResellerHosting extends React.Component<
   ResellerHostingProps,
@@ -20,36 +24,42 @@ class ResellerHosting extends React.Component<
 > {
   constructor(props: ResellerHostingProps) {
     super(props);
-    this.state = {};
+    this.state = {
+      isNavFixed: false,
+    };
   }
 
   componentDidMount() {
-    var lastScrollTop = 0;
+    let lastScrollTop = 0;
 
-    const nav = document.querySelector('#dedicated-nav') as HTMLDivElement;
+    const nav = document.querySelector('#reseller-nav') as HTMLDivElement;
 
-    const mainNavLinks = document.querySelectorAll('#dedicated-nav li a');
+    const mainNavLinks = document.querySelectorAll('#reseller-nav li a');
 
     window.addEventListener(
       'scroll',
-      function () {
+      () => {
         var st = window.pageYOffset || document.documentElement.scrollTop;
         if (st > lastScrollTop) {
           // downscroll code
           nav.style.top = '0px';
         } else {
           // upscroll code
-          nav.style.top = '80px';
+          if (!this.props.appIsScrolling) {
+            nav.style.top = '80px';
+          }
         }
 
         let fromTop = window.scrollY;
 
-        if (fromTop > 660) {
+        if (fromTop > 750) {
           nav.style.position = 'fixed';
           nav.style.margin = '0';
+          this.setState({ isNavFixed: true });
         } else {
           nav.style.position = 'static';
           nav.style.margin = '30px 0';
+          this.setState({ isNavFixed: false });
         }
 
         mainNavLinks.forEach((link: any) => {
@@ -58,7 +68,7 @@ class ResellerHosting extends React.Component<
 
             if (section) {
               if (
-                section.offsetTop <= fromTop &&
+                section.offsetTop - 10 <= fromTop &&
                 section.offsetTop + section.offsetHeight > fromTop
               ) {
                 link.dataset.active = 'true';
@@ -109,20 +119,20 @@ class ResellerHosting extends React.Component<
                   امنیت شما با نام دار ترین آنتی ویروس لینوکس یعنی{' '}
                   <a
                     className="chcolor"
-                    href="http://kb.jeyserver.com/fa/servers/softwares/clamav"
+                    href={`${process.env.SCHEMA}://kb.${process.env.DOMAIN}/fa/servers/softwares/clamav`}
                   >
                     ClamAv
                   </a>{' '}
                   تضمین میشود، همچنین هارد ها به وسیله تکنولوژی{' '}
                   <a
                     className="chcolor"
-                    href="http://kb.jeyserver.com/fa/servers/raid"
+                    href={`${process.env.SCHEMA}://kb.${process.env.DOMAIN}/fa/servers/raid`}
                   >
                     RIAD
                   </a>{' '}
                   <a
                     className="chcolor"
-                    href="http://kb.jeyserver.com/fa/servers/raid#raid1"
+                    href={`${process.env.SCHEMA}://kb.${process.env.DOMAIN}/fa/servers/raid#raid1`}
                   >
                     1
                   </a>{' '}
@@ -155,12 +165,31 @@ class ResellerHosting extends React.Component<
           </div>
         </Container>
         <Container>
-          <Row className={styles.stickyNav} id="dedicated-nav">
+          {this.state.isNavFixed && (
+            <div
+              style={{
+                height:
+                  document.querySelector<HTMLDivElement>('#reseller-nav')
+                    .clientHeight,
+              }}
+              className={styles.emptySpaceForNav}
+            ></div>
+          )}
+
+          <Row className={styles.stickyNav} id="reseller-nav">
             <Col xs={12} className={styles.mnavigation}>
               <ul className={styles.nav}>
                 {this.props.resellerHosts.map((panels, index) => (
                   <li key={panels.country_name_en}>
-                    <a href={`#${panels.country_name_en}`}>
+                    <a
+                      href={`#${panels.country_name_en}`}
+                      onClick={() => {
+                        document
+                          .querySelector(`#${panels.country_name_en}`)
+                          .scrollIntoView();
+                        this.props.switchAppIsScrolling();
+                      }}
+                    >
                       نمایندگی هاست {panels.license_fa} {panels.country_name_fa}
                     </a>
                   </li>

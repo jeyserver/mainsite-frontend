@@ -11,18 +11,24 @@ import { Dropdown } from 'react-bootstrap';
 export interface VPSHostingProps {
   VPSHosts: any;
   navData: any;
+  appIsScrolling: boolean;
+  switchAppIsScrolling: () => void;
 }
 
-export interface VPSHostingState {}
+export interface VPSHostingState {
+  isNavFixed: boolean;
+}
 
 class VPSHosting extends React.Component<VPSHostingProps, VPSHostingState> {
   constructor(props: VPSHostingProps) {
     super(props);
-    this.state = {};
+    this.state = {
+      isNavFixed: false,
+    };
   }
 
   componentDidMount() {
-    var lastScrollTop = 0;
+    let lastScrollTop = 0;
 
     const nav = document.querySelector('#vps-nav') as HTMLDivElement;
 
@@ -30,24 +36,28 @@ class VPSHosting extends React.Component<VPSHostingProps, VPSHostingState> {
 
     window.addEventListener(
       'scroll',
-      function () {
+      () => {
         var st = window.pageYOffset || document.documentElement.scrollTop;
         if (st > lastScrollTop) {
           // downscroll code
           nav.style.top = '0px';
         } else {
           // upscroll code
-          nav.style.top = '80px';
+          if (!this.props.appIsScrolling) {
+            nav.style.top = '80px';
+          }
         }
 
         let fromTop = window.scrollY;
 
-        if (fromTop > 658) {
+        if (fromTop > 600) {
           nav.style.position = 'fixed';
           nav.style.margin = '0';
+          this.setState({ isNavFixed: true });
         } else {
           nav.style.position = 'static';
           nav.style.margin = '30px 0';
+          this.setState({ isNavFixed: false });
         }
 
         mainNavLinks.forEach((link: any) => {
@@ -56,7 +66,7 @@ class VPSHosting extends React.Component<VPSHostingProps, VPSHostingState> {
 
             if (section) {
               if (
-                section.offsetTop <= fromTop &&
+                section.offsetTop - 10 <= fromTop &&
                 section.offsetTop + section.offsetHeight > fromTop
               ) {
                 link.dataset.active = 'true';
@@ -142,12 +152,31 @@ class VPSHosting extends React.Component<VPSHostingProps, VPSHostingState> {
           </div>
         </Container>
         <Container>
+          {this.state.isNavFixed && (
+            <div
+              style={{
+                height:
+                  document.querySelector<HTMLDivElement>('#vps-nav')
+                    .clientHeight,
+              }}
+              className={styles.emptySpaceForNav}
+            ></div>
+          )}
+
           <Row className={styles.stickyNav} id="vps-nav">
             <Col xs={12} className={styles.mnavigation}>
               <ul className={styles.nav}>
                 {this.props.VPSHosts.map((panels, index) => (
                   <li key={panels.license_en}>
-                    <a href={`#server_vps_${panels.license_en}`}>
+                    <a
+                      href={`#server_vps_${panels.license_en}`}
+                      onClick={() => {
+                        document
+                          .querySelector(`#server_vps_${panels.license_en}`)
+                          .scrollIntoView();
+                        this.props.switchAppIsScrolling();
+                      }}
+                    >
                       هاستینگ نیمه اختصاصی {panels.license_fa}
                     </a>
                   </li>

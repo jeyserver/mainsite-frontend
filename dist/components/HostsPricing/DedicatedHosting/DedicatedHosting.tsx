@@ -10,9 +10,13 @@ import styles from '../PageInfoStyles.module.scss';
 export interface DedicatedHostingProps {
   dedicatedHosts: any;
   navData: any;
+  appIsScrolling: boolean;
+  switchAppIsScrolling: () => void;
 }
 
-export interface DedicatedHostingState {}
+export interface DedicatedHostingState {
+  isNavFixed: boolean;
+}
 
 class DedicatedHosting extends React.Component<
   DedicatedHostingProps,
@@ -20,11 +24,13 @@ class DedicatedHosting extends React.Component<
 > {
   constructor(props: DedicatedHostingProps) {
     super(props);
-    this.state = {};
+    this.state = {
+      isNavFixed: false,
+    };
   }
 
   componentDidMount() {
-    var lastScrollTop = 0;
+    let lastScrollTop = 0;
 
     const nav = document.querySelector('#dedicated-nav') as HTMLDivElement;
 
@@ -32,24 +38,28 @@ class DedicatedHosting extends React.Component<
 
     window.addEventListener(
       'scroll',
-      function () {
+      () => {
         var st = window.pageYOffset || document.documentElement.scrollTop;
         if (st > lastScrollTop) {
           // downscroll code
           nav.style.top = '0px';
         } else {
           // upscroll code
-          nav.style.top = '80px';
+          if (!this.props.appIsScrolling) {
+            nav.style.top = '80px';
+          }
         }
 
         let fromTop = window.scrollY;
 
-        if (fromTop > 500) {
+        if (fromTop > 455) {
           nav.style.position = 'fixed';
           nav.style.margin = '0';
+          this.setState({ isNavFixed: true });
         } else {
           nav.style.position = 'static';
           nav.style.margin = '30px 0';
+          this.setState({ isNavFixed: false });
         }
 
         mainNavLinks.forEach((link: any) => {
@@ -112,12 +122,31 @@ class DedicatedHosting extends React.Component<
           </div>
         </Container>
         <Container>
+          {this.state.isNavFixed && (
+            <div
+              style={{
+                height:
+                  document.querySelector<HTMLDivElement>('#dedicated-nav')
+                    .clientHeight,
+              }}
+              className={styles.emptySpaceForNav}
+            ></div>
+          )}
+
           <Row className={styles.stickyNav} id="dedicated-nav">
             <Col xs={12} className={styles.mnavigation}>
               <ul className={styles.nav}>
                 {this.props.dedicatedHosts.map((panels, index) => (
                   <li key={panels.country_name_en}>
-                    <a href={`#${panels.country_name_en}`}>
+                    <a
+                      href={`#${panels.country_name_en}`}
+                      onClick={() => {
+                        document
+                          .querySelector(`#${panels.country_name_en}`)
+                          .scrollIntoView();
+                        this.props.switchAppIsScrolling();
+                      }}
+                    >
                       هاستینگ اختصاصی {panels.country_name_fa}
                     </a>
                   </li>

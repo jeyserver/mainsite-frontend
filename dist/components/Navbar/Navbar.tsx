@@ -3,7 +3,9 @@ import MainNavbar from './MainNavbar/MainNavbar';
 import TopNavbar from './TopNavbar/TopNavbar';
 import styles from './Navbar.module.scss';
 
-export interface NavbarProps {}
+export interface NavbarProps {
+  appIsScrolling?: boolean;
+}
 
 export interface NavbarState {}
 
@@ -85,7 +87,9 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
         navItemDropdown.forEach(
           (dropdownMenu) => (dropdownMenu.dataset.down = 'false')
         );
-        mainNavbar.style.top = '0';
+        if (!this.props.appIsScrolling) {
+          mainNavbar.style.top = '0';
+        }
 
         if (window.innerWidth > 991) {
           if (scrollY > 43) {

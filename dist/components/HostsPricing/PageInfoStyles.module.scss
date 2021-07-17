@@ -1,3 +1,7 @@
+.tableWrapper {
+  padding-top: 60px;
+}
+
 .mainContent {
   position: relative;
   padding: 40px 10px;
@@ -87,7 +91,6 @@
 }
 
 .properties {
-  margin-bottom: 30px;
   .title {
     margin: 0 0 10px;
     font-weight: 500;
@@ -106,6 +109,10 @@
     line-height: 24px;
     text-align: justify;
     font-family: IRANSans;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
   }
 }
 
@@ -233,5 +240,12 @@
     li {
       float: unset;
     }
+  }
+}
+
+.emptySpaceForNav {
+  width: 100%;
+  @media screen and (max-width: 767px) {
+    display: none !important;
   }
 }

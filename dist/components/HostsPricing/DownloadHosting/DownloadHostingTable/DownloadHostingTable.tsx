@@ -11,6 +11,8 @@ import Link from 'next/link';
 import styles from './DownloadHostingTable.module.scss';
 import ReactStars from 'react-rating-stars-component';
 import classNames from 'classnames';
+import { formatPrice } from '../../../helper/formatPrice';
+import CountryFlagTooltip from '../../../helper/components/CountryFlagTooltip';
 
 export interface DownloadHostingTableProps {
   data: any;
@@ -36,42 +38,24 @@ class DownloadHostingTable extends React.Component<
     });
   }
 
-  addCommas(num: number) {
-    let str = num.toString().split('.');
-    if (str[0].length >= 5) {
-      str[0] = str[0].replace(/(\d)(?=(\d{3})+$)/g, '$1,');
-    }
-    if (str[1] && str[1].length >= 5) {
-      str[1] = str[1].replace(/(\d{3})/g, '$1 ');
-    }
-    return str.join('.');
-  }
-
   render() {
     return (
-      <Row id={`${this.props.data.country_name_en}`}>
+      <Row
+        id={`${this.props.data.country_name_en}`}
+        className={styles.tableWrapper}
+      >
         <Col xs={12}>
           <div className={styles.tittleLine}>
             <h5>
               میزبانی فایل و هاست دانلود <br />
-              <OverlayTrigger
-                placement="top"
-                overlay={
-                  <Tooltip
-                    id={`${this.props.data.country_name_en}-tooltip`}
-                    className={styles.tooltip}
-                  >
-                    {this.props.data.country_name_en}
-                  </Tooltip>
-                }
-              >
-                <span>
-                  <img
-                    src={this.props.data.flag}
-                    alt={this.props.data.country_name_en}
-                  />
-                </span>
-              </OverlayTrigger>
+              <CountryFlagTooltip
+                name={this.props.data.country_name_en}
+                flag={{
+                  address: this.props.data.flag,
+                  width: 24,
+                  height: 24,
+                }}
+              />
               {this.props.data.country_name_fa}
             </h5>
             <div className={styles.divider}>
@@ -506,28 +490,20 @@ class DownloadHostingTable extends React.Component<
                   <td>{panel.web_server}</td>
                   <td>{panel.hard_server}</td>
                   <td>
-                    {this.addCommas(panel.price)} {panel.currency.title} ماهیانه
+                    {formatPrice(panel.price)} {panel.currency.title} ماهیانه
                   </td>
                   <td>
                     {panel.active ? (
                       <Link href={`/order/server/vps/${panel.id}`}>
                         <a className={styles.orderLink}>
-                          <OverlayTrigger
-                            placement="top"
-                            overlay={
-                              <Tooltip
-                                id={`${this.props.data.country_name_en}-tooltip`}
-                                className={styles.tooltip}
-                              >
-                                {this.props.data.country_name_en}
-                              </Tooltip>
-                            }
-                          >
-                            <img
-                              src={this.props.data.flag}
-                              alt={this.props.data.country_name_en}
-                            />
-                          </OverlayTrigger>
+                          <CountryFlagTooltip
+                            name={this.props.data.country_name_en}
+                            flag={{
+                              address: this.props.data.flag,
+                              width: 24,
+                              height: 24,
+                            }}
+                          />
                           <span>سفارش</span>{' '}
                         </a>
                       </Link>

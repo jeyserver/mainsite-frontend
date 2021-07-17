@@ -9,12 +9,36 @@ export interface IndexProps {
   navData: any;
 }
 
-export interface IndexState {}
+export interface IndexState {
+  appIsScrolling: boolean;
+}
+
+let appIsScrollingTimeout;
 
 class Index extends React.Component<IndexProps, IndexState> {
   constructor(props: IndexProps) {
     super(props);
-    this.state = {};
+    this.state = {
+      appIsScrolling: false,
+    };
+    this.switchAppIsScrolling = this.switchAppIsScrolling.bind(this);
+  }
+
+  switchAppIsScrolling() {
+    clearTimeout(appIsScrollingTimeout);
+    this.setState((prev) => {
+      return { appIsScrolling: true };
+    });
+
+    appIsScrollingTimeout = setTimeout(() => {
+      this.setState((prev) => {
+        return { appIsScrolling: false };
+      });
+    }, 1000);
+  }
+
+  componentWillUnmount() {
+    clearTimeout(appIsScrollingTimeout);
   }
 
   render() {
@@ -26,11 +50,13 @@ class Index extends React.Component<IndexProps, IndexState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Navbar />
+        <Navbar appIsScrolling={this.state.appIsScrolling} />
 
         <DownloadHosting
           downloadHosts={this.props.downloadHosts}
           navData={this.props.navData}
+          appIsScrolling={this.state.appIsScrolling}
+          switchAppIsScrolling={this.switchAppIsScrolling}
         />
 
         <Footer />

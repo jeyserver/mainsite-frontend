@@ -17,9 +17,13 @@ export interface SharedHostingProps {
   sharedHosts: any;
   navData: any;
   page: page;
+  appIsScrolling: boolean;
+  switchAppIsScrolling: () => void;
 }
 
-export interface SharedHostingState {}
+export interface SharedHostingState {
+  isNavFixed: boolean;
+}
 
 class SharedHosting extends React.Component<
   SharedHostingProps,
@@ -27,10 +31,16 @@ class SharedHosting extends React.Component<
 > {
   constructor(props: SharedHostingProps) {
     super(props);
-    this.state = {};
+    this.state = {
+      isNavFixed: false,
+    };
   }
 
   componentDidMount() {
+    if (location.hash) {
+      this.props.switchAppIsScrolling();
+    }
+
     var lastScrollTop = 0;
 
     const nav = document.querySelector(
@@ -50,7 +60,9 @@ class SharedHosting extends React.Component<
           nav.style.top = '0px';
         } else {
           // upscroll code
-          nav.style.top = '80px';
+          if (!this.props.appIsScrolling) {
+            nav.style.top = '80px';
+          }
         }
 
         let fromTop = window.scrollY;
@@ -58,9 +70,11 @@ class SharedHosting extends React.Component<
         if (fromTop > getScrollTopForFixNav(this.props.page)) {
           nav.style.position = 'fixed';
           nav.style.margin = '0';
+          this.setState({ isNavFixed: true });
         } else {
           nav.style.position = 'static';
           nav.style.margin = '30px 0';
+          this.setState({ isNavFixed: false });
         }
 
         mainNavLinks.forEach((link: any) => {
@@ -69,7 +83,7 @@ class SharedHosting extends React.Component<
 
             if (section) {
               if (
-                section.offsetTop <= fromTop &&
+                section.offsetTop - 10 <= fromTop &&
                 section.offsetTop + section.offsetHeight > fromTop
               ) {
                 link.dataset.active = 'true';
@@ -86,6 +100,10 @@ class SharedHosting extends React.Component<
     );
   }
 
+  componentWillUnmount() {
+    window.removeEventListener('scroll', () => {}, false);
+  }
+
   render() {
     return (
       <section>
@@ -98,9 +116,24 @@ class SharedHosting extends React.Component<
             </div>
           </div>
 
+          {this.state.isNavFixed && (
+            <div
+              style={{
+                height: document.querySelector<HTMLDivElement>(
+                  `#${this.props.page}-nav`
+                ).clientHeight,
+              }}
+              className={styles.emptySpaceForNav}
+            ></div>
+          )}
+
           <Row className={styles.stickyNav} id={`${this.props.page}-nav`}>
             <Col xs={12} className={styles.mnavigation}>
-              {renderTopNav(this.props.page, this.props.navData)}
+              {renderTopNav(
+                this.props.page,
+                this.props.navData,
+                this.props.switchAppIsScrolling
+              )}
             </Col>
           </Row>
 

@@ -9,9 +9,13 @@ import styles from '../PageInfoStyles.module.scss';
 export interface DownloadHostingProps {
   downloadHosts: any;
   navData: any;
+  appIsScrolling: boolean;
+  switchAppIsScrolling: () => void;
 }
 
-export interface DownloadHostingState {}
+export interface DownloadHostingState {
+  isNavFixed: boolean;
+}
 
 class DownloadHosting extends React.Component<
   DownloadHostingProps,
@@ -19,36 +23,42 @@ class DownloadHosting extends React.Component<
 > {
   constructor(props: DownloadHostingProps) {
     super(props);
-    this.state = {};
+    this.state = {
+      isNavFixed: false,
+    };
   }
 
   componentDidMount() {
-    var lastScrollTop = 0;
+    let lastScrollTop = 0;
 
-    const nav = document.querySelector('#dedicated-nav') as HTMLDivElement;
+    const nav = document.querySelector('#file-nav') as HTMLDivElement;
 
-    const mainNavLinks = document.querySelectorAll('#dedicated-nav li a');
+    const mainNavLinks = document.querySelectorAll('#file-nav li a');
 
     window.addEventListener(
       'scroll',
-      function () {
-        var st = window.pageYOffset || document.documentElement.scrollTop;
+      () => {
+        let st = window.pageYOffset || document.documentElement.scrollTop;
         if (st > lastScrollTop) {
           // downscroll code
           nav.style.top = '0px';
         } else {
           // upscroll code
-          nav.style.top = '80px';
+          if (!this.props.appIsScrolling) {
+            nav.style.top = '80px';
+          }
         }
 
         let fromTop = window.scrollY;
 
-        if (fromTop > 660) {
+        if (fromTop > 638) {
           nav.style.position = 'fixed';
           nav.style.margin = '0';
+          this.setState({ isNavFixed: true });
         } else {
           nav.style.position = 'static';
           nav.style.margin = '30px 0';
+          this.setState({ isNavFixed: false });
         }
 
         mainNavLinks.forEach((link: any) => {
@@ -57,7 +67,7 @@ class DownloadHosting extends React.Component<
 
             if (section) {
               if (
-                section.offsetTop <= fromTop &&
+                section.offsetTop - 10 <= fromTop &&
                 section.offsetTop + section.offsetHeight > fromTop
               ) {
                 link.dataset.active = 'true';
@@ -118,12 +128,20 @@ class DownloadHosting extends React.Component<
                   </p>
                   <p>
                     ما امنیت شمارا با آنتی ویروس معروف{' '}
-                    <a href="http://kb.jeyserver.com/fa/servers/softwares/clamav">
+                    <a
+                      href={`${process.env.SCHEMA}://kb.${process.env.DOMAIN}/fa/servers/softwares/clamav`}
+                    >
                       ClamAv
                     </a>{' '}
                     تامین میکنیم وهارد های سرورمان را به کمک تکنولوژی{' '}
-                    <a href="http://kb.jeyserver.com/fa/servers/raid">RIAD</a>{' '}
-                    <a href="http://kb.jeyserver.com/fa/servers/raid#raid1">
+                    <a
+                      href={`${process.env.SCHEMA}://kb.${process.env.DOMAIN}/fa/servers/raid`}
+                    >
+                      RIAD
+                    </a>{' '}
+                    <a
+                      href={`${process.env.SCHEMA}://kb.${process.env.DOMAIN}/fa/servers/raid#raid1`}
+                    >
                       1
                     </a>{' '}
                     آیینه یک دیگر میکنیم تا علاوه بر سرعت امنیت اطلاعاتتان نیز
@@ -141,12 +159,31 @@ class DownloadHosting extends React.Component<
           </div>
         </Container>
         <Container>
-          <Row className={styles.stickyNav} id="dedicated-nav">
+          {this.state.isNavFixed && (
+            <div
+              style={{
+                height:
+                  document.querySelector<HTMLDivElement>('#file-nav')
+                    .clientHeight,
+              }}
+              className={styles.emptySpaceForNav}
+            ></div>
+          )}
+
+          <Row className={styles.stickyNav} id="file-nav">
             <Col xs={12} className={styles.mnavigation}>
               <ul className={styles.nav}>
                 {this.props.downloadHosts.map((panels, index) => (
                   <li key={panels.country_name_en}>
-                    <a href={`#${panels.country_name_en}`}>
+                    <a
+                      href={`#${panels.country_name_en}`}
+                      onClick={() => {
+                        document
+                          .querySelector(`#${panels.country_name_en}`)
+                          .scrollIntoView();
+                        this.props.switchAppIsScrolling();
+                      }}
+                    >
                       هاست دانلود {panels.country_name_fa}
                     </a>
                   </li>

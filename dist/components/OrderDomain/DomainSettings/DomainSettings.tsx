@@ -13,7 +13,7 @@ export interface DomainSettingsProps {
 }
 
 export interface DomainSettingsState {
-  domainoption: 'register' | 'transfer';
+  domainoption: 'register' | 'transfer' | 'owndomain';
   selectedTld: number | null;
   domainNameError: 'data_validation' | 'data_duplicate' | null;
   checkDomainBtnLoading: boolean;
@@ -38,7 +38,8 @@ class DomainSettings extends React.Component<
       selectedDomains: [],
     };
     this.onSubmitForm = this.onSubmitForm.bind(this);
-    this.onChangeDomainName = this.onChangeDomainName.bind(this);
+    this.onChangeDomainOption = this.onChangeDomainOption.bind(this);
+    this.onChangeClearError = this.onChangeClearError.bind(this);
     this.toggleSelectedDomains = this.toggleSelectedDomains.bind(this);
   }
 
@@ -46,7 +47,11 @@ class DomainSettings extends React.Component<
     e.preventDefault();
     const form = e.currentTarget;
 
-    if (form.domainName.value.trim().length === 0) {
+    if (
+      form.domainName.value.trim().length === 0 ||
+      (form.domainoption.value === 'owndomain' &&
+        form.tld.value.trim().length === 0)
+    ) {
       this.setState({ domainNameError: 'data_validation' });
       e.stopPropagation();
     } else {
@@ -76,8 +81,15 @@ class DomainSettings extends React.Component<
           )
           .then((res) => {
             if (res.data.status) {
-              if (form.domainoption.value === 'transfer') {
-                this.props.router.push('/order/domain/configure');
+              if (
+                form.domainoption.value === 'transfer' ||
+                form.domainoption.value === 'owndomain'
+              ) {
+                if (form.domainoption.value === 'owndomain') {
+                  this.props.router.push('/order/hosting/configure');
+                } else {
+                  this.props.router.push('/order/domain/configure');
+                }
               } else {
                 this.setState({
                   recommendedDomains: res.data.recomendeds,
@@ -105,8 +117,18 @@ class DomainSettings extends React.Component<
     }
   }
 
-  onChangeDomainName() {
+  onChangeClearError() {
     this.setState({ domainNameError: null });
+  }
+
+  onChangeDomainOption(e) {
+    this.setState({
+      domainoption: e.target.value,
+      recommendedDomains: [],
+      selectedDomains: [],
+      ordered: null,
+    });
+    this.onChangeClearError();
   }
 
   toggleSelectedDomains(newDomain) {
@@ -156,7 +178,8 @@ class DomainSettings extends React.Component<
                   <input
                     type="radio"
                     name="domainoption"
-                    defaultValue="register"
+                    value="register"
+                    onChange={this.onChangeDomainOption}
                     defaultChecked
                   />
                   میخواهم جی سرور برای من دامنه جدید ثبت کند.
@@ -168,16 +191,34 @@ class DomainSettings extends React.Component<
                     <input
                       type="radio"
                       name="domainoption"
-                      defaultValue="transfer"
+                      value="transfer"
+                      onChange={this.onChangeDomainOption}
                     />
                     میخواهم دامنه ام را منتقل کنم به جی سرور
+                  </label>
+                </div>
+              )}
+              {this.props.data.orderHost && (
+                <div className={styles.domainOptions}>
+                  <label>
+                    <input
+                      type="radio"
+                      name="domainoption"
+                      value="owndomain"
+                      onChange={this.onChangeDomainOption}
+                    />
+                    NameServer های شرکت را بر روی دامنه ام تنظیم می کنم.
                   </label>
                 </div>
               )}
             </Form.Group>
           </Col>
 
-          <Row className={styles.alertOwnDomain} hidden>
+          <Row
+            className={classNames(styles.alertOwnDomain, {
+              [styles.show]: this.state.domainoption === 'owndomain',
+            })}
+          >
             <Col xs={12}>
               <div className={styles.alert}>
                 <span>
@@ -190,95 +231,114 @@ class DomainSettings extends React.Component<
           <Row className="justify-content-center">
             <Col md={8} className={styles.formInputs}>
               <InputGroup className={styles.inputGroup}>
-                <Form.Control as="select" name="tld" custom>
-                  <optgroup label="دامنه های ارزان قیمت">
-                    {getDomainsByCategory(
-                      'cheap-domains',
-                      this.props.data.domains.items,
-                      [],
-                      this.props.data.cheapDomainBreakPrice
-                    ).map((domain) => (
-                      <option
-                        key={domain.id}
-                        value={domain.id}
-                        selected={this.props.data.tldFromQuery === domain.tld}
-                      >
-                        .{domain.tld}
-                      </option>
-                    ))}
-                  </optgroup>
-                  <optgroup label="دامنه های تجاری">
-                    {getDomainsByCategory(
-                      'commercial-domains',
-                      this.props.data.domains.items,
-                      this.props.data.famousAndTrendyDomains,
-                      this.props.data.cheapDomainBreakPrice
-                    ).map((domain) => (
-                      <option
-                        key={domain.id}
-                        value={domain.id}
-                        selected={this.props.data.tldFromQuery === domain.tld}
-                      >
-                        .{domain.tld}
-                      </option>
-                    ))}
-                  </optgroup>
-                  <optgroup label="دامنه های خدماتی">
-                    {getDomainsByCategory(
-                      'service-domains',
-                      this.props.data.domains.items,
-                      this.props.data.famousAndTrendyDomains,
-                      this.props.data.cheapDomainBreakPrice
-                    ).map((domain) => (
-                      <option
-                        key={domain.id}
-                        value={domain.id}
-                        selected={this.props.data.tldFromQuery === domain.tld}
-                      >
-                        .{domain.tld}
-                      </option>
-                    ))}
-                  </optgroup>
-                  <optgroup label="دامنه های ملی">
-                    {getDomainsByCategory(
-                      'national-domains',
-                      this.props.data.domains.items,
-                      this.props.data.famousAndTrendyDomains,
-                      this.props.data.cheapDomainBreakPrice
-                    ).map((domain) => (
-                      <option
-                        key={domain.id}
-                        value={domain.id}
-                        selected={this.props.data.tldFromQuery === domain.tld}
-                      >
-                        .{domain.tld}
-                      </option>
-                    ))}
-                  </optgroup>
-                  <optgroup label="دامنه های کشوری">
-                    {getDomainsByCategory(
-                      'country-domains',
-                      this.props.data.domains.items,
-                      this.props.data.famousAndTrendyDomains,
-                      this.props.data.cheapDomainBreakPrice
-                    ).map((domain) => (
-                      <option
-                        key={domain.id}
-                        value={domain.id}
-                        selected={this.props.data.tldFromQuery === domain.tld}
-                      >
-                        .{domain.tld}
-                      </option>
-                    ))}
-                  </optgroup>
-                </Form.Control>
+                {this.state.domainoption === 'owndomain' ? (
+                  <div className={styles.suffix}>
+                    <Form.Control
+                      type="text"
+                      placeholder="پسوند"
+                      name="tld"
+                      className={styles.tldInput}
+                      onChange={this.onChangeClearError}
+                    />
+                    <div className={styles.hint}>
+                      <div className={styles.text}>بدون نقطه وارد کنید</div>
+                      <div className={styles.flashLine}></div>
+                      <i className="fas fa-caret-down"></i>
+                    </div>
+                  </div>
+                ) : (
+                  <Form.Control as="select" name="tld" custom>
+                    <optgroup label="دامنه های ارزان قیمت">
+                      {getDomainsByCategory(
+                        'cheap-domains',
+                        this.props.data.domains.items,
+                        [],
+                        this.props.data.cheapDomainBreakPrice
+                      ).map((domain) => (
+                        <option
+                          key={domain.id}
+                          value={domain.id}
+                          selected={this.props.data.tldFromQuery === domain.tld}
+                        >
+                          .{domain.tld}
+                        </option>
+                      ))}
+                    </optgroup>
+                    <optgroup label="دامنه های تجاری">
+                      {getDomainsByCategory(
+                        'commercial-domains',
+                        this.props.data.domains.items,
+                        this.props.data.famousAndTrendyDomains,
+                        this.props.data.cheapDomainBreakPrice
+                      ).map((domain) => (
+                        <option
+                          key={domain.id}
+                          value={domain.id}
+                          selected={this.props.data.tldFromQuery === domain.tld}
+                        >
+                          .{domain.tld}
+                        </option>
+                      ))}
+                    </optgroup>
+                    <optgroup label="دامنه های خدماتی">
+                      {getDomainsByCategory(
+                        'service-domains',
+                        this.props.data.domains.items,
+                        this.props.data.famousAndTrendyDomains,
+                        this.props.data.cheapDomainBreakPrice
+                      ).map((domain) => (
+                        <option
+                          key={domain.id}
+                          value={domain.id}
+                          selected={this.props.data.tldFromQuery === domain.tld}
+                        >
+                          .{domain.tld}
+                        </option>
+                      ))}
+                    </optgroup>
+                    <optgroup label="دامنه های ملی">
+                      {getDomainsByCategory(
+                        'national-domains',
+                        this.props.data.domains.items,
+                        this.props.data.famousAndTrendyDomains,
+                        this.props.data.cheapDomainBreakPrice
+                      ).map((domain) => (
+                        <option
+                          key={domain.id}
+                          value={domain.id}
+                          selected={this.props.data.tldFromQuery === domain.tld}
+                        >
+                          .{domain.tld}
+                        </option>
+                      ))}
+                    </optgroup>
+                    <optgroup label="دامنه های کشوری">
+                      {getDomainsByCategory(
+                        'country-domains',
+                        this.props.data.domains.items,
+                        this.props.data.famousAndTrendyDomains,
+                        this.props.data.cheapDomainBreakPrice
+                      ).map((domain) => (
+                        <option
+                          key={domain.id}
+                          value={domain.id}
+                          selected={this.props.data.tldFromQuery === domain.tld}
+                        >
+                          .{domain.tld}
+                        </option>
+                      ))}
+                    </optgroup>
+                  </Form.Control>
+                )}
                 <Form.Control
                   type="text"
                   placeholder="Your Domain"
                   name="domainName"
-                  onChange={this.onChangeDomainName}
+                  onChange={this.onChangeClearError}
                 />
-                <InputGroup.Prepend>www.</InputGroup.Prepend>
+                <InputGroup.Prepend className={styles.prefix}>
+                  www.
+                </InputGroup.Prepend>
               </InputGroup>
               {this.state.domainNameError === 'data_validation' && (
                 <div className={styles.invalidMsg}>
@@ -289,7 +349,7 @@ class DomainSettings extends React.Component<
             </Col>
           </Row>
 
-          {this.state.recommendedDomains && (
+          {this.state.recommendedDomains && this.state.ordered && (
             <Row className={styles.recommendedDomain}>
               <Table responsive striped className={classNames(styles.table)}>
                 <thead>

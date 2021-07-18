@@ -39,6 +39,8 @@ class Faqs extends React.Component<FaqsProps, FaqsState> {
           // upscroll code
           if (!this.props.appIsScrolling) {
             nav.style.top = '80px';
+          } else {
+            nav.style.top = '0px';
           }
         }
 
@@ -73,6 +75,8 @@ class Faqs extends React.Component<FaqsProps, FaqsState> {
       },
       false
     );
+
+    this.props.switchAppIsScrolling();
   }
 
   render() {

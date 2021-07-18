@@ -89,6 +89,8 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
         );
         if (!this.props.appIsScrolling) {
           mainNavbar.style.top = '0';
+        } else {
+          mainNavbar.style.top = '-100px';
         }
 
         if (window.innerWidth > 991) {

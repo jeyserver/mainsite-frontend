@@ -9,13 +9,38 @@ export interface IndexProps {
   topNav: any;
 }
 
-export interface IndexState {}
+export interface IndexState {
+  appIsScrolling: boolean;
+}
+
+let appIsScrollingTimeout;
 
 class Index extends React.Component<IndexProps, IndexState> {
   constructor(props: IndexProps) {
     super(props);
-    this.state = {};
+    this.state = {
+      appIsScrolling: false,
+    };
+    this.switchAppIsScrolling = this.switchAppIsScrolling.bind(this);
   }
+
+  switchAppIsScrolling() {
+    clearTimeout(appIsScrollingTimeout);
+    this.setState((prev) => {
+      return { appIsScrolling: true };
+    });
+
+    appIsScrollingTimeout = setTimeout(() => {
+      this.setState((prev) => {
+        return { appIsScrolling: false };
+      });
+    }, 1000);
+  }
+
+  componentWillUnmount() {
+    clearTimeout(appIsScrollingTimeout);
+  }
+
   render() {
     return (
       <div dir="rtl">
@@ -25,12 +50,14 @@ class Index extends React.Component<IndexProps, IndexState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Navbar />
+        <Navbar appIsScrolling={this.state.appIsScrolling} />
 
         <VpsPricing
           vpsData={this.props.vpsData}
           topNav={this.props.topNav}
           type="professional"
+          appIsScrolling={this.state.appIsScrolling}
+          switchAppIsScrolling={this.switchAppIsScrolling}
         />
 
         <Footer />

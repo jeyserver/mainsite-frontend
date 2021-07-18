@@ -10,6 +10,8 @@ import {
 import Link from 'next/link';
 import styles from './CountryPricing.module.scss';
 import classNames from 'classnames';
+import { formatPrice } from '../../helper/formatPrice';
+import CountryFlagTooltip from '../../helper/components/CountryFlagTooltip';
 
 export interface CountryPricingProps {
   countryData: any;
@@ -36,17 +38,6 @@ class CountryPricing extends React.Component<
     });
   }
 
-  addCommas(num: number) {
-    let str = num.toString().split('.');
-    if (str[0].length >= 5) {
-      str[0] = str[0].replace(/(\d)(?=(\d{3})+$)/g, '$1,');
-    }
-    if (str[1] && str[1].length >= 5) {
-      str[1] = str[1].replace(/(\d{3})/g, '$1 ');
-    }
-    return str.join('.');
-  }
-
   getType(type) {
     switch (type) {
       case 'professional':
@@ -63,28 +54,21 @@ class CountryPricing extends React.Component<
   render() {
     return (
       <Row
+        className={styles.tableWrapper}
         id={`server_vps_${this.props.type}_${this.props.countryData.country_title_en}`}
       >
         <Col xs={12}>
           <div className={styles.tittleLine}>
             <h5>
               سرور مجازی {this.getType(this.props.type)} <br />
-              <OverlayTrigger
-                placement="top"
-                overlay={
-                  <Tooltip
-                    id={`${this.props.countryData.country_title_en}-tooltip`}
-                    className={styles.tooltip}
-                  >
-                    {this.props.countryData.country_title_en}
-                  </Tooltip>
-                }
-              >
-                <img
-                  src={this.props.countryData.flag}
-                  alt={this.props.countryData.country_title_en}
-                />
-              </OverlayTrigger>
+              <CountryFlagTooltip
+                name={this.props.countryData.country_title_en}
+                flag={{
+                  address: this.props.countryData.flag,
+                  width: 24,
+                  height: 24,
+                }}
+              />
               {this.props.countryData.country}
             </h5>
             <div className={styles.divider}>
@@ -249,11 +233,11 @@ class CountryPricing extends React.Component<
                   <td>{plan.support}</td>
                   <td>
                     <span>
-                      {this.addCommas(plan.price)} {plan.currency.title}
+                      {formatPrice(plan.price)} {plan.currency.title}
                     </span>{' '}
                     ماهیانه <br />
                     <span>
-                      {this.addCommas(plan.price * 12)} {plan.currency.title}
+                      {formatPrice(plan.price * 12)} {plan.currency.title}
                     </span>{' '}
                     سالیانه{' '}
                   </td>
@@ -261,22 +245,14 @@ class CountryPricing extends React.Component<
                     {plan.active ? (
                       <Link href={`/order/server/vps/${plan.id}`}>
                         <a className={styles.orderLink}>
-                          <OverlayTrigger
-                            placement="top"
-                            overlay={
-                              <Tooltip
-                                id={`${this.props.countryData.country_title_en}-tooltip`}
-                                className={styles.tooltip}
-                              >
-                                {this.props.countryData.country_title_en}
-                              </Tooltip>
-                            }
-                          >
-                            <img
-                              src={this.props.countryData.flag}
-                              alt={this.props.countryData.country_title_en}
-                            />
-                          </OverlayTrigger>
+                          <CountryFlagTooltip
+                            name={this.props.countryData.country_title_en}
+                            flag={{
+                              address: this.props.countryData.flag,
+                              width: 24,
+                              height: 24,
+                            }}
+                          />
                           <span>سفارش</span>{' '}
                         </a>
                       </Link>

@@ -62,6 +62,8 @@ class SharedHosting extends React.Component<
           // upscroll code
           if (!this.props.appIsScrolling) {
             nav.style.top = '80px';
+          } else {
+            nav.style.top = '0px';
           }
         }
 
@@ -98,6 +100,8 @@ class SharedHosting extends React.Component<
       },
       false
     );
+
+    this.props.switchAppIsScrolling();
   }
 
   componentWillUnmount() {

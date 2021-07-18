@@ -45,6 +45,8 @@ class VPSHosting extends React.Component<VPSHostingProps, VPSHostingState> {
           // upscroll code
           if (!this.props.appIsScrolling) {
             nav.style.top = '80px';
+          } else {
+            nav.style.top = '0px';
           }
         }
 
@@ -81,6 +83,8 @@ class VPSHosting extends React.Component<VPSHostingProps, VPSHostingState> {
       },
       false
     );
+
+    this.props.switchAppIsScrolling();
   }
 
   render() {
@@ -171,9 +175,6 @@ class VPSHosting extends React.Component<VPSHostingProps, VPSHostingState> {
                     <a
                       href={`#server_vps_${panels.license_en}`}
                       onClick={() => {
-                        document
-                          .querySelector(`#server_vps_${panels.license_en}`)
-                          .scrollIntoView();
                         this.props.switchAppIsScrolling();
                       }}
                     >

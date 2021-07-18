@@ -47,6 +47,8 @@ class DedicatedHosting extends React.Component<
           // upscroll code
           if (!this.props.appIsScrolling) {
             nav.style.top = '80px';
+          } else {
+            nav.style.top = '0px';
           }
         }
 
@@ -83,6 +85,8 @@ class DedicatedHosting extends React.Component<
       },
       false
     );
+
+    this.props.switchAppIsScrolling();
   }
 
   render() {
@@ -141,9 +145,6 @@ class DedicatedHosting extends React.Component<
                     <a
                       href={`#${panels.country_name_en}`}
                       onClick={() => {
-                        document
-                          .querySelector(`#${panels.country_name_en}`)
-                          .scrollIntoView();
                         this.props.switchAppIsScrolling();
                       }}
                     >

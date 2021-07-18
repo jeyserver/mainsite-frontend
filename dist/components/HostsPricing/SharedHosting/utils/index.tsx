@@ -234,8 +234,7 @@ export const getScrollTopForFixNav = (type: page) => {
   }
 };
 
-const scrollToTargetElement = (targetElementId, appIsScrollingFunction) => {
-  document.querySelector(`#${targetElementId}`).scrollIntoView();
+const scrollToTargetElement = (appIsScrollingFunction) => {
   appIsScrollingFunction();
 };
 
@@ -252,9 +251,7 @@ export const renderTopNav = (
             <li key={host.title}>
               <a
                 href={`#${host.link}`}
-                onClick={() =>
-                  scrollToTargetElement(host.link, appIsScrollingFunction)
-                }
+                onClick={() => scrollToTargetElement(appIsScrollingFunction)}
               >
                 هاست اشتراکی حرفه ای {host.title}
               </a>
@@ -308,9 +305,7 @@ export const renderTopNav = (
             <li key={host.title}>
               <a
                 href={`#${host.link}`}
-                onClick={() =>
-                  scrollToTargetElement(host.link, appIsScrollingFunction)
-                }
+                onClick={() => scrollToTargetElement(appIsScrollingFunction)}
               >
                 هاست اشتراکی ساده {host.title}
               </a>
@@ -364,11 +359,9 @@ export const renderTopNav = (
             <li key={host.title}>
               <a
                 href={`#${host.link}`}
-                onClick={() =>
-                  scrollToTargetElement(host.link, appIsScrollingFunction)
-                }
+                onClick={() => scrollToTargetElement(appIsScrollingFunction)}
               >
-                هاست اشتراکی ساده {host.title}
+                هاست اشتراکی حرفه ای ویندوز {host.title}
               </a>
             </li>
           ))}
@@ -432,9 +425,7 @@ export const renderTopNav = (
             <li key={host.title}>
               <a
                 href={`#${host.link}`}
-                onClick={() =>
-                  scrollToTargetElement(host.link, appIsScrollingFunction)
-                }
+                onClick={() => scrollToTargetElement(appIsScrollingFunction)}
               >
                 هاست اشتراکی ساده {host.title}
               </a>
@@ -507,7 +498,7 @@ export const getPage = (type: page) => {
     case 'windows_professional':
       return 'ویندوز حرفه ای';
     case 'windows_standard':
-      return 'ویندوز ساده';
+      return 'ویندوز معمولی';
     default:
       return '';
   }

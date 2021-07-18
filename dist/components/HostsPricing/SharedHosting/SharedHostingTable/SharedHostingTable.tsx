@@ -49,7 +49,11 @@ class SharedHostingTable extends React.Component<
         <Col xs={12}>
           <div className={styles.tittleLine}>
             <h5>
-              میزبانی {getPage(this.props.page)} {this.props.data.license_fa}
+              میزبانی {getPage(this.props.page)}{' '}
+              {this.props.page === 'linux_professional' &&
+                this.props.data.license_fa}
+              {this.props.page === 'linux_standard' &&
+                this.props.data.license_fa}
               <br />
               <CountryFlagTooltip
                 name={this.props.data.country_name_en}

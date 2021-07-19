@@ -1,12 +1,12 @@
 import * as React from 'react';
 import Head from 'next/head';
-import Footer from '../../../components/Footer/Footer';
-import Navbar from '../../../components/Navbar/Navbar';
 import VpsPricing from '../../../components/VpsPricing/VpsPricing';
+import Layout from '../../../components/Layout/Layout';
 
 export interface IndexProps {
   vpsData: any;
   topNav: any;
+  postsForFooter: any;
 }
 
 export interface IndexState {
@@ -50,17 +50,18 @@ class Index extends React.Component<IndexProps, IndexState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Navbar appIsScrolling={this.state.appIsScrolling} />
-
-        <VpsPricing
-          vpsData={this.props.vpsData}
-          topNav={this.props.topNav}
-          type="professional"
+        <Layout
+          postsForFooter={this.props.postsForFooter}
           appIsScrolling={this.state.appIsScrolling}
-          switchAppIsScrolling={this.switchAppIsScrolling}
-        />
-
-        <Footer />
+        >
+          <VpsPricing
+            vpsData={this.props.vpsData}
+            topNav={this.props.topNav}
+            type="professional"
+            appIsScrolling={this.state.appIsScrolling}
+            switchAppIsScrolling={this.switchAppIsScrolling}
+          />
+        </Layout>
       </div>
     );
   }
@@ -70,6 +71,11 @@ export async function getServerSideProps(context) {
   // const data = await fetch(
   //   `${process.env.SCHEMA}://${process.env.DOMAIN}`
   // );
+
+  const postsForFooterRes = await fetch(
+    'https://jsonblob.com/api/jsonBlob/ff048401-e7cd-11eb-971c-9ff88820de62'
+  );
+  const postsForFooter = await postsForFooterRes.json();
 
   const vpsDataRes = await fetch(
     'https://jsonblob.com/api/jsonBlob/5e968f2d-df13-11eb-b7ed-fbe0d5824189'
@@ -82,7 +88,7 @@ export async function getServerSideProps(context) {
   const topNav = await topNavRes.json();
 
   return {
-    props: { vpsData, topNav },
+    props: { vpsData, topNav, postsForFooter },
   };
 }
 

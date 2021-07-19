@@ -1,12 +1,12 @@
 import * as React from 'react';
 import Head from 'next/head';
-import Footer from '../../../components/Footer/Footer';
-import Navbar from '../../../components/Navbar/Navbar';
 import VpsPricing from '../../../components/VpsPricing/VpsPricing';
+import Layout from '../../../components/Layout/Layout';
 
 export interface IndexProps {
   vpsData: any;
   topNav: any;
+  postsForFooter: any;
 }
 
 export interface IndexState {
@@ -50,23 +50,29 @@ class Index extends React.Component<IndexProps, IndexState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Navbar appIsScrolling={this.state.appIsScrolling} />
-
-        <VpsPricing
-          vpsData={this.props.vpsData}
-          topNav={this.props.topNav}
-          type="storage"
+        <Layout
+          postsForFooter={this.props.postsForFooter}
           appIsScrolling={this.state.appIsScrolling}
-          switchAppIsScrolling={this.switchAppIsScrolling}
-        />
-
-        <Footer />
+        >
+          <VpsPricing
+            vpsData={this.props.vpsData}
+            topNav={this.props.topNav}
+            type="storage"
+            appIsScrolling={this.state.appIsScrolling}
+            switchAppIsScrolling={this.switchAppIsScrolling}
+          />
+        </Layout>
       </div>
     );
   }
 }
 
 export async function getServerSideProps(context) {
+  const postsForFooterRes = await fetch(
+    'https://jsonblob.com/api/jsonBlob/ff048401-e7cd-11eb-971c-9ff88820de62'
+  );
+  const postsForFooter = await postsForFooterRes.json();
+
   // const data = await fetch(
   //   `${process.env.SCHEMA}://${process.env.DOMAIN}`
   // );
@@ -82,7 +88,11 @@ export async function getServerSideProps(context) {
   const topNav = await topNavRes.json();
 
   return {
-    props: { vpsData: vpsData.filter((i) => i.country === 'فرانسه'), topNav },
+    props: {
+      vpsData: vpsData.filter((i) => i.country === 'فرانسه'),
+      topNav,
+      postsForFooter,
+    },
   };
 }
 

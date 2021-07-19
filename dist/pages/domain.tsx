@@ -1,8 +1,7 @@
 import * as React from 'react';
 import Head from 'next/head';
-import Footer from '../components/Footer/Footer';
-import Navbar from '../components/Navbar/Navbar';
 import Domain from '../components/Domain/Domain';
+import Layout from '../components/Layout/Layout';
 
 export interface IndexProps {
   domainsData: {
@@ -19,6 +18,7 @@ export interface IndexProps {
   roundDomains: any;
   domainPosts: any;
   service: any;
+  postsForFooter;
 }
 
 export interface IndexState {}
@@ -37,23 +37,26 @@ class Index extends React.Component<IndexProps, IndexState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Navbar />
-
-        <Domain
-          domainsData={this.props.domainsData}
-          famousAndTrendyDomains={this.props.famousAndTrendyDomains}
-          roundDomains={this.props.roundDomains}
-          domainPosts={this.props.domainPosts}
-          service={this.props.service}
-        />
-
-        <Footer />
+        <Layout postsForFooter={this.props.postsForFooter}>
+          <Domain
+            domainsData={this.props.domainsData}
+            famousAndTrendyDomains={this.props.famousAndTrendyDomains}
+            roundDomains={this.props.roundDomains}
+            domainPosts={this.props.domainPosts}
+            service={this.props.service}
+          />
+        </Layout>
       </div>
     );
   }
 }
 
 export async function getServerSideProps(context) {
+  const postsForFooterRes = await fetch(
+    'https://jsonblob.com/api/jsonBlob/ff048401-e7cd-11eb-971c-9ff88820de62'
+  );
+  const postsForFooter = await postsForFooterRes.json();
+
   const domainsDataRes = await fetch(
     `${process.env.SCHEMA}://${process.env.DOMAIN}/fa/domain?ajax=1`
   );
@@ -71,6 +74,7 @@ export async function getServerSideProps(context) {
       roundDomains: data.roundDomains,
       domainPosts: data.domainPosts,
       service: data.service,
+      postsForFooter,
     },
   };
 }

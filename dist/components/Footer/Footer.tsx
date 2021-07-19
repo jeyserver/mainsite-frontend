@@ -1,182 +1,242 @@
 import * as React from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container, Row, Col, Image } from 'react-bootstrap';
 import styles from './Footer.module.scss';
+import axios from 'axios';
+import { NotificationManager } from 'react-notifications';
 
-export interface FooterProps {}
+export interface FooterProps {
+  posts?: { title: string; link: string }[];
+}
 
-export interface FooterState {}
+export interface FooterState {
+  newsLettersbtnLoading: boolean;
+}
 
 class Footer extends React.Component<FooterProps, FooterState> {
   constructor(props: FooterProps) {
     super(props);
-    this.state = {};
+    this.state = {
+      newsLettersbtnLoading: false,
+    };
+    this.onSubmit = this.onSubmit.bind(this);
   }
+
+  onSubmit(e) {
+    e.preventDefault();
+    const email = e.target.elements.email;
+    this.setState({ newsLettersbtnLoading: true });
+
+    axios(
+      'https://jsonblob.com/api/jsonBlob/af833cde-87c6-11eb-96ff-0fc9de054d2f'
+    )
+      .then(() => {
+        NotificationManager.success('ایمیل شما با موفقیت ثبت شد.', '');
+        email.value = '';
+        this.setState({ newsLettersbtnLoading: false });
+      })
+      .catch(() => {
+        NotificationManager.error(
+          'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
+          'خطا'
+        );
+        this.setState({ newsLettersbtnLoading: false });
+      });
+  }
+
   render() {
     return (
       <footer className={styles.footer}>
-        <Container className={styles.topFooter}>
+        <Container className={styles.topFooter} fluid="lg">
           <Row>
-            <Col xs={12} md={3} className="pt-30 px-3 px-md-3">
-              <div className="d-flex flex-column align-items-center w-100">
-                <Image src="/logo-header.png" width="171px" height="35px" />
-                <div className={styles.space}>
-                  <h2>
-                    <a href="/fa/server/vps"> سرور مجازی </a>
-                  </h2>
-                  <h3>
-                    <a href="/fa/hosting/linux/standard"> هاست لینوکس </a>
-                  </h3>
-                  <h3>
-                    <a href="/fa/hosting/linux/standard"> هاست ایران </a>
-                  </h3>
-                  <h4>
-                    <a href="/fa/hosting/file"> هاست دانلود </a>
-                  </h4>
-                  <h3>
-                    <a href="/fa/domain"> دامنه ارزان </a>
-                  </h3>
-                  <h2>
-                    <a href="/fa/licenses/directadmin"> لایسنس دایرکت ادمین </a>
-                  </h2>
-                  <h4>
-                    <a href="/fa/server/dedicated/germany"> سرور آلمان </a>
-                  </h4>
-                  <h4>
-                    <a href="/fa/reseller/hosting/linux/directadmin">
-                      نمایندگی دایرکت ادمین
-                    </a>
-                  </h4>
+            <Col xs={12} md={3}>
+              <div className={styles.info}>
+                <div className={styles.logoWrapper}>
+                  <Image src="/logo.png" />
+                  <span>جی سرور</span>
                 </div>
+                <p>
+                  لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و
+                  با استفاده از طراحان گرافیک است، چاپگرها و متون بلکه روزنامه و
+                  مجله در ستون و سطرآنچنان که لازم است
+                </p>
               </div>
             </Col>
-            <Col xs={12} md={3} className="pt-30 px-3 px-md-3">
-              <div className={styles.contactWithUs}>
+            <Col xs={12} md={3}>
+              <div className={styles.contactUs}>
                 <h3>تماس با ما</h3>
-                <p>
-                  شما هم اکنون میتوانید با اوپراتور های ما بصورت رایگان از طریق
-                  سیستم گفتگوی آنلاین صحبت کنید و پاسخ پرسش هایتان را دریافت
-                  کنید.
-                </p>
                 <ul>
                   <li>
-                    <i className="fas fa-map-marker-alt"></i>
-                    <strong> آدرس:</strong>
+                    <i className="fas fa-home"></i>
                     <span>
-                      {' '}
                       اصفهان - خیابان رباط دوم - ساختمان شمشاد - واحد 4
                     </span>
                   </li>
                   <li>
-                    <i className="fas fa-phone-alt"></i>
-                    <strong> تلفن تماس: </strong>
-                    <span> 34420301-031</span>
+                    <a href="tel:03134420301">
+                      <i className="fas fa-phone"></i>
+                      <span>031-34420301</span>
+                    </a>
                   </li>
                   <li>
-                    <i className="fas fa-envelope"></i>
-                    <strong> ایمیل:</strong>
-                    <span> info [AT] jeyserver.com</span>
+                    <a href="mailto:info@jeyserver.com">
+                      <i className="far fa-envelope"></i>
+                      <span>info [AT] jeyserver.com</span>
+                    </a>
                   </li>
                 </ul>
               </div>
             </Col>
-            <Col xs={12} md={3} className="pt-30 px-3 px-md-3">
-              <div className={styles.educationalContent}>
-                <h3>مطالب آموزشی</h3>
+            <Col xs={12} md={3}>
+              <div className={styles.blogLinks}>
+                <h3>مطالب آموزشی بلاگ</h3>
                 <ul>
-                  <li>
-                    <i className="fas fa-star"></i>
-                    <Link href="/fa/blog/how-to-install-go-on-ubuntu-18-04">
-                      <a>نصب Go برروی اوبونتو 18.04</a>
-                    </Link>
-                  </li>
-                  <li>
-                    <i className="fas fa-star"></i>
-                    <Link href="/fa/blog/how-to-install-node-js-on-ubuntu-18-04">
-                      <a>نصب Node.js در اوبونتو 18.04</a>
-                    </Link>
-                  </li>
-                  <li>
-                    <i className="fas fa-star"></i>
-                    <Link href="/fa/blog/node-with-mysql-examples">
-                      <a>کار با MySQL به همراه Node.js</a>
-                    </Link>
-                  </li>
-                  <li>
-                    <i className="fas fa-star"></i>
-                    <Link href="/fa/blog/nodejs-node-version-manager">
-                      <a>اجرای چندین نسخه از Node.js با Node Version Manager</a>
-                    </Link>
-                  </li>
-                  <li>
-                    <i className="fas fa-star"></i>
-                    <Link href="/fa/blog/setup-ssl-certificate-with-node-js-in-linux">
-                      <a>تنظیم گواهی SSL با Node.js در لینوکس</a>
-                    </Link>
-                  </li>
+                  {this.props.posts.map((post) => (
+                    <li key={post.link}>
+                      <Link href={post.link}>
+                        <a>
+                          <i className="far fa-edit"></i>
+                          <span>{post.title}</span>
+                        </a>
+                      </Link>
+                    </li>
+                  ))}
                 </ul>
               </div>
             </Col>
-            <Col xs={12} md={3} className="mt-5 px-3 px-md-3">
-              <div className={styles.electronicTrustSymbol}>
+            <Col
+              xs={12}
+              md={3}
+              className="d-flex justify-content-start justify-content-md-end"
+            >
+              <div className={styles.enamad}>
                 <h3>نماد اعتماد الکترونیکی</h3>
                 <a href="https://trustseal.enamad.ir/?id=22081&Code=ulnW1nDLAeYM3cL2l9U3">
-                  <Image
-                    src="/images/enamad.png"
-                    width="137px"
-                    height="147px"
-                  />
+                  <Image src="/images/enamad.png" />
                 </a>
               </div>
             </Col>
           </Row>
         </Container>
-        <div className={styles.bottomFooter}>
-          <Container>
-            <Row className="justif-content-between align-items-center">
+        <div className={styles.middleFooter}>
+          <Container fluid="lg">
+            <Row className="align-items-center">
               <Col xs={12} md={6}>
-                <div>
-                  <div className={styles.rightSide}>
-                    <span>کلیه حقوق مادی و معنوی این سایت محفوظ می باشد.</span>
-                    <a href="/fa/terms">قوانین</a> |{' '}
-                    <a href="/fa/policy">خط مشی ها</a>
-                  </div>
+                <div className={styles.newsLettersForm}>
+                  <h3>
+                    ﺑﺎ ﻋﻀﻮﯾﺖ در ﺧﺒﺮﻧﺎﻣﻪ ﺟﯽ ﺳﺮور، ﺟﺪﯾﺪﺗﺮﯾﻦ آﻣﻮزش ﻫﺎ را درﯾﺎﻓﺖ
+                    ﮐﻨﯿﺪ!
+                  </h3>
+                  <form onSubmit={this.onSubmit}>
+                    <input
+                      type="email"
+                      name="email"
+                      required
+                      placeholder="ایمیل خود را وارد کنید..."
+                    />
+                    <button
+                      type="submit"
+                      disabled={this.state.newsLettersbtnLoading}
+                    >
+                      {this.state.newsLettersbtnLoading ? (
+                        <div className={styles.loadingBox}></div>
+                      ) : (
+                        'ثبت نام'
+                      )}
+                    </button>
+                  </form>
                 </div>
               </Col>
               <Col xs={12} md={6}>
                 <div className={styles.socialNetworks}>
-                  <span>
-                    <a href="https://www.facebook.com/jeyserver">
-                      <i className="fab fa-facebook-f"></i>
-                    </a>
-                  </span>
-                  <span>
-                    <a href="https://www.twitter.com/jeyserver">
-                      <i className="fab fa-twitter"></i>
-                    </a>
-                  </span>
-                  <span>
-                    <a href="https://www.jeyserver.com/fa/news/rss">
-                      <i className="fas fa-rss"></i>
-                    </a>
-                  </span>
-                  <span>
-                    <a href="https://telegram.me/jeyserver">
-                      <i className="fab fa-telegram-plane"></i>
-                    </a>
-                  </span>
-                  <span>
-                    <a href="https://plus.google.com/+jeyserver">
-                      <i className="fab fa-google-plus-g"></i>
-                    </a>
-                  </span>
-                  <span>
-                    <a href="https://www.instagram.com/jeyservercom">
-                      <i className="fab fa-instagram"></i>
-                    </a>
-                  </span>
+                  <div className={styles.info}>
+                    ما را در شبکه های اجتماعی دنبال کنید:
+                  </div>
+                  <div className={styles.socialNetworksLinks}>
+                    <div>
+                      <a href="https://www.instagram.com/jeyservercom">
+                        <i className="fab fa-instagram"></i>
+                      </a>
+                    </div>
+                    <div>
+                      <a href="https://telegram.me/jeyserver">
+                        <i className="fab fa-telegram-plane"></i>
+                      </a>
+                    </div>
+                    <div>
+                      <a href="https://www.twitter.com/jeyserver">
+                        <i className="fab fa-twitter"></i>
+                      </a>
+                    </div>
+                    <div>
+                      <a href="https://www.jeyserver.com/fa/news/rss">
+                        <i className="fab fa-linkedin"></i>
+                      </a>
+                    </div>
+                  </div>
                 </div>
+              </Col>
+            </Row>
+          </Container>
+        </div>
+        <div className={styles.bottomFooter}>
+          <Container fluid="lg">
+            <Row className="align-items-center">
+              <Col
+                xs={12}
+                md={6}
+                className="d-flex justify-content-center justify-content-md-start"
+              >
+                <div className={styles.rightSide}>
+                  <span>کلیه حقوق مادی و معنوی این سایت محفوظ می باشد.</span>
+                  <Link href="/terms">
+                    <a> قوانین</a>
+                  </Link>{' '}
+                  |{' '}
+                  <Link href="/policy">
+                    <a>خط مشی ها</a>
+                  </Link>
+                </div>
+              </Col>
+              <Col
+                xs={12}
+                md={6}
+                className="d-flex justify-content-center justify-content-md-end"
+              >
+                <ul className={styles.bottomLinksList}>
+                  <li>
+                    <Link href="/blog">
+                      <a>
+                        <i className="fas fa-circle"></i>
+                        بلاگ جی سرور
+                      </a>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/profile">
+                      <a>
+                        <i className="fas fa-circle"></i>
+                        پنل کاربری
+                      </a>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/news">
+                      <a>
+                        <i className="fas fa-circle"></i>
+                        اخبار
+                      </a>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/faqs">
+                      <a>
+                        <i className="fas fa-circle"></i>
+                        سوالات متداول
+                      </a>
+                    </Link>
+                  </li>
+                </ul>
               </Col>
             </Row>
           </Container>

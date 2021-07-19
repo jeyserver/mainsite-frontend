@@ -155,12 +155,12 @@ class ViewNews extends React.Component<ViewNewsProps, ViewNewsState> {
                 </h3>
 
                 <div className={styles.metaTag}>
-                  <a
-                    className={styles.user}
-                    href={`/news/author/${this.props.postData.user.id}`}
-                  >
-                    <i className="fa fa-user" /> {this.props.postData.user.name}
-                  </a>
+                  <Link href={`/news/author/${this.props.postData.user.id}`}>
+                    <a className={styles.user}>
+                      <i className="fa fa-user" />{' '}
+                      {this.props.postData.user.name}
+                    </a>
+                  </Link>
                   <span className={styles.blueLine}>/</span>
                   <Link
                     href={`/news/archive/${moment(

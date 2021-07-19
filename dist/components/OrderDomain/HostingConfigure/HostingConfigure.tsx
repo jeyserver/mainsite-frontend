@@ -66,7 +66,7 @@ class HostingConfigure extends React.Component<
                           <tbody>
                             {this.props.hostingCartItems.map((cartItem) => {
                               return (
-                                <tr>
+                                <tr key={cartItem.title}>
                                   <td>
                                     <CountryFlagTooltip
                                       name={cartItem.country}

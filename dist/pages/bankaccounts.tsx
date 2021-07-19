@@ -1,8 +1,7 @@
 import * as React from 'react';
 import Head from 'next/head';
-import Footer from '../components/Footer/Footer';
-import Navbar from '../components/Navbar/Navbar';
 import BankAccountsComponent from '../components/BankAccounts/BankAccounts';
+import Layout from '../components/Layout/Layout';
 
 interface bankAccount {
   id: number;
@@ -15,6 +14,7 @@ interface bankAccount {
 
 export interface IndexProps {
   bankaccounts: bankAccount[];
+  postsForFooter: any;
 }
 
 export interface IndexState {}
@@ -33,19 +33,20 @@ class Index extends React.Component<IndexProps, IndexState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Navbar />
-
-        <BankAccountsComponent bankAccounts={this.props.bankaccounts} />
-
-        <Footer />
+        <Layout postsForFooter={this.props.postsForFooter}>
+          <BankAccountsComponent bankAccounts={this.props.bankaccounts} />
+        </Layout>
       </div>
     );
   }
 }
 
-export default Index;
-
 export async function getServerSideProps(context) {
+  const postsForFooterRes = await fetch(
+    'https://jsonblob.com/api/jsonBlob/ff048401-e7cd-11eb-971c-9ff88820de62'
+  );
+  const postsForFooter = await postsForFooterRes.json();
+
   const bankaccountsRes = await fetch(
     `${process.env.SCHEMA}://${process.env.DOMAIN}/fa/bankaccounts?ajax=1`
   );
@@ -56,6 +57,9 @@ export async function getServerSideProps(context) {
       bankaccounts: Object.entries(bankaccounts.accounts).map(
         (value) => value[1]
       ),
+      postsForFooter,
     },
   };
 }
+
+export default Index;

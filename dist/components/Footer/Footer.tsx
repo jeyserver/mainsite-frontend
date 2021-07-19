@@ -91,41 +91,16 @@ class Footer extends React.Component<FooterProps, FooterState> {
               <div className={styles.blogLinks}>
                 <h3>مطالب آموزشی بلاگ</h3>
                 <ul>
-                  <li>
-                    <Link href="#">
-                      <a>
-                        <i className="far fa-edit"></i>
-                        <span>اهمیت داشتن نام دامنه</span>
-                      </a>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="#">
-                      <a>
-                        <i className="far fa-edit"></i>
-                        <span>دستور غیرفعالسازی فایروال در لینوکس</span>
-                      </a>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="#">
-                      <a>
-                        <i className="far fa-edit"></i>
-                        <span>راهنمای سیستم فایل 'proc/' در لینوکس</span>
-                      </a>
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="#">
-                      <a>
-                        <i className="far fa-edit"></i>
-                        <span>
-                          مقایسه دو فایل در لینوکس با استفاده از diff ،vimdiff و
-                          colordiff
-                        </span>
-                      </a>
-                    </Link>
-                  </li>
+                  {this.props.posts.map((post) => (
+                    <li key={post.link}>
+                      <Link href={`/blog/${post.link}`}>
+                        <a>
+                          <i className="far fa-edit"></i>
+                          <span>{post.title}</span>
+                        </a>
+                      </Link>
+                    </li>
+                  ))}
                 </ul>
               </div>
             </Col>
@@ -136,7 +111,10 @@ class Footer extends React.Component<FooterProps, FooterState> {
             >
               <div className={styles.enamad}>
                 <h3>نماد اعتماد الکترونیکی</h3>
-                <a href="https://trustseal.enamad.ir/?id=22081&Code=ulnW1nDLAeYM3cL2l9U3">
+                <a
+                  target="_blank"
+                  href="https://trustseal.enamad.ir/?id=22081&Code=ulnW1nDLAeYM3cL2l9U3"
+                >
                   <Image src="/images/enamad.png" />
                 </a>
               </div>

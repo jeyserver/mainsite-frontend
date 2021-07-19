@@ -1,8 +1,7 @@
 import * as React from 'react';
 import Head from 'next/head';
-import Footer from '../../../components/Footer/Footer';
-import Navbar from '../../../components/Navbar/Navbar';
 import Posts from '../../../components/Blog/Posts/Posts';
+import Layout from '../../../components/Layout/Layout';
 
 export interface IndexProps {
   posts: any;
@@ -10,6 +9,7 @@ export interface IndexProps {
   page: { currentPage: number | null; all: number };
   param: { category?: string[]; tag?: string; search?: string };
   topNavTitle: string;
+  postsForFooter: any;
 }
 
 export interface IndexState {}
@@ -28,17 +28,15 @@ class Index extends React.Component<IndexProps, IndexState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Navbar />
-
-        <Posts
-          param={this.props.param}
-          topNavTitle={this.props.topNavTitle}
-          categories={this.props.categories}
-          posts={this.props.posts}
-          page={this.props.page}
-        />
-
-        <Footer />
+        <Layout postsForFooter={this.props.postsForFooter}>
+          <Posts
+            param={this.props.param}
+            topNavTitle={this.props.topNavTitle}
+            categories={this.props.categories}
+            posts={this.props.posts}
+            page={this.props.page}
+          />
+        </Layout>
       </div>
     );
   }
@@ -47,6 +45,11 @@ class Index extends React.Component<IndexProps, IndexState> {
 export async function getServerSideProps(context) {
   const category = context.query.category;
   const currentPage = context.query.page ? context.query.page : null;
+
+  const postsForFooterRes = await fetch(
+    'https://jsonblob.com/api/jsonBlob/ff048401-e7cd-11eb-971c-9ff88820de62'
+  );
+  const postsForFooter = await postsForFooterRes.json();
 
   const postsRes = await fetch(
     'https://jsonblob.com/api/jsonBlob/d8eccd84-d821-11eb-9f33-07821a14b37b'
@@ -68,6 +71,7 @@ export async function getServerSideProps(context) {
       topNavTitle,
       param,
       page: { currentPage, all: 2 },
+      postsForFooter,
     },
   };
 }

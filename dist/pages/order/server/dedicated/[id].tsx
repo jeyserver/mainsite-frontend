@@ -1,11 +1,11 @@
 import * as React from 'react';
 import Head from 'next/head';
-import Footer from '../../../../components/Footer/Footer';
-import Navbar from '../../../../components/Navbar/Navbar';
 import OrderDedicatedServer from '../../../../components/OrderDedicatedServer/OrderDedicatedServer';
+import Layout from '../../../../components/Layout/Layout';
 
 export interface IndexProps {
   serviceData: any;
+  postsForFooter: any;
 }
 
 export interface IndexState {}
@@ -25,24 +25,27 @@ class Index extends React.Component<IndexProps, IndexState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Navbar />
-
-        <OrderDedicatedServer serviceData={this.props.serviceData} />
-
-        <Footer />
+        <Layout postsForFooter={this.props.postsForFooter}>
+          <OrderDedicatedServer serviceData={this.props.serviceData} />
+        </Layout>
       </div>
     );
   }
 }
 
 export async function getServerSideProps(context) {
+  const postsForFooterRes = await fetch(
+    'https://jsonblob.com/api/jsonBlob/ff048401-e7cd-11eb-971c-9ff88820de62'
+  );
+  const postsForFooter = await postsForFooterRes.json();
+
   const serviceDataRes = await fetch(
     'https://jsonblob.com/api/jsonBlob/d3196d4f-e2e1-11eb-b284-d50b7a049077'
   );
   const serviceData = await serviceDataRes.json();
 
   return {
-    props: { serviceData },
+    props: { serviceData, postsForFooter },
   };
 }
 

@@ -68,6 +68,14 @@ class Index extends React.Component<IndexProps, IndexState> {
 }
 
 export async function getServerSideProps(context) {
+  const locale = context.locale;
+
+  if (locale !== 'fa') {
+    return {
+      notFound: true,
+    };
+  }
+
   // const data = await fetch(
   //   `${process.env.SCHEMA}://${process.env.DOMAIN}`
   // );

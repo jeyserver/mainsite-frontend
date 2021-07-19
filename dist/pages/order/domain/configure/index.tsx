@@ -48,6 +48,14 @@ class Index extends React.Component<IndexProps, IndexState> {
 }
 
 export async function getServerSideProps(context) {
+  const locale = context.locale;
+
+  if (locale !== 'fa') {
+    return {
+      notFound: true,
+    };
+  }
+
   const postsForFooterRes = await fetch(
     'https://jsonblob.com/api/jsonBlob/ff048401-e7cd-11eb-971c-9ff88820de62'
   );

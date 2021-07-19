@@ -46,6 +46,14 @@ class Index extends React.Component<IndexProps, IndexState> {
 }
 
 export async function getServerSideProps(context) {
+  const locale = context.locale;
+
+  if (locale !== 'fa') {
+    return {
+      notFound: true,
+    };
+  }
+
   const tldFromQuery = context.query.tld;
 
   const postsForFooterRes = await fetch(

@@ -1,12 +1,12 @@
 import * as React from 'react';
 import Head from 'next/head';
-import Footer from '../../../components/Footer/Footer';
-import Navbar from '../../../components/Navbar/Navbar';
 import ResellerHosting from '../../../components/HostsPricing/ResellerHosting/ResellerHosting';
+import Layout from '../../../components/Layout/Layout';
 
 export interface IndexProps {
   resellerHosts: any;
   navData: any;
+  postsForFooter: any;
 }
 
 export interface IndexState {
@@ -50,22 +50,28 @@ class Index extends React.Component<IndexProps, IndexState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Navbar appIsScrolling={this.state.appIsScrolling} />
-
-        <ResellerHosting
-          resellerHosts={this.props.resellerHosts}
-          navData={this.props.navData}
+        <Layout
+          postsForFooter={this.props.postsForFooter}
           appIsScrolling={this.state.appIsScrolling}
-          switchAppIsScrolling={this.switchAppIsScrolling}
-        />
-
-        <Footer />
+        >
+          <ResellerHosting
+            resellerHosts={this.props.resellerHosts}
+            navData={this.props.navData}
+            appIsScrolling={this.state.appIsScrolling}
+            switchAppIsScrolling={this.switchAppIsScrolling}
+          />
+        </Layout>
       </div>
     );
   }
 }
 
 export async function getServerSideProps(context) {
+  const postsForFooterRes = await fetch(
+    'https://jsonblob.com/api/jsonBlob/ff048401-e7cd-11eb-971c-9ff88820de62'
+  );
+  const postsForFooter = await postsForFooterRes.json();
+
   const resellerHostsRes = await fetch(
     `https://jsonblob.com/api/jsonBlob/1ba50f5f-e1be-11eb-9c37-1faf35d7bf34`
   );
@@ -80,6 +86,7 @@ export async function getServerSideProps(context) {
     props: {
       resellerHosts,
       navData,
+      postsForFooter,
     },
   };
 }

@@ -16,9 +16,11 @@ class HostFaq extends React.Component<HostFaqProps, HostFaqState> {
     return (
       <Col>
         <div className={styles.title}>
-          <a href="/fa/hosting/faq">
-            <h5>سوالات متداول هاست میزبانی</h5>
-          </a>
+          <Link href="/hosting/faq">
+            <a>
+              <h5>سوالات متداول هاست میزبانی</h5>
+            </a>
+          </Link>
           <div className={styles.divider}>
             <div />
           </div>

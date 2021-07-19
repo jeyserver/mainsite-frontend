@@ -1,11 +1,11 @@
 import * as React from 'react';
 import Head from 'next/head';
-import Footer from '../../components/Footer/Footer';
-import Navbar from '../../components/Navbar/Navbar';
 import HostingFaq from '../../components/HostsPricing/HostingFaq/HostingFaq';
+import Layout from '../../components/Layout/Layout';
 
 export interface IndexProps {
   navData: any;
+  postsForFooter: any;
 }
 
 export interface IndexState {}
@@ -25,24 +25,27 @@ class Index extends React.Component<IndexProps, IndexState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Navbar />
-
-        <HostingFaq navData={this.props.navData} />
-
-        <Footer />
+        <Layout postsForFooter={this.props.postsForFooter}>
+          <HostingFaq navData={this.props.navData} />
+        </Layout>
       </div>
     );
   }
 }
 
 export async function getServerSideProps(context) {
+  const postsForFooterRes = await fetch(
+    'https://jsonblob.com/api/jsonBlob/ff048401-e7cd-11eb-971c-9ff88820de62'
+  );
+  const postsForFooter = await postsForFooterRes.json();
+
   const navDataRes = await fetch(
     'https://jsonblob.com/api/jsonBlob/14b7037a-e155-11eb-9c37-51d866f9d6a7'
   );
   const navData = await navDataRes.json();
 
   return {
-    props: { navData },
+    props: { navData, postsForFooter },
   };
 }
 

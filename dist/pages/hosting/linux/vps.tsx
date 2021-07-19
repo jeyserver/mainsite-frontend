@@ -1,12 +1,12 @@
 import * as React from 'react';
 import Head from 'next/head';
-import Footer from '../../../components/Footer/Footer';
-import Navbar from '../../../components/Navbar/Navbar';
 import VPSHosting from '../../../components/HostsPricing/VPSHosting/VPSHosting';
+import Layout from '../../../components/Layout/Layout';
 
 export interface IndexProps {
   VPSHosts: any;
   navData: any;
+  postsForFooter: any;
 }
 
 export interface IndexState {
@@ -50,22 +50,28 @@ class Index extends React.Component<IndexProps, IndexState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Navbar appIsScrolling={this.state.appIsScrolling} />
-
-        <VPSHosting
-          VPSHosts={this.props.VPSHosts}
-          navData={this.props.navData}
+        <Layout
+          postsForFooter={this.props.postsForFooter}
           appIsScrolling={this.state.appIsScrolling}
-          switchAppIsScrolling={this.switchAppIsScrolling}
-        />
-
-        <Footer />
+        >
+          <VPSHosting
+            VPSHosts={this.props.VPSHosts}
+            navData={this.props.navData}
+            appIsScrolling={this.state.appIsScrolling}
+            switchAppIsScrolling={this.switchAppIsScrolling}
+          />
+        </Layout>
       </div>
     );
   }
 }
 
 export async function getServerSideProps(context) {
+  const postsForFooterRes = await fetch(
+    'https://jsonblob.com/api/jsonBlob/ff048401-e7cd-11eb-971c-9ff88820de62'
+  );
+  const postsForFooter = await postsForFooterRes.json();
+
   const VPSHostsRes = await fetch(
     `https://jsonblob.com/api/jsonBlob/874ffbe1-dfe6-11eb-a8ab-7d0108d78d09`
   );
@@ -80,6 +86,7 @@ export async function getServerSideProps(context) {
     props: {
       VPSHosts,
       navData,
+      postsForFooter,
     },
   };
 }

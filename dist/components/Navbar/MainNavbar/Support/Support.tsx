@@ -32,31 +32,31 @@ class Support extends React.Component<SupportProps, SupportState> {
             <Row>
               <Col xs={12} md={3}>
                 <div className={styles.linksWrapper}>
-                  <Link href="/fa/blog">
+                  <Link href="/blog">
                     <a>
                       <i className="far fa-edit"></i>
                       <span>وبلاگ</span>
                     </a>
                   </Link>
-                  <Link href="/fa/news">
+                  <Link href="/news">
                     <a>
                       <i className="fas fa-rss"></i>
                       <span>اخبار</span>
                     </a>
                   </Link>
-                  <Link href="/fa/faqs">
+                  <Link href="/faqs">
                     <a>
                       <i className="fas fa-question-circle"></i>
                       <span>سوالات متداول</span>
                     </a>
                   </Link>
-                  <Link href="/fa/bankaccounts">
+                  <Link href="/bankaccounts">
                     <a>
                       <i className="fas fa-university"></i>
                       <span>شماره حساب ها</span>
                     </a>
                   </Link>
-                  <Link href="/fa/server-status">
+                  <Link href="/server-status">
                     <a>
                       <i className="fas fa-chart-area"></i>
                       <span>وضعیت سرور ها</span>
@@ -67,7 +67,7 @@ class Support extends React.Component<SupportProps, SupportState> {
               <Col xs={12} md={5}>
                 <div className={styles.userPanelInfo}>
                   <h3>
-                    <Link href="/fa/userpanel">
+                    <Link href="/userpanel">
                       <a>
                         <i className="fas fa-user"></i>
                         <span>پنل کاربری</span>
@@ -84,20 +84,23 @@ class Support extends React.Component<SupportProps, SupportState> {
                   <img width={289} height={250} src="/images/learn-menu.png" />
                   <div className={styles.btnsWrapper}>
                     <Button
-                      href="/fa/userpanel/login"
                       variant="outline-md-warning"
                       className={styles.loginBtn}
                     >
-                      <i className="fas fa-sign-in-alt"></i>
-                      <span>ورود به سامانه</span>
+                      <Link href="/userpanel/login">
+                        <a>
+                          <i className="fas fa-sign-in-alt"></i>
+                          <span>ورود به سامانه</span>
+                        </a>
+                      </Link>
                     </Button>
-                    <Button
-                      href="/fa/userpanel/register"
-                      variant="warning"
-                      className={styles.registerBtn}
-                    >
-                      <i className="fas fa-user-plus"></i>
-                      <span>ثبت نام در سامانه</span>
+                    <Button variant="warning" className={styles.registerBtn}>
+                      <Link href="/userpanel/register">
+                        <a>
+                          <i className="fas fa-user-plus"></i>
+                          <span>ثبت نام در سامانه</span>
+                        </a>
+                      </Link>
                     </Button>
                   </div>
                 </div>

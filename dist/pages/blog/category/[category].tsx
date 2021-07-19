@@ -43,6 +43,14 @@ class Index extends React.Component<IndexProps, IndexState> {
 }
 
 export async function getServerSideProps(context) {
+  const locale = context.locale;
+
+  if (locale !== 'fa') {
+    return {
+      notFound: true,
+    };
+  }
+
   const category = context.query.category;
   const currentPage = context.query.page ? context.query.page : null;
 

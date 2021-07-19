@@ -1,8 +1,7 @@
 import * as React from 'react';
 import Head from 'next/head';
-import Footer from '../components/Footer/Footer';
-import Navbar from '../components/Navbar/Navbar';
 import News from '../components/News/News';
+import Layout from '../components/Layout/Layout';
 
 export interface IndexProps {
   postsData: {
@@ -29,6 +28,7 @@ export interface IndexProps {
   };
   mostViewedNews: any;
   newsArchive: number[];
+  postsForFooter: any;
 }
 
 export interface IndexState {}
@@ -48,16 +48,14 @@ class Index extends React.Component<IndexProps, IndexState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Navbar />
-
-        <News
-          headerTitle="اطلاعیه و اخبار"
-          postsData={this.props.postsData}
-          mostViewedNews={this.props.mostViewedNews}
-          newsArchive={this.props.newsArchive}
-        />
-
-        <Footer />
+        <Layout postsForFooter={this.props.postsForFooter}>
+          <News
+            headerTitle="اطلاعیه و اخبار"
+            postsData={this.props.postsData}
+            mostViewedNews={this.props.mostViewedNews}
+            newsArchive={this.props.newsArchive}
+          />
+        </Layout>
       </div>
     );
   }
@@ -71,6 +69,11 @@ export async function getServerSideProps(context) {
   //   `${process.env.SCHEMA}://${process.env.DOMAIN}/fa/news?page=${curPage}&ipp=${ipp}&ajax=1`
   // );
   // const postsData = await postsDataRes.json();
+
+  const postsForFooterRes = await fetch(
+    'https://jsonblob.com/api/jsonBlob/ff048401-e7cd-11eb-971c-9ff88820de62'
+  );
+  const postsForFooter = await postsForFooterRes.json();
 
   const postsDataRes = await fetch(
     `https://jsonblob.com/api/jsobBlob/1fd10ea9-de4b-11eb-80f0-1bc3c361302c`
@@ -92,6 +95,7 @@ export async function getServerSideProps(context) {
       postsData: { ...postsData, current_page: curPage },
       mostViewedNews,
       newsArchive,
+      postsForFooter,
     },
   };
 }

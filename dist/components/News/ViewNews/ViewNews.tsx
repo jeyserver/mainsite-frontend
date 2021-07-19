@@ -213,9 +213,8 @@ class ViewNews extends React.Component<ViewNewsProps, ViewNewsState> {
                   {this.props.postData.comments.items.map((comment) => {
                     if (comment.answers) {
                       return (
-                        <div>
+                        <div key={comment.id}>
                           <Comment
-                            key={comment.id}
                             comment={comment}
                             changeSelectedCommentForReply={
                               this.changeSelectedCommentForReply

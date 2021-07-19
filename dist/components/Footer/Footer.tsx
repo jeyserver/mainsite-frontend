@@ -93,7 +93,7 @@ class Footer extends React.Component<FooterProps, FooterState> {
                 <ul>
                   {this.props.posts.map((post) => (
                     <li key={post.link}>
-                      <Link href={post.link}>
+                      <Link href={`/blog/${post.link}`}>
                         <a>
                           <i className="far fa-edit"></i>
                           <span>{post.title}</span>

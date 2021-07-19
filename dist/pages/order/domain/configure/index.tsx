@@ -1,15 +1,15 @@
 import * as React from 'react';
 import Head from 'next/head';
-import Footer from '../../../../components/Footer/Footer';
-import Navbar from '../../../../components/Navbar/Navbar';
 import OrderDomain from '../../../../components/OrderDomain';
 import { connect } from 'react-redux';
 import { setOrderedDomains } from '../../../../redux/actions';
+import Layout from '../../../../components/Layout/Layout';
 
 export interface IndexProps {
   domains: any;
   nationalDomainsList: any;
   setOrderedDomains: (domains: any) => void;
+  postsForFooter: any;
 }
 
 export interface IndexState {}
@@ -33,30 +33,33 @@ class Index extends React.Component<IndexProps, IndexState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Navbar />
-
-        <OrderDomain
-          step="configuration"
-          data={{
-            domains: this.props.domains,
-            nationalDomainsList: this.props.nationalDomainsList,
-          }}
-        />
-
-        <Footer />
+        <Layout postsForFooter={this.props.postsForFooter}>
+          <OrderDomain
+            step="configuration"
+            data={{
+              domains: this.props.domains,
+              nationalDomainsList: this.props.nationalDomainsList,
+            }}
+          />
+        </Layout>
       </div>
     );
   }
 }
 
 export async function getServerSideProps(context) {
+  const postsForFooterRes = await fetch(
+    'https://jsonblob.com/api/jsonBlob/ff048401-e7cd-11eb-971c-9ff88820de62'
+  );
+  const postsForFooter = await postsForFooterRes.json();
+
   const domainsRes = await fetch(
     `https://jsonblob.com/api/jsonBlob/1a0f9102-e279-11eb-a96b-3311b2affb1f`
   );
   const domains = await domainsRes.json();
 
   return {
-    props: { domains, nationalDomainsList: ['ir'] },
+    props: { domains, nationalDomainsList: ['ir'], postsForFooter },
   };
 }
 

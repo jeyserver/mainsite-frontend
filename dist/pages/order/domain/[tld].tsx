@@ -1,14 +1,14 @@
 import * as React from 'react';
 import Head from 'next/head';
-import Footer from '../../../components/Footer/Footer';
-import Navbar from '../../../components/Navbar/Navbar';
 import OrderDomain from '../../../components/OrderDomain';
+import Layout from '../../../components/Layout/Layout';
 
 export interface IndexProps {
   domains: any;
   cheapDomainBreakPrice: any;
   famousAndTrendyDomains: any;
   tldFromQuery: string;
+  postsForFooter: any;
 }
 
 export interface IndexState {}
@@ -28,20 +28,18 @@ class Index extends React.Component<IndexProps, IndexState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Navbar />
-
-        <OrderDomain
-          step="settings"
-          data={{
-            domains: this.props.domains,
-            transferOption: true,
-            cheapDomainBreakPrice: this.props.cheapDomainBreakPrice,
-            famousAndTrendyDomains: this.props.famousAndTrendyDomains,
-            tldFromQuery: this.props.tldFromQuery,
-          }}
-        />
-
-        <Footer />
+        <Layout postsForFooter={this.props.postsForFooter}>
+          <OrderDomain
+            step="settings"
+            data={{
+              domains: this.props.domains,
+              transferOption: true,
+              cheapDomainBreakPrice: this.props.cheapDomainBreakPrice,
+              famousAndTrendyDomains: this.props.famousAndTrendyDomains,
+              tldFromQuery: this.props.tldFromQuery,
+            }}
+          />
+        </Layout>
       </div>
     );
   }
@@ -49,6 +47,11 @@ class Index extends React.Component<IndexProps, IndexState> {
 
 export async function getServerSideProps(context) {
   const tldFromQuery = context.query.tld;
+
+  const postsForFooterRes = await fetch(
+    'https://jsonblob.com/api/jsonBlob/ff048401-e7cd-11eb-971c-9ff88820de62'
+  );
+  const postsForFooter = await postsForFooterRes.json();
 
   const domainsRes = await fetch(
     `${process.env.SCHEMA}://${process.env.DOMAIN}/fa/domain?ajax=1`
@@ -66,6 +69,7 @@ export async function getServerSideProps(context) {
       cheapDomainBreakPrice: 200000,
       famousAndTrendyDomains,
       tldFromQuery,
+      postsForFooter,
     },
   };
 }

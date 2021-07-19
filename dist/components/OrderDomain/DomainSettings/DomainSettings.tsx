@@ -190,7 +190,12 @@ class DomainSettings extends React.Component<
           <Row className="justify-content-center">
             <Col md={8} className={styles.formInputs}>
               <InputGroup className={styles.inputGroup}>
-                <Form.Control as="select" name="tld" custom>
+                <Form.Control
+                  as="select"
+                  name="tld"
+                  defaultValue={this.props.data.tldFromQuery}
+                  custom
+                >
                   <optgroup label="دامنه های ارزان قیمت">
                     {getDomainsByCategory(
                       'cheap-domains',
@@ -198,11 +203,7 @@ class DomainSettings extends React.Component<
                       [],
                       this.props.data.cheapDomainBreakPrice
                     ).map((domain) => (
-                      <option
-                        key={domain.id}
-                        value={domain.id}
-                        selected={this.props.data.tldFromQuery === domain.tld}
-                      >
+                      <option key={domain.id} value={domain.id}>
                         .{domain.tld}
                       </option>
                     ))}
@@ -214,11 +215,7 @@ class DomainSettings extends React.Component<
                       this.props.data.famousAndTrendyDomains,
                       this.props.data.cheapDomainBreakPrice
                     ).map((domain) => (
-                      <option
-                        key={domain.id}
-                        value={domain.id}
-                        selected={this.props.data.tldFromQuery === domain.tld}
-                      >
+                      <option key={domain.id} value={domain.id}>
                         .{domain.tld}
                       </option>
                     ))}
@@ -230,11 +227,7 @@ class DomainSettings extends React.Component<
                       this.props.data.famousAndTrendyDomains,
                       this.props.data.cheapDomainBreakPrice
                     ).map((domain) => (
-                      <option
-                        key={domain.id}
-                        value={domain.id}
-                        selected={this.props.data.tldFromQuery === domain.tld}
-                      >
+                      <option key={domain.id} value={domain.id}>
                         .{domain.tld}
                       </option>
                     ))}
@@ -246,11 +239,7 @@ class DomainSettings extends React.Component<
                       this.props.data.famousAndTrendyDomains,
                       this.props.data.cheapDomainBreakPrice
                     ).map((domain) => (
-                      <option
-                        key={domain.id}
-                        value={domain.id}
-                        selected={this.props.data.tldFromQuery === domain.tld}
-                      >
+                      <option key={domain.id} value={domain.id}>
                         .{domain.tld}
                       </option>
                     ))}
@@ -262,11 +251,7 @@ class DomainSettings extends React.Component<
                       this.props.data.famousAndTrendyDomains,
                       this.props.data.cheapDomainBreakPrice
                     ).map((domain) => (
-                      <option
-                        key={domain.id}
-                        value={domain.id}
-                        selected={this.props.data.tldFromQuery === domain.tld}
-                      >
+                      <option key={domain.id} value={domain.id}>
                         .{domain.tld}
                       </option>
                     ))}

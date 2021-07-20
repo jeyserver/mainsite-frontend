@@ -247,88 +247,73 @@ class DomainSettings extends React.Component<
                     </div>
                   </div>
                 ) : (
-                  <Form.Control as="select" name="tld" custom>
-                    <optgroup label="دامنه های ارزان قیمت">
-                      {getDomainsByCategory(
-                        'cheap-domains',
-                        this.props.data.domains.items,
-                        [],
-                        this.props.data.cheapDomainBreakPrice
-                      ).map((domain) => (
-                        <option
-                          key={domain.id}
-                          value={domain.id}
-                          selected={this.props.data.tldFromQuery === domain.tld}
-                        >
-                          .{domain.tld}
-                        </option>
-                      ))}
-                    </optgroup>
-                    <optgroup label="دامنه های تجاری">
-                      {getDomainsByCategory(
-                        'commercial-domains',
-                        this.props.data.domains.items,
-                        this.props.data.famousAndTrendyDomains,
-                        this.props.data.cheapDomainBreakPrice
-                      ).map((domain) => (
-                        <option
-                          key={domain.id}
-                          value={domain.id}
-                          selected={this.props.data.tldFromQuery === domain.tld}
-                        >
-                          .{domain.tld}
-                        </option>
-                      ))}
-                    </optgroup>
-                    <optgroup label="دامنه های خدماتی">
-                      {getDomainsByCategory(
-                        'service-domains',
-                        this.props.data.domains.items,
-                        this.props.data.famousAndTrendyDomains,
-                        this.props.data.cheapDomainBreakPrice
-                      ).map((domain) => (
-                        <option
-                          key={domain.id}
-                          value={domain.id}
-                          selected={this.props.data.tldFromQuery === domain.tld}
-                        >
-                          .{domain.tld}
-                        </option>
-                      ))}
-                    </optgroup>
-                    <optgroup label="دامنه های ملی">
-                      {getDomainsByCategory(
-                        'national-domains',
-                        this.props.data.domains.items,
-                        this.props.data.famousAndTrendyDomains,
-                        this.props.data.cheapDomainBreakPrice
-                      ).map((domain) => (
-                        <option
-                          key={domain.id}
-                          value={domain.id}
-                          selected={this.props.data.tldFromQuery === domain.tld}
-                        >
-                          .{domain.tld}
-                        </option>
-                      ))}
-                    </optgroup>
-                    <optgroup label="دامنه های کشوری">
-                      {getDomainsByCategory(
-                        'country-domains',
-                        this.props.data.domains.items,
-                        this.props.data.famousAndTrendyDomains,
-                        this.props.data.cheapDomainBreakPrice
-                      ).map((domain) => (
-                        <option
-                          key={domain.id}
-                          value={domain.id}
-                          selected={this.props.data.tldFromQuery === domain.tld}
-                        >
-                          .{domain.tld}
-                        </option>
-                      ))}
-                    </optgroup>
-                  </Form.Control>
+                  <Form.Control
+                  as="select"
+                  name="tld"
+                  defaultValue={this.props.data.tldFromQuery}
+                  custom
+                >
+                  <optgroup label="دامنه های ارزان قیمت">
+                    {getDomainsByCategory(
+                      'cheap-domains',
+                      this.props.data.domains.items,
+                      [],
+                      this.props.data.cheapDomainBreakPrice
+                    ).map((domain) => (
+                      <option key={domain.id} value={domain.id}>
+                        .{domain.tld}
+                      </option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="دامنه های تجاری">
+                    {getDomainsByCategory(
+                      'commercial-domains',
+                      this.props.data.domains.items,
+                      this.props.data.famousAndTrendyDomains,
+                      this.props.data.cheapDomainBreakPrice
+                    ).map((domain) => (
+                      <option key={domain.id} value={domain.id}>
+                        .{domain.tld}
+                      </option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="دامنه های خدماتی">
+                    {getDomainsByCategory(
+                      'service-domains',
+                      this.props.data.domains.items,
+                      this.props.data.famousAndTrendyDomains,
+                      this.props.data.cheapDomainBreakPrice
+                    ).map((domain) => (
+                      <option key={domain.id} value={domain.id}>
+                        .{domain.tld}
+                      </option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="دامنه های ملی">
+                    {getDomainsByCategory(
+                      'national-domains',
+                      this.props.data.domains.items,
+                      this.props.data.famousAndTrendyDomains,
+                      this.props.data.cheapDomainBreakPrice
+                    ).map((domain) => (
+                      <option key={domain.id} value={domain.id}>
+                        .{domain.tld}
+                      </option>
+                    ))}
+                  </optgroup>
+                  <optgroup label="دامنه های کشوری">
+                    {getDomainsByCategory(
+                      'country-domains',
+                      this.props.data.domains.items,
+                      this.props.data.famousAndTrendyDomains,
+                      this.props.data.cheapDomainBreakPrice
+                    ).map((domain) => (
+                      <option key={domain.id} value={domain.id}>
+                        .{domain.tld}
+                      </option>
+                    ))}
+                  </optgroup>
+                </Form.Control>
                 )}
                 <Form.Control
                   type="text"

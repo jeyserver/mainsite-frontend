@@ -2,9 +2,17 @@ import {
   RESTORE_AUTH_STATE,
   AUTHENTICATE,
   DEAUTHENTICATE,
+  SET_DOMAIN_FOR_SHOP,
   TOGGLE_THEME,
   GET_THEME_FROM_LOCALSTORAGE,
 } from './constants/actionsConstants';
+
+export const setDomainForShopAction = (domain) => {
+  return {
+    type: SET_DOMAIN_FOR_SHOP,
+    payload: domain,
+  }
+};
 
 export const getThemeFromLocalStorageAction = () => {
   return {
@@ -35,6 +43,12 @@ export const restoreState = (authState) => {
   return {
     type: RESTORE_AUTH_STATE,
     payload: authState,
+  };
+};
+
+export const setDomainForShop = (domain) => {
+  return async (dispatch) => {
+    dispatch(setDomainForShopAction(domain));
   };
 };
 

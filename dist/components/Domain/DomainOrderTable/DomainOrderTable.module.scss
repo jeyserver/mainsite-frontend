@@ -34,6 +34,16 @@
     font-family: IRANSans;
   }
 
+  .roundDomainsNotFoundMsg {
+    color: #1a82a1;
+    font-family: IRANSans;
+    font-size: 0.9rem;
+    border-top: 1px solid rgb(70, 184, 218);
+    border-bottom: 1px solid rgb(70, 184, 218);
+    background-color: #c7f5fe;
+    border-radius: 0;
+  }
+
   > div {
     margin-top: 16.5em;
     color: #7b7b7b;

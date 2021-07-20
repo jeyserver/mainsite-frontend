@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import * as React from 'react';
+import { Alert } from 'react-bootstrap';
 import { Button } from 'react-bootstrap';
 import { Col, Table } from 'react-bootstrap';
 import styles from './DomainOrderTable.module.scss';
@@ -35,30 +36,36 @@ class DomainOrderTable extends React.Component<
       <Col xs={12} lg={4} className={classNames(styles.orderTable, 'px-0')}>
         <img src="/images/domain/mobile.png" className="float-left mobile" />
         <h5 className={styles.tableOrderTitle}>لیست دامنه های رند</h5>
-        <Table responsive bordered className={styles.table}>
-          <thead>
-            <tr>
-              <th>دامنه</th>
-              <th>هزینه ثبت</th>
-              <th>سفارش</th>
-            </tr>
-          </thead>
-          <tbody>
-            {this.props.roundDomains.items.map((domain) => (
-              <tr key={domain.id}>
-                <td>
-                  {domain.name}.{domain.tld}
-                </td>
-                <td>{this.addCommas(domain.new)} تومان</td>
-                <td>
-                  <Button>
-                    <a>سفارش</a>
-                  </Button>
-                </td>
+        {this.props.roundDomains.items.length === 0 ? (
+          <Alert variant="info" className={styles.roundDomainsNotFoundMsg}>
+            به محض پیدا کردن دامنه رند، در این قسمت براتون اضافه میکنیم.
+          </Alert>
+        ) : (
+          <Table responsive bordered className={styles.table}>
+            <thead>
+              <tr>
+                <th>دامنه</th>
+                <th>هزینه ثبت</th>
+                <th>سفارش</th>
               </tr>
-            ))}
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+              {this.props.roundDomains.items.map((domain) => (
+                <tr key={domain.id}>
+                  <td>
+                    {domain.name}.{domain.tld}
+                  </td>
+                  <td>{this.addCommas(domain.new)} تومان</td>
+                  <td>
+                    <Button>
+                      <a>سفارش</a>
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        )}
       </Col>
     );
   }

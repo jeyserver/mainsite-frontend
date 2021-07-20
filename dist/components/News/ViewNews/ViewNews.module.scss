@@ -1,0 +1,290 @@
+.innerBanner {
+  font-family: BYekan, sans-serif;
+  color: #313131;
+  font-size: 13px;
+  line-height: 20px;
+  direction: rtl;
+  box-sizing: border-box;
+  padding: 40px 10px;
+  position: relative;
+  padding-top: 40px;
+  padding-bottom: 30px;
+  background-color: #3dc4e4;
+  h2 {
+    box-sizing: border-box;
+    font-weight: 400;
+    line-height: 36px;
+    letter-spacing: 1px;
+    font-family: BYekan, sans-serif;
+    margin-top: auto;
+    margin-bottom: auto;
+    padding-bottom: 10px;
+    color: #fff;
+    font-size: 26px;
+    text-align: center;
+  }
+}
+
+.contentWrapper {
+  position: relative;
+  padding: 40px 10px;
+  background-color: #fff;
+
+  .newsWrapper {
+    margin-top: 20px;
+    .portfolioTittle {
+      margin-bottom: 0;
+      font-family: BYekan, sans-serif;
+      letter-spacing: 0;
+      text-transform: capitalize;
+
+      > a {
+        -webkit-transition: all 0.4s ease;
+        transition: all 0.4s ease;
+        color: #313131;
+        font-size: 18px;
+        line-height: 50px;
+        font-weight: 400;
+        font-family: BYekan, sans-serif;
+
+        &:hover {
+          color: #3dc4e4;
+        }
+      }
+    }
+
+    .metaTag {
+      color: #919191;
+      font-size: 13px;
+      line-height: 24px;
+      direction: rtl;
+
+      .user,
+      .date {
+        -webkit-transition: all 0.5s ease;
+        transition: all 0.5s ease;
+        color: #717171;
+        text-decoration: none;
+        font-family: Tahoma, sans-serif;
+
+        &:hover {
+          color: #3dc4e4;
+        }
+      }
+
+      .blueLine {
+        color: #3dc4e4;
+        padding: 0 8px;
+      }
+    }
+
+    .imgWrapper {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+
+      > img {
+        max-width: 100%;
+        height: auto;
+      }
+    }
+
+    .newsText {
+      margin-top: 20px;
+      font-family: IRANSans;
+      font-size: 13px;
+
+      p {
+        color: #717171;
+        line-height: 24px;
+      }
+    }
+
+    .divider {
+      margin-top: 20px;
+      > div {
+        background-image: url('/images/divider.png');
+        opacity: 0.6;
+        width: 100%;
+        height: 12px;
+      }
+    }
+
+    .commentsTitle {
+      margin-top: 20px;
+      font-weight: 400;
+      font-family: BYekan, sans-serif;
+      font-size: 15px;
+
+      > h5 {
+        margin-bottom: 10px;
+        line-height: 24px;
+        letter-spacing: 1px;
+        margin-top: 0;
+        font-size: 15px;
+        font-weight: 400;
+        font-family: BYekan, sans-serif;
+      }
+    }
+
+    .sendCommentTitle {
+      .header {
+        display: flex;
+        justify-content: space-between;
+
+        > h5 {
+          margin-bottom: 7px;
+          line-height: 24px;
+          letter-spacing: 1px;
+          margin-top: 0;
+          font-size: 15px;
+          font-weight: 400;
+          font-family: BYekan, sans-serif;
+        }
+
+        > .cancelBtn {
+          margin-top: auto;
+          font-weight: 400;
+          text-align: center;
+          white-space: nowrap;
+          border: 1px solid transparent;
+          padding: 6px 12px;
+          height: min-content;
+          font-size: 13px;
+          line-height: 1.42857143;
+          border-radius: 4px;
+          color: #fff;
+          background-color: #5bc0de;
+          border-color: #46b8da;
+          font-family: BYekan;
+
+          &:hover {
+            color: #fff;
+            background-color: #31b0d5;
+            border-color: #269abc;
+          }
+        }
+      }
+
+      > .divider {
+        color: #313131;
+        line-height: 20px;
+        width: 100%;
+        height: 1px;
+        background-color: #e1e1e1;
+        margin-bottom: -1px;
+        margin-top: 3px;
+
+        > div {
+          color: #313131;
+          line-height: 20px;
+          width: 98px;
+          height: 1px;
+          background-color: #00c6ff;
+          margin: 0 auto;
+          float: right;
+        }
+      }
+    }
+
+    .newsFormWrapper {
+      margin-top: 20px;
+      padding-bottom: 10px;
+
+      > form {
+        > .formGroupe {
+          margin-bottom: 15px;
+
+          > input,
+          > textarea {
+            direction: rtl;
+            box-sizing: border-box;
+            font: inherit;
+            margin: 0;
+            font-family: Menlo, DejaVu Sans Mono, Liberation Mono, Consolas,
+              Ubuntu Mono, Courier New, andale mono, lucida console, monospace;
+            display: block;
+            font-size: 14px;
+            line-height: 1.42857143;
+            color: #555;
+            width: 100%;
+            height: 34px;
+            padding: 6px 12px;
+            background-color: #fff;
+            background-image: none;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+            transition: border-color 0.15s ease-in-out,
+              box-shadow 0.15s ease-in-out;
+          }
+
+          &:first-child {
+            > input {
+              height: 46px;
+            }
+          }
+
+          > input[type='email'] {
+            direction: ltr;
+          }
+          > textarea {
+            min-height: 90px;
+          }
+        }
+        > .sendBtnWrapper {
+          margin-right: 25%;
+
+          @media screen and (max-width: 992px) {
+            margin: 0 15px;
+          }
+
+          .sendBtn {
+            font: inherit;
+            margin: 0;
+            overflow: visible;
+            margin-bottom: 0;
+            font-weight: 400;
+            text-align: center;
+            white-space: nowrap;
+            touch-action: manipulation;
+            cursor: pointer;
+            background-image: none;
+            border: 1px solid transparent;
+            user-select: none;
+            color: #fff;
+            background-color: #5cb85c;
+            border-color: #4cae4c;
+            padding: 5px 10px;
+            font-size: 12px;
+            line-height: 1.5;
+            border-radius: 3px;
+            display: block;
+            width: 100%;
+            font-family: BYekan;
+
+            &:disabled {
+              > i {
+                animation: fa-spin 2s linear infinite;
+              }
+            }
+
+            &:focus,
+            &:active {
+              box-shadow: none !important;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes fa-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

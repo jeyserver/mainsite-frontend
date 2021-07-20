@@ -1,10 +1,8 @@
 import * as React from 'react';
 import { Col, Tab, Row, Nav } from 'react-bootstrap';
-import Link from 'next/link';
 import SharedHostingTab from './SharedHostingTab/SharedHostingTab';
 import styles from './Tables.module.scss';
 import VpsServerTab from './VpsServerTab/VpsServerTab';
-import { Dropdown } from 'react-bootstrap';
 import ServerDedicatedTab from './ServerDedicatedTab/ServerDedicatedTab';
 import VpsNav from './VpsServerTab/VpsNav/VpsNav';
 
@@ -12,7 +10,7 @@ export interface TablesProps {
   tablesData: any;
 }
 
-export interface TablesState {}
+export interface TablesState { }
 
 class Tables extends React.Component<TablesProps, TablesState> {
   constructor(props: TablesProps) {
@@ -25,7 +23,7 @@ class Tables extends React.Component<TablesProps, TablesState> {
       <div>
         <Tab.Container defaultActiveKey="tab-server-vps">
           <Row as={Nav} className={styles.nav}>
-            <Col xs={6} sm={3}>
+            <Col xs={3}>
               <Nav.Link eventKey="tab-hosting-linux">
                 <div className={styles.navText}>هاست لینوکس</div>
                 <img
@@ -37,7 +35,7 @@ class Tables extends React.Component<TablesProps, TablesState> {
               </Nav.Link>
             </Col>
 
-            <Col xs={6} sm={3}>
+            <Col xs={3}>
               <Nav.Link eventKey="tab-hosting-windows">
                 <div className={styles.navText}>هاست ویندوز</div>
                 <img
@@ -49,7 +47,7 @@ class Tables extends React.Component<TablesProps, TablesState> {
               </Nav.Link>
             </Col>
 
-            <Col xs={6} sm={3}>
+            <Col xs={3}>
               <Nav.Link
                 eventKey="tab-server-vps"
                 className={styles.serverVpsNavItem}
@@ -64,7 +62,7 @@ class Tables extends React.Component<TablesProps, TablesState> {
               </Nav.Link>
             </Col>
 
-            <Col xs={6} sm={3}>
+            <Col xs={3}>
               <Nav.Link eventKey="tab-server-dedicated">
                 <div className={styles.navText}>سرور اختصاصی</div>
                 <img

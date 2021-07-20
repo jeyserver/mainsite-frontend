@@ -5,15 +5,31 @@ import { connect } from 'react-redux';
 import { deleteOrderedDomain } from '../../../../redux/actions';
 import styles from './DomainCard.module.scss';
 
+type error = 'data_validation' | 'data_duplicate';
+
 export interface DomainCardProps {
   nationalDomain: boolean;
   domain: any;
   transfer: boolean;
   deleteOrderedDomain: (targetTld) => void;
   store?: any;
+  errors: {
+    type: string;
+    code: error;
+    input: string;
+    error: error;
+  }[];
 }
 
 export interface DomainCardState {}
+
+const showError = (errorMsg: error) => {
+  if (errorMsg === 'data_duplicate') {
+    return 'داده وارد شده تکراری است';
+  } else if (errorMsg === 'data_validation') {
+    return 'داده وارد شده معتبر نیست';
+  }
+};
 
 class DomainCard extends React.Component<DomainCardProps, DomainCardState> {
   constructor(props: DomainCardProps) {
@@ -171,7 +187,19 @@ class DomainCard extends React.Component<DomainCardProps, DomainCardState> {
                       <Form.Control
                         type="text"
                         defaultValue={this.props.domain.name_servers['1']}
+                        required
                       />
+                      <Form.Control.Feedback type="invalid">
+                        {this.props.errors.find(
+                          (error) => error.input === `name_servers_1`
+                        )
+                          ? showError(
+                              this.props.errors.find(
+                                (error) => error.input === `name_servers_1`
+                              ).error
+                            )
+                          : 'داده وارد شده معتبر نیست'}
+                      </Form.Control.Feedback>
                     </Form.Group>
                   </div>
                   <div className={styles.nameserver}>
@@ -180,7 +208,19 @@ class DomainCard extends React.Component<DomainCardProps, DomainCardState> {
                       <Form.Control
                         type="text"
                         defaultValue={this.props.domain.name_servers['2']}
+                        required
                       />
+                      <Form.Control.Feedback type="invalid">
+                        {this.props.errors.find(
+                          (error) => error.input === `name_servers_2`
+                        )
+                          ? showError(
+                              this.props.errors.find(
+                                (error) => error.input === `name_servers_2`
+                              ).error
+                            )
+                          : 'داده وارد شده معتبر نیست'}
+                      </Form.Control.Feedback>
                     </Form.Group>
                   </div>
                   <div className={styles.nameserver}>
@@ -189,7 +229,21 @@ class DomainCard extends React.Component<DomainCardProps, DomainCardState> {
                       <Form.Control
                         type="text"
                         defaultValue={this.props.domain.name_servers['3']}
+                        isInvalid={this.props.errors.some(
+                          (error) => error.input === `name_servers_3`
+                        )}
                       />
+                      <Form.Control.Feedback type="invalid">
+                        {this.props.errors.find(
+                          (error) => error.input === `name_servers_3`
+                        )
+                          ? showError(
+                              this.props.errors.find(
+                                (error) => error.input === `name_servers_3`
+                              ).error
+                            )
+                          : 'داده وارد شده معتبر نیست'}
+                      </Form.Control.Feedback>
                     </Form.Group>
                   </div>
                   <div className={styles.nameserver}>
@@ -198,7 +252,21 @@ class DomainCard extends React.Component<DomainCardProps, DomainCardState> {
                       <Form.Control
                         type="text"
                         defaultValue={this.props.domain.name_servers['4']}
+                        isInvalid={this.props.errors.some(
+                          (error) => error.input === `name_servers_4`
+                        )}
                       />
+                      <Form.Control.Feedback type="invalid">
+                        {this.props.errors.find(
+                          (error) => error.input === `name_servers_4`
+                        )
+                          ? showError(
+                              this.props.errors.find(
+                                (error) => error.input === `name_servers_4`
+                              ).error
+                            )
+                          : 'داده وارد شده معتبر نیست'}
+                      </Form.Control.Feedback>
                     </Form.Group>
                   </div>
                 </div>

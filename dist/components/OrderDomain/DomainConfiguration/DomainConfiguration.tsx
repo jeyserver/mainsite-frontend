@@ -11,8 +11,16 @@ export interface DomainConfigurationProps {
   router: NextRouter;
 }
 
+type error = 'data_validation' | 'data_duplicate';
+
 export interface DomainConfigurationState {
   formValidated: boolean;
+  errors: {
+    type: string;
+    code: error;
+    input: string;
+    error: error;
+  }[];
 }
 
 class DomainConfiguration extends React.Component<
@@ -23,6 +31,7 @@ class DomainConfiguration extends React.Component<
     super(props);
     this.state = {
       formValidated: false,
+      errors: [],
     };
   }
 
@@ -64,6 +73,7 @@ class DomainConfiguration extends React.Component<
                 transfer={domain.transfer}
                 domain={domain}
                 key={domain.tld.id}
+                errors={this.state.errors}
               />
             ))}
 

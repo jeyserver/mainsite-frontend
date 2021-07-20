@@ -2,9 +2,12 @@ import React from 'react';
 import MainNavbar from './MainNavbar/MainNavbar';
 import TopNavbar from './TopNavbar/TopNavbar';
 import styles from './Navbar.module.scss';
+import { connect } from 'react-redux';
+import { getThemeFromLocalStorage } from '../../redux/actions';
 
 export interface NavbarProps {
   appIsScrolling?: boolean;
+  getThemeFromLocalStorage?: () => void;
 }
 
 export interface NavbarState {}
@@ -16,6 +19,8 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
   }
 
   componentDidMount() {
+    this.props.getThemeFromLocalStorage();
+
     const debounce = (fn) => {
       let frame;
       return (...params) => {
@@ -133,4 +138,8 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
   }
 }
 
-export default Navbar;
+const mapStateToProps = (state) => {
+  return state;
+};
+
+export default connect(mapStateToProps, { getThemeFromLocalStorage })(Navbar);

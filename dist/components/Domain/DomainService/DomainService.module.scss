@@ -1,0 +1,36 @@
+.bgService {
+  background-color: #24374a;
+  height: 259px;
+  display: flex;
+  align-items: center;
+  font-family: IRANSans;
+
+  @media screen and (max-width: 992px) {
+    height: 100%;
+    padding-top: 21px;
+  }
+
+  .card {
+    background-color: transparent;
+    border: 0;
+
+    .cardBody {
+      padding: 0;
+      .cardTitle {
+        font-family: BYekan;
+        font-size: 15px;
+        text-align: center;
+        color: #ffffff;
+        margin: 10px 0;
+      }
+
+      .servicePropertiesNumber {
+        direction: ltr;
+        color: #5aaefb;
+        font-size: 35px;
+        font-family: BYekan;
+        margin: 10px 0;
+      }
+    }
+  }
+}

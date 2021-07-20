@@ -1,0 +1,74 @@
+.faq {
+  margin-bottom: 97.5px;
+  margin-top: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #575757;
+  font-family: IRANSans;
+
+  .faqTitle {
+    text-align: center;
+    color: rgb(49, 49, 49);
+    font-size: 24px;
+    font-weight: 400;
+  }
+
+  .faqInfo {
+    text-align: center;
+    color: rgb(113, 113, 113);
+    font-size: 13px;
+  }
+
+  .card {
+    border: 1px solid transparent;
+
+    &.firstCard {
+      margin-bottom: 40px;
+    }
+
+    .cardHeader {
+      background-color: transparent;
+      padding: 0;
+      .link {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        text-decoration: none;
+        font-family: BYekan;
+        font-size: 14px;
+        color: #000000;
+        padding-right: 0;
+        padding-left: 0;
+        text-align: right;
+
+        > div {
+          text-align: right;
+          > span {
+            text-align: right;
+          }
+        }
+
+        &:focus {
+          box-shadow: none;
+        }
+
+        .questionIcon {
+          margin-left: 0.5em;
+        }
+
+        i {
+          font-size: 2em;
+          color: #000000;
+        }
+      }
+    }
+
+    .cardBody {
+      padding-top: 0.5em;
+      color: #313131;
+      font-size: 13px;
+      line-height: 20px;
+    }
+  }
+}

@@ -1,0 +1,97 @@
+.features {
+  color: #313131;
+  font-size: 13px;
+  line-height: 20px;
+  direction: rtl;
+  position: relative;
+  min-height: 450px;
+  background-color: #15579a;
+  padding-bottom: 60px;
+  padding-top: 58px;
+  font-family: IRANSans;
+
+  .featuresTitle {
+    line-height: 20px;
+    font-family: IRANSans;
+    box-sizing: border-box;
+    font-weight: 700;
+    font-size: 27px;
+    text-align: center;
+    color: #fff;
+  }
+
+  .featuresDes {
+    line-height: 20px;
+    font-family: IRANSans;
+    margin-top: 20px;
+    font-weight: 400;
+    font-size: 17px;
+    text-align: center;
+    color: #fff;
+    padding: 0 10px;
+  }
+
+  .backgroundPic {
+    color: #313131;
+    font-size: 13px;
+    line-height: 20px;
+    font-family: IRANSans;
+    position: absolute;
+    height: 74%;
+    width: 100%;
+    left: 0;
+    background: url('/images/feature-background.png') no-repeat 50%;
+    background-size: contain;
+    opacity: 0.4;
+  }
+
+  .items {
+    position: absolute;
+    height: 170px;
+    width: 100%;
+    bottom: 30px;
+
+    > div {
+      @media screen and (max-width: 767px) {
+        overflow-x: scroll;
+        overflow-y: hidden;
+      }
+    }
+
+    .item {
+      font-family: IRANSans;
+      // width: 180px;
+      width: 16.6777777%;
+      display: table-cell;
+
+      @media screen and (max-width: 767px) {
+        margin: 0 10px;
+        width: 94px;
+        height: 94px;
+      }
+
+      .imgWrapper {
+        border-radius: 50%;
+        width: 100px;
+        height: 100px;
+        background-color: #07156d;
+        text-align: center;
+        padding: 13px 11px;
+        border: 2px solid #ddd;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .itemDes {
+        line-height: 20px;
+        font-family: IRANSans;
+        font-weight: 500;
+        font-size: 13px;
+        text-align: center;
+        color: #fff;
+        margin-top: 10px;
+      }
+    }
+  }
+}

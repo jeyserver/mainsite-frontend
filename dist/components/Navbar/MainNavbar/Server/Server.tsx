@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Dropdown, Container, Row, Col } from 'react-bootstrap';
 import styles from './Server.module.scss';
+import classNames from 'classnames';
 
 export interface ServerProps {
   changeShowDropDown: () => void;
@@ -33,7 +34,7 @@ class Server extends React.Component<ServerProps, ServerState> {
                 <div className={styles.rightSide}>
                   <Link href="#">
                     <a>
-                      <h4 className={styles.title}>
+                      <h4 className={classNames(styles.title, 'serverTitle')}>
                         <i className="fas fa-cubes"></i>
                         سرور مجازی
                       </h4>
@@ -49,7 +50,12 @@ class Server extends React.Component<ServerProps, ServerState> {
                         className="d-flex align-items-cenetr justify-content-center"
                       >
                         <Link href="#">
-                          <a className={styles.professionalServerBtn}>
+                          <a
+                            className={classNames(
+                              styles.professionalServerBtn,
+                              'serverBtn'
+                            )}
+                          >
                             <div className={styles.iconWrapper}>
                               <i className="fas fa-microchip"></i>
                             </div>
@@ -65,7 +71,12 @@ class Server extends React.Component<ServerProps, ServerState> {
                         className="d-flex align-items-cenetr justify-content-center"
                       >
                         <Link href="#">
-                          <a className={styles.economicServerBtn}>
+                          <a
+                            className={classNames(
+                              styles.economicServerBtn,
+                              'serverBtn'
+                            )}
+                          >
                             <div className={styles.iconWrapper}>
                               <i className="far fa-money-bill-alt"></i>
                             </div>
@@ -81,7 +92,12 @@ class Server extends React.Component<ServerProps, ServerState> {
                         className="d-flex align-items-cenetr justify-content-center"
                       >
                         <Link href="#">
-                          <a className={styles.largeServerBtn}>
+                          <a
+                            className={classNames(
+                              styles.largeServerBtn,
+                              'serverBtn'
+                            )}
+                          >
                             <div className={styles.iconWrapper}>
                               <i className="far fa-hdd"></i>
                             </div>
@@ -94,7 +110,7 @@ class Server extends React.Component<ServerProps, ServerState> {
                 </div>
               </Col>
               <Col xs={12} md={6}>
-                <div className={styles.leftSide}>
+                <div className={classNames(styles.leftSide, 'serverLeftSide')}>
                   <Link href="#">
                     <div className={styles.title}>
                       <a href="/fa/server/dedicated">

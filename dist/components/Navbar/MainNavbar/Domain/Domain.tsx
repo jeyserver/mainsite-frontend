@@ -13,6 +13,7 @@ import {
 } from 'react-bootstrap';
 import styles from './Domain.module.scss';
 import { withRouter, NextRouter } from 'next/router';
+import classNames from 'classnames';
 
 export interface DomainProps {
   changeShowDropDown: () => void;
@@ -76,7 +77,7 @@ class Domain extends React.Component<DomainProps, DomainState> {
           </div>
         </Dropdown.Toggle>
 
-        <Dropdown.Menu className="nav-item-dropdown-menu px-3 py-0">
+        <Dropdown.Menu className="domain-drop-down-menu nav-item-dropdown-menu px-3 py-0">
           <Container fluid>
             <Row className="flex-column-reverse flex-md-row">
               <Col xs={12} md={4}>
@@ -107,7 +108,9 @@ class Domain extends React.Component<DomainProps, DomainState> {
                     </OverlayTrigger>
                   </div>
                   <div className="mt-3">
-                    <div className={styles.tableHeader}>
+                    <div
+                      className={classNames(styles.tableHeader, 'tableHeader')}
+                    >
                       <div>پسوند</div>
                       <div>قیمت ثبت</div>
                     </div>

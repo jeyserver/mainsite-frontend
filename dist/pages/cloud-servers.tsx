@@ -1,12 +1,12 @@
 import * as React from 'react';
 import Head from 'next/head';
 import CloudServers from '../components/CloudServers/CloudServers';
-import Footer from '../components/Footer/Footer';
-import Navbar from '../components/Navbar/Navbar';
+import Layout from '../components/Layout/Layout';
 
 export interface IndexProps {
   plans: any;
   countries: any;
+  postsForFooter: any;
 }
 
 export interface IndexState {}
@@ -25,20 +25,31 @@ class Index extends React.Component<IndexProps, IndexState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Navbar />
-
-        <CloudServers
-          countries={this.props.countries}
-          plans={this.props.plans}
-        />
-
-        <Footer />
+        <Layout postsForFooter={this.props.postsForFooter}>
+          <CloudServers
+            countries={this.props.countries}
+            plans={this.props.plans}
+          />
+        </Layout>
       </div>
     );
   }
 }
 
 export async function getServerSideProps(context) {
+  const locale = context.locale;
+
+  if (locale !== 'fa') {
+    return {
+      notFound: true,
+    };
+  }
+
+  const postsForFooterRes = await fetch(
+    'https://jsonblob.com/api/jsonBlob/ff048401-e7cd-11eb-971c-9ff88820de62'
+  );
+  const postsForFooter = await postsForFooterRes.json();
+
   // ${process.env.SCHEMA}://${process.env.DOMAIN}
   const plansRes = await fetch(
     `https://jsonblob.com/api/jsonBlob/1bf11e18-d70f-11eb-861d-31dabfa01faa`
@@ -54,6 +65,7 @@ export async function getServerSideProps(context) {
     props: {
       plans: palansData.plans,
       countries: countriesData.countries,
+      postsForFooter,
     },
   };
 }

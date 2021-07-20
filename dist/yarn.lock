@@ -1928,10 +1928,6 @@ react-bootstrap@^1.6.0:
     uncontrollable "^7.2.1"
     warning "^4.0.3"
 
-react-custom-scroll@^4.3.0:
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/react-custom-scroll/-/react-custom-scroll-4.3.0.tgz#8473ee2c78c5c48fb174941961f65345179a888f"
-  integrity sha512-JHNWBAzyw3MgsCNcG6uXJQkCoVPmWxeEW01ABmUz4HsWxw3EQJ2GzrUa5y4ISI85V3q6O4zwCIZAVn10aM3clQ==
 react-chartjs-2@^3.0.3:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/react-chartjs-2/-/react-chartjs-2-3.0.3.tgz#9cb1981396f9574afebd29aff4e6df71ed615596"
@@ -1939,6 +1935,10 @@ react-chartjs-2@^3.0.3:
   dependencies:
     lodash "^4.17.19"
 
+react-custom-scroll@^4.3.0:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/react-custom-scroll/-/react-custom-scroll-4.3.0.tgz#8473ee2c78c5c48fb174941961f65345179a888f"
+  integrity sha512-JHNWBAzyw3MgsCNcG6uXJQkCoVPmWxeEW01ABmUz4HsWxw3EQJ2GzrUa5y4ISI85V3q6O4zwCIZAVn10aM3clQ==
 react-display-name@^0.2.4:
   version "0.2.5"
   resolved "https://registry.yarnpkg.com/react-display-name/-/react-display-name-0.2.5.tgz#304c7cbfb59ee40389d436e1a822c17fe27936c6"

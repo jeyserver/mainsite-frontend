@@ -7,7 +7,7 @@ export interface DomainBlogProps {
   domainPosts: any;
 }
 
-export interface DomainBlogState {}
+export interface DomainBlogState { }
 
 class DomainBlog extends React.Component<DomainBlogProps, DomainBlogState> {
   constructor(props: DomainBlogProps) {
@@ -34,7 +34,7 @@ class DomainBlog extends React.Component<DomainBlogProps, DomainBlogState> {
                           ? post.user.avatar
                           : '/images/domain/default-avatar_67x67.png'
                       }
-                      className={styles.user}
+                      className={styles.user + " rounded-circle"}
                     />
                     <div className={styles.comment}>
                       <i className="fa fa-comment" aria-hidden="true" />

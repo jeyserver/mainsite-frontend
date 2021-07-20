@@ -3,6 +3,9 @@ import {
   RESTORE_AUTH_STATE,
   AUTHENTICATE,
   DEAUTHENTICATE,
+  SET_ORDERED_DOMAINS,
+  DELETE_ORDERED_DOMAIN,
+  SET_PENDING_DOMAIN,
   SET_DOMAIN_FOR_SHOP,
   TOGGLE_THEME,
   GET_THEME_FROM_LOCALSTORAGE,
@@ -29,6 +32,27 @@ export const toggleThemeAction = () => {
   };
 };
 
+export const setOrderedDomainsAction = (domains) => {
+  return {
+    type: SET_ORDERED_DOMAINS,
+    payload: { domains },
+  };
+};
+
+export const deleteOrderedDomainAction = (targetTld) => {
+  return {
+    type: DELETE_ORDERED_DOMAIN,
+    payload: { targetTld },
+  };
+};
+
+export const setPendingDomainAction = (targetTld) => {
+  return {
+    type: SET_PENDING_DOMAIN,
+    payload: { targetTld },
+  };
+};
+
 export const authenticateAction = (user) => {
   return {
     type: AUTHENTICATE,
@@ -46,6 +70,30 @@ export const restoreState = (authState) => {
   return {
     type: RESTORE_AUTH_STATE,
     payload: authState,
+  };
+};
+
+export const setOrderedDomains = (domains) => {
+  return async (dispatch) => {
+    dispatch(setOrderedDomainsAction(domains));
+  };
+};
+
+export const deleteOrderedDomain = (targetTld) => {
+  return async (dispatch) => {
+    dispatch(setPendingDomainAction(targetTld));
+
+    axios
+      .get(
+        'https://jsonblob.com/api/jsonBlob/964cc80e-e274-11eb-a96b-6b620e600ebe'
+      )
+      .then(() => {
+        dispatch(deleteOrderedDomainAction(targetTld));
+        dispatch(setPendingDomainAction(targetTld));
+      })
+      .catch((err) => {
+        dispatch(setPendingDomainAction(targetTld));
+      });
   };
 };
 

@@ -5,6 +5,7 @@ import styles from './Navbar.module.scss';
 
 export interface NavbarProps {
   appIsScrolling?: boolean;
+  getThemeFromLocalStorage?: () => void;
 }
 
 export interface NavbarState {}

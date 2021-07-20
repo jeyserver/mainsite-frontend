@@ -1,0 +1,49 @@
+.orderSteps {
+  .title {
+    margin-bottom: 10px;
+    font-family: BYekan, sans-serif;
+    margin-top: 0;
+    font-weight: 400;
+    line-height: 36px;
+    letter-spacing: 1px;
+    font-size: 25px;
+    padding-top: 25px;
+    border-bottom: 1px dashed #3dc4e4;
+    color: rgb(49, 49, 49);
+  }
+
+  .step {
+    margin-bottom: 0;
+    font-weight: 400;
+    text-align: center;
+    white-space: nowrap;
+    cursor: pointer;
+    border: 1px solid transparent;
+    padding: 6px 12px;
+    font-size: 15px;
+    line-height: 1.42857143;
+    border-radius: 4px;
+    color: #fff;
+    background-color: #5bc0de;
+    border-color: #46b8da;
+    display: block;
+    width: 100%;
+    font-family: BYekan;
+    margin-top: 5px;
+
+    display: grid;
+    grid-template-columns: 20px 1fr;
+    height: 48px;
+    justify-items: center;
+    align-content: center;
+
+    &.active {
+      background-color: #f90;
+    }
+
+    .stepIco {
+      padding-left: 9px;
+      border-left: 1px solid hsla(0, 0%, 100%, 0.29);
+    }
+  }
+}

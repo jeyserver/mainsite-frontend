@@ -18,6 +18,8 @@ export interface DedicatedHostingState {
   isNavFixed: boolean;
 }
 
+let lastScrollTop = 0;
+
 class DedicatedHosting extends React.Component<
   DedicatedHostingProps,
   DedicatedHostingState
@@ -27,66 +29,69 @@ class DedicatedHosting extends React.Component<
     this.state = {
       isNavFixed: false,
     };
+    this.onScroll = this.onScroll.bind(this);
+  }
+
+  onScroll() {
+    const nav = document.querySelector('#dedicated-nav') as HTMLDivElement;
+
+    const mainNavLinks = document.querySelectorAll(
+      '#dedicated-nav li[data-main="true"] > a'
+    );
+
+    var st = window.pageYOffset || document.documentElement.scrollTop;
+    if (st > lastScrollTop) {
+      // downscroll code
+      nav.style.top = '0px';
+    } else {
+      // upscroll code
+      if (!this.props.appIsScrolling) {
+        nav.style.top = '80px';
+      } else {
+        nav.style.top = '0px';
+      }
+    }
+
+    let fromTop = window.scrollY;
+
+    if (fromTop > 455) {
+      nav.style.position = 'fixed';
+      nav.style.margin = '0';
+      this.setState({ isNavFixed: true });
+    } else {
+      nav.style.position = 'static';
+      nav.style.margin = '30px 0';
+      this.setState({ isNavFixed: false });
+    }
+
+    mainNavLinks.forEach((link: any) => {
+      if (link.hash) {
+        let section = document.querySelector(link.hash);
+
+        if (section) {
+          if (
+            section.offsetTop <= fromTop &&
+            section.offsetTop + section.offsetHeight > fromTop
+          ) {
+            link.dataset.active = 'true';
+          } else {
+            link.dataset.active = 'false';
+          }
+        }
+      }
+    });
+
+    lastScrollTop = st <= 0 ? 0 : st;
   }
 
   componentDidMount() {
-    let lastScrollTop = 0;
-
-    const nav = document.querySelector('#dedicated-nav') as HTMLDivElement;
-
-    const mainNavLinks = document.querySelectorAll('#dedicated-nav li a');
-
-    window.addEventListener(
-      'scroll',
-      () => {
-        var st = window.pageYOffset || document.documentElement.scrollTop;
-        if (st > lastScrollTop) {
-          // downscroll code
-          nav.style.top = '0px';
-        } else {
-          // upscroll code
-          if (!this.props.appIsScrolling) {
-            nav.style.top = '80px';
-          } else {
-            nav.style.top = '0px';
-          }
-        }
-
-        let fromTop = window.scrollY;
-
-        if (fromTop > 455) {
-          nav.style.position = 'fixed';
-          nav.style.margin = '0';
-          this.setState({ isNavFixed: true });
-        } else {
-          nav.style.position = 'static';
-          nav.style.margin = '30px 0';
-          this.setState({ isNavFixed: false });
-        }
-
-        mainNavLinks.forEach((link: any) => {
-          if (link.hash) {
-            let section = document.querySelector(link.hash);
-
-            if (section) {
-              if (
-                section.offsetTop <= fromTop &&
-                section.offsetTop + section.offsetHeight > fromTop
-              ) {
-                link.dataset.active = 'true';
-              } else {
-                link.dataset.active = 'false';
-              }
-            }
-          }
-        });
-
-        lastScrollTop = st <= 0 ? 0 : st;
-      },
-      false
-    );
+    window.addEventListener('scroll', this.onScroll, false);
 
     this.props.switchAppIsScrolling();
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.onScroll, false);
   }
 
   render() {
@@ -141,7 +146,7 @@ class DedicatedHosting extends React.Component<
             <Col xs={12} className={styles.mnavigation}>
               <ul className={styles.nav}>
                 {this.props.dedicatedHosts.map((panels, index) => (
-                  <li key={panels.country_name_en}>
+                  <li key={panels.country_name_en} data-main="true">
                     <a
                       href={`#${panels.country_name_en}`}
                       onClick={() => {
@@ -152,55 +157,70 @@ class DedicatedHosting extends React.Component<
                     </a>
                   </li>
                 ))}
-                <Dropdown className={styles.dropdown}>
-                  <Dropdown.Toggle className={styles.dropdownToggle}>
-                    هاست نیمه اختصاصی
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu className={styles.dropdownMenu} align="right">
-                    {this.props.navData.linux_vps_hosts.map((host) => (
-                      <Link
-                        key={host.link}
-                        href={`/hosting/linux/vps#${host.link}`}
-                      >
-                        <a>هاست نیمه اختصاصی {host.title}</a>
-                      </Link>
-                    ))}
-                  </Dropdown.Menu>
-                </Dropdown>
-                <Dropdown className={styles.dropdown}>
-                  <Dropdown.Toggle className={styles.dropdownToggle}>
-                    هاست اشتراکی لینوکس حرفه ای
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu className={styles.dropdownMenu} align="right">
-                    {this.props.navData.professional_linux_shared_hosts.map(
-                      (host) => (
+                <li>
+                  <Dropdown className={styles.dropdown}>
+                    <Dropdown.Toggle className={styles.dropdownToggle}>
+                      هاست نیمه اختصاصی
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu
+                      className={styles.dropdownMenu}
+                      align="right"
+                    >
+                      {this.props.navData.linux_vps_hosts.map((host) => (
                         <Link
                           key={host.link}
-                          href={`/hosting/linux/professional#${host.link}`}
+                          href={`/hosting/linux/vps#${host.link}`}
                         >
-                          <a>هاست اشتراکی حرفه ای {host.title}</a>
+                          <a>هاست نیمه اختصاصی {host.title}</a>
                         </Link>
-                      )
-                    )}
-                  </Dropdown.Menu>
-                </Dropdown>
-                <Dropdown className={styles.dropdown}>
-                  <Dropdown.Toggle className={styles.dropdownToggle}>
-                    هاست اشتراکی لینوکس ساده
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu className={styles.dropdownMenu} align="right">
-                    {this.props.navData.standard_linux_shared_hosts.map(
-                      (host) => (
-                        <Link
-                          key={host.link}
-                          href={`/hosting/linux/professional#${host.link}`}
-                        >
-                          <a>هاست اشتراکی ساده {host.title}</a>
-                        </Link>
-                      )
-                    )}
-                  </Dropdown.Menu>
-                </Dropdown>
+                      ))}
+                    </Dropdown.Menu>
+                  </Dropdown>
+                </li>
+                <li>
+                  <Dropdown className={styles.dropdown}>
+                    <Dropdown.Toggle className={styles.dropdownToggle}>
+                      هاست اشتراکی لینوکس حرفه ای
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu
+                      className={styles.dropdownMenu}
+                      align="right"
+                    >
+                      {this.props.navData.professional_linux_shared_hosts.map(
+                        (host) => (
+                          <Link
+                            key={host.link}
+                            href={`/hosting/linux/professional#${host.link}`}
+                          >
+                            <a>هاست اشتراکی حرفه ای {host.title}</a>
+                          </Link>
+                        )
+                      )}
+                    </Dropdown.Menu>
+                  </Dropdown>
+                </li>
+                <li>
+                  <Dropdown className={styles.dropdown}>
+                    <Dropdown.Toggle className={styles.dropdownToggle}>
+                      هاست اشتراکی لینوکس ساده
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu
+                      className={styles.dropdownMenu}
+                      align="right"
+                    >
+                      {this.props.navData.standard_linux_shared_hosts.map(
+                        (host) => (
+                          <Link
+                            key={host.link}
+                            href={`/hosting/linux/professional#${host.link}`}
+                          >
+                            <a>هاست اشتراکی ساده {host.title}</a>
+                          </Link>
+                        )
+                      )}
+                    </Dropdown.Menu>
+                  </Dropdown>
+                </li>
               </ul>
             </Col>
           </Row>
@@ -209,7 +229,10 @@ class DedicatedHosting extends React.Component<
           <Row>
             <Col>
               {this.props.dedicatedHosts.map((panels, index) => (
-                <DedicatedHostingTable data={panels} key={index} />
+                <div key={index}>
+                  <DedicatedHostingTable data={panels} />
+                  <div className={styles.tableBottomSpace}></div>
+                </div>
               ))}
             </Col>
           </Row>

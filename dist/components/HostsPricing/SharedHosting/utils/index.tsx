@@ -235,6 +235,17 @@ export const getScrollTopForFixNav = (type: page) => {
 };
 
 const scrollToTargetElement = (appIsScrollingFunction) => {
+  const mainNavLinks = document.querySelectorAll(
+    `#linux_professional-nav li[data-main="true"] > a`
+  );
+
+  // window.scroll({ top: 100 });
+
+  // setTimeout(() => {
+  //   mainNavLinks.forEach((link: any) => (link.dataset.active = 'false'));
+  //   e.target.dataset.active = 'true';
+  // }, 1000);
+
   appIsScrollingFunction();
 };
 
@@ -248,10 +259,10 @@ export const renderTopNav = (
       return (
         <ul className={styles.nav}>
           {topNavData.professional_linux_shared_hosts.map((host) => (
-            <li key={host.title}>
+            <li key={host.title} data-main="true">
               <a
                 href={`#${host.link}`}
-                onClick={() => scrollToTargetElement(appIsScrollingFunction)}
+                onClick={(e) => scrollToTargetElement(appIsScrollingFunction)}
               >
                 هاست اشتراکی حرفه ای {host.title}
               </a>
@@ -302,7 +313,7 @@ export const renderTopNav = (
       return (
         <ul className={styles.nav}>
           {topNavData.standard_linux_shared_hosts.map((host) => (
-            <li key={host.title}>
+            <li key={host.title} data-main="true">
               <a
                 href={`#${host.link}`}
                 onClick={() => scrollToTargetElement(appIsScrollingFunction)}
@@ -356,7 +367,7 @@ export const renderTopNav = (
       return (
         <ul className={styles.nav}>
           {topNavData.professional_windows_shared_hosts.map((host) => (
-            <li key={host.title}>
+            <li key={host.title} data-main="true">
               <a
                 href={`#${host.link}`}
                 onClick={() => scrollToTargetElement(appIsScrollingFunction)}
@@ -422,7 +433,7 @@ export const renderTopNav = (
       return (
         <ul className={styles.nav}>
           {topNavData.standard_windows_shared_hosts.map((host) => (
-            <li key={host.title}>
+            <li key={host.title} data-main="true">
               <a
                 href={`#${host.link}`}
                 onClick={() => scrollToTargetElement(appIsScrollingFunction)}

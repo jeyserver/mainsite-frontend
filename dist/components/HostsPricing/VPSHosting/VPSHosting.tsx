@@ -19,72 +19,78 @@ export interface VPSHostingState {
   isNavFixed: boolean;
 }
 
+let lastScrollTop = 0;
+
 class VPSHosting extends React.Component<VPSHostingProps, VPSHostingState> {
   constructor(props: VPSHostingProps) {
     super(props);
     this.state = {
       isNavFixed: false,
     };
+    this.onScroll = this.onScroll.bind(this);
+  }
+
+  onScroll() {
+    const nav = document.querySelector('#vps-nav') as HTMLDivElement;
+
+    const mainNavLinks = document.querySelectorAll(
+      '#vps-nav li[data-main="true"] a'
+    );
+
+    let st = window.pageYOffset || document.documentElement.scrollTop;
+
+    if (st > lastScrollTop) {
+      // downscroll code
+      nav.style.top = '0px';
+    } else {
+      // upscroll code
+      if (!this.props.appIsScrolling) {
+        nav.style.top = '80px';
+      } else {
+        nav.style.top = '0px';
+      }
+    }
+
+    let fromTop = window.scrollY;
+
+    if (fromTop > 600) {
+      nav.style.position = 'fixed';
+      nav.style.margin = '0';
+      this.setState({ isNavFixed: true });
+    } else {
+      nav.style.position = 'static';
+      nav.style.margin = '30px 0';
+      this.setState({ isNavFixed: false });
+    }
+
+    mainNavLinks.forEach((link: any) => {
+      if (link.hash) {
+        let section = document.querySelector(link.hash);
+
+        if (section) {
+          if (
+            section.offsetTop - 10 <= fromTop &&
+            section.offsetTop + section.offsetHeight > fromTop
+          ) {
+            link.dataset.active = 'true';
+          } else {
+            link.dataset.active = 'false';
+          }
+        }
+      }
+    });
+
+    lastScrollTop = st <= 0 ? 0 : st;
   }
 
   componentDidMount() {
-    let lastScrollTop = 0;
-
-    const nav = document.querySelector('#vps-nav') as HTMLDivElement;
-
-    const mainNavLinks = document.querySelectorAll('#vps-nav li a');
-
-    window.addEventListener(
-      'scroll',
-      () => {
-        var st = window.pageYOffset || document.documentElement.scrollTop;
-        if (st > lastScrollTop) {
-          // downscroll code
-          nav.style.top = '0px';
-        } else {
-          // upscroll code
-          if (!this.props.appIsScrolling) {
-            nav.style.top = '80px';
-          } else {
-            nav.style.top = '0px';
-          }
-        }
-
-        let fromTop = window.scrollY;
-
-        if (fromTop > 600) {
-          nav.style.position = 'fixed';
-          nav.style.margin = '0';
-          this.setState({ isNavFixed: true });
-        } else {
-          nav.style.position = 'static';
-          nav.style.margin = '30px 0';
-          this.setState({ isNavFixed: false });
-        }
-
-        mainNavLinks.forEach((link: any) => {
-          if (link.hash) {
-            let section = document.querySelector(link.hash);
-
-            if (section) {
-              if (
-                section.offsetTop - 10 <= fromTop &&
-                section.offsetTop + section.offsetHeight > fromTop
-              ) {
-                link.dataset.active = 'true';
-              } else {
-                link.dataset.active = 'false';
-              }
-            }
-          }
-        });
-
-        lastScrollTop = st <= 0 ? 0 : st;
-      },
-      false
-    );
+    window.addEventListener('scroll', this.onScroll, false);
 
     this.props.switchAppIsScrolling();
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.onScroll, false);
   }
 
   render() {
@@ -171,7 +177,7 @@ class VPSHosting extends React.Component<VPSHostingProps, VPSHostingState> {
             <Col xs={12} className={styles.mnavigation}>
               <ul className={styles.nav}>
                 {this.props.VPSHosts.map((panels, index) => (
-                  <li key={panels.license_en}>
+                  <li key={panels.license_en} data-main="true">
                     <a
                       href={`#server_vps_${panels.license_en}`}
                       onClick={() => {
@@ -229,7 +235,10 @@ class VPSHosting extends React.Component<VPSHostingProps, VPSHostingState> {
           <Row>
             <Col>
               {this.props.VPSHosts.map((panels, index) => (
-                <VPSHostingTable data={panels} key={index} />
+                <div key={index}>
+                  <VPSHostingTable data={panels} />
+                  <div className={styles.tableBottomSpace}></div>
+                </div>
               ))}
             </Col>
           </Row>

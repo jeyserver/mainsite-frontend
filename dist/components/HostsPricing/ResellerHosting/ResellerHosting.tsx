@@ -18,6 +18,8 @@ export interface ResellerHostingState {
   isNavFixed: boolean;
 }
 
+let lastScrollTop = 0;
+
 class ResellerHosting extends React.Component<
   ResellerHostingProps,
   ResellerHostingState
@@ -27,66 +29,68 @@ class ResellerHosting extends React.Component<
     this.state = {
       isNavFixed: false,
     };
+    this.onScroll = this.onScroll.bind(this);
   }
 
-  componentDidMount() {
-    let lastScrollTop = 0;
-
+  onScroll() {
     const nav = document.querySelector('#reseller-nav') as HTMLDivElement;
 
     const mainNavLinks = document.querySelectorAll('#reseller-nav li a');
 
-    window.addEventListener(
-      'scroll',
-      () => {
-        var st = window.pageYOffset || document.documentElement.scrollTop;
-        if (st > lastScrollTop) {
-          // downscroll code
-          nav.style.top = '0px';
-        } else {
-          // upscroll code
-          if (!this.props.appIsScrolling) {
-            nav.style.top = '80px';
+    let st = window.pageYOffset || document.documentElement.scrollTop;
+
+    if (st > lastScrollTop) {
+      // downscroll code
+      nav.style.top = '0px';
+    } else {
+      // upscroll code
+      if (!this.props.appIsScrolling) {
+        nav.style.top = '80px';
+      } else {
+        nav.style.top = '0px';
+      }
+    }
+
+    let fromTop = window.scrollY;
+
+    if (fromTop > 750) {
+      nav.style.position = 'fixed';
+      nav.style.margin = '0';
+      this.setState({ isNavFixed: true });
+    } else {
+      nav.style.position = 'static';
+      nav.style.margin = '30px 0';
+      this.setState({ isNavFixed: false });
+    }
+
+    mainNavLinks.forEach((link: any) => {
+      if (link.hash) {
+        let section = document.querySelector(link.hash);
+
+        if (section) {
+          if (
+            section.offsetTop - 10 <= fromTop &&
+            section.offsetTop + section.offsetHeight > fromTop
+          ) {
+            link.dataset.active = 'true';
           } else {
-            nav.style.top = '0px';
+            link.dataset.active = 'false';
           }
         }
+      }
+    });
 
-        let fromTop = window.scrollY;
+    lastScrollTop = st <= 0 ? 0 : st;
+  }
 
-        if (fromTop > 750) {
-          nav.style.position = 'fixed';
-          nav.style.margin = '0';
-          this.setState({ isNavFixed: true });
-        } else {
-          nav.style.position = 'static';
-          nav.style.margin = '30px 0';
-          this.setState({ isNavFixed: false });
-        }
-
-        mainNavLinks.forEach((link: any) => {
-          if (link.hash) {
-            let section = document.querySelector(link.hash);
-
-            if (section) {
-              if (
-                section.offsetTop - 10 <= fromTop &&
-                section.offsetTop + section.offsetHeight > fromTop
-              ) {
-                link.dataset.active = 'true';
-              } else {
-                link.dataset.active = 'false';
-              }
-            }
-          }
-        });
-
-        lastScrollTop = st <= 0 ? 0 : st;
-      },
-      false
-    );
+  componentDidMount() {
+    window.addEventListener('scroll', this.onScroll, false);
 
     this.props.switchAppIsScrolling();
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.onScroll, false);
   }
 
   render() {
@@ -184,7 +188,7 @@ class ResellerHosting extends React.Component<
             <Col xs={12} className={styles.mnavigation}>
               <ul className={styles.nav}>
                 {this.props.resellerHosts.map((panels, index) => (
-                  <li key={panels.country_name_en}>
+                  <li key={panels.country_name_en} data-main="true">
                     <a
                       href={`#${panels.country_name_en}`}
                       onClick={() => {
@@ -220,7 +224,10 @@ class ResellerHosting extends React.Component<
           <Row>
             <Col>
               {this.props.resellerHosts.map((panels, index) => (
-                <ResellerHostingTable data={panels} key={index} />
+                <div key={index}>
+                  <ResellerHostingTable data={panels} />
+                  <div className={styles.tableBottomSpace}></div>
+                </div>
               ))}
             </Col>
           </Row>

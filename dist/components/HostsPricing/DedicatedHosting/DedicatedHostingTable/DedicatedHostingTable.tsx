@@ -151,7 +151,7 @@ class DedicatedHostingTable extends React.Component<
                 <th>هارد سرور</th>
                 <th style={{ lineHeight: '50px' }}>هزینه راه اندازی</th>
                 {this.props.data.panels[0].host_panel.map((panel) => (
-                  <th style={{ lineHeight: '25px' }}>
+                  <th style={{ lineHeight: '25px' }} key={panel}>
                     قیمت <br /> کنترل پنل {panel}
                   </th>
                 ))}
@@ -180,7 +180,7 @@ class DedicatedHostingTable extends React.Component<
                   </td>
                   <td>
                     {panel.host_panel.map((panel) => (
-                      <div>{panel}</div>
+                      <div key={panel}>{panel}</div>
                     ))}
                   </td>
                   <td

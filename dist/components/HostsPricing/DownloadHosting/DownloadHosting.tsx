@@ -17,6 +17,8 @@ export interface DownloadHostingState {
   isNavFixed: boolean;
 }
 
+let lastScrollTop = 0;
+
 class DownloadHosting extends React.Component<
   DownloadHostingProps,
   DownloadHostingState
@@ -26,66 +28,69 @@ class DownloadHosting extends React.Component<
     this.state = {
       isNavFixed: false,
     };
+    this.onScroll = this.onScroll.bind(this);
+  }
+
+  onScroll() {
+    const nav = document.querySelector('#file-nav') as HTMLDivElement;
+
+    const mainNavLinks = document.querySelectorAll(
+      '#file-nav li[data-main="true"] a'
+    );
+
+    let st = window.pageYOffset || document.documentElement.scrollTop;
+    if (st > lastScrollTop) {
+      // downscroll code
+      nav.style.top = '0px';
+    } else {
+      // upscroll code
+      if (!this.props.appIsScrolling) {
+        nav.style.top = '80px';
+      } else {
+        nav.style.top = '0px';
+      }
+    }
+
+    let fromTop = window.scrollY;
+
+    if (fromTop > 638) {
+      nav.style.position = 'fixed';
+      nav.style.margin = '0';
+      this.setState({ isNavFixed: true });
+    } else {
+      nav.style.position = 'static';
+      nav.style.margin = '30px 0';
+      this.setState({ isNavFixed: false });
+    }
+
+    mainNavLinks.forEach((link: any) => {
+      if (link.hash) {
+        let section = document.querySelector(link.hash);
+
+        if (section) {
+          if (
+            section.offsetTop - 10 <= fromTop &&
+            section.offsetTop + section.offsetHeight > fromTop
+          ) {
+            link.dataset.active = 'true';
+          } else {
+            link.dataset.active = 'false';
+          }
+        }
+      }
+    });
+
+    lastScrollTop = st <= 0 ? 0 : st;
   }
 
   componentDidMount() {
-    let lastScrollTop = 0;
-
-    const nav = document.querySelector('#file-nav') as HTMLDivElement;
-
-    const mainNavLinks = document.querySelectorAll('#file-nav li a');
-
-    window.addEventListener(
-      'scroll',
-      () => {
-        let st = window.pageYOffset || document.documentElement.scrollTop;
-        if (st > lastScrollTop) {
-          // downscroll code
-          nav.style.top = '0px';
-        } else {
-          // upscroll code
-          if (!this.props.appIsScrolling) {
-            nav.style.top = '80px';
-          } else {
-            nav.style.top = '0px';
-          }
-        }
-
-        let fromTop = window.scrollY;
-
-        if (fromTop > 638) {
-          nav.style.position = 'fixed';
-          nav.style.margin = '0';
-          this.setState({ isNavFixed: true });
-        } else {
-          nav.style.position = 'static';
-          nav.style.margin = '30px 0';
-          this.setState({ isNavFixed: false });
-        }
-
-        mainNavLinks.forEach((link: any) => {
-          if (link.hash) {
-            let section = document.querySelector(link.hash);
-
-            if (section) {
-              if (
-                section.offsetTop - 10 <= fromTop &&
-                section.offsetTop + section.offsetHeight > fromTop
-              ) {
-                link.dataset.active = 'true';
-              } else {
-                link.dataset.active = 'false';
-              }
-            }
-          }
-        });
-
-        lastScrollTop = st <= 0 ? 0 : st;
-      },
-      false
-    );
+    window.addEventListener('scroll', this.onScroll, false);
 
     this.props.switchAppIsScrolling();
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.onScroll, false);
   }
 
   render() {
@@ -178,7 +183,7 @@ class DownloadHosting extends React.Component<
             <Col xs={12} className={styles.mnavigation}>
               <ul className={styles.nav}>
                 {this.props.downloadHosts.map((panels, index) => (
-                  <li key={panels.country_name_en}>
+                  <li key={panels.country_name_en} data-main="true">
                     <a
                       href={`#${panels.country_name_en}`}
                       onClick={() => {
@@ -190,7 +195,7 @@ class DownloadHosting extends React.Component<
                   </li>
                 ))}
                 {this.props.navData.backup_hosts.map((host) => (
-                  <li>
+                  <li key={host.link}>
                     <Link href={`/hosting/backup#${host.link}`}>
                       <a>هاست پشتیبان {host.title}</a>
                     </Link>
@@ -221,7 +226,10 @@ class DownloadHosting extends React.Component<
           <Row>
             <Col>
               {this.props.downloadHosts.map((panels, index) => (
-                <DownloadHostingTable data={panels} key={index} />
+                <div key={index}>
+                  <DownloadHostingTable data={panels} />
+                  <div className={styles.tableBottomSpace}></div>
+                </div>
               ))}
             </Col>
           </Row>

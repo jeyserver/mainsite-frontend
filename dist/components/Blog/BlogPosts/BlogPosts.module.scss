@@ -1,0 +1,115 @@
+.mostViewedPosts,
+.newestPosts {
+  background-color: #ececec;
+
+  padding-top: 55px;
+
+  @media screen and (max-width: 767px) {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+
+  .header {
+    font-size: 20px;
+    font-weight: normal;
+    font-family: IRANSans;
+
+    margin-bottom: 55px;
+
+    color: #000000;
+
+    > span {
+      border-bottom: 1px solid #3dc4e4;
+      padding-bottom: 10px;
+    }
+  }
+}
+
+.linuxPosts,
+.programmingLangsPosts {
+  background-color: #ffffff;
+
+  padding-top: 55px;
+
+  @media screen and (max-width: 767px) {
+    padding-right: 20px;
+    padding-left: 20px;
+  }
+
+  .categoryInfo {
+    > .title {
+      font-family: IRANSans;
+      font-size: 20px;
+      font-weight: 600;
+
+      color: #000000;
+    }
+    > .info {
+      font-size: 12px;
+      font-family: IRANSans;
+
+      color: #4b4b4b;
+
+      margin: 25px 0;
+    }
+    > .link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      width: 200px;
+      height: 40px;
+
+      font-size: 14px;
+      font-family: IRANSans;
+      font-weight: 600;
+
+      border-radius: 3px;
+
+      transition: background-color 0.1s;
+
+      > i {
+        margin-right: 10px;
+        font-size: 16px;
+      }
+    }
+  }
+}
+
+.linuxPosts {
+  .categoryInfo {
+    margin-bottom: 55px;
+
+    > .link {
+      background-color: #212240;
+      color: #ffffff;
+
+      @media screen and (max-width: 767px) {
+        width: 100%;
+      }
+
+      &:hover {
+        background-color: darken(#212240, 10);
+      }
+    }
+  }
+}
+
+.programmingLangsPosts {
+  .categoryInfo {
+    margin-bottom: 55px;
+
+    > .link {
+      background-color: #e8912c;
+      color: #ffffff;
+
+      @media screen and (max-width: 767px) {
+        width: 100%;
+      }
+
+      &:hover {
+        background-color: darken(#e8912c, 10);
+      }
+    }
+  }
+}

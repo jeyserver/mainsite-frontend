@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Dropdown, Container, Row, Col } from 'react-bootstrap';
 import styles from './Server.module.scss';
+import classNames from 'classnames';
 
 export interface ServerProps {
   changeShowDropDown: () => void;
@@ -33,7 +34,7 @@ class Server extends React.Component<ServerProps, ServerState> {
                 <div className={styles.rightSide}>
                   <Link href="/server/vps">
                     <a>
-                      <h4 className={styles.title}>
+                      <h4 className={classNames(styles.title, 'serverTitle')}>
                         <i className="fas fa-cubes"></i>
                         سرور مجازی
                       </h4>
@@ -94,7 +95,7 @@ class Server extends React.Component<ServerProps, ServerState> {
                 </div>
               </Col>
               <Col xs={12} md={6}>
-                <div className={styles.leftSide}>
+                <div className={classNames(styles.leftSide, 'serverLeftSide')}>
                   <Link href="#">
                     <div className={styles.title}>
                       <Link href="/server/dedicated">

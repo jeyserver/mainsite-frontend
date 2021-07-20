@@ -1,0 +1,146 @@
+.deliveryVirtualServersBG {
+  height: 516px;
+  width: 100%;
+  background-color: #0f054c;
+  @media screen and (max-width: 767px) {
+    height: 824px;
+  }
+  @media screen and (max-width: 540px) {
+    height: 750px;
+  }
+}
+
+.deliveryVirtualServersCaption {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  .captionWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    direction: rtl;
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: #ffffff;
+    margin-top: 100px;
+    z-index: 2;
+    padding-right: 5em;
+    @media screen and (max-width: 767px) {
+      padding-right: 0;
+      left: 0;
+      margin-top: 2em;
+    }
+    > h3 {
+      font-weight: 700;
+      font-size: 33px;
+      margin-bottom: 1em;
+      @media screen and (max-width: 767px) {
+        font-size: 25px;
+      }
+    }
+    > ul {
+      list-style-type: none;
+      padding: 0;
+      @media screen and (max-width: 767px) {
+        width: 100%;
+        justify-content: flex-end;
+        padding-right: 2em;
+        margin-top: 33em;
+      }
+      @media screen and (max-width: 540px) {
+        margin-top: 27em;
+      }
+      > li {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.5em;
+        > i {
+          margin-left: 0.5em;
+          color: #9bc321;
+        }
+      }
+    }
+    > a {
+      border: 2px solid #59d2ef;
+      background-color: #59d2ef;
+      color: #122844;
+      font-weight: 600;
+      width: max-content;
+      border-radius: 5px;
+      padding: 1em;
+      margin-top: 5em;
+      @media screen and (max-width: 767px) {
+        margin-top: 3em;
+      }
+      > i {
+        margin-left: 0.5em;
+        animation: heartBeat 1s infinite both 2s;
+      }
+    }
+  }
+  .robotImgWrapper {
+    position: absolute;
+    top: 29px;
+    left: 92px;
+    background: radial-gradient(
+      circle at 40% 50%,
+      #3840b9 0,
+      #32387d 20%,
+      #0f054c 50%
+    );
+    z-index: 1;
+    @media screen and (max-width: 767px) {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      left: 15%;
+      top: 50px;
+    }
+    @media screen and (max-width: 540px) {
+      width: 118%;
+      left: 10%;
+      top: 84px;
+    }
+    @media screen and (max-width: 400px) {
+      width: 113%;
+      left: 10%;
+      top: 95px;
+    }
+    .robotImg {
+      height: 493px;
+      @media screen and (min-width: 767px) and (max-width: 993px) {
+        height: 340px;
+      }
+      @media screen and (max-width: 767px) {
+        width: 100%;
+        height: auto;
+      }
+    }
+  }
+}
+
+@keyframes heartBeat {
+  0% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+  14% {
+    -webkit-transform: scale(1.3);
+    transform: scale(1.3);
+  }
+  28% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+  42% {
+    -webkit-transform: scale(1.3);
+    transform: scale(1.3);
+  }
+  70% {
+    -webkit-transform: scale(1);
+    transform: scale(1);
+  }
+}

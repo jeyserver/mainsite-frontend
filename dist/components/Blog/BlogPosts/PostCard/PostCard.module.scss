@@ -1,0 +1,122 @@
+.postCard {
+  margin-bottom: 55px;
+
+  &:hover {
+    .postImageWrapper {
+      .visit {
+        opacity: 1;
+      }
+    }
+  }
+  .postImageWrapper {
+    position: relative;
+
+    > a {
+      max-width: 100%;
+      display: block;
+      > img {
+        width: 100%;
+        height: auto;
+      }
+    }
+
+    .visit {
+      display: flex;
+      align-items: center;
+
+      position: absolute;
+      bottom: 13px;
+      right: 13px;
+
+      color: #ffffff;
+
+      opacity: 0;
+      transition: opacity 0.4s ease-in-out;
+
+      @media screen and (max-width: 767px) {
+        opacity: 1;
+      }
+      i {
+        margin-left: 6px;
+      }
+      span {
+        font-size: 11px;
+        font-family: IRANSans;
+      }
+    }
+  }
+  .content {
+    background-color: #ffffff;
+
+    border: 1px solid #dddddd;
+    border-top: none;
+
+    width: 100%;
+    > a {
+      padding: 15px;
+      padding-bottom: 0;
+
+      display: block;
+    }
+    .title {
+      color: #000000;
+
+      font-size: 13px;
+      font-family: IRANSans;
+      font-weight: 800;
+    }
+    .time {
+      display: flex;
+      align-items: center;
+
+      margin-top: 5px;
+
+      color: #7d7d7d;
+
+      font-size: 12px;
+      font-family: IRANSans;
+
+      > i {
+        font-size: 12px;
+        margin-left: 5px;
+      }
+    }
+    .summary {
+      font-size: 12px;
+      font-family: IRANSans;
+
+      color: #4b4b4b;
+    }
+    .linkWrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      margin-top: 15px;
+      margin-bottom: 15px;
+      .postLink {
+        color: #3dc4e4;
+
+        width: 85px;
+        height: 32px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        font-size: 12px;
+        font-family: IRANSans;
+
+        border: 1px solid #3dc4e4;
+        transition-property: background-color, color;
+        transition-duration: 200ms;
+        transition-timing-function: ease-in-out;
+
+        &:hover {
+          background-color: #3dc4e4;
+          color: #ffffff;
+        }
+      }
+    }
+  }
+}

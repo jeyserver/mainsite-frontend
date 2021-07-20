@@ -1,0 +1,90 @@
+.commentBox {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  font-family: IRANSans;
+  margin-bottom: 2rem;
+  margin-right: 20px;
+
+  @media screen and (max-width: 767px) {
+    grid-template-columns: 70px 1fr;
+    margin-right: 0;
+  }
+
+  &.answer {
+    margin-right: 80px;
+    @media screen and (max-width: 767px) {
+      margin-right: 10px;
+    }
+  }
+
+  .commentBoxRightSide {
+    border: 1px solid rgba(225, 225, 225, 0.3);
+    border-top: none;
+    padding: 1rem;
+  }
+
+  .avatarWrapper {
+    border: 1px solid #ddd;
+    padding: 5px;
+    border-radius: 5px;
+    width: min-content;
+    height: min-content;
+
+    > img {
+      width: 50px;
+      height: auto;
+    }
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+
+    .right {
+      @media screen and (max-width: 576px) {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .user {
+        font-weight: bold;
+        font-size: 0.9rem;
+        color: #212121;
+        margin-left: 5px;
+
+        @media screen and (max-width: 576px) {
+          margin-bottom: 10px;
+        }
+      }
+
+      .time {
+        color: #6a5e62;
+        font-size: 0.85rem;
+        white-space: nowrap;
+      }
+    }
+
+    .replyBtn {
+      background-color: transparent;
+      border: none;
+      padding: 0;
+      color: #09729c;
+
+      i {
+        font-size: 13px;
+      }
+
+      &:active {
+        i {
+          transform: scale(0.9);
+        }
+      }
+    }
+  }
+
+  .body {
+    margin-top: 2rem;
+    font-size: 0.85rem;
+    color: #212121;
+  }
+}

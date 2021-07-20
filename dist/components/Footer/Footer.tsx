@@ -111,7 +111,10 @@ class Footer extends React.Component<FooterProps, FooterState> {
             >
               <div className={styles.enamad}>
                 <h3>نماد اعتماد الکترونیکی</h3>
-                <a href="https://trustseal.enamad.ir/?id=22081&Code=ulnW1nDLAeYM3cL2l9U3">
+                <a
+                  target="_blank"
+                  href="https://trustseal.enamad.ir/?id=22081&Code=ulnW1nDLAeYM3cL2l9U3"
+                >
                   <Image src="/images/enamad.png" />
                 </a>
               </div>

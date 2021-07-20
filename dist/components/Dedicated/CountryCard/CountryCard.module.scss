@@ -1,0 +1,178 @@
+.pricingTable {
+  color: #313131;
+  font-size: 13px;
+  line-height: 20px;
+  direction: rtl;
+  position: relative;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  padding-bottom: 10px;
+  margin-top: 15px;
+  background-color: #fff;
+  box-shadow: inset 0 0 0 1px #e6e6e6;
+  text-align: center;
+  font-family: yekan;
+  .pricingPrice {
+    color: #313131;
+    font-size: 13px;
+    line-height: 20px;
+    direction: rtl;
+    text-align: center;
+    font-family: BYekan;
+    box-sizing: border-box;
+    background-color: #3dc4e4;
+    min-height: 230px;
+
+    .pricingTxt {
+      line-height: 20px;
+      direction: rtl;
+      text-align: center;
+      padding-top: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid hsla(0, 0%, 100%, 0.27);
+      font-family: BYekan, sans-serif;
+      font-weight: 400;
+      color: #fff;
+      font-size: 15px;
+      letter-spacing: 2px;
+    }
+    .recommended {
+      line-height: 20px;
+      direction: rtl;
+      text-align: center;
+      font-family: yekan;
+      box-sizing: border-box;
+      position: absolute;
+      top: 0;
+      right: 0;
+      display: inline-block;
+      margin-top: 22px;
+      margin-right: -39px;
+      padding: 9px 50px;
+      background-color: #ffae00;
+      transform: rotate(46deg);
+      color: #8c630b;
+      font-size: 12px;
+      font-weight: 700;
+      animation: agimagi 1s infinite;
+    }
+    .circlePrice {
+      direction: rtl;
+      text-align: center;
+      font-family: yekan;
+      box-sizing: border-box;
+      position: relative;
+      top: 25px;
+      display: block;
+      width: 130px;
+      height: 130px;
+      margin-right: auto;
+      margin-left: auto;
+      border: 1px solid #fff;
+      border-radius: 100%;
+      color: #fff;
+      font-size: 25px;
+      line-height: 125px;
+      font-weight: 400;
+    }
+  }
+  .ulPricing {
+    font-size: 13px;
+    line-height: 20px;
+    text-align: center;
+    font-family: yekan;
+    list-style: none;
+    position: relative;
+    margin-top: 0;
+    margin-bottom: 10px;
+    padding: 0 15px;
+    .liPricing {
+      color: #313131;
+      font-size: 13px;
+      list-style: none;
+      box-sizing: border-box;
+      line-height: 35px;
+      padding-top: 15px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #e6e6e6;
+      text-align: center;
+      font-family: koodak;
+      &:last-child {
+        min-height: 140px;
+        @media screen and (min-width: 768px) and (max-width: 1200px) {
+          min-height: 210px;
+        }
+      }
+      .pPricing {
+        direction: rtl;
+        list-style: none;
+        box-sizing: border-box;
+        margin: 0 0 10px;
+        line-height: 24px;
+        color: #888;
+        font-size: 13px;
+        text-align: center !important;
+        font-family: IRANSans;
+      }
+    }
+  }
+  .link {
+    color: #fff;
+    background-color: #5bc0de;
+    display: inline-block;
+    margin-bottom: 0;
+    font-weight: 400;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    background-image: none;
+    border: 1px solid transparent;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857143;
+    border-radius: 4px;
+    font-family: BYekan;
+    &:hover,
+    &:focus {
+      color: #fff;
+      background-color: #31b0d5;
+      border-color: #269abc;
+    }
+  }
+}
+
+@keyframes agimagi {
+  0% {
+    transform: translate(2px, 1px) rotate(46deg);
+  }
+  10% {
+    transform: translate(-1px, -2px) rotate(46deg);
+  }
+  20% {
+    transform: translate(-3px) rotate(46deg);
+  }
+  30% {
+    transform: translateY(2px) rotate(46deg);
+  }
+  40% {
+    transform: translate(1px, -1px) rotate(46deg);
+  }
+  50% {
+    transform: translate(-1px, 2px) rotate(46deg);
+  }
+  60% {
+    transform: translate(-3px, 1px) rotate(46deg);
+  }
+  70% {
+    transform: translate(2px, 1px) rotate(46deg);
+  }
+  80% {
+    transform: translate(-1px, -1px) rotate(46deg);
+  }
+  90% {
+    transform: translate(2px, 2px) rotate(46deg);
+  }
+  to {
+    transform: translate(1px, -2px) rotate(46deg);
+  }
+}

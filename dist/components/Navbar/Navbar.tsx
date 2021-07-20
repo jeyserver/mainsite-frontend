@@ -2,8 +2,13 @@ import React from 'react';
 import MainNavbar from './MainNavbar/MainNavbar';
 import TopNavbar from './TopNavbar/TopNavbar';
 import styles from './Navbar.module.scss';
+import { connect } from 'react-redux';
+import { getThemeFromLocalStorage } from '../../redux/actions';
 
-export interface NavbarProps {}
+export interface NavbarProps {
+  appIsScrolling?: boolean;
+  getThemeFromLocalStorage?: () => void;
+}
 
 export interface NavbarState {}
 
@@ -14,6 +19,8 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
   }
 
   componentDidMount() {
+    this.props.getThemeFromLocalStorage();
+
     const debounce = (fn) => {
       let frame;
       return (...params) => {
@@ -85,7 +92,11 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
         navItemDropdown.forEach(
           (dropdownMenu) => (dropdownMenu.dataset.down = 'false')
         );
-        mainNavbar.style.top = '0';
+        if (!this.props.appIsScrolling) {
+          mainNavbar.style.top = '0';
+        } else {
+          mainNavbar.style.top = '-100px';
+        }
 
         if (window.innerWidth > 991) {
           if (scrollY > 43) {
@@ -127,4 +138,8 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
   }
 }
 
-export default Navbar;
+const mapStateToProps = (state) => {
+  return state;
+};
+
+export default connect(mapStateToProps, { getThemeFromLocalStorage })(Navbar);

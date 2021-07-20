@@ -3,9 +3,31 @@ import {
   RESTORE_AUTH_STATE,
   AUTHENTICATE,
   DEAUTHENTICATE,
+  SET_DOMAIN_FOR_SHOP,
+  TOGGLE_THEME,
+  GET_THEME_FROM_LOCALSTORAGE,
 } from './constants/actionsConstants';
 import { NotificationManager } from 'react-notifications';
 import router from 'next/router';
+
+export const setDomainForShopAction = (domain) => {
+  return {
+    type: SET_DOMAIN_FOR_SHOP,
+    payload: domain,
+  }
+};
+
+export const getThemeFromLocalStorageAction = () => {
+  return {
+    type: GET_THEME_FROM_LOCALSTORAGE,
+  };
+};
+
+export const toggleThemeAction = () => {
+  return {
+    type: TOGGLE_THEME,
+  };
+};
 
 export const authenticateAction = (user) => {
   return {
@@ -74,6 +96,24 @@ export const addToCart = (products) => {
 export const deleteFromCart = (id) => {
   return async (dispatch) => {
     dispatch(deleteFromCartAction(id));
+  };
+};
+    
+export const setDomainForShop = (domain) => {
+  return async (dispatch) => {
+    dispatch(setDomainForShopAction(domain));
+  };
+};
+
+export const getThemeFromLocalStorage = () => {
+  return async (dispath) => {
+    dispath(getThemeFromLocalStorageAction());
+  };
+};
+
+export const toggleTheme = () => {
+  return async (dispath) => {
+    dispath(toggleThemeAction());
   };
 };
 

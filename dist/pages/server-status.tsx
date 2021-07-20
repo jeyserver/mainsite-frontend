@@ -1,11 +1,11 @@
 import * as React from 'react';
 import Head from 'next/head';
-import Footer from '../components/Footer/Footer';
-import Navbar from '../components/Navbar/Navbar';
 import ServerStatus from '../components/ServerStatus/ServerStatus';
+import Layout from '../components/Layout/Layout';
 
 export interface IndexProps {
   servers: any;
+  postsForFooter: any;
 }
 
 export interface IndexState {}
@@ -24,17 +24,28 @@ class Index extends React.Component<IndexProps, IndexState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Navbar />
-
-        <ServerStatus servers={this.props.servers} />
-
-        <Footer />
+        <Layout postsForFooter={this.props.postsForFooter}>
+          <ServerStatus servers={this.props.servers} />
+        </Layout>
       </div>
     );
   }
 }
 
 export async function getServerSideProps(context) {
+  const locale = context.locale;
+
+  if (locale !== 'fa') {
+    return {
+      notFound: true,
+    };
+  }
+
+  const postsForFooterRes = await fetch(
+    'https://jsonblob.com/api/jsonBlob/ff048401-e7cd-11eb-971c-9ff88820de62'
+  );
+  const postsForFooter = await postsForFooterRes.json();
+
   const serversRes = await fetch(
     `https://jsonblob.com/api/jsonBlob/b48ca8e1-d68a-11eb-a9ef-83f42fac2934`
   );
@@ -43,6 +54,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       servers: servers.servers,
+      postsForFooter,
     },
   };
 }

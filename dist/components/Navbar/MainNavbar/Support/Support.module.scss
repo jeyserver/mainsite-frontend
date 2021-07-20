@@ -80,14 +80,30 @@
       background-color: #ffc107;
     }
     .loginBtn {
+      font-family: BYekan;
+      width: 50%;
       border-color: #f1c40f;
       background-color: transparent !important;
       color: #f1c40f;
       border-bottom-left-radius: 0;
       border-top-left-radius: 0;
+      padding: 0;
+      a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.375rem 0.75rem;
+      }
+      i {
+        color: #f1c40f !important;
+        margin-left: 5px;
+      }
       &:hover {
         background-color: #f1c40f !important;
         color: #ffffff;
+        i {
+          color: #ffffff !important;
+        }
       }
       &:focus {
         box-shadow: none;
@@ -96,17 +112,36 @@
         background-color: #f1c40f !important;
         color: #ffffff;
         white-space: nowrap;
+        i {
+          color: #ffffff !important;
+        }
       }
     }
     .registerBtn {
+      font-family: BYekan;
+      width: 50%;
       background-color: transparent;
       border: 1px solid #e67e22;
       color: #e67e22;
       border-bottom-right-radius: 0;
       border-top-right-radius: 0;
+      padding: 0;
+      a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.375rem 0.75rem;
+      }
+      i {
+        color: #e67e22 !important;
+        margin-left: 5px;
+      }
       &:hover {
         background-color: #e67e22;
         color: #ffffff;
+        i {
+          color: #ffffff !important;
+        }
       }
       &:focus,
       &:active {
@@ -117,6 +152,10 @@
         background-color: #e67e22;
         color: #ffffff;
         white-space: nowrap;
+
+        i {
+          color: #ffffff !important;
+        }
       }
     }
   }

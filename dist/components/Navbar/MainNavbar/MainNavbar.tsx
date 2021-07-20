@@ -74,13 +74,13 @@ class MainNavbar extends React.Component<MainNavbarProps, MainNavbarState> {
                 <Server changeShowDropDown={this.changeShowDropDown} />
                 <License changeShowDropDown={this.changeShowDropDown} />
                 <Support changeShowDropDown={this.changeShowDropDown} />
-                <Link href="/fa/contact">
+                <Link href="/jobs">
                   <a className={styles.jobsLinkOnNav}>
                     <i className="fas fa-briefcase"></i>
                     فرصت‌های شغلی
                   </a>
                 </Link>
-                <Link href="/fa/contact">
+                <Link href="/contact">
                   <a className={styles.contactUsLink}>
                     <i className="fas fa-phone-alt"></i>
                     تماس با ما
@@ -93,7 +93,7 @@ class MainNavbar extends React.Component<MainNavbarProps, MainNavbarState> {
                 style={{ left: this.state.isMenuOpen ? 0 : '-100%' }}
               ></button>
             </div>
-            <Link href="/fa/jobs">
+            <Link href="/jobs">
               <a className={styles.jobTitlesBtn}>
                 <i className="fas fa-briefcase"></i>
                 <span>فرصت‌های شغلی</span>

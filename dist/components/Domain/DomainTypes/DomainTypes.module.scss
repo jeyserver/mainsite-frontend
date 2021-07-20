@@ -1,0 +1,115 @@
+.domainsTypes {
+  margin-bottom: 4em;
+  font-family: IRANSans;
+  font-weight: 300;
+
+  .domainNav {
+    display: flex;
+    padding: 0;
+    margin-bottom: 2em;
+
+    @media screen and (max-width: 576px) {
+      flex-direction: column;
+    }
+
+    > div {
+      width: 20%;
+      @media screen and (max-width: 576px) {
+        width: 100%;
+      }
+
+      &:hover {
+        background-color: none !important;
+        border: none !important;
+      }
+
+      > a {
+        background-color: #24374a;
+        color: #ffffff;
+        margin: 0;
+        border-radius: 0;
+        height: 92px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        font-size: 12px;
+        position: relative;
+        padding: 0 5px;
+
+        &:hover {
+          background-color: #041323;
+          color: #ffffff;
+        }
+
+        &[aria-selected='true'] {
+          background-color: #041323;
+          color: #ffffff;
+
+          > i {
+            display: inline-block;
+          }
+        }
+
+        > span {
+          text-align: center !important;
+          margin-bottom: 0.5em;
+        }
+
+        > i {
+          display: none;
+          color: #f27e0a;
+          font-size: 20px;
+          position: absolute;
+          bottom: 8px;
+        }
+      }
+    }
+  }
+
+  .domainTable {
+    color: #7b7b7b;
+
+    tr {
+      &:nth-of-type(2n + 1) {
+        background-color: #f9f9f9;
+      }
+    }
+
+    thead {
+      tr {
+        background-color: #ffffff !important;
+        th {
+          height: 63px;
+          border: 0;
+          vertical-align: middle;
+          text-align: center;
+          width: 150px;
+          font-weight: 700;
+          font-size: 13px;
+          border-left: 1px solid #ddd;
+
+          &:first-child {
+            border-right: 1px solid #ddd;
+          }
+        }
+      }
+    }
+
+    td {
+      text-align: center;
+      font-size: 12px;
+      font-weight: 400;
+      vertical-align: middle;
+      white-space: nowrap;
+
+      .orderBtn {
+        color: #ffffff;
+        background-color: #f27e0a;
+        border-color: #f27e0a;
+        font-family: BYekan;
+        font-size: 14px;
+      }
+    }
+  }
+}

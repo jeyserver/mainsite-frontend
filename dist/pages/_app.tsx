@@ -4,6 +4,7 @@ import 'slick-carousel/slick/slick-theme.css';
 import '../public/packages/leaflet/dist/leaflet.css';
 import 'react-notifications/lib/notifications.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import 'select2/dist/css/select2.min.css';
 import '../styles/rtl-bootstrap.scss';
 import '../styles/globals.scss';
 import { Provider } from 'react-redux';

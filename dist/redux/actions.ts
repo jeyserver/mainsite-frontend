@@ -46,11 +46,12 @@ export const restoreState = (authState) => {
   };
 };
 
-<<<<<<< dist/redux/actions.ts
 export const setDomainForShop = (domain) => {
   return async (dispatch) => {
     dispatch(setDomainForShopAction(domain));
-=======
+  };
+};
+
 export const getThemeFromLocalStorage = () => {
   return async (dispath) => {
     dispath(getThemeFromLocalStorageAction());
@@ -60,7 +61,6 @@ export const getThemeFromLocalStorage = () => {
 export const toggleTheme = () => {
   return async (dispath) => {
     dispath(toggleThemeAction());
->>>>>>> dist/redux/actions.ts
   };
 };
 

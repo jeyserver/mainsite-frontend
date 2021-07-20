@@ -3,12 +3,26 @@ import {
   AUTHENTICATE,
   DEAUTHENTICATE,
   SET_DOMAIN_FOR_SHOP,
+  TOGGLE_THEME,
+  GET_THEME_FROM_LOCALSTORAGE,
 } from './constants/actionsConstants';
 
 export const setDomainForShopAction = (domain) => {
   return {
     type: SET_DOMAIN_FOR_SHOP,
     payload: domain,
+  }
+};
+
+export const getThemeFromLocalStorageAction = () => {
+  return {
+    type: GET_THEME_FROM_LOCALSTORAGE,
+  };
+};
+
+export const toggleThemeAction = () => {
+  return {
+    type: TOGGLE_THEME,
   };
 };
 
@@ -32,9 +46,21 @@ export const restoreState = (authState) => {
   };
 };
 
+<<<<<<< dist/redux/actions.ts
 export const setDomainForShop = (domain) => {
   return async (dispatch) => {
     dispatch(setDomainForShopAction(domain));
+=======
+export const getThemeFromLocalStorage = () => {
+  return async (dispath) => {
+    dispath(getThemeFromLocalStorageAction());
+  };
+};
+
+export const toggleTheme = () => {
+  return async (dispath) => {
+    dispath(toggleThemeAction());
+>>>>>>> dist/redux/actions.ts
   };
 };
 

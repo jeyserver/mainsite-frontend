@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
@@ -176,7 +177,7 @@ class License extends React.Component<LicenseProps, LicenseState> {
               <Col xs={12} md={6} className="px-0">
                 <div className={styles.btnsWrapper}>
                   <Button
-                    className={styles.btn}
+                    className={classNames(styles.btn, 'license-btn')}
                     onMouseEnter={() =>
                       this.handleChangeHoveredLicense('directadmin')
                     }
@@ -201,7 +202,7 @@ class License extends React.Component<LicenseProps, LicenseState> {
                   </Button>
 
                   <Button
-                    className={styles.btn}
+                    className={classNames(styles.btn, 'license-btn')}
                     onMouseEnter={() =>
                       this.handleChangeHoveredLicense('cpanel')
                     }
@@ -226,7 +227,7 @@ class License extends React.Component<LicenseProps, LicenseState> {
                   </Button>
 
                   <Button
-                    className={styles.btn}
+                    className={classNames(styles.btn, 'license-btn')}
                     onMouseEnter={() =>
                       this.handleChangeHoveredLicense('litespeed')
                     }
@@ -251,7 +252,7 @@ class License extends React.Component<LicenseProps, LicenseState> {
                   </Button>
 
                   <Button
-                    className={styles.btn}
+                    className={classNames(styles.btn, 'license-btn')}
                     onMouseEnter={() =>
                       this.handleChangeHoveredLicense('whmcs')
                     }
@@ -276,7 +277,7 @@ class License extends React.Component<LicenseProps, LicenseState> {
                   </Button>
 
                   <Button
-                    className={styles.btn}
+                    className={classNames(styles.btn, 'license-btn')}
                     onMouseEnter={() =>
                       this.handleChangeHoveredLicense('cloudlinux')
                     }

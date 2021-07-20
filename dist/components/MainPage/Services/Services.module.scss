@@ -1,0 +1,162 @@
+.services {
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: #fafafa;
+
+  @media screen and (max-width: 767px) {
+    display: none;
+  }
+
+  .servicesTitle {
+    line-height: 20px;
+    direction: rtl;
+    box-sizing: border-box;
+    font-weight: 700;
+    font-size: 27px;
+    text-align: center;
+    color: #000;
+    font-family: IRANSans;
+  }
+
+  .servicesBody {
+    font-family: Tahoma, sans-serif;
+    color: #313131;
+    font-size: 13px;
+    line-height: 20px;
+    direction: rtl;
+    box-sizing: border-box;
+    position: relative;
+    margin-top: 72px;
+    min-height: 200px;
+
+    .circle {
+      width: 25px;
+      height: 25px;
+      position: absolute;
+      border: 2px solid #22d0d7;
+      border-radius: 50%;
+      left: 50%;
+      margin-left: -14px;
+    }
+
+    .circleTop {
+      top: -25px;
+    }
+
+    .circleBottom {
+      bottom: -25px;
+    }
+  }
+}
+
+.timeline {
+  position: absolute;
+  top: 0;
+  background: #22d0d7;
+  width: 2px;
+  height: 100%;
+  right: 50%;
+}
+
+.timelineRow {
+  max-width: 90%;
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+  padding: 20px 10px;
+  font-family: IRANSans;
+
+  .timelineRight {
+    float: right;
+
+    .splitter {
+      left: 0;
+    }
+  }
+
+  .timelineLeft {
+    float: left;
+
+    .timelineRowBox {
+      &:first-child {
+        margin-top: 80px;
+      }
+
+      .timelineBox {
+        margin-right: 40%;
+      }
+    }
+
+    .splitter {
+      right: 0;
+    }
+  }
+
+  .timelineCol {
+    width: 50%;
+
+    .timelineRowBox {
+      position: relative;
+      margin-top: 60px;
+
+      &:first-child {
+        margin-top: 0;
+      }
+
+      .timelineBox {
+        box-shadow: 2px 2px 7px #cacaca;
+        width: 60%;
+        padding: 20px 15px;
+
+        .title {
+          font-weight: 500;
+          font-size: 15px;
+          color: #000;
+        }
+
+        .desc {
+          color: #575757;
+          text-align: justify;
+          line-height: 20px;
+          margin-top: 10px;
+        }
+      }
+
+      .splitter {
+        width: 40%;
+        position: absolute;
+        height: 100%;
+        top: 0;
+
+        .vline {
+          background: #22d0d7;
+          height: 2px;
+          width: 100%;
+          position: relative;
+          top: 50%;
+          z-index: 0;
+        }
+
+        .splitterIcon {
+          width: 75px;
+          height: 75px;
+          background: #15579a;
+          z-index: 1;
+          position: absolute;
+          border-radius: 50%;
+          top: 44%;
+          left: 50%;
+          margin-left: -33px;
+          margin-top: -25px;
+          text-align: center;
+          padding: 15px 12px;
+
+          > img {
+            width: 45px;
+            height: 45px;
+          }
+        }
+      }
+    }
+  }
+}

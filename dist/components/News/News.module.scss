@@ -1,0 +1,300 @@
+.innerBanner {
+  font-family: BYekan, sans-serif;
+  color: #313131;
+  font-size: 13px;
+  line-height: 20px;
+  direction: rtl;
+  box-sizing: border-box;
+  padding: 40px 10px;
+  position: relative;
+  padding-top: 40px;
+  padding-bottom: 30px;
+  background-color: #3dc4e4;
+  h2 {
+    box-sizing: border-box;
+    font-weight: 400;
+    line-height: 36px;
+    letter-spacing: 1px;
+    font-family: BYekan, sans-serif;
+    margin-top: auto;
+    margin-bottom: auto;
+    padding-bottom: 10px;
+    color: #fff;
+    font-size: 26px;
+    text-align: center;
+  }
+}
+
+.contentWrapper {
+  position: relative;
+  padding: 40px 10px;
+  background-color: #fff;
+}
+
+.blogPosts {
+  padding-left: 10px;
+
+  @media screen and (max-width: 992px) {
+    padding-left: 0;
+  }
+  .mediaPost {
+    font-family: Tahoma, sans-serif;
+    color: #313131;
+    font-size: 13px;
+    line-height: 20px;
+    direction: rtl;
+    box-sizing: border-box;
+    overflow: hidden;
+    zoom: 1;
+    margin-top: 0;
+    display: block;
+    padding: 19px;
+    margin-bottom: 20px;
+    transition: all 0.4s ease;
+    box-shadow: 0 2px 17px rgba(0, 0, 0, 0.1);
+
+    &:hover {
+      transform: translateY(-3px);
+    }
+
+    img {
+      font-family: Tahoma, sans-serif;
+      font-size: 13px;
+      line-height: 20px;
+      direction: rtl;
+      width: 150px;
+      aspect-ratio: auto 150 / 150;
+      box-sizing: border-box;
+      border: 0;
+      color: #ccc;
+      max-width: 100%;
+      display: block;
+      height: auto;
+
+      @media screen and (max-width: 767px) {
+        margin: 0 auto;
+        margin-bottom: 10px;
+      }
+    }
+
+    .mediaBody {
+      color: #313131;
+      font-size: 13px;
+      line-height: 20px;
+      direction: rtl;
+      box-sizing: border-box;
+      overflow: hidden;
+      zoom: 1;
+      display: table-cell;
+      vertical-align: top;
+      font-family: IranSans;
+
+      .mediaHeading {
+        color: inherit;
+        font-weight: 400;
+        font-family: BYekan, sans-serif;
+        font-size: 17px;
+        line-height: 24px;
+        letter-spacing: 1px;
+        margin-top: 0;
+        margin-bottom: 5px;
+        transition: color 0.4s ease;
+
+        &:hover {
+          color: #3dc4e4;
+        }
+      }
+
+      .list {
+        color: #313131;
+        font-size: 13px;
+        line-height: 20px;
+        direction: rtl;
+        font-family: IRANSans;
+        box-sizing: border-box;
+        margin-top: 0;
+        margin-bottom: 10px;
+        list-style: none;
+        padding-right: 0;
+        padding-left: 0;
+        margin-right: -5px;
+        margin-left: 0;
+
+        > li {
+          color: #313131;
+          font-size: 13px;
+          line-height: 20px;
+          direction: rtl;
+          font-family: IranSans;
+          list-style: none;
+          box-sizing: border-box;
+          display: inline-block;
+          padding-right: 5px;
+          padding-left: 5px;
+
+          > a {
+            font-size: 13px;
+            line-height: 20px;
+            direction: rtl;
+            font-family: IRANSans;
+            list-style: none;
+            box-sizing: border-box;
+            background-color: transparent;
+            text-decoration: none;
+            transition: all 0.4s ease;
+            color: #313131;
+
+            &:hover {
+              color: #3dc4e4;
+            }
+          }
+        }
+      }
+      p {
+        font-size: 13px;
+        direction: rtl;
+        font-family: IRANSans;
+        box-sizing: border-box;
+        margin: 0 0 10px;
+        color: #717171;
+        line-height: 24px;
+      }
+
+      .content {
+        img {
+          display: none;
+        }
+        > p:not(:first-child) {
+          display: none;
+        }
+      }
+
+      .postLinkWrapper {
+        > a {
+          text-decoration: none;
+          display: inline-block;
+          margin-bottom: 0;
+          font-weight: 400;
+          text-align: center;
+          white-space: nowrap;
+          vertical-align: middle;
+          touch-action: manipulation;
+          cursor: pointer;
+          background-image: none;
+          border: 1px solid transparent;
+          user-select: none;
+          color: #fff;
+          background-color: #5bc0de;
+          border-color: #46b8da;
+          padding: 5px 10px;
+          font-size: 12px;
+          line-height: 1.5;
+          border-radius: 3px;
+          font-family: BYekan;
+          transition: all 0.4s ease;
+
+          @media screen and (max-width: 767px) {
+            display: block;
+          }
+
+          &:hover,
+          &:focus {
+            color: #fff;
+            background-color: #31b0d5;
+            border-color: #269abc;
+          }
+        }
+      }
+    }
+  }
+}
+
+.breakLine {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border: 0;
+  border-top: 1px solid #ada6a6;
+}
+
+.newsPaginateOnMobile {
+  display: flex;
+
+  > button {
+    height: 34px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    color: #333333;
+    padding: 0;
+
+    > a,
+    span {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: BYekan;
+      font-size: 14px;
+
+      padding: 6px 12px;
+    }
+
+    &:hover {
+      color: #333;
+      background-color: #e6e6e6;
+      border-color: #adadad;
+    }
+
+    &:disabled {
+      color: rgb(172, 172, 172);
+
+      > a,
+      span {
+        cursor: not-allowed;
+      }
+    }
+
+    &:first-child {
+      border-top-right-radius: 4px;
+      border-bottom-right-radius: 4px;
+
+      > a > i {
+        margin-left: 5px;
+      }
+    }
+
+    &:last-child {
+      border-top-left-radius: 4px;
+      border-bottom-left-radius: 4px;
+
+      > a > i {
+        margin-right: 5px;
+      }
+    }
+
+    &.currentPage {
+      background-color: #286090;
+      border-color: #204d74;
+      color: #fff;
+
+      &:hover {
+        background-color: #286090 !important;
+        color: #fff !important;
+      }
+    }
+
+    &.nextBtn {
+      border-right: none;
+    }
+
+    &.prevBtn {
+      border-left: none;
+    }
+
+    &.firstPage {
+      border-left: none;
+    }
+
+    &.lastPage {
+      border-right: none;
+    }
+  }
+}

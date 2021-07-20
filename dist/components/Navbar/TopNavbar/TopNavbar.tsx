@@ -35,7 +35,7 @@ class TopNavbar extends React.Component<TopNavbarProps, TopNavbarState> {
                   زبان: <span>فارسی</span>
                 </Dropdown.Toggle>
 
-                <Dropdown.Menu>
+                <Dropdown.Menu className={styles.langDropDownMenu}>
                   <Dropdown.Item href="#fa">فارسی</Dropdown.Item>
                   <Dropdown.Item href="#en">انگلیسی</Dropdown.Item>
                 </Dropdown.Menu>

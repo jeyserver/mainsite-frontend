@@ -32,7 +32,7 @@ class Server extends React.Component<ServerProps, ServerState> {
             <Row>
               <Col xs={12} md={6}>
                 <div className={styles.rightSide}>
-                  <Link href="#">
+                  <Link href="/server/vps">
                     <a>
                       <h4 className={classNames(styles.title, 'serverTitle')}>
                         <i className="fas fa-cubes"></i>
@@ -49,13 +49,8 @@ class Server extends React.Component<ServerProps, ServerState> {
                         xl={4}
                         className="d-flex align-items-cenetr justify-content-center"
                       >
-                        <Link href="#">
-                          <a
-                            className={classNames(
-                              styles.professionalServerBtn,
-                              'serverBtn'
-                            )}
-                          >
+                        <Link href="/server/vps/professional">
+                          <a className={styles.professionalServerBtn}>
                             <div className={styles.iconWrapper}>
                               <i className="fas fa-microchip"></i>
                             </div>
@@ -70,13 +65,8 @@ class Server extends React.Component<ServerProps, ServerState> {
                         xl={4}
                         className="d-flex align-items-cenetr justify-content-center"
                       >
-                        <Link href="#">
-                          <a
-                            className={classNames(
-                              styles.economicServerBtn,
-                              'serverBtn'
-                            )}
-                          >
+                        <Link href="/server/vps/economic">
+                          <a className={styles.economicServerBtn}>
                             <div className={styles.iconWrapper}>
                               <i className="far fa-money-bill-alt"></i>
                             </div>
@@ -91,13 +81,8 @@ class Server extends React.Component<ServerProps, ServerState> {
                         xl={4}
                         className="d-flex align-items-cenetr justify-content-center"
                       >
-                        <Link href="#">
-                          <a
-                            className={classNames(
-                              styles.largeServerBtn,
-                              'serverBtn'
-                            )}
-                          >
+                        <Link href="/server/vps/storage">
+                          <a className={styles.largeServerBtn}>
                             <div className={styles.iconWrapper}>
                               <i className="far fa-hdd"></i>
                             </div>
@@ -113,14 +98,16 @@ class Server extends React.Component<ServerProps, ServerState> {
                 <div className={classNames(styles.leftSide, 'serverLeftSide')}>
                   <Link href="#">
                     <div className={styles.title}>
-                      <a href="/fa/server/dedicated">
-                        <i className="fas fa-server"></i>
-                        سرور اختصاصی
-                      </a>
+                      <Link href="/server/dedicated">
+                        <a>
+                          <i className="fas fa-server"></i>
+                          سرور اختصاصی
+                        </a>
+                      </Link>
                     </div>
                   </Link>
                   <div className={styles.countries}>
-                    <Link href="#">
+                    <Link href="/server/dedicated/iran">
                       <a className={styles.countryBox}>
                         <Image
                           src="/images/countries/Iran.png"
@@ -129,7 +116,7 @@ class Server extends React.Component<ServerProps, ServerState> {
                         />
                       </a>
                     </Link>
-                    <Link href="#">
+                    <Link href="/server/dedicated/France">
                       <a className={styles.countryBox}>
                         <Image
                           src="/images/countries/France.png"
@@ -138,7 +125,7 @@ class Server extends React.Component<ServerProps, ServerState> {
                         />
                       </a>
                     </Link>
-                    <Link href="#">
+                    <Link href="/server/dedicated/Germany">
                       <a className={styles.countryBox}>
                         <Image
                           src="/images/countries/Germany.png"
@@ -147,7 +134,7 @@ class Server extends React.Component<ServerProps, ServerState> {
                         />
                       </a>
                     </Link>
-                    <Link href="#">
+                    <Link href="/server/dedicated/Netherlands">
                       <a className={styles.countryBox}>
                         <Image
                           src="/images/countries/Netherlands.png"
@@ -156,7 +143,7 @@ class Server extends React.Component<ServerProps, ServerState> {
                         />
                       </a>
                     </Link>
-                    <Link href="#">
+                    <Link href="/server/dedicated/Canada">
                       <a className={styles.countryBox}>
                         <Image
                           src="/images/countries/Canada.png"
@@ -165,7 +152,7 @@ class Server extends React.Component<ServerProps, ServerState> {
                         />
                       </a>
                     </Link>
-                    <Link href="#">
+                    <Link href="/server/dedicated/Finland">
                       <a className={styles.countryBox}>
                         <Image
                           src="/images/countries/Finland.png"

@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { getThemeFromLocalStorage } from '../../redux/actions';
 
 export interface NavbarProps {
+  appIsScrolling?: boolean;
   getThemeFromLocalStorage?: () => void;
 }
 
@@ -91,7 +92,11 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
         navItemDropdown.forEach(
           (dropdownMenu) => (dropdownMenu.dataset.down = 'false')
         );
-        mainNavbar.style.top = '0';
+        if (!this.props.appIsScrolling) {
+          mainNavbar.style.top = '0';
+        } else {
+          mainNavbar.style.top = '-100px';
+        }
 
         if (window.innerWidth > 991) {
           if (scrollY > 43) {

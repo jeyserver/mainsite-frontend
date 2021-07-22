@@ -10,6 +10,7 @@ import '../styles/globals.scss';
 import { Provider } from 'react-redux';
 import { NotificationContainer } from 'react-notifications';
 import { useStore } from '../redux/store';
+import NProgress from '../components/NProgress/NProgress';
 
 export default function App({ Component, pageProps, domainsForNavbar }) {
   const store = useStore(pageProps.initialReduxState);
@@ -17,6 +18,12 @@ export default function App({ Component, pageProps, domainsForNavbar }) {
   return (
     <Provider store={store}>
       <NotificationContainer />
+      <NProgress
+        color="#3dc4e4"
+        startPosition={0.2}
+        stopDelayMs={200}
+        height={3}
+      />
       <Component {...pageProps} domainsForNavbar={domainsForNavbar} />
     </Provider>
   );

@@ -2,8 +2,9 @@ import * as React from 'react';
 import Head from 'next/head';
 import SharedHosting from '../../../components/HostsPricing/SharedHosting/SharedHosting';
 import Layout from '../../../components/Layout/Layout';
+import { pageProps } from '../../_app';
 
-export interface IndexProps {
+export interface IndexProps extends pageProps {
   sharedHosts: any;
   navData: any;
   postsForFooter: any;
@@ -53,6 +54,7 @@ class Index extends React.Component<IndexProps, IndexState> {
         <Layout
           postsForFooter={this.props.postsForFooter}
           appIsScrolling={this.state.appIsScrolling}
+          domainsForNavbar={this.props.domainsForNavbar}
         >
           <SharedHosting
             sharedHosts={this.props.sharedHosts}

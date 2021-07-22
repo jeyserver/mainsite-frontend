@@ -1,13 +1,17 @@
 import classNames from 'classnames';
 import * as React from 'react';
 import { Container, Col, Row, Form, Button } from 'react-bootstrap';
+import { countriesType } from '../../../pages/order/cart/complete';
 import OrderSteps from '../../OrderDedicatedServer/OrderSteps/OrderSteps';
 import PagesHeader from '../../PagesHeader/PagesHeader';
 import styles from './CompleteOrder.module.scss';
 import SigninForm from './SigninForm/SigninForm';
 import SignupForm from './SignupForm/SignupForm';
 
-export interface CompleteOrderProps {}
+export interface CompleteOrderProps {
+  countries: countriesType;
+  defaultCountrySelected: string;
+}
 
 export interface CompleteOrderState {
   loginMethod: 'signup' | 'signin';
@@ -77,26 +81,34 @@ class CompleteOrder extends React.Component<
                         {
                           [styles.show]: this.state.loginMethod === 'signin',
                           [styles.hidden]: this.state.loginMethod === 'signup',
+                          [styles.signin]: true,
                         },
-                        'justify-content-center',
-                        styles.signin
+                        'justify-content-center'
                       )}
                     >
                       <Col md={8} className="d-flex justify-content-center">
-                        <SigninForm />
+                        <SigninForm
+                          countries={this.props.countries}
+                          defaultCountrySelected={
+                            this.props.defaultCountrySelected
+                          }
+                        />
                       </Col>
                     </Row>
                     <Row
-                      className={classNames(
-                        {
-                          [styles.show]: this.state.loginMethod === 'signup',
-                          [styles.hidden]: this.state.loginMethod === 'signin',
-                        },
-                        styles.signup
-                      )}
+                      className={classNames({
+                        [styles.show]: this.state.loginMethod === 'signup',
+                        [styles.hidden]: this.state.loginMethod === 'signin',
+                        [styles.signup]: true,
+                      })}
                     >
                       <Col md={12}>
-                        <SignupForm />
+                        <SignupForm
+                          countries={this.props.countries}
+                          defaultCountrySelected={
+                            this.props.defaultCountrySelected
+                          }
+                        />
                       </Col>
                     </Row>
                   </Row>

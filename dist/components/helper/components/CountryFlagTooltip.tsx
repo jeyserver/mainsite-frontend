@@ -4,7 +4,7 @@ import { OverlayTrigger } from 'react-bootstrap';
 
 export interface CountryFlagTooltipProps {
   name: string;
-  flag: { address: string; width: number; height: number };
+  flag: { address: string; width?: number; height?: number };
 }
 
 export interface CountryFlagTooltipState {}
@@ -18,14 +18,14 @@ class CountryFlagTooltip extends React.Component<
     this.state = {};
   }
   render() {
+    const { name, flag } = this.props;
+
     return (
-      <OverlayTrigger
-        overlay={<Tooltip id={`${this.props.name}`}>{this.props.name}</Tooltip>}
-      >
+      <OverlayTrigger overlay={<Tooltip id={`${name}`}>{name}</Tooltip>}>
         <Image
-          src={this.props.flag.address}
-          width={this.props.flag.width}
-          height={this.props.flag.height}
+          src={flag.address}
+          width={flag.width ? flag.width : 24}
+          height={flag.height ? flag.height : 24}
         />
       </OverlayTrigger>
     );

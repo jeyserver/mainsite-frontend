@@ -166,6 +166,9 @@
           color: #ffffff;
           background-color: #f27e0a;
           border: 1px solid #f27e0a;
+          display: flex;
+          align-items: center;
+          justify-content: center;
 
           @media screen and (max-width: 767px) {
             width: 12em;

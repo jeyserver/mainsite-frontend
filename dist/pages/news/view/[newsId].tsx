@@ -2,8 +2,9 @@ import * as React from 'react';
 import Head from 'next/head';
 import ViewNews from '../../../components/News/ViewNews/ViewNews';
 import Layout from '../../../components/Layout/Layout';
+import { pageProps } from './../../_app';
 
-export interface IndexProps {
+export interface IndexProps extends pageProps {
   postData: {
     id: number;
     title: string;
@@ -42,7 +43,10 @@ class Index extends React.Component<IndexProps, IndexState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Layout postsForFooter={this.props.postsForFooter}>
+        <Layout
+          postsForFooter={this.props.postsForFooter}
+          domainsForNavbar={this.props.domainsForNavbar}
+        >
           <ViewNews
             postData={this.props.postData}
             mostViewedNews={this.props.mostViewedNews}

@@ -2,40 +2,43 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { deleteFromCart } from '../../../../redux/actions';
 import { cart } from '../../../../redux/reducers/cartReducer';
+import CountryFlagTooltip from '../../../helper/components/CountryFlagTooltip';
 import { Spinner } from 'react-bootstrap';
 import { formatPrice } from '../../../helper/formatPrice';
 import styles from '../productRow.module.scss';
 
-export interface LicenseRowProps {
+export interface HostRowProps {
   data: any;
   deleteFromCart: (id: number) => void;
   cart: cart;
 }
 
-export interface LicenseRowState {}
+export interface HostRowState {}
 
-class LicenseRow extends React.Component<LicenseRowProps, LicenseRowState> {
-  constructor(props: LicenseRowProps) {
+class HostRow extends React.Component<HostRowProps, HostRowState> {
+  constructor(props: HostRowProps) {
     super(props);
     this.state = {};
   }
 
   render() {
-    const { id, title, period, discout, price, currency, first_month_cost } =
+    const { id, title, period, discout, price, currency, country, domain } =
       this.props.data;
 
     return (
       <>
         <td>
-          <span>لایسنس {title}</span>
-        </td>
-        <td className={styles.noper}>
-          {first_month_cost !== '-'
-            ? formatPrice(first_month_cost)
-            : 'هزینه راه‌اندازی اولیه (اولین ماه)'}
+          <CountryFlagTooltip
+            name={country.name_en}
+            flag={{ address: country.flag }}
+          />
+          <span className={styles.title}>{title}</span>
         </td>
         <td>
-          برای {period.value} {period.type === 'monthly' ? 'ماه' : 'سال'}{' '}
+          {domain.name}.{domain.tld}
+        </td>
+        <td>
+          برای {period.value} {period.type === 'monthly' ? 'ماه' : 'سال'}
         </td>
         <td>
           {discout
@@ -70,4 +73,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { deleteFromCart })(LicenseRow);
+export default connect(mapStateToProps, { deleteFromCart })(HostRow);

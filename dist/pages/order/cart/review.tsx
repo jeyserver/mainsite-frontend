@@ -2,9 +2,14 @@ import * as React from 'react';
 import Head from 'next/head';
 import Review from '../../../components/Cart/Review/Review';
 import Layout from '../../../components/Layout/Layout';
+import { connect } from 'react-redux';
+import { setCartItems } from '../../../redux/actions';
+import { pageProps } from './../../_app';
 
-export interface IndexProps {
+export interface IndexProps extends pageProps {
   postsForFooter: any;
+  cartItems: any;
+  setCartItems: (cartItems) => void;
 }
 
 export interface IndexState {}
@@ -13,6 +18,10 @@ class Index extends React.Component<IndexProps, IndexState> {
   constructor(props: IndexProps) {
     super(props);
     this.state = {};
+  }
+
+  componentDidMount() {
+    this.props.setCartItems(this.props.cartItems);
   }
 
   render() {
@@ -24,7 +33,10 @@ class Index extends React.Component<IndexProps, IndexState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Layout postsForFooter={this.props.postsForFooter}>
+        <Layout
+          postsForFooter={this.props.postsForFooter}
+          domainsForNavbar={this.props.domainsForNavbar}
+        >
           <Review />
         </Layout>
       </div>
@@ -41,14 +53,19 @@ export async function getServerSideProps(context) {
     };
   }
 
+  const cartItemsRes = await fetch(
+    `https://jsonblob.com/api/jsonBlob/91805bd8-e961-11eb-9e75-7fa330839e1c`
+  );
+  const cartItems = await cartItemsRes.json();
+
   const postsForFooterRes = await fetch(
     'https://jsonblob.com/api/jsonBlob/ff048401-e7cd-11eb-971c-9ff88820de62'
   );
   const postsForFooter = await postsForFooterRes.json();
 
   return {
-    props: { postsForFooter },
+    props: { postsForFooter, cartItems },
   };
 }
 
-export default Index;
+export default connect(null, { setCartItems })(Index);

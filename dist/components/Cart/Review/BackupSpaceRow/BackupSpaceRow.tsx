@@ -1,7 +1,9 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { deleteFromCart } from '../../../../redux/actions';
+import { cart } from '../../../../redux/reducers/cartReducer';
 import CountryFlagTooltip from '../../../helper/components/CountryFlagTooltip';
+import { Spinner } from 'react-bootstrap';
 import { formatPrice } from '../../../helper/formatPrice';
 import { formatSpaceInEnglish } from '../../../helper/formatSpace';
 import styles from '../productRow.module.scss';
@@ -9,6 +11,7 @@ import styles from '../productRow.module.scss';
 export interface BackupSpaceRowProps {
   data: any;
   deleteFromCart: (id: number) => void;
+  cart: cart;
 }
 
 export interface BackupSpaceRowState {}
@@ -23,38 +26,56 @@ class BackupSpaceRow extends React.Component<
   }
 
   render() {
+    const {
+      id,
+      title,
+      country,
+      period,
+      discout,
+      currency,
+      price,
+      domain,
+      space,
+    } = this.props.data;
+
     return (
       <>
         <td>
           <CountryFlagTooltip
-            name={this.props.data.country.name}
+            name={country.name_en}
             flag={{
-              address: this.props.data.country.flag,
-              width: 24,
-              height: 24,
+              address: country.flag,
             }}
           />
-          <span className={styles.backupTitle}>
-            پشتیبان {this.props.data.id}
-          </span>
+          <span className={styles.title}>پشتیبان {id}</span>
         </td>
         <td>
-          {formatSpaceInEnglish(this.props.data.space)} -{' '}
-          {this.props.data.domain}
-        </td>
-        <td>برای {this.props.data.payment_period.month} ماه </td>
-        <td>
-          {this.props.data.discout
-            ? `${formatPrice(this.props.data.discout)} ${
-                this.props.data.currency.title
-              }`
-            : `0 ${this.props.data.currency.title}`}{' '}
+          {formatSpaceInEnglish(space)} - {domain.name}.{domain.tld}
         </td>
         <td>
-          {formatPrice(this.props.data.price)} {this.props.data.currency.title}
+          برای {period.value} {period.type === 'monthly' ? 'ماه' : 'سال'}{' '}
         </td>
         <td>
-          <button className={styles.deleteBtn}>حذف</button>
+          {discout
+            ? `${formatPrice(discout)} ${currency.title}`
+            : `0 ${currency.title}`}{' '}
+        </td>
+        <td>
+          {formatPrice(price)} {currency.title}
+        </td>
+        <td>
+          <button
+            className={styles.deleteBtn}
+            onClick={() => this.props.deleteFromCart(id)}
+          >
+            {this.props.cart.itemsInLoading.some(
+              (productId) => productId === id
+            ) ? (
+              <Spinner animation="border" size="sm" />
+            ) : (
+              'حذف'
+            )}
+          </button>
         </td>
       </>
     );

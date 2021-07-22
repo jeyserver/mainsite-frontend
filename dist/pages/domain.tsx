@@ -37,7 +37,10 @@ class Index extends React.Component<IndexProps, IndexState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Layout postsForFooter={this.props.postsForFooter}>
+        <Layout
+          postsForFooter={this.props.postsForFooter}
+          domainsForNavbar={this.props.domainsData}
+        >
           <Domain
             domainsData={this.props.domainsData}
             famousAndTrendyDomains={this.props.famousAndTrendyDomains}
@@ -66,7 +69,7 @@ export async function getServerSideProps(context) {
   const postsForFooter = await postsForFooterRes.json();
 
   const domainsDataRes = await fetch(
-    `${process.env.SCHEMA}://${process.env.DOMAIN}/fa/domain?ajax=1`
+    `https://jsonblob.com/api/jsonBlob/57cdd139-eaad-11eb-8813-950ac49ad40b`
   );
   const domainsData = await domainsDataRes.json();
 

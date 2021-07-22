@@ -1,15 +1,24 @@
 import classNames from 'classnames';
 import * as React from 'react';
-import { Alert } from 'react-bootstrap';
+import { Alert, Spinner } from 'react-bootstrap';
 import { Button } from 'react-bootstrap';
 import { Col, Table } from 'react-bootstrap';
+import { connect } from 'react-redux';
+import { formatPrice } from '../../helper/formatPrice';
+import { setDomainForShop } from '../../../redux/actions';
 import styles from './DomainOrderTable.module.scss';
+import { domainReducerType } from '../../../redux/reducers/domainReducer';
+import axios from 'axios';
 
 export interface DomainOrderTableProps {
   roundDomains: any;
+  setDomainForShop: (domain: any) => void;
+  domain: domainReducerType;
 }
 
-export interface DomainOrderTableState {}
+export interface DomainOrderTableState {
+  loading: boolean;
+}
 
 class DomainOrderTable extends React.Component<
   DomainOrderTableProps,
@@ -17,18 +26,24 @@ class DomainOrderTable extends React.Component<
 > {
   constructor(props: DomainOrderTableProps) {
     super(props);
-    this.state = {};
+    this.state = {
+      loading: false,
+    };
+    this.order = this.order.bind(this);
   }
 
-  addCommas(num: number) {
-    let str = num.toString().split('.');
-    if (str[0].length >= 5) {
-      str[0] = str[0].replace(/(\d)(?=(\d{3})+$)/g, '$1,');
-    }
-    if (str[1] && str[1].length >= 5) {
-      str[1] = str[1].replace(/(\d{3})/g, '$1 ');
-    }
-    return str.join('.');
+  order(domain) {
+    this.setState({ loading: true });
+
+    axios(
+      'https://jsonblob.com/api/jsonBlob/d3196d4f-e2e1-11eb-b284-d50b7a049077'
+    )
+      .then(() => {
+        this.props.setDomainForShop(domain);
+      })
+      .catch(() => {
+        this.setState({ loading: false });
+      });
   }
 
   render() {
@@ -41,34 +56,48 @@ class DomainOrderTable extends React.Component<
             به محض پیدا کردن دامنه رند، در این قسمت براتون اضافه میکنیم.
           </Alert>
         ) : (
-          <Table responsive bordered className={styles.table}>
-            <thead>
-              <tr>
-                <th>دامنه</th>
-                <th>هزینه ثبت</th>
-                <th>سفارش</th>
-              </tr>
-            </thead>
-            <tbody>
-              {this.props.roundDomains.items.map((domain) => (
-                <tr key={domain.id}>
-                  <td>
-                    {domain.name}.{domain.tld}
-                  </td>
-                  <td>{this.addCommas(domain.new)} تومان</td>
-                  <td>
-                    <Button>
-                      <a>سفارش</a>
-                    </Button>
-                  </td>
+          <div className={styles.tableWrapper}>
+            <Table responsive bordered className={styles.table}>
+              <thead>
+                <tr>
+                  <th>دامنه</th>
+                  <th>هزینه ثبت</th>
+                  <th>سفارش</th>
                 </tr>
-              ))}
-            </tbody>
-          </Table>
+              </thead>
+              <tbody>
+                {this.props.roundDomains.items.map((domain) => (
+                  <tr key={domain.id}>
+                    <td>
+                      {domain.name}.{domain.tld}
+                    </td>
+                    <td>{formatPrice(domain.new)} تومان</td>
+                    <td>
+                      <Button onClick={() => this.order(domain)}>
+                        <a>سفارش</a>
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+            {this.state.loading && (
+              <div className={styles.loading}>
+                <Spinner animation="border" size="sm" />
+                <span>لطفا صبر کنید</span>
+              </div>
+            )}
+          </div>
         )}
       </Col>
     );
   }
 }
 
-export default DomainOrderTable;
+const mapStateToProps = (state) => {
+  return {
+    domain: state.domain,
+  };
+};
+
+export default connect(mapStateToProps, { setDomainForShop })(DomainOrderTable);

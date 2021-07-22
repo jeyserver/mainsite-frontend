@@ -2,8 +2,9 @@ import * as React from 'react';
 import Head from 'next/head';
 import VpsPricing from '../../components/VpsPricing/VpsPricing';
 import Layout from '../../components/Layout/Layout';
+import { pageProps } from './../_app';
 
-export interface IndexProps {
+export interface IndexProps extends pageProps {
   vpsData: any;
   topNav: any;
   postsForFooter: any;
@@ -53,6 +54,7 @@ class Index extends React.Component<IndexProps, IndexState> {
         <Layout
           postsForFooter={this.props.postsForFooter}
           appIsScrolling={this.state.appIsScrolling}
+          domainsForNavbar={this.props.domainsForNavbar}
         >
           <VpsPricing
             vpsData={this.props.vpsData}

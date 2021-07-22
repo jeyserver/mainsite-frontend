@@ -1,5 +1,7 @@
+import classNames from 'classnames';
 import * as React from 'react';
 import { Row, Col, Form, Button } from 'react-bootstrap';
+import { countriesType } from '../../../../pages/order/cart/complete';
 import { ReactPhonenumber } from '../../../ReactPhonenumber/ReactPhonenumber';
 import styles from './SignupForm.module.scss';
 
@@ -13,7 +15,10 @@ const showError = (errorMsg: error) => {
   }
 };
 
-export interface SignupFormProps {}
+export interface SignupFormProps {
+  countries: countriesType;
+  defaultCountrySelected: string;
+}
 
 export interface SignupFormState {
   firstNameError: error;
@@ -106,18 +111,20 @@ class SignupForm extends React.Component<SignupFormProps, SignupFormState> {
             </Form.Group>
           </Col>
           <Col md={6}>
-            <Form.Group className={styles.formGroup} controlId="passwordss1">
-              <Form.Label>شماره همراه</Form.Label>
+            <Form.Group
+              className={classNames(styles.formGroup, styles.phoneNumber)}
+              controlId="passwordss1"
+            >
+              <Form.Label>شماره همراه*</Form.Label>
               <div className="phonenumber-input-wrapper">
                 <ReactPhonenumber
-                  countries={[
-                    { code: 'IR', name: 'Iran', dialingCode: '98' },
-                    { code: 'AF', name: 'Afghanistan', dialingCode: '93' },
-                    { code: 'AL', name: 'Albania', dialingCode: '213' },
-                    { code: 'AS', name: 'American Samoa', dialingCode: '1684' },
-                  ]}
+                  countries={this.props.countries}
                   onChange={this.changePhoneNumber}
-                  defaultCode="IR"
+                  defaultCode={this.props.defaultCountrySelected}
+                  isSelectHide={false}
+                  className="phoneNumberEmail"
+                  selectName="signUpForm"
+                  options={{ dir: 'rtl' }}
                 />
               </div>
             </Form.Group>

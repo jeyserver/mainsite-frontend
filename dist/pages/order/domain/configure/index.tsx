@@ -4,8 +4,9 @@ import OrderDomain from '../../../../components/OrderDomain';
 import { connect } from 'react-redux';
 import { setOrderedDomains } from '../../../../redux/actions';
 import Layout from '../../../../components/Layout/Layout';
+import { pageProps } from '../../../_app';
 
-export interface IndexProps {
+export interface IndexProps extends pageProps {
   domains: any;
   nationalDomainsList: any;
   setOrderedDomains: (domains: any) => void;
@@ -33,7 +34,10 @@ class Index extends React.Component<IndexProps, IndexState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Layout postsForFooter={this.props.postsForFooter}>
+        <Layout
+          postsForFooter={this.props.postsForFooter}
+          domainsForNavbar={this.props.domainsForNavbar}
+        >
           <OrderDomain
             step="configuration"
             data={{

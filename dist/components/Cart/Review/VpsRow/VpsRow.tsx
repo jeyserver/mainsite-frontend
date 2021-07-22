@@ -1,41 +1,63 @@
 import * as React from 'react';
+import { Spinner } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { deleteFromCart } from '../../../../redux/actions';
 import { cart } from '../../../../redux/reducers/cartReducer';
-import { Spinner } from 'react-bootstrap';
+import CountryFlagTooltip from '../../../helper/components/CountryFlagTooltip';
 import { formatPrice } from '../../../helper/formatPrice';
+import { formatSpaceInEnglish } from '../../../helper/formatSpace';
 import styles from '../productRow.module.scss';
 
-export interface LicenseRowProps {
+export interface VpsRowProps {
   data: any;
   deleteFromCart: (id: number) => void;
   cart: cart;
 }
 
-export interface LicenseRowState {}
+export interface VpsRowState {}
 
-class LicenseRow extends React.Component<LicenseRowProps, LicenseRowState> {
-  constructor(props: LicenseRowProps) {
+class VpsRow extends React.Component<VpsRowProps, VpsRowState> {
+  constructor(props: VpsRowProps) {
     super(props);
     this.state = {};
   }
 
   render() {
-    const { id, title, period, discout, price, currency, first_month_cost } =
-      this.props.data;
+    const {
+      id,
+      title,
+      period,
+      discout,
+      price,
+      currency,
+      country,
+      ip,
+      ram,
+      hard,
+    } = this.props.data;
 
     return (
       <>
         <td>
-          <span>لایسنس {title}</span>
-        </td>
-        <td className={styles.noper}>
-          {first_month_cost !== '-'
-            ? formatPrice(first_month_cost)
-            : 'هزینه راه‌اندازی اولیه (اولین ماه)'}
+          <CountryFlagTooltip
+            name={country.name_en}
+            flag={{ address: country.flag }}
+          />
+          <span className={styles.title}>
+            سرور مجازی {title} {country.name_fa}
+          </span>
         </td>
         <td>
-          برای {period.value} {period.type === 'monthly' ? 'ماه' : 'سال'}{' '}
+          {ip && <div>{ip.value} عدد آی پی اضافه</div>}
+          {ram && <div>{formatSpaceInEnglish(ram)}رم اضافه</div>}
+          {hard && (
+            <div>
+              {formatSpaceInEnglish(hard.space)} {hard.type} هارد اضافه
+            </div>
+          )}
+        </td>
+        <td>
+          برای {period.value} {period.type === 'monthly' ? 'ماه' : 'سال'}
         </td>
         <td>
           {discout
@@ -70,4 +92,4 @@ const mapStateToProps = (state) => {
   };
 };
 
-export default connect(mapStateToProps, { deleteFromCart })(LicenseRow);
+export default connect(mapStateToProps, { deleteFromCart })(VpsRow);

@@ -2,8 +2,9 @@ import * as React from 'react';
 import Head from 'next/head';
 import BlogPosts from '../components/Blog/BlogPosts/BlogPosts';
 import Layout from '../components/Layout/Layout';
+import { pageProps } from './_app';
 
-export interface IndexProps {
+export interface IndexProps extends pageProps {
   posts: any;
   categories: any;
   postsForFooter: any;
@@ -25,7 +26,10 @@ class Index extends React.Component<IndexProps, IndexState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Layout postsForFooter={this.props.postsForFooter}>
+        <Layout
+          postsForFooter={this.props.postsForFooter}
+          domainsForNavbar={this.props.domainsForNavbar}
+        >
           <BlogPosts
             posts={this.props.posts}
             categories={this.props.categories}

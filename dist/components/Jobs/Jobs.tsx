@@ -26,7 +26,7 @@ class Jobs extends React.Component<JobsProps, JobsState> {
         <div className={styles.mainContent}>
           <Container>
             <Row>
-              <Col lg={6} className={styles.jobTitlesWrapper}>
+              <Col lg={6}>
                 <div className={styles.tittle}>
                   <h5>شرح فرصت های شغلی</h5>
                   <div className={styles.divider}>

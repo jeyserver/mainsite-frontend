@@ -3,8 +3,9 @@ import Head from 'next/head';
 import Header from '../components/Header/Header';
 import MainPage from '../components/MainPage/MainPage';
 import Layout from '../components/Layout/Layout';
+import { pageProps } from './_app';
 
-export interface IndexProps {
+export interface IndexProps extends pageProps {
   tablesData: { linuxHosts: any };
   postsForFooter: any;
 }
@@ -26,7 +27,10 @@ class Index extends React.Component<IndexProps, IndexState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Layout postsForFooter={this.props.postsForFooter}>
+        <Layout
+          postsForFooter={this.props.postsForFooter}
+          domainsForNavbar={this.props.domainsForNavbar}
+        >
           <Header />
           <MainPage tablesData={this.props.tablesData} />
         </Layout>

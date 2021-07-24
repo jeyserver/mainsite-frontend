@@ -47,6 +47,28 @@
   > div {
     margin-top: 16.5em;
     color: #7b7b7b;
+    position: relative;
+
+    .loading {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: #fff;
+      color: #000;
+      opacity: 0.8;
+      font-family: IRANSans;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      > span {
+        margin-right: 10px;
+      }
+    }
+
     .table {
       font-family: IRANSans;
       margin-bottom: 0;
@@ -99,6 +121,10 @@
           border-color: #4cae4c;
           font-family: BYekan;
           font-size: 14px;
+
+          &:focus {
+            box-shadow: none !important;
+          }
         }
       }
     }

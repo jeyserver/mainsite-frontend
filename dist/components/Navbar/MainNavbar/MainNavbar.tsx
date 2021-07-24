@@ -8,8 +8,11 @@ import Server from './Server/Server';
 import License from './License/License';
 import Support from './Support/Support';
 import Link from 'next/link';
+import { domainsForNavbarType } from '../../../pages/_app';
 
-export interface MainNavbarProps {}
+export interface MainNavbarProps {
+  domains: domainsForNavbarType;
+}
 
 export interface MainNavbarState {
   isMenuOpen: boolean;
@@ -70,7 +73,10 @@ class MainNavbar extends React.Component<MainNavbarProps, MainNavbarState> {
                 style={{ right: this.state.isMenuOpen ? 0 : '-100%' }}
               >
                 <Hosting changeShowDropDown={this.changeShowDropDown} />
-                <Domain changeShowDropDown={this.changeShowDropDown} />
+                <Domain
+                  changeShowDropDown={this.changeShowDropDown}
+                  domains={this.props.domains}
+                />
                 <Server changeShowDropDown={this.changeShowDropDown} />
                 <License changeShowDropDown={this.changeShowDropDown} />
                 <Support changeShowDropDown={this.changeShowDropDown} />

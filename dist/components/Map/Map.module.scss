@@ -1,0 +1,96 @@
+.mapAccordionCard {
+  background-color: #ffffff;
+  border: none;
+}
+
+.callToAction {
+  font-family: BYekan, sans-serif;
+  color: #313131;
+  font-size: 13px;
+  line-height: 20px;
+  box-sizing: border-box;
+  text-align: center;
+  padding: 38px 10px;
+  padding-top: 17px;
+  padding-bottom: 17px;
+  background-color: #3dc4e4;
+  text-align: center;
+  height: 110px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0 !important;
+  border: none;
+  @media screen and (max-width: 991px) {
+    padding-top: 17px;
+    padding-bottom: 17px;
+  }
+  @media screen and (max-width: 767px) {
+    height: 70px;
+  }
+  .mapBlockBtn {
+    &:focus {
+      box-shadow: none;
+    }
+  }
+  .mapBlock {
+    text-align: center;
+    background-color: transparent;
+    display: block;
+    padding-top: 3px;
+    font-family: BYekan, sans-serif;
+    font-weight: 600;
+    color: #fff;
+    font-size: 27px;
+    line-height: 30px;
+    letter-spacing: 1px;
+    text-decoration: none;
+    .mapTxt {
+      direction: rtl;
+      text-align: center;
+      font-family: BYekan, sans-serif;
+      font-weight: 600;
+      color: #fff;
+      font-size: 27px;
+      line-height: 30px;
+      letter-spacing: 1px;
+      box-sizing: border-box;
+      display: inline-block;
+
+      @media screen and (max-width: 767px) {
+        font-size: 20px;
+      }
+    }
+    .mapArrow {
+      text-align: center;
+      font-family: BYekan, sans-serif;
+      font-weight: 600;
+      color: #fff;
+      line-height: 30px;
+      letter-spacing: 1px;
+      box-sizing: border-box;
+      position: relative;
+      top: -4px;
+      display: inline-block;
+      width: 30px;
+      margin-left: 10px;
+      i {
+        font-size: 20px;
+        vertical-align: middle;
+      }
+    }
+  }
+}
+
+.mapContainerBody {
+  padding: 0;
+  .mapContainer {
+    height: 350px;
+    padding: 0;
+    .map {
+      height: 100%;
+      width: 100%;
+      border: none;
+    }
+  }
+}

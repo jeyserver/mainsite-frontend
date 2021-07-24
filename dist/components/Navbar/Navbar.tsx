@@ -2,10 +2,12 @@ import React from 'react';
 import MainNavbar from './MainNavbar/MainNavbar';
 import TopNavbar from './TopNavbar/TopNavbar';
 import styles from './Navbar.module.scss';
+import { domainsForNavbarType } from '../../pages/_app';
 
 export interface NavbarProps {
   appIsScrolling?: boolean;
   getThemeFromLocalStorage?: () => void;
+  domains: domainsForNavbarType;
 }
 
 export interface NavbarState {}
@@ -128,7 +130,7 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
       <nav className={styles.nav}>
         <TopNavbar />
         <div id="navbar-top-space" className={styles.navbarTopSpace}></div>
-        <MainNavbar />
+        <MainNavbar domains={this.props.domains} />
       </nav>
     );
   }

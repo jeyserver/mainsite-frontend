@@ -3,6 +3,8 @@ import $ from 'jquery';
 import { createUseStyles } from 'react-jss';
 import { v4 as uuidv4 } from 'uuid';
 import 'select2/dist/js/select2.min.js';
+import { Form } from 'react-bootstrap';
+import classNames from 'classnames';
 
 interface country {
   code: string;
@@ -20,9 +22,16 @@ interface Props {
   onChange: (
     phoneNumber: string,
     selected: country,
-    phoneNumberInputValue: string
+    phoneNumberInputValue: string,
+    isFocusedOnInput: boolean
   ) => void;
   countries: country[];
+  isSelectHide: boolean;
+  selectName: string;
+  floatPlaceHolder?: {
+    placeholder: string;
+    icon: string;
+  };
 }
 
 const useStyles = createUseStyles((props) => ({
@@ -88,7 +97,13 @@ export const ReactPhonenumber: React.FC<Props> = ({
   options,
   className = '',
   dir,
+  isSelectHide,
+  selectName,
+  floatPlaceHolder,
 }) => {
+  const [isFocusedOnInput, setIsFocusedOnInput] =
+    React.useState<boolean>(false);
+
   const [phoneNumberValue, setPhoneNumberValue] = React.useState(
     inputValue ? Number(inputValue).toString() : ''
   );
@@ -109,9 +124,7 @@ export const ReactPhonenumber: React.FC<Props> = ({
   const classes = useStyles();
 
   // handle OnChanges
-  const handleOnChangePhoneNumberValue = (
-    e: React.FormEvent<HTMLInputElement>
-  ) => {
+  const handleOnChangePhoneNumberValue = (e: any) => {
     setPhoneNumberValue((e.target as HTMLInputElement).value);
   };
 
@@ -128,7 +141,8 @@ export const ReactPhonenumber: React.FC<Props> = ({
     onChange(
       selectedDialingCode + Number(phoneNumberValue).toString(),
       selected,
-      Number(phoneNumberValue).toString()
+      phoneNumberValue,
+      isFocusedOnInput
     );
   }, [selected, phoneNumberValue]);
 
@@ -202,7 +216,7 @@ export const ReactPhonenumber: React.FC<Props> = ({
       return null;
     }
 
-    ($(`#phonenumberInput .select-country-phonenumber`) as any).select2({
+    ($(`#${selectName} .select-country-phonenumber`) as any).select2({
       dir: 'ltr',
       templateSelection: formatState,
       templateResult: templateResult,
@@ -214,7 +228,7 @@ export const ReactPhonenumber: React.FC<Props> = ({
         selected: country.code === defaultCode,
       })),
       matcher: matchCustom,
-      dropdownParent: $(`#phonenumberInput #inputs-wrapper`),
+      dropdownParent: $(`#${selectName} .inputs-wrapper`),
       language: {
         noResults: function () {
           return '<div style="text-align: right; font-size: 13px">کشور مورد نظر شما پیدا نشد</div>';
@@ -226,7 +240,7 @@ export const ReactPhonenumber: React.FC<Props> = ({
       ...options,
     });
 
-    $(`#phonenumberInput .select-country-phonenumber`).on(
+    $(`#${selectName} .select-country-phonenumber`).on(
       'select2:select',
       function (e: any) {
         const data = e.params.data;
@@ -243,7 +257,7 @@ export const ReactPhonenumber: React.FC<Props> = ({
   return (
     <div
       className={className}
-      id="phonenumberInput"
+      id={selectName}
       style={{
         position: 'relative',
         width: 'min-content',
@@ -251,12 +265,18 @@ export const ReactPhonenumber: React.FC<Props> = ({
     >
       <div
         id="inputs-wrapper"
-        className={classes.inputsWrapper}
+        className={classNames(
+          classes.inputsWrapper,
+          {
+            'select-hide': isSelectHide,
+          },
+          `inputs-wrapper`
+        )}
         dir={dir ? dir : 'ltr'}
       >
         <select className="select-country-phonenumber"></select>
-        <input
-          type="tel"
+        <Form.Control
+          type="text"
           value={phoneNumberValue}
           onChange={(e) => handleOnChangePhoneNumberValue(e)}
           className="phone-number-input"
@@ -264,6 +284,21 @@ export const ReactPhonenumber: React.FC<Props> = ({
           required
           disabled={options?.disabled}
         />
+        <Form.Control.Feedback type="invalid">
+          داده وارد شده معتبر نیست
+        </Form.Control.Feedback>
+        {floatPlaceHolder && floatPlaceHolder.placeholder && (
+          <div
+            className={classNames('placeholder', {
+              up: phoneNumberValue.length > 0,
+            })}
+          >
+            {floatPlaceHolder.placeholder}
+          </div>
+        )}
+        {floatPlaceHolder && floatPlaceHolder.icon && (
+          <i className={classNames(floatPlaceHolder.icon, 'icon')}></i>
+        )}
       </div>
     </div>
   );

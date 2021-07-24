@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import React from 'react';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { OverlayTrigger, Spinner, Tooltip } from 'react-bootstrap';
 import {
   Col,
   Image,
@@ -14,20 +14,30 @@ import {
 import styles from './Domain.module.scss';
 import { withRouter, NextRouter } from 'next/router';
 import classNames from 'classnames';
+import { domainsForNavbarType } from '../../../../pages/_app';
+import { formatPrice } from '../../../helper/formatPrice';
+import { setDomainForShop } from '../../../../redux/actions';
+import { connect } from 'react-redux';
+import axios from 'axios';
 
 export interface DomainProps {
   changeShowDropDown: () => void;
   router: NextRouter;
+  domains: domainsForNavbarType;
+  setDomainForShop: (domain: { tld: string; name: string }) => void;
 }
 
 export interface DomainState {
   selectedDomain: string | null;
+  loading: boolean;
 }
 
 class Domain extends React.Component<DomainProps, DomainState> {
   constructor(props: DomainProps) {
     super(props);
-    this.state = { selectedDomain: null };
+    this.state = { selectedDomain: null, loading: false };
+    this.moreBtn = this.moreBtn.bind(this);
+    this.checkDomain = this.checkDomain.bind(this);
   }
 
   componentDidMount() {
@@ -55,16 +65,30 @@ class Domain extends React.Component<DomainProps, DomainState> {
   }
 
   moreBtn() {
-    this.props.router.push('/fa/domain');
+    this.props.router.push('/domain');
+  }
+
+  checkDomain(e: React.ChangeEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const form = e.currentTarget;
+
+    this.setState({ loading: true });
+    axios(
+      'https://jsonblob.com/api/jsonBlob/d3196d4f-e2e1-11eb-b284-d50b7a049077'
+    )
+      .then(() => {
+        this.props.setDomainForShop({
+          tld: form.tld.value,
+          name: form.domainName.value,
+        });
+        this.setState({ loading: false });
+      })
+      .catch(() => {
+        this.setState({ loading: false });
+      });
   }
 
   render() {
-    const renderTooltip = (props) => (
-      <Tooltip id="button-tooltip" {...props}>
-        Simple tooltip
-      </Tooltip>
-    );
-
     return (
       <Dropdown className="nav-item-dropdown">
         <Dropdown.Toggle id="nav-dropdown" className="nav-item-dropdown-toggle">
@@ -93,7 +117,7 @@ class Domain extends React.Component<DomainProps, DomainState> {
                           className={styles.moreBtnDominToolpit}
                           id="moreBtnDominToolpit"
                         >
-                          مشاهده ۱۴۵ پسوند دیگر
+                          مشاهده {this.props.domains.items.length} پسوند دیگر
                         </Tooltip>
                       }
                     >
@@ -117,146 +141,25 @@ class Domain extends React.Component<DomainProps, DomainState> {
                     <div className={styles.tableWrapper} id="tableWrapper">
                       <table className="table">
                         <tbody>
-                          <tr>
-                            <td
-                              data-selected={
-                                this.state.selectedDomain === 'com'
-                              }
-                            >
-                              com
-                            </td>
-                            <td
-                              data-selected={
-                                this.state.selectedDomain === 'com'
-                              }
-                            >
-                              247,520 تومان
-                            </td>
-                          </tr>
-                          <tr>
-                            <td
-                              data-selected={
-                                this.state.selectedDomain === 'net'
-                              }
-                            >
-                              net
-                            </td>
-                            <td
-                              data-selected={
-                                this.state.selectedDomain === 'net'
-                              }
-                            >
-                              257,920 تومان
-                            </td>
-                          </tr>
-                          <tr>
-                            <td
-                              data-selected={
-                                this.state.selectedDomain === 'org'
-                              }
-                            >
-                              org
-                            </td>
-                            <td
-                              data-selected={
-                                this.state.selectedDomain === 'org'
-                              }
-                            >
-                              303,420 تومان
-                            </td>
-                          </tr>
-                          <tr>
-                            <td
-                              data-selected={
-                                this.state.selectedDomain === 'info'
-                              }
-                            >
-                              info
-                            </td>
-                            <td
-                              data-selected={
-                                this.state.selectedDomain === 'info'
-                              }
-                            >
-                              104,520 تومان
-                            </td>
-                          </tr>
-                          <tr>
-                            <td
-                              data-selected={
-                                this.state.selectedDomain === 'asia'
-                              }
-                            >
-                              asia
-                            </td>
-                            <td
-                              data-selected={
-                                this.state.selectedDomain === 'asia'
-                              }
-                            >
-                              388,700 تومان
-                            </td>
-                          </tr>
-                          <tr>
-                            <td
-                              data-selected={this.state.selectedDomain === 'co'}
-                            >
-                              co
-                            </td>
-                            <td
-                              data-selected={this.state.selectedDomain === 'co'}
-                            >
-                              814,060 تومان
-                            </td>
-                          </tr>
-                          <tr>
-                            <td
-                              data-selected={this.state.selectedDomain === 'ir'}
-                            >
-                              ir
-                            </td>
-                            <td
-                              data-selected={this.state.selectedDomain === 'ir'}
-                            >
-                              14,000 تومان
-                            </td>
-                          </tr>
-                          <tr>
-                            <td
-                              data-selected={this.state.selectedDomain === 'cc'}
-                            >
-                              cc
-                            </td>
-                            <td
-                              data-selected={this.state.selectedDomain === 'cc'}
-                            >
-                              355,420 تومان
-                            </td>
-                          </tr>
-                          <tr>
-                            <td
-                              data-selected={this.state.selectedDomain === 'ca'}
-                            >
-                              ca
-                            </td>
-                            <td
-                              data-selected={this.state.selectedDomain === 'ca'}
-                            >
-                              346,320 تومان
-                            </td>
-                          </tr>
-                          <tr>
-                            <td
-                              data-selected={this.state.selectedDomain === 'de'}
-                            >
-                              de
-                            </td>
-                            <td
-                              data-selected={this.state.selectedDomain === 'de'}
-                            >
-                              215,020 تومان
-                            </td>
-                          </tr>
+                          {this.props.domains.items.map((domain) => (
+                            <tr key={domain.id}>
+                              <td
+                                data-selected={
+                                  this.state.selectedDomain === domain.tld
+                                }
+                              >
+                                {domain.tld}
+                              </td>
+                              <td
+                                data-selected={
+                                  this.state.selectedDomain === domain.tld
+                                }
+                              >
+                                {formatPrice(domain.new)}{' '}
+                                {this.props.domains.currency.title}
+                              </td>
+                            </tr>
+                          ))}
                         </tbody>
                       </table>
                     </div>
@@ -266,26 +169,28 @@ class Domain extends React.Component<DomainProps, DomainState> {
               <Col xs={12} md={4} className={styles.centerCol}>
                 <div className={styles.domainCheck}>
                   <h4>نقطه شروع همه چیز اینجاست!</h4>
-                  <form className="mt-5">
+                  <form className="mt-5" onSubmit={this.checkDomain}>
                     <InputGroup className={styles.formInputGroup}>
                       <FormControl
                         as="select"
                         className="mr-sm-2"
                         dir="ltr"
+                        name="tld"
                         onChange={(e) => this.changeSelectedDomain(e)}
+                        required
                       >
-                        <option value="com">.com</option>
-                        <option value="net">.net</option>
-                        <option value="org">.org</option>
-                        <option value="info">.info</option>
-                        <option value="asia">.asia</option>
-                        <option value="co">co</option>
-                        <option value="ir">ir</option>
-                        <option value="cc">cc</option>
-                        <option value="ca">ca</option>
-                        <option value="de">de</option>
+                        {this.props.domains.items.map((domain) => (
+                          <option key={domain.id} value={domain.tld}>
+                            .{domain.tld}
+                          </option>
+                        ))}
                       </FormControl>
-                      <FormControl placeholder="Your Domain" />
+                      <FormControl
+                        type="text"
+                        placeholder="Your Domain"
+                        name="domainName"
+                        required
+                      />
                       <InputGroup.Prepend>
                         <InputGroup.Text dir="ltr">www.</InputGroup.Text>
                       </InputGroup.Prepend>
@@ -294,9 +199,16 @@ class Domain extends React.Component<DomainProps, DomainState> {
                       type="submit"
                       variant="success"
                       className={styles.searchDomainBtn}
+                      disabled={this.state.loading}
                     >
-                      <i className="fas fa-search"></i>
-                      <span>بررسی کن</span>
+                      {this.state.loading ? (
+                        <Spinner size="sm" animation="border" />
+                      ) : (
+                        <>
+                          <i className="fas fa-search"></i>
+                          <span>بررسی کن</span>
+                        </>
+                      )}
                     </Button>
                   </form>
                 </div>
@@ -326,4 +238,4 @@ class Domain extends React.Component<DomainProps, DomainState> {
   }
 }
 
-export default withRouter(Domain);
+export default connect(null, { setDomainForShop })(withRouter(Domain));

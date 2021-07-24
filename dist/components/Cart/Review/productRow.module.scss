@@ -14,6 +14,10 @@
   border-radius: 3px;
   font-family: BYekan;
   width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 30px;
 
   &:hover {
     color: #333;
@@ -22,6 +26,6 @@
   }
 }
 
-.backupTitle {
+.title {
   margin-right: 20px;
 }

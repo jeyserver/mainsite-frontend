@@ -2,8 +2,9 @@ import * as React from 'react';
 import Head from 'next/head';
 import DedicatedHosting from '../../../components/HostsPricing/DedicatedHosting/DedicatedHosting';
 import Layout from '../../../components/Layout/Layout';
+import { pageProps } from '../../_app';
 
-export interface IndexProps {
+export interface IndexProps extends pageProps {
   dedicatedHosts: any;
   navData: any;
   postsForFooter: any;
@@ -53,6 +54,7 @@ class Index extends React.Component<IndexProps, IndexState> {
         <Layout
           postsForFooter={this.props.postsForFooter}
           appIsScrolling={this.state.appIsScrolling}
+          domainsForNavbar={this.props.domainsForNavbar}
         >
           <DedicatedHosting
             dedicatedHosts={this.props.dedicatedHosts}

@@ -49,21 +49,24 @@
     .show {
       transition-property: height;
       transition-duration: 400ms;
-      overflow: hidden;
-
-      &.singin {
-        height: 181px;
-      }
-      &.signup {
-        height: 313.5px;
-      }
+      overflow: visible;
     }
     .hidden {
       height: 0;
-      transition-property: height;
+      transition-property: height, padding-top;
       transition-duration: 400ms;
       transition-delay: 500ms;
       overflow: hidden;
+      padding-top: 0;
     }
   }
+}
+
+.signin {
+  height: 260px;
+  padding-top: 10px;
+}
+
+.signup {
+  height: 400px;
 }

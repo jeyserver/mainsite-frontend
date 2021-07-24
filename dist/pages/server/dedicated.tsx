@@ -2,8 +2,9 @@ import * as React from 'react';
 import Head from 'next/head';
 import ServerDedicated from '../../components/Dedicated/ServerDedicated';
 import Layout from '../../components/Layout/Layout';
+import { pageProps } from './../_app';
 
-export interface IndexProps {
+export interface IndexProps extends pageProps {
   dedicated: {
     status: boolean;
     countries: { code: string; name: string }[];
@@ -28,7 +29,10 @@ class Index extends React.Component<IndexProps, IndexState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Layout postsForFooter={this.props.postsForFooter}>
+        <Layout
+          postsForFooter={this.props.postsForFooter}
+          domainsForNavbar={this.props.domainsForNavbar}
+        >
           <ServerDedicated dedicated={this.props.dedicated} />
         </Layout>
       </div>

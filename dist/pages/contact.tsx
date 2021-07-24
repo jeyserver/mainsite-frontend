@@ -2,8 +2,9 @@ import * as React from 'react';
 import Head from 'next/head';
 import ContactUs from '../components/ContactUs/ContactUs';
 import Layout from '../components/Layout/Layout';
+import { pageProps } from './_app';
 
-export interface IndexProps {
+export interface IndexProps extends pageProps {
   postsForFooter: any;
 }
 
@@ -23,7 +24,10 @@ class Index extends React.Component<IndexProps, IndexState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Layout postsForFooter={this.props.postsForFooter}>
+        <Layout
+          postsForFooter={this.props.postsForFooter}
+          domainsForNavbar={this.props.domainsForNavbar}
+        >
           <ContactUs />
         </Layout>
       </div>
@@ -44,6 +48,11 @@ export async function getServerSideProps(context) {
     'https://jsonblob.com/api/jsonBlob/ff048401-e7cd-11eb-971c-9ff88820de62'
   );
   const postsForFooter = await postsForFooterRes.json();
+
+  const domainsForNavbarRes = await fetch(
+    `${process.env.SCHEMA}://${process.env.DOMAIN}/fa/domain?ajax=1`
+  );
+  const domainsForNavbar = await domainsForNavbarRes.json();
 
   return {
     props: { postsForFooter },

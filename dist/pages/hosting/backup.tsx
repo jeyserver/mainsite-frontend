@@ -2,8 +2,9 @@ import * as React from 'react';
 import Head from 'next/head';
 import BackupHosting from '../../components/HostsPricing/BackupHosting/BackupHosting';
 import Layout from '../../components/Layout/Layout';
+import { pageProps } from '../_app';
 
-export interface IndexProps {
+export interface IndexProps extends pageProps {
   backupHosts: any;
   navData: any;
   postsForFooter: any;
@@ -53,6 +54,7 @@ class Index extends React.Component<IndexProps, IndexState> {
         <Layout
           postsForFooter={this.props.postsForFooter}
           appIsScrolling={this.state.appIsScrolling}
+          domainsForNavbar={this.props.domainsForNavbar}
         >
           <BackupHosting
             backupHosts={this.props.backupHosts}

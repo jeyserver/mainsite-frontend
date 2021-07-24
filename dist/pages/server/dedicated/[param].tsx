@@ -4,8 +4,10 @@ import CountryServer from '../../../components/Dedicated/CountryServers/CountryS
 import CountryPlan from '../../../components/Dedicated/CountryPlan/CountryPlan';
 import { countries } from '../../../components/Dedicated/lib/countries';
 import Layout from '../../../components/Layout/Layout';
+import { domainsForNavbarType } from '../../_app';
 
 export interface IndexProps {
+  domainsForNavbar: domainsForNavbarType;
   countryPlans: {
     status: boolean;
     recommended: [];
@@ -66,7 +68,10 @@ class Index extends React.Component<IndexProps, IndexState> {
             <link rel="icon" href="/favicon.ico" />
           </Head>
 
-          <Layout postsForFooter={this.props.postsForFooter}>
+          <Layout
+            postsForFooter={this.props.postsForFooter}
+            domainsForNavbar={this.props.domainsForNavbar}
+          >
             <CountryServer countryPlans={this.props.countryPlans} />
           </Layout>
         </div>

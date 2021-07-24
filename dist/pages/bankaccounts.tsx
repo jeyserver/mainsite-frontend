@@ -2,6 +2,7 @@ import * as React from 'react';
 import Head from 'next/head';
 import BankAccountsComponent from '../components/BankAccounts/BankAccounts';
 import Layout from '../components/Layout/Layout';
+import { pageProps } from './_app';
 
 interface bankAccount {
   id: number;
@@ -12,7 +13,7 @@ interface bankAccount {
   sheba: string;
 }
 
-export interface IndexProps {
+export interface IndexProps extends pageProps {
   bankaccounts: bankAccount[];
   postsForFooter: any;
 }
@@ -33,7 +34,10 @@ class Index extends React.Component<IndexProps, IndexState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Layout postsForFooter={this.props.postsForFooter}>
+        <Layout
+          postsForFooter={this.props.postsForFooter}
+          domainsForNavbar={this.props.domainsForNavbar}
+        >
           <BankAccountsComponent bankAccounts={this.props.bankaccounts} />
         </Layout>
       </div>

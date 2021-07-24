@@ -2,8 +2,9 @@ import * as React from 'react';
 import Head from 'next/head';
 import CloudServers from '../../components/CloudServers/CloudServers';
 import Layout from '../../components/Layout/Layout';
+import { pageProps } from './../_app';
 
-export interface IndexProps {
+export interface IndexProps extends pageProps {
   plans: any;
   countries: any;
   country: string;
@@ -27,7 +28,10 @@ class Index extends React.Component<IndexProps, IndexState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Layout postsForFooter={this.props.postsForFooter}>
+        <Layout
+          postsForFooter={this.props.postsForFooter}
+          domainsForNavbar={this.props.domainsForNavbar}
+        >
           <CloudServers
             countries={this.props.countries}
             plans={this.props.plans}

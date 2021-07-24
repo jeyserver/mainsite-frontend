@@ -17,7 +17,7 @@ export const setDomainForShopAction = (domain) => {
   return {
     type: SET_DOMAIN_FOR_SHOP,
     payload: domain,
-  }
+  };
 };
 
 export const getThemeFromLocalStorageAction = () => {
@@ -97,6 +97,20 @@ export const deleteOrderedDomain = (targetTld) => {
   };
 };
 
+export const setDiscountAction = (discount) => {
+  return {
+    type: 'SET_DISCOUNT',
+    payload: { ...discount },
+  };
+};
+
+export const setCartItems = (cartItems) => {
+  return {
+    type: 'SET_CART_ITEMS',
+    payload: { cartItems },
+  };
+};
+
 export const toggleCartLoadingAction = () => {
   return {
     type: 'TOGGLE_CART_LOADING',
@@ -114,6 +128,52 @@ export const deleteFromCartAction = (id) => {
   return {
     type: 'DELETE_FROM_CART',
     payload: { id },
+  };
+};
+
+export const deleteFromCartLoading = (id) => {
+  return {
+    type: 'DELETE_FROM_CART_LOADING',
+    payload: { id },
+  };
+};
+
+export const clearCartAction = (cart) => {
+  return {
+    type: 'CLEAR_CART',
+    payload: { ...cart },
+  };
+};
+
+export const setDiscount = (code) => {
+  return async (dispatch) => {
+    dispatch(setDiscountAction({ loading: true }));
+
+    axios(
+      'https://jsonblob.com/api/jsonBlob/91805bd8-e961-11eb-9e75-7fa330839e1c'
+    )
+      .then(() => {
+        dispatch(
+          setDiscountAction({
+            loading: false,
+            code: code,
+            percentage: 30,
+            error: null,
+          })
+        );
+      })
+      .catch((err) => {
+        NotificationManager.error(
+          'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
+          'خطا'
+        );
+        dispatch(
+          setDiscountAction({
+            loading: false,
+            error: 'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
+          })
+        );
+      });
   };
 };
 
@@ -143,13 +203,49 @@ export const addToCart = (products) => {
 
 export const deleteFromCart = (id) => {
   return async (dispatch) => {
-    dispatch(deleteFromCartAction(id));
+    dispatch(deleteFromCartLoading(id));
+
+    axios(
+      'https://jsonblob.com/api/jsonBlob/d3196d4f-e2e1-11eb-b284-d50b7a049077'
+    )
+      .then(() => {
+        dispatch(deleteFromCartLoading(id));
+        dispatch(deleteFromCartAction(id));
+      })
+      .catch((err) => {
+        dispatch(deleteFromCartLoading(id));
+        NotificationManager.error(
+          'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
+          'خطا'
+        );
+      });
   };
 };
-    
+
+export const clearCart = () => {
+  return async (dispatch) => {
+    dispatch(clearCartAction({ loading: true }));
+
+    axios(
+      'https://jsonblob.com/api/jsonBlob/d3196d4f-e2e1-11eb-b284-d50b7a049077'
+    )
+      .then(() => {
+        dispatch(clearCartAction({ loading: false }));
+      })
+      .catch((err) => {
+        dispatch(clearCartAction({ loading: false, error: err }));
+        NotificationManager.error(
+          'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
+          'خطا'
+        );
+      });
+  };
+};
+
 export const setDomainForShop = (domain) => {
   return async (dispatch) => {
     dispatch(setDomainForShopAction(domain));
+    router.push('/order/domain');
   };
 };
 

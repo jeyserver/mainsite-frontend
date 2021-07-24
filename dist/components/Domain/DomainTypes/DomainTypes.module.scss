@@ -109,6 +109,11 @@
         border-color: #f27e0a;
         font-family: BYekan;
         font-size: 14px;
+
+        &:focus {
+          box-shadow: none;
+          background-color: darken(#f27e0a, 10);
+        }
       }
     }
   }

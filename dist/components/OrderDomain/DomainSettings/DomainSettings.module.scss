@@ -360,6 +360,18 @@
   }
 }
 
+.recommendedDomainsLoading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: BYekan;
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+  > span {
+    margin-right: 10px;
+  }
+}
+
 @keyframes spin {
   from {
     transform: rotate(0deg);

@@ -2,9 +2,19 @@ import * as React from 'react';
 import Head from 'next/head';
 import CompleteOrder from '../../../components/Cart/CompleteOrder/CompleteOrder';
 import Layout from '../../../components/Layout/Layout';
+import { pageProps } from './../../_app';
+import 'flag-icon-css/css/flag-icon.min.css';
 
-export interface IndexProps {
+export type countriesType = {
+  code: string;
+  name: string;
+  dialingCode: string;
+}[];
+
+export interface IndexProps extends pageProps {
   postsForFooter: any;
+  countries: countriesType;
+  defaultCountrySelected: string;
 }
 
 export interface IndexState {}
@@ -24,8 +34,14 @@ class Index extends React.Component<IndexProps, IndexState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Layout postsForFooter={this.props.postsForFooter}>
-          <CompleteOrder />
+        <Layout
+          postsForFooter={this.props.postsForFooter}
+          domainsForNavbar={this.props.domainsForNavbar}
+        >
+          <CompleteOrder
+            countries={this.props.countries}
+            defaultCountrySelected={this.props.defaultCountrySelected}
+          />
         </Layout>
       </div>
     );
@@ -46,8 +62,13 @@ export async function getServerSideProps(context) {
   );
   const postsForFooter = await postsForFooterRes.json();
 
+  const countriesRes = await fetch(
+    `https://jsonblob.com/api/jsonBlob/fc7171e6-ea48-11eb-bba7-d913deac8b8f`
+  );
+  const countries = await countriesRes.json();
+
   return {
-    props: { postsForFooter },
+    props: { postsForFooter, countries, defaultCountrySelected: 'IR' },
   };
 }
 

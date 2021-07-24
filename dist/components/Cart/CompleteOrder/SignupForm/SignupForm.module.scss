@@ -4,6 +4,14 @@
     > div {
       font-family: BYekan;
     }
+
+    &.phoneNumber {
+      > div > div > div > input {
+        text-align: left;
+        z-index: 2;
+        border-left: 1px solid #fff;
+      }
+    }
   }
   label {
     color: #313131;

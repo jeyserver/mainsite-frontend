@@ -1,0 +1,44 @@
+.mainContent {
+  position: relative;
+  padding: 40px 10px;
+  background-color: #fff;
+
+  .tittle {
+    margin-bottom: 30px;
+
+    h5 {
+      font-weight: 400;
+      font-family: BYekan, sans-serif;
+      margin-top: 0;
+      font-size: 15px;
+      margin-bottom: 10px;
+      line-height: 24px;
+      letter-spacing: 1px;
+      color: #313131;
+    }
+
+    .divider {
+      margin-bottom: -1px;
+      width: 100%;
+      height: 1px;
+      background-color: #e1e1e1;
+      font-size: 85%;
+
+      > div {
+        width: 160px;
+        margin: 0;
+        height: 1px;
+        background-color: #00c6ff;
+      }
+    }
+  }
+
+  .conditions {
+    padding-right: 40px;
+    font-family: IRANSans;
+    font-size: 13px;
+    line-height: 20px;
+    font-weight: 400;
+    color: rgb(49, 49, 49);
+  }
+}

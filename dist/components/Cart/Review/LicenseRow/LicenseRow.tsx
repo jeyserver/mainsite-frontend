@@ -1,12 +1,15 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { deleteFromCart } from '../../../../redux/actions';
+import { cart } from '../../../../redux/reducers/cartReducer';
+import { Spinner } from 'react-bootstrap';
 import { formatPrice } from '../../../helper/formatPrice';
 import styles from '../productRow.module.scss';
 
 export interface LicenseRowProps {
   data: any;
   deleteFromCart: (id: number) => void;
+  cart: cart;
 }
 
 export interface LicenseRowState {}
@@ -18,24 +21,43 @@ class LicenseRow extends React.Component<LicenseRowProps, LicenseRowState> {
   }
 
   render() {
-    console.log(this.props.data);
+    const { id, title, period, discout, price, currency, first_month_cost } =
+      this.props.data;
+
     return (
       <>
-        <td>لایسنس {this.props.data.name}</td>
-        <td className={styles.noper}></td>
-        <td>برای {this.props.data.payment_period.month} ماه </td>
         <td>
-          {this.props.data.discout
-            ? `${formatPrice(this.props.data.discout)} ${
-                this.props.data.currency.title
-              }`
-            : `0 ${this.props.data.currency.title}`}
+          <span>لایسنس {title}</span>
+        </td>
+        <td className={styles.noper}>
+          {first_month_cost !== '-'
+            ? formatPrice(first_month_cost)
+            : 'هزینه راه‌اندازی اولیه (اولین ماه)'}
         </td>
         <td>
-          {formatPrice(this.props.data.price)} {this.props.data.currency.title}
+          برای {period.value} {period.type === 'monthly' ? 'ماه' : 'سال'}{' '}
         </td>
         <td>
-          <button className={styles.deleteBtn}>حذف</button>
+          {discout
+            ? `${formatPrice(discout)} ${currency.title}`
+            : `0 ${currency.title}`}
+        </td>
+        <td>
+          {formatPrice(price)} {currency.title}
+        </td>
+        <td>
+          <button
+            className={styles.deleteBtn}
+            onClick={() => this.props.deleteFromCart(id)}
+          >
+            {this.props.cart.itemsInLoading.some(
+              (productId) => productId === id
+            ) ? (
+              <Spinner animation="border" size="sm" />
+            ) : (
+              'حذف'
+            )}
+          </button>
         </td>
       </>
     );

@@ -1,9 +1,17 @@
 import { withRouter, NextRouter } from 'next/router';
 import * as React from 'react';
-import { Container, Row, Col, Form, InputGroup } from 'react-bootstrap';
+import {
+  Container,
+  Row,
+  Col,
+  Form,
+  InputGroup,
+  Spinner,
+} from 'react-bootstrap';
 import styles from './DomainHeader.module.scss';
 import { setDomainForShop } from '../../../redux/actions';
 import { connect } from 'react-redux';
+import axios from 'axios';
 
 export interface DomainHeaderProps {
   domainsData: {
@@ -20,7 +28,9 @@ export interface DomainHeaderProps {
   setDomainForShop: (user: { tld: string; name: string }) => void;
 }
 
-export interface DomainHeaderState {}
+export interface DomainHeaderState {
+  loading: boolean;
+}
 
 class DomainHeader extends React.Component<
   DomainHeaderProps,
@@ -28,19 +38,28 @@ class DomainHeader extends React.Component<
 > {
   constructor(props: DomainHeaderProps) {
     super(props);
-    this.state = {};
+    this.state = {
+      loading: false,
+    };
   }
 
   submitDomainForm(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
 
-    this.props.setDomainForShop({
-      tld: form.tld.value,
-      name: form.domainName.value,
-    });
-
-    this.props.router.push('/');
+    this.setState({ loading: true });
+    axios(
+      'https://jsonblob.com/api/jsonBlob/d3196d4f-e2e1-11eb-b284-d50b7a049077'
+    )
+      .then(() => {
+        this.props.setDomainForShop({
+          tld: form.tld.value,
+          name: form.domainName.value,
+        });
+      })
+      .catch(() => {
+        this.setState({ loading: false });
+      });
   }
 
   render() {
@@ -87,7 +106,13 @@ class DomainHeader extends React.Component<
                           </InputGroup.Prepend>
                         </InputGroup>
                       </div>
-                      <button type="submit">جستجو</button>
+                      <button type="submit" disabled={this.state.loading}>
+                        {this.state.loading ? (
+                          <Spinner size="sm" animation="border" />
+                        ) : (
+                          'جستجو'
+                        )}
+                      </button>
                     </Form>
                   </div>
                 </Col>

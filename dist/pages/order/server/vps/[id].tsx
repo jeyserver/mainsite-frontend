@@ -6,7 +6,6 @@ import { pageProps } from '../../../_app';
 
 export interface IndexProps extends pageProps {
   serviceData: any;
-  postsForFooter: any;
 }
 
 export interface IndexState {}
@@ -29,6 +28,7 @@ class Index extends React.Component<IndexProps, IndexState> {
         <Layout
           postsForFooter={this.props.postsForFooter}
           domainsForNavbar={this.props.domainsForNavbar}
+          licensesForNavbar={this.props.licensesForNavbar}
         >
           <OrderVPS serviceData={this.props.serviceData} />
         </Layout>
@@ -46,18 +46,13 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const postsForFooterRes = await fetch(
-    'https://jsonblob.com/api/jsonBlob/ff048401-e7cd-11eb-971c-9ff88820de62'
-  );
-  const postsForFooter = await postsForFooterRes.json();
-
   const serviceDataRes = await fetch(
     'https://jsonblob.com/api/jsonBlob/30d662c9-e3ee-11eb-956c-7bedcca98f27'
   );
   const serviceData = await serviceDataRes.json();
 
   return {
-    props: { serviceData, postsForFooter },
+    props: { serviceData },
   };
 }
 

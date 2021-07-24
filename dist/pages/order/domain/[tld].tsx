@@ -9,7 +9,6 @@ export interface IndexProps extends pageProps {
   cheapDomainBreakPrice: any;
   famousAndTrendyDomains: any;
   tldFromQuery: string;
-  postsForFooter: any;
 }
 
 export interface IndexState {}
@@ -32,6 +31,7 @@ class Index extends React.Component<IndexProps, IndexState> {
         <Layout
           postsForFooter={this.props.postsForFooter}
           domainsForNavbar={this.props.domainsForNavbar}
+          licensesForNavbar={this.props.licensesForNavbar}
         >
           <OrderDomain
             step="settings"
@@ -60,11 +60,6 @@ export async function getServerSideProps(context) {
 
   const tldFromQuery = context.query.tld;
 
-  const postsForFooterRes = await fetch(
-    'https://jsonblob.com/api/jsonBlob/ff048401-e7cd-11eb-971c-9ff88820de62'
-  );
-  const postsForFooter = await postsForFooterRes.json();
-
   const domainsRes = await fetch(
     `${process.env.SCHEMA}://${process.env.DOMAIN}/fa/domain?ajax=1`
   );
@@ -81,7 +76,6 @@ export async function getServerSideProps(context) {
       cheapDomainBreakPrice: 200000,
       famousAndTrendyDomains,
       tldFromQuery,
-      postsForFooter,
     },
   };
 }

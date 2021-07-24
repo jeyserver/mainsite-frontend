@@ -7,7 +7,6 @@ import { pageProps } from '../../_app';
 export interface IndexProps extends pageProps {
   vpsData: any;
   topNav: any;
-  postsForFooter: any;
 }
 
 export interface IndexState {
@@ -55,6 +54,7 @@ class Index extends React.Component<IndexProps, IndexState> {
           postsForFooter={this.props.postsForFooter}
           appIsScrolling={this.state.appIsScrolling}
           domainsForNavbar={this.props.domainsForNavbar}
+          licensesForNavbar={this.props.licensesForNavbar}
         >
           <VpsPricing
             vpsData={this.props.vpsData}
@@ -82,11 +82,6 @@ export async function getServerSideProps(context) {
   //   `${process.env.SCHEMA}://${process.env.DOMAIN}`
   // );
 
-  const postsForFooterRes = await fetch(
-    'https://jsonblob.com/api/jsonBlob/ff048401-e7cd-11eb-971c-9ff88820de62'
-  );
-  const postsForFooter = await postsForFooterRes.json();
-
   const vpsDataRes = await fetch(
     'https://jsonblob.com/api/jsonBlob/5e968f2d-df13-11eb-b7ed-fbe0d5824189'
   );
@@ -98,7 +93,7 @@ export async function getServerSideProps(context) {
   const topNav = await topNavRes.json();
 
   return {
-    props: { vpsData, topNav, postsForFooter },
+    props: { vpsData, topNav },
   };
 }
 

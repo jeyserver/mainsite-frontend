@@ -12,7 +12,6 @@ export type countriesType = {
 }[];
 
 export interface IndexProps extends pageProps {
-  postsForFooter: any;
   countries: countriesType;
   defaultCountrySelected: string;
 }
@@ -37,6 +36,7 @@ class Index extends React.Component<IndexProps, IndexState> {
         <Layout
           postsForFooter={this.props.postsForFooter}
           domainsForNavbar={this.props.domainsForNavbar}
+          licensesForNavbar={this.props.licensesForNavbar}
         >
           <CompleteOrder
             countries={this.props.countries}
@@ -57,18 +57,13 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const postsForFooterRes = await fetch(
-    'https://jsonblob.com/api/jsonBlob/ff048401-e7cd-11eb-971c-9ff88820de62'
-  );
-  const postsForFooter = await postsForFooterRes.json();
-
   const countriesRes = await fetch(
     `https://jsonblob.com/api/jsonBlob/fc7171e6-ea48-11eb-bba7-d913deac8b8f`
   );
   const countries = await countriesRes.json();
 
   return {
-    props: { postsForFooter, countries, defaultCountrySelected: 'IR' },
+    props: { countries, defaultCountrySelected: 'IR' },
   };
 }
 

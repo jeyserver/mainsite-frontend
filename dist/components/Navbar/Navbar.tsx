@@ -8,6 +8,7 @@ export interface NavbarProps {
   appIsScrolling?: boolean;
   getThemeFromLocalStorage?: () => void;
   domains: domainsForNavbarType;
+  licenses: any;
 }
 
 export interface NavbarState {}
@@ -130,7 +131,10 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
       <nav className={styles.nav}>
         <TopNavbar />
         <div id="navbar-top-space" className={styles.navbarTopSpace}></div>
-        <MainNavbar domains={this.props.domains} />
+        <MainNavbar
+          domains={this.props.domains}
+          licenses={this.props.licenses}
+        />
       </nav>
     );
   }

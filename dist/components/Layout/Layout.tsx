@@ -15,6 +15,7 @@ export interface LayoutProps {
     }[];
     status: boolean;
   };
+  licensesForNavbar?: any;
 }
 
 export interface LayoutState {}
@@ -31,6 +32,7 @@ class Layout extends React.Component<LayoutProps, LayoutState> {
         <Navbar
           appIsScrolling={this.props.appIsScrolling}
           domains={this.props.domainsForNavbar}
+          licenses={this.props.licensesForNavbar}
         />
         {this.props.children}
         <Footer posts={this.props.postsForFooter} />

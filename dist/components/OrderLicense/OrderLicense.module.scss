@@ -1,0 +1,115 @@
+.mainContent {
+  position: relative;
+  padding: 40px 10px;
+
+  .order {
+    p {
+      color: #717171;
+      line-height: 24px;
+      font-family: Tahoma, Geneva, Verdana, sans-serif;
+      font-size: 13px;
+    }
+
+    .title {
+      color: inherit;
+      margin-bottom: 10px;
+      font-family: BYekan, sans-serif;
+      margin-top: 0;
+      font-size: 24px;
+      font-weight: 400;
+      line-height: 36px;
+      letter-spacing: 1px;
+    }
+
+    .table {
+      tr {
+        td {
+          border-bottom: none;
+          border-top: 1px solid #ddd;
+
+          p {
+            font-weight: 400;
+            font-family: Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 13px;
+          }
+
+          input {
+            &:invalid,
+            &:valid {
+              padding: 0.375rem 0.75rem;
+            }
+
+            &:valid {
+              border-color: #ced4da;
+              &:focus {
+                box-shadow: 0 0 0 0.25rem rgb(13 110 253 / 25%);
+                border-color: #86b7fe;
+              }
+            }
+          }
+
+          select {
+            color: #555;
+            font-size: 1rem;
+            width: 100%;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            padding: 0.375rem 0.75rem;
+            transition: border-color 0.15s ease-in-out,
+              box-shadow 0.15s ease-in-out;
+
+            &:focus {
+              background-color: #fff;
+              border-color: #86b7fe;
+              outline: 0;
+              box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+            }
+
+            &[name='os'] {
+              direction: ltr;
+              font-family: Tahoma, Geneva, Verdana, sans-serif;
+            }
+          }
+        }
+      }
+    }
+
+    .submitFormBtn {
+      font-weight: 400;
+      text-align: center;
+      white-space: nowrap;
+      cursor: pointer;
+      border: 1px solid transparent;
+      padding: 6px 12px;
+      font-size: 14px;
+      line-height: 1.42857143;
+      border-radius: 4px;
+      user-select: none;
+      color: #fff;
+      background-color: #5cb85c;
+      border-color: #4cae4c;
+      width: 100%;
+      font-family: BYekan;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 34px;
+
+      div {
+        margin-left: 8px;
+      }
+
+      &:disabled {
+        cursor: not-allowed;
+        background-color: lighten(#5cb85c, 20) !important;
+        border-color: lighten(#5cb85c, 20) !important;
+      }
+
+      &:hover {
+        color: #fff;
+        background-color: #449d44;
+        border-color: #398439;
+      }
+    }
+  }
+}

@@ -8,7 +8,6 @@ export interface IndexProps extends pageProps {
   post: any;
   categories: any;
   postTitle: string;
-  postsForFooter: any;
 }
 
 export interface IndexState {}
@@ -30,6 +29,7 @@ class Index extends React.Component<IndexProps, IndexState> {
         <Layout
           postsForFooter={this.props.postsForFooter}
           domainsForNavbar={this.props.domainsForNavbar}
+          licensesForNavbar={this.props.licensesForNavbar}
         >
           <BlogPost categories={this.props.categories} post={this.props.post} />
         </Layout>
@@ -56,11 +56,6 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const postsForFooterRes = await fetch(
-    'https://jsonblob.com/api/jsonBlob/ff048401-e7cd-11eb-971c-9ff88820de62'
-  );
-  const postsForFooter = await postsForFooterRes.json();
-
   const categoriesRes = await fetch(
     'https://jsonblob.com/api/jsonBlob/7bc3650b-d8c2-11eb-8f97-fba7e85c29a8'
   );
@@ -76,7 +71,6 @@ export async function getServerSideProps(context) {
       post,
       postTitle,
       categories: categoriesData.categories,
-      postsForFooter,
     },
   };
 }

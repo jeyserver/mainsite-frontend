@@ -81,6 +81,7 @@ class MainNavbar extends React.Component<MainNavbarProps, MainNavbarState> {
                 <Server changeShowDropDown={this.changeShowDropDown} />
                 <License
                   changeShowDropDown={this.changeShowDropDown}
+                  changeShowMenu={this.changeShowMenu}
                   licenses={this.props.licenses}
                 />
                 <Support changeShowDropDown={this.changeShowDropDown} />

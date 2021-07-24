@@ -67,7 +67,7 @@ class OrderLicense extends React.Component<
         )
         .then((respone) => {
           this.props.router.push('/order/cart/review');
-          this.setState({ btnLoading: false });
+          // this.setState({ btnLoading: false });
 
           // this.props.addToCart()
 

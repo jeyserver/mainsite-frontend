@@ -1,8 +1,10 @@
+import axios from 'axios';
 import { withRouter, NextRouter } from 'next/router';
 import * as React from 'react';
-import { Form, Row, Col, Button } from 'react-bootstrap';
+import { Form, Row, Col, Button, Spinner } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import DomainCard from './DomainCard/DomainCard';
+import { NotificationManager } from 'react-notifications';
 import styles from './DomainConfiguration.module.scss';
 
 export interface DomainConfigurationProps {
@@ -21,6 +23,7 @@ export interface DomainConfigurationState {
     input: string;
     error: error;
   }[];
+  btnLoading: boolean;
 }
 
 class DomainConfiguration extends React.Component<
@@ -31,8 +34,10 @@ class DomainConfiguration extends React.Component<
     super(props);
     this.state = {
       formValidated: false,
+      btnLoading: false,
       errors: [],
     };
+    this.submitForm = this.submitForm.bind(this);
   }
 
   submitForm(e: React.FormEvent<HTMLFormElement>) {
@@ -42,7 +47,32 @@ class DomainConfiguration extends React.Component<
     if (form.checkValidity() === false) {
       e.stopPropagation();
     } else {
-      // Go to next step
+      this.setState({ btnLoading: true });
+
+      axios(
+        'https://jsonblob.com/api/jsonBlob/d3196d4f-e2e1-11eb-b284-d50b7a049077'
+      )
+        .then((res) => {
+          // this.setState({ btnLoading: false });
+          this.props.router.push('/order/cart/review');
+
+          // if (res.data.status) {
+          // } else if (!res.data.status) {
+          //   res.data.error.forEach((errorItem) => {
+          //     if (errorItem.input === 'name') {
+          //       form.domainName.value = '';
+          //       this.setState({ errorCode: errorItem.code });
+          //     }
+          //   });
+          // }
+        })
+        .catch(() => {
+          this.setState({ btnLoading: false });
+          NotificationManager.error(
+            'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
+            'خطا'
+          );
+        });
     }
 
     this.setState({ formValidated: true });
@@ -79,8 +109,19 @@ class DomainConfiguration extends React.Component<
 
           <Row className="justify-content-center">
             <Col xs={12} md={6}>
-              <Button type="submit" className={styles.continueBtn}>
-                ادامه
+              <Button
+                type="submit"
+                className={styles.continueBtn}
+                disabled={this.state.btnLoading}
+              >
+                {this.state.btnLoading ? (
+                  <>
+                    <Spinner animation="border" size="sm" />
+                    <span>لطفا صبر کنید</span>
+                  </>
+                ) : (
+                  'ادامه'
+                )}
               </Button>
             </Col>
           </Row>

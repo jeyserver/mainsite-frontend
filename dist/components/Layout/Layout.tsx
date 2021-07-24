@@ -14,6 +14,9 @@ export interface LayoutProps {
       transfer: number;
     }[];
     status: boolean;
+    currency: {
+      title: string;
+    };
   };
 }
 

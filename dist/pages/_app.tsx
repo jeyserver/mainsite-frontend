@@ -53,5 +53,8 @@ App.getInitialProps = async ({ Component, ctx }) => {
     pageProps = await Component.getInitialProps(ctx);
   }
 
-  return { pageProps, domainsForNavbar };
+  return {
+    pageProps,
+    domainsForNavbar,
+  };
 };

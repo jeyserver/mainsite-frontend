@@ -24,7 +24,8 @@ export interface DomainSettingsProps {
 
 export interface DomainSettingsState {
   domainoption: 'register' | 'transfer' | 'owndomain';
-  selectedTld: number | null;
+  domainNameInputValue: string;
+  domainTldSelectValue: string;
   domainNameError: 'data_validation' | 'data_duplicate' | null;
   checkDomainBtnLoading: boolean;
   recommendedDomains: any;
@@ -41,15 +42,21 @@ class DomainSettings extends React.Component<
     super(props);
     this.state = {
       domainoption: 'register',
-      selectedTld: null,
-      domainNameError: null,
-      checkDomainBtnLoading: false,
+      domainNameInputValue: !this.props.data.tldFromQuery
+        ? this.props.domain.selected.name
+        : '',
+      domainTldSelectValue:
+        this.props.data.tldFromQuery || this.props.domain.selected.tld,
       recommendedDomains: null,
       ordered: null,
       selectedDomains: [],
+      domainNameError: null,
+      checkDomainBtnLoading: false,
       recommendedDomainsLoading: false,
     };
     this.onSubmitForm = this.onSubmitForm.bind(this);
+    this.onChangeDomainName = this.onChangeDomainName.bind(this);
+    this.onChangeDomainTld = this.onChangeDomainTld.bind(this);
     this.onChangeDomainOption = this.onChangeDomainOption.bind(this);
     this.onChangeClearError = this.onChangeClearError.bind(this);
     this.toggleSelectedDomains = this.toggleSelectedDomains.bind(this);
@@ -83,12 +90,6 @@ class DomainSettings extends React.Component<
 
         axios
           .get(
-            // `${process.env.SCHEMA}://${process.env.DOMAIN}/fa/order/domain?ajax=1`,
-            // {
-            //   tld: form.tld.value,
-            //   name: form.domainName.value,
-            //   domainoption: form.domainoption.value,
-            // }
             'https://jsonblob.com/api/jsonBlob/ea5bc877-e265-11eb-a96b-95a5a070a2d6'
           )
           .then((res) => {
@@ -143,6 +144,16 @@ class DomainSettings extends React.Component<
     this.onChangeClearError();
   }
 
+  onChangeDomainName(e) {
+    this.setState({ domainNameInputValue: e.target.value });
+    this.onChangeClearError();
+  }
+
+  onChangeDomainTld(e) {
+    this.setState({ domainTldSelectValue: e.target.value });
+    this.onChangeClearError();
+  }
+
   toggleSelectedDomains(newDomain) {
     const domainIndex = this.state.selectedDomains.findIndex(
       (domain) => domain.tld.id === newDomain.tld.id
@@ -177,6 +188,37 @@ class DomainSettings extends React.Component<
           //   name: form.domainName.value,
           //   domainoption: form.domainoption.value,
           // }
+          'https://jsonblob.com/api/jsonBlob/ea5bc877-e265-11eb-a96b-95a5a070a2d6'
+        )
+        .then((res) => {
+          this.setState({
+            recommendedDomains: res.data.recomendeds,
+            ordered: res.data.ordered,
+            selectedDomains: [res.data.ordered],
+            recommendedDomainsLoading: false,
+          });
+        })
+        .catch(() => {
+          this.setState({
+            recommendedDomainsLoading: false,
+          });
+        });
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    if (
+      prevProps.domain.selected.name !== this.props.domain.selected.name ||
+      prevProps.domain.selected.tld !== this.props.domain.selected.tld
+    ) {
+      this.setState({
+        recommendedDomainsLoading: true,
+        domainNameInputValue: this.props.domain.selected.name,
+        domainTldSelectValue: this.props.domain.selected.tld,
+      });
+
+      axios
+        .get(
           'https://jsonblob.com/api/jsonBlob/ea5bc877-e265-11eb-a96b-95a5a070a2d6'
         )
         .then((res) => {
@@ -293,10 +335,8 @@ class DomainSettings extends React.Component<
                   <Form.Control
                     as="select"
                     name="tld"
-                    defaultValue={
-                      this.props.data.tldFromQuery ||
-                      this.props.domain.selected.tld
-                    }
+                    value={this.state.domainTldSelectValue}
+                    onChange={this.onChangeDomainTld}
                     custom
                   >
                     <optgroup label="دامنه های ارزان قیمت">
@@ -365,12 +405,8 @@ class DomainSettings extends React.Component<
                   type="text"
                   placeholder="Your Domain"
                   name="domainName"
-                  onChange={this.onChangeClearError}
-                  defaultValue={
-                    !this.props.data.tldFromQuery
-                      ? this.props.domain.selected.name
-                      : null
-                  }
+                  onChange={this.onChangeDomainName}
+                  value={this.state.domainNameInputValue}
                 />
                 <InputGroup.Prepend className={styles.prefix}>
                   www.

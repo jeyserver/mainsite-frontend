@@ -2,13 +2,16 @@ import classNames from 'classnames';
 import Link from 'next/link';
 import * as React from 'react';
 import { Container, Dropdown, Row, Col } from 'react-bootstrap';
-import { formatPrice } from '../../../helper/formatPrice';
 import styles from './License.module.scss';
+import { License as LicenseType } from '../../../../pages/_app';
+import formatPriceWithCurrency from '../../../../helper/formatPriceWithCurrency';
+import { connect } from 'react-redux';
+import { RootState } from '../../../../store';
 
-type licenses = 'directadmin' | 'cpanel' | 'litespeed' | 'whmcs' | 'cloudlinux';
+type Licenses = 'DirectAdmin' | 'Cpanel' | 'LiteSpeed' | 'WHMCS' | 'CloudLinux';
 
-const renderLicense = (license: licenses) => {
-  if (license === 'directadmin') {
+const renderLicense = (license: Licenses) => {
+  if (license === 'DirectAdmin') {
     return (
       <div className={styles.renderedLicenseWrapper}>
         <img
@@ -25,7 +28,7 @@ const renderLicense = (license: licenses) => {
         </p>
       </div>
     );
-  } else if (license === 'cpanel') {
+  } else if (license === 'Cpanel') {
     return (
       <div className={styles.renderedLicenseWrapper}>
         <img
@@ -42,7 +45,7 @@ const renderLicense = (license: licenses) => {
         </p>
       </div>
     );
-  } else if (license === 'litespeed') {
+  } else if (license === 'LiteSpeed') {
     return (
       <div className={styles.renderedLicenseWrapper}>
         <img
@@ -60,7 +63,7 @@ const renderLicense = (license: licenses) => {
         </p>
       </div>
     );
-  } else if (license === 'whmcs') {
+  } else if (license === 'WHMCS') {
     return (
       <div className={styles.renderedLicenseWrapper}>
         <img
@@ -77,7 +80,7 @@ const renderLicense = (license: licenses) => {
         </p>
       </div>
     );
-  } else if (license === 'cloudlinux') {
+  } else if (license === 'CloudLinux') {
     return (
       <div className={styles.renderedLicenseWrapper}>
         <img
@@ -99,9 +102,9 @@ const renderLicense = (license: licenses) => {
   }
 };
 
-const renderLicenseImg = (license) => {
-  switch (license) {
-    case 'directadmin':
+const renderLicenseImg = (licenseRegistrar: number) => {
+  switch (licenseRegistrar) {
+    case 1:
       return (
         <img
           src="/images/directadmin.png"
@@ -110,7 +113,7 @@ const renderLicenseImg = (license) => {
           width="59px"
         />
       );
-    case 'cpanel':
+    case 2:
       return (
         <img
           src="/images/cpanel.png"
@@ -119,7 +122,7 @@ const renderLicenseImg = (license) => {
           width="59px"
         />
       );
-    case 'litespeed':
+    case 3:
       return (
         <img
           src="/images/litespeed.png"
@@ -128,7 +131,7 @@ const renderLicenseImg = (license) => {
           width="59px"
         />
       );
-    case 'whmcs':
+    case 4:
       return (
         <img
           src="/images/whmcs.png"
@@ -137,7 +140,7 @@ const renderLicenseImg = (license) => {
           width="40px"
         />
       );
-    case 'cloudlinux':
+    case 5:
       return (
         <img
           src="/images/cloudlinux.png"
@@ -151,40 +154,52 @@ const renderLicenseImg = (license) => {
   }
 };
 
-const renderLicenseTitle = (license) => {
-  switch (license) {
-    case 'directadmin':
+const renderLicenseTitle = (licenseRegistrar: number) => {
+  switch (licenseRegistrar) {
+    case 1:
       return 'DirectAdmin';
-    case 'cpanel':
+    case 2:
       return 'Cpanel';
-    case 'litespeed':
+    case 3:
       return 'LiteSpeed';
-    case 'whmcs':
+    case 4:
       return 'WHMCS';
-    case 'cloudlinux':
+    case 5:
       return 'CloudLinux';
-    default:
-      break;
+  }
+};
+
+const renderPanelPeriod = (panelPeriod) => {
+  switch (panelPeriod) {
+    case 0:
+      return 'برای همیشه';
+    case 1:
+      return 'در روز';
+    case 2:
+      return 'در ماه';
+    case 3:
+      return 'در سال';
   }
 };
 
 let interval;
 
-export interface LicenseProps {
+interface LicenseProps {
   changeShowDropDown: () => void;
   changeShowMenu: () => void;
-  licenses: any;
+  licenses: LicenseType[];
+  currencies: RootState['currencies'];
 }
 
-export interface LicenseState {
-  hoveredLicense: licenses;
+interface LicenseState {
+  hoveredLicense: Licenses;
 }
 
 class License extends React.Component<LicenseProps, LicenseState> {
   constructor(props: LicenseProps) {
     super(props);
     this.state = {
-      hoveredLicense: 'directadmin',
+      hoveredLicense: 'DirectAdmin',
     };
     this.goAutoToNextLicense = this.goAutoToNextLicense.bind(this);
     this.handleChangeHoveredLicense =
@@ -201,29 +216,29 @@ class License extends React.Component<LicenseProps, LicenseState> {
     clearInterval(interval);
   }
 
-  goAutoToNextLicense(license: licenses) {
+  goAutoToNextLicense(license: Licenses) {
     switch (license) {
-      case 'directadmin':
-        this.setState({ hoveredLicense: 'cpanel' });
+      case 'DirectAdmin':
+        this.setState({ hoveredLicense: 'Cpanel' });
         break;
-      case 'cpanel':
-        this.setState({ hoveredLicense: 'litespeed' });
+      case 'Cpanel':
+        this.setState({ hoveredLicense: 'LiteSpeed' });
         break;
-      case 'litespeed':
-        this.setState({ hoveredLicense: 'whmcs' });
+      case 'LiteSpeed':
+        this.setState({ hoveredLicense: 'WHMCS' });
         break;
-      case 'whmcs':
-        this.setState({ hoveredLicense: 'cloudlinux' });
+      case 'WHMCS':
+        this.setState({ hoveredLicense: 'CloudLinux' });
         break;
-      case 'cloudlinux':
-        this.setState({ hoveredLicense: 'directadmin' });
+      case 'CloudLinux':
+        this.setState({ hoveredLicense: 'DirectAdmin' });
         break;
       default:
         break;
     }
   }
 
-  handleChangeHoveredLicense(license: licenses) {
+  handleChangeHoveredLicense(license: Licenses) {
     clearInterval(interval);
     this.setState({ hoveredLicense: license }, () => {
       interval = setInterval(() => {
@@ -233,6 +248,18 @@ class License extends React.Component<LicenseProps, LicenseState> {
   }
 
   render() {
+    const licenseWithLowestPrice = Object.values(
+      this.props.licenses.reduce((r, o) => {
+        if (
+          (!r[o.registrar] || o.price > r[o.registrar].price) &&
+          o.status === 1
+        )
+          r[o.registrar] = o;
+
+        return r;
+      }, {})
+    );
+
     return (
       <Dropdown className="nav-item-dropdown">
         <Dropdown.Toggle id="nav-dropdown" className="nav-item-dropdown-toggle">
@@ -247,34 +274,46 @@ class License extends React.Component<LicenseProps, LicenseState> {
             <Row>
               <Col xs={12} md={6} className="px-0">
                 <div className={styles.btnsWrapper}>
-                  {Object.keys(this.props.licenses).map((license: any) => (
-                    <Link href={`/licenses/${license}`} key={license}>
+                  {licenseWithLowestPrice.map((license: LicenseType) => (
+                    <Link
+                      href={`/licenses/${renderLicenseTitle(
+                        license.registrar
+                      ).toLowerCase()}`}
+                      key={license.registrar}
+                    >
                       <a
                         className={classNames(styles.btn, 'license-btn')}
                         onMouseEnter={() => {
-                          this.handleChangeHoveredLicense(license);
+                          this.handleChangeHoveredLicense(
+                            renderLicenseTitle(license.registrar)
+                          );
                         }}
                         onClick={() => {
                           this.props.changeShowDropDown();
                           this.props.changeShowMenu();
                           document.querySelector('body').click();
                         }}
-                        data-active={this.state.hoveredLicense === license}
+                        data-active={
+                          this.state.hoveredLicense ===
+                          renderLicenseTitle(license.registrar)
+                        }
                       >
                         <div className={styles.imageAndNameWrapper}>
                           <div className={styles.imgWrapper}>
-                            {renderLicenseImg(license)}
+                            {renderLicenseImg(license.registrar)}
                           </div>
-                          <span>{renderLicenseTitle(license)}</span>
+                          <span>{renderLicenseTitle(license.registrar)}</span>
                         </div>
                         <div>
                           <span>
-                            از {formatPrice(this.props.licenses[license].price)}{' '}
-                            {formatPrice(
-                              this.props.licenses[license].currency.title
-                            )}
+                            از{' '}
+                            {formatPriceWithCurrency(
+                              this.props.currencies.items,
+                              license.currency,
+                              license.price
+                            )}{' '}
                           </span>
-                          <span> در ماه</span>
+                          <span> {renderPanelPeriod(license.pp)}</span>
                         </div>
                       </a>
                     </Link>
@@ -292,4 +331,10 @@ class License extends React.Component<LicenseProps, LicenseState> {
   }
 }
 
-export default License;
+const mapStateToProps = (state: RootState) => {
+  return {
+    currencies: state.currencies,
+  };
+};
+
+export default connect(mapStateToProps)(License);

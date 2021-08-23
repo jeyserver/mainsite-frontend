@@ -8,14 +8,14 @@ import Server from './Server/Server';
 import License from './License/License';
 import Support from './Support/Support';
 import Link from 'next/link';
-import { domainsForNavbarType } from '../../../pages/_app';
+import { Tlds, License as LicenseType } from '../../../pages/_app';
 
-export interface MainNavbarProps {
-  domains: domainsForNavbarType;
-  licenses: any;
+interface MainNavbarProps {
+  tlds: Tlds;
+  licenses: LicenseType[];
 }
 
-export interface MainNavbarState {
+interface MainNavbarState {
   isMenuOpen: boolean;
   dropDownOpend: boolean;
 }
@@ -76,7 +76,7 @@ class MainNavbar extends React.Component<MainNavbarProps, MainNavbarState> {
                 <Hosting changeShowDropDown={this.changeShowDropDown} />
                 <Domain
                   changeShowDropDown={this.changeShowDropDown}
-                  domains={this.props.domains}
+                  tlds={this.props.tlds}
                 />
                 <Server changeShowDropDown={this.changeShowDropDown} />
                 <License

@@ -2,16 +2,16 @@ import React from 'react';
 import MainNavbar from './MainNavbar/MainNavbar';
 import TopNavbar from './TopNavbar/TopNavbar';
 import styles from './Navbar.module.scss';
-import { domainsForNavbarType } from '../../pages/_app';
+import { License, Tlds } from '../../pages/_app';
 
-export interface NavbarProps {
+interface NavbarProps {
   appIsScrolling?: boolean;
   getThemeFromLocalStorage?: () => void;
-  domains: domainsForNavbarType;
-  licenses: any;
+  tlds: Tlds;
+  licenses: License[];
 }
 
-export interface NavbarState {}
+interface NavbarState {}
 
 class Navbar extends React.Component<NavbarProps, NavbarState> {
   constructor(props: NavbarProps) {
@@ -131,10 +131,7 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
       <nav className={styles.nav}>
         <TopNavbar />
         <div id="navbar-top-space" className={styles.navbarTopSpace}></div>
-        <MainNavbar
-          domains={this.props.domains}
-          licenses={this.props.licenses}
-        />
+        <MainNavbar tlds={this.props.tlds} licenses={this.props.licenses} />
       </nav>
     );
   }

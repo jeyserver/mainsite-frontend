@@ -3,11 +3,11 @@ import Link from 'next/link';
 import { Col, Image, Dropdown, Row, Container } from 'react-bootstrap';
 import styles from './Hosting.module.scss';
 
-export interface HostingProps {
+interface HostingProps {
   changeShowDropDown: () => void;
 }
 
-export interface HostingState {}
+interface HostingState {}
 
 class Hosting extends React.Component<HostingProps, HostingState> {
   constructor(props: HostingProps) {

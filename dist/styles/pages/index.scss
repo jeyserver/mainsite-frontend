@@ -1,0 +1,26 @@
+[dir='rtl'] .slick-prev {
+  left: 13px;
+  right: unset;
+  z-index: 1;
+  &::before {
+    color: #000000;
+  }
+}
+
+[dir='rtl'] .slick-next {
+  right: 13px;
+  left: unset;
+  z-index: 1;
+  &::before {
+    color: #000000;
+  }
+}
+
+.slick-prev,
+.slick-next {
+  width: 30px;
+  height: 30px;
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+}

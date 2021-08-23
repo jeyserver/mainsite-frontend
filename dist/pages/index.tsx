@@ -4,6 +4,8 @@ import Header from '../components/Header/Header';
 import MainPage from '../components/MainPage/MainPage';
 import Layout from '../components/Layout/Layout';
 import { pageProps } from './_app';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
 
 export interface IndexProps extends pageProps {
   tablesData: { linuxHosts: any };

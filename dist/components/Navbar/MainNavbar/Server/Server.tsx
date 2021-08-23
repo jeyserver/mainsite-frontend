@@ -5,11 +5,11 @@ import { Dropdown, Container, Row, Col } from 'react-bootstrap';
 import styles from './Server.module.scss';
 import classNames from 'classnames';
 
-export interface ServerProps {
+interface ServerProps {
   changeShowDropDown: () => void;
 }
 
-export interface ServerState {}
+interface ServerState {}
 
 class Server extends React.Component<ServerProps, ServerState> {
   constructor(props: ServerProps) {

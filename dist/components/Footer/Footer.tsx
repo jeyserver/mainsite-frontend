@@ -4,9 +4,10 @@ import { Container, Row, Col, Image } from 'react-bootstrap';
 import styles from './Footer.module.scss';
 import axios from 'axios';
 import { NotificationManager } from 'react-notifications';
+import { FooterPost } from '../../pages/_app';
 
 export interface FooterProps {
-  posts?: { title: string; link: string }[];
+  posts: FooterPost[];
 }
 
 export interface FooterState {
@@ -91,9 +92,9 @@ class Footer extends React.Component<FooterProps, FooterState> {
               <div className={styles.blogLinks}>
                 <h3>مطالب آموزشی بلاگ</h3>
                 <ul>
-                  {this.props.posts.map((post) => (
-                    <li key={post.link}>
-                      <Link href={`/blog/${post.link}`}>
+                  {this.props.posts.slice(0, 5).map((post) => (
+                    <li key={post.permalink}>
+                      <Link href={`/blog/${post.permalink}`}>
                         <a>
                           <i className="far fa-edit"></i>
                           <span>{post.title}</span>

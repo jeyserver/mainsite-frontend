@@ -5,11 +5,11 @@ import { Button } from 'react-bootstrap';
 import { Dropdown, Container, Row, Col } from 'react-bootstrap';
 import styles from './Support.module.scss';
 
-export interface SupportProps {
+interface SupportProps {
   changeShowDropDown: () => void;
 }
 
-export interface SupportState {}
+interface SupportState {}
 
 class Support extends React.Component<SupportProps, SupportState> {
   constructor(props: SupportProps) {

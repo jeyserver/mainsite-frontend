@@ -5,14 +5,14 @@ import styles from './TopNavbar.module.scss';
 import { connect } from 'react-redux';
 import { signUp, logout } from '../../../redux/actions';
 
-export interface TopNavbarProps {
+interface TopNavbarProps {
   isLoggedIn: boolean;
   logout: () => void;
   signUp: () => void;
   user: { name: string };
 }
 
-export interface TopNavbarState {}
+interface TopNavbarState {}
 
 class TopNavbar extends React.Component<TopNavbarProps, TopNavbarState> {
   constructor(props: TopNavbarProps) {

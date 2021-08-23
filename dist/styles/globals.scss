@@ -6,6 +6,7 @@ body {
   padding: 0;
   margin: 0;
   font-size: 14px;
+  overflow-x: hidden;
 }
 
 a {
@@ -250,20 +251,20 @@ html:not([data-scroll]) {
 }
 
 [dir='rtl'] .slick-prev {
-  left: 13px;
-  right: unset;
-  z-index: 1;
+  left: 13px !important;
+  right: unset !important;
+  z-index: 1 !important;
   &::before {
-    color: #000000;
+    color: #000000 !important;
   }
 }
 
 [dir='rtl'] .slick-next {
-  right: 13px;
-  left: unset;
-  z-index: 1;
+  right: 13px !important ;
+  left: unset !important;
+  z-index: 1 !important;
   &::before {
-    color: #000000;
+    color: #000000 !important;
   }
 }
 
@@ -291,11 +292,11 @@ html:not([data-scroll]) {
 
 .slick-prev,
 .slick-next {
-  width: 30px;
-  height: 30px;
+  width: 30px !important;
+  height: 30px !important;
   display: flex !important;
-  justify-content: center;
-  align-items: center;
+  justify-content: center !important;
+  align-items: center !important;
 }
 
 .form-control.is-invalid,

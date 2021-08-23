@@ -10,7 +10,6 @@ export interface IndexProps extends pageProps {
   domains: any;
   nationalDomainsList: any;
   setOrderedDomains: (domains: any) => void;
-  postsForFooter: any;
 }
 
 export interface IndexState {}
@@ -37,6 +36,7 @@ class Index extends React.Component<IndexProps, IndexState> {
         <Layout
           postsForFooter={this.props.postsForFooter}
           domainsForNavbar={this.props.domainsForNavbar}
+          licensesForNavbar={this.props.licensesForNavbar}
         >
           <OrderDomain
             step="configuration"
@@ -60,18 +60,13 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const postsForFooterRes = await fetch(
-    'https://jsonblob.com/api/jsonBlob/ff048401-e7cd-11eb-971c-9ff88820de62'
-  );
-  const postsForFooter = await postsForFooterRes.json();
-
   const domainsRes = await fetch(
     `https://jsonblob.com/api/jsonBlob/1a0f9102-e279-11eb-a96b-3311b2affb1f`
   );
   const domains = await domainsRes.json();
 
   return {
-    props: { domains, nationalDomainsList: ['ir'], postsForFooter },
+    props: { domains, nationalDomainsList: ['ir'] },
   };
 }
 

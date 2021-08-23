@@ -2,8 +2,9 @@ import * as React from 'react';
 import Head from 'next/head';
 import Domain from '../components/Domain/Domain';
 import Layout from '../components/Layout/Layout';
+import { pageProps } from './_app';
 
-export interface IndexProps {
+export interface IndexProps extends pageProps {
   domainsData: {
     status: boolean;
     items: {
@@ -18,7 +19,6 @@ export interface IndexProps {
   roundDomains: any;
   domainPosts: any;
   service: any;
-  postsForFooter;
 }
 
 export interface IndexState {}
@@ -40,6 +40,7 @@ class Index extends React.Component<IndexProps, IndexState> {
         <Layout
           postsForFooter={this.props.postsForFooter}
           domainsForNavbar={this.props.domainsData}
+          licensesForNavbar={this.props.licensesForNavbar}
         >
           <Domain
             domainsData={this.props.domainsData}
@@ -63,11 +64,6 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const postsForFooterRes = await fetch(
-    'https://jsonblob.com/api/jsonBlob/ff048401-e7cd-11eb-971c-9ff88820de62'
-  );
-  const postsForFooter = await postsForFooterRes.json();
-
   const domainsDataRes = await fetch(
     `https://jsonblob.com/api/jsonBlob/57cdd139-eaad-11eb-8813-950ac49ad40b`
   );
@@ -85,7 +81,6 @@ export async function getServerSideProps(context) {
       roundDomains: data.roundDomains,
       domainPosts: data.domainPosts,
       service: data.service,
-      postsForFooter,
     },
   };
 }

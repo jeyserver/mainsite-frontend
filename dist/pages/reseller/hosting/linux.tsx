@@ -7,7 +7,6 @@ import { pageProps } from './../../_app';
 export interface IndexProps extends pageProps {
   resellerHosts: any;
   navData: any;
-  postsForFooter: any;
 }
 
 export interface IndexState {
@@ -55,6 +54,7 @@ class Index extends React.Component<IndexProps, IndexState> {
           postsForFooter={this.props.postsForFooter}
           appIsScrolling={this.state.appIsScrolling}
           domainsForNavbar={this.props.domainsForNavbar}
+          licensesForNavbar={this.props.licensesForNavbar}
         >
           <ResellerHosting
             resellerHosts={this.props.resellerHosts}
@@ -77,11 +77,6 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const postsForFooterRes = await fetch(
-    'https://jsonblob.com/api/jsonBlob/ff048401-e7cd-11eb-971c-9ff88820de62'
-  );
-  const postsForFooter = await postsForFooterRes.json();
-
   const resellerHostsRes = await fetch(
     `https://jsonblob.com/api/jsonBlob/1ba50f5f-e1be-11eb-9c37-1faf35d7bf34`
   );
@@ -96,7 +91,6 @@ export async function getServerSideProps(context) {
     props: {
       resellerHosts,
       navData,
-      postsForFooter,
     },
   };
 }

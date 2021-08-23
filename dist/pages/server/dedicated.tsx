@@ -9,7 +9,6 @@ export interface IndexProps extends pageProps {
     status: boolean;
     countries: { code: string; name: string }[];
   };
-  postsForFooter: any;
 }
 
 export interface IndexState {}
@@ -32,6 +31,7 @@ class Index extends React.Component<IndexProps, IndexState> {
         <Layout
           postsForFooter={this.props.postsForFooter}
           domainsForNavbar={this.props.domainsForNavbar}
+          licensesForNavbar={this.props.licensesForNavbar}
         >
           <ServerDedicated dedicated={this.props.dedicated} />
         </Layout>
@@ -49,11 +49,6 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const postsForFooterRes = await fetch(
-    'https://jsonblob.com/api/jsonBlob/ff048401-e7cd-11eb-971c-9ff88820de62'
-  );
-  const postsForFooter = await postsForFooterRes.json();
-
   const dedicatedRes = await fetch(
     `${process.env.SCHEMA}://${process.env.DOMAIN}/fa/server/dedicated?ajax=1`
   );
@@ -62,7 +57,6 @@ export async function getServerSideProps(context) {
   return {
     props: {
       dedicated,
-      postsForFooter,
     },
   };
 }

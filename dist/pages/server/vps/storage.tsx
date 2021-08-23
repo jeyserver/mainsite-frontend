@@ -7,7 +7,6 @@ import { pageProps } from '../../_app';
 export interface IndexProps extends pageProps {
   vpsData: any;
   topNav: any;
-  postsForFooter: any;
 }
 
 export interface IndexState {
@@ -55,6 +54,7 @@ class Index extends React.Component<IndexProps, IndexState> {
           postsForFooter={this.props.postsForFooter}
           appIsScrolling={this.state.appIsScrolling}
           domainsForNavbar={this.props.domainsForNavbar}
+          licensesForNavbar={this.props.licensesForNavbar}
         >
           <VpsPricing
             vpsData={this.props.vpsData}
@@ -78,11 +78,6 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const postsForFooterRes = await fetch(
-    'https://jsonblob.com/api/jsonBlob/ff048401-e7cd-11eb-971c-9ff88820de62'
-  );
-  const postsForFooter = await postsForFooterRes.json();
-
   // const data = await fetch(
   //   `${process.env.SCHEMA}://${process.env.DOMAIN}`
   // );
@@ -101,7 +96,6 @@ export async function getServerSideProps(context) {
     props: {
       vpsData: vpsData.filter((i) => i.country === 'فرانسه'),
       topNav,
-      postsForFooter,
     },
   };
 }

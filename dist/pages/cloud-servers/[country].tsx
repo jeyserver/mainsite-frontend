@@ -8,7 +8,6 @@ export interface IndexProps extends pageProps {
   plans: any;
   countries: any;
   country: string;
-  postsForFooter: any;
 }
 
 export interface IndexState {}
@@ -31,6 +30,7 @@ class Index extends React.Component<IndexProps, IndexState> {
         <Layout
           postsForFooter={this.props.postsForFooter}
           domainsForNavbar={this.props.domainsForNavbar}
+          licensesForNavbar={this.props.licensesForNavbar}
         >
           <CloudServers
             countries={this.props.countries}
@@ -55,11 +55,6 @@ export async function getServerSideProps(context) {
   // ${process.env.SCHEMA}://${process.env.DOMAIN}
   const country = context.query.country;
 
-  const postsForFooterRes = await fetch(
-    'https://jsonblob.com/api/jsonBlob/ff048401-e7cd-11eb-971c-9ff88820de62'
-  );
-  const postsForFooter = await postsForFooterRes.json();
-
   const plansRes = await fetch(
     `https://jsonblob.com/api/jsonBlob/1bf11e18-d70f-11eb-861d-31dabfa01faa`
   );
@@ -75,7 +70,6 @@ export async function getServerSideProps(context) {
       plans: palansData.plans,
       countries: countriesData.countries,
       country: country,
-      postsForFooter,
     },
   };
 }

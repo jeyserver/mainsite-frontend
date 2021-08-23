@@ -7,7 +7,6 @@ import { pageProps } from './_app';
 
 export interface IndexProps extends pageProps {
   tablesData: { linuxHosts: any };
-  postsForFooter: any;
 }
 
 export interface IndexState {}
@@ -30,6 +29,7 @@ class Index extends React.Component<IndexProps, IndexState> {
         <Layout
           postsForFooter={this.props.postsForFooter}
           domainsForNavbar={this.props.domainsForNavbar}
+          licensesForNavbar={this.props.licensesForNavbar}
         >
           <Header />
           <MainPage tablesData={this.props.tablesData} />
@@ -47,11 +47,6 @@ export async function getServerSideProps(context) {
       notFound: true,
     };
   }
-
-  const postsForFooterRes = await fetch(
-    'https://jsonblob.com/api/jsonBlob/ff048401-e7cd-11eb-971c-9ff88820de62'
-  );
-  const postsForFooter = await postsForFooterRes.json();
 
   const linuxHostsRes = await fetch(
     `https://jsonblob.com/api/jsonBlob/7278ac52-e1a0-11eb-9c37-87e17a3457b8`
@@ -80,7 +75,6 @@ export async function getServerSideProps(context) {
         vps: { navData, tableData: vpsData },
         dedicatedServers,
       },
-      postsForFooter,
     },
   };
 }

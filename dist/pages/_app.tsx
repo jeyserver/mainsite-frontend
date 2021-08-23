@@ -12,7 +12,13 @@ import { NotificationContainer } from 'react-notifications';
 import { useStore } from '../redux/store';
 import NProgress from '../components/NProgress/NProgress';
 
-export default function App({ Component, pageProps, domainsForNavbar }) {
+export default function App({
+  Component,
+  pageProps,
+  domainsForNavbar,
+  licensesForNavbar,
+  postsForFooter,
+}) {
   const store = useStore(pageProps.initialReduxState);
 
   return (
@@ -24,7 +30,12 @@ export default function App({ Component, pageProps, domainsForNavbar }) {
         stopDelayMs={200}
         height={3}
       />
-      <Component {...pageProps} domainsForNavbar={domainsForNavbar} />
+      <Component
+        {...pageProps}
+        domainsForNavbar={domainsForNavbar}
+        licensesForNavbar={licensesForNavbar}
+        postsForFooter={postsForFooter}
+      />
     </Provider>
   );
 }
@@ -44,7 +55,9 @@ export interface domainsForNavbarType {
 }
 
 export interface pageProps {
-  domainsForNavbar: domainsForNavbarType;
+  domainsForNavbar: any;
+  licensesForNavbar: any;
+  postsForFooter: any;
 }
 
 App.getInitialProps = async ({ Component, ctx }) => {
@@ -54,11 +67,26 @@ App.getInitialProps = async ({ Component, ctx }) => {
   const domainsForNavbar: domainsForNavbarType =
     await domainsForNavbarRes.json();
 
+  const licensesForNavbarRes = await fetch(
+    'https://jsonblob.com/api/jsonBlob/4913d357-eba1-11eb-9eff-219764ad97b3'
+  );
+  const licensesForNavbar = await licensesForNavbarRes.json();
+
+  const postsForFooterRes = await fetch(
+    'https://jsonblob.com/api/jsonBlob/ff048401-e7cd-11eb-971c-9ff88820de62'
+  );
+  const postsForFooter = await postsForFooterRes.json();
+
   let pageProps = {};
 
   if (Component.getInitialProps) {
     pageProps = await Component.getInitialProps(ctx);
   }
 
-  return { pageProps, domainsForNavbar };
+  return {
+    pageProps,
+    domainsForNavbar,
+    licensesForNavbar,
+    postsForFooter,
+  };
 };

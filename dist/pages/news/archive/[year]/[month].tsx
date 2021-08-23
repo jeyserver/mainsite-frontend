@@ -31,7 +31,6 @@ export interface IndexProps extends pageProps {
   mostViewedNews: any;
   newsArchive: number[];
   date: { month: string; year: string };
-  postsForFooter: any;
 }
 
 export interface IndexState {}
@@ -54,6 +53,7 @@ class Index extends React.Component<IndexProps, IndexState> {
         <Layout
           postsForFooter={this.props.postsForFooter}
           domainsForNavbar={this.props.domainsForNavbar}
+          licensesForNavbar={this.props.licensesForNavbar}
         >
           <News
             headerTitle={`آرشیو اخبار ${moment()
@@ -89,11 +89,6 @@ export async function getServerSideProps(context) {
   // );
   // const postsData = await postsDataRes.json();
 
-  const postsForFooterRes = await fetch(
-    'https://jsonblob.com/api/jsonBlob/ff048401-e7cd-11eb-971c-9ff88820de62'
-  );
-  const postsForFooter = await postsForFooterRes.json();
-
   const postsDataRes = await fetch(
     `https://jsonblob.com/api/jsobBlob/1fd10ea9-de4b-11eb-80f0-1bc3c361302c`
   );
@@ -115,7 +110,6 @@ export async function getServerSideProps(context) {
       mostViewedNews,
       newsArchive,
       date: { month, year },
-      postsForFooter,
     },
   };
 }

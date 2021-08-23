@@ -8,10 +8,10 @@ import Server from './Server/Server';
 import License from './License/License';
 import Support from './Support/Support';
 import Link from 'next/link';
-import { Tlds, License as LicenseType } from '../../../pages/_app';
+import { Tld, License as LicenseType } from '../../../pages/_app';
 
 interface MainNavbarProps {
-  tlds: Tlds;
+  tlds: Tld[];
   licenses: LicenseType[];
 }
 

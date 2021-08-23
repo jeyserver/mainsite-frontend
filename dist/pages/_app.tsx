@@ -16,9 +16,9 @@ export default function App({
   domainsForNavbar,
   licensesForNavbar,
   postsForFooter,
-  data,
+  currencies,
 }) {
-  store.dispatch(setCurrencies(data.currencies));
+  store.dispatch(setCurrencies(currencies));
 
   return (
     <Provider store={store}>
@@ -56,16 +56,16 @@ export interface Currency {
   }[];
 }
 
-export type Tlds = {
+export interface Tld {
   id: number;
   new: number;
   renew: number;
   tld: string;
   transfer: number;
   currency: number;
-}[];
+}
 
-export enum LicensePP {
+enum LicensePP {
   Lifetime,
   Daily,
   Monthly,
@@ -89,7 +89,7 @@ export interface FooterPost {
 }
 
 export interface pageProps {
-  domainsForNavbar: Tlds;
+  domainsForNavbar: Tld[];
   licensesForNavbar: License[];
   postsForFooter: FooterPost[];
   currencies: Currency[];
@@ -103,11 +103,6 @@ App.getInitialProps = async ({ Component, ctx }) => {
   );
   const data = await respone.json();
 
-  const licensesForNavbarRes = await fetch(
-    'https://jsonblob.com/api/jsonBlob/4913d357-eba1-11eb-9eff-219764ad97b3'
-  );
-  const licensesForNavbar = await licensesForNavbarRes.json();
-
   let pageProps = {};
 
   if (Component.getInitialProps) {
@@ -115,10 +110,10 @@ App.getInitialProps = async ({ Component, ctx }) => {
   }
 
   return {
-    data,
     pageProps,
     domainsForNavbar: data.tlds,
     licensesForNavbar: data.licenses,
     postsForFooter: data.posts,
+    currencies: data.currencies,
   };
 };

@@ -1,12 +1,12 @@
 import * as React from 'react';
 import Navbar from '../Navbar/Navbar';
 import Footer from '../Footer/Footer';
-import { FooterPost, License, Tlds } from '../../pages/_app';
+import { FooterPost, License, Tld } from '../../pages/_app';
 
 interface LayoutProps {
   postsForFooter: FooterPost[];
   appIsScrolling?: boolean;
-  domainsForNavbar?: Tlds;
+  domainsForNavbar?: Tld[];
   licensesForNavbar?: License[];
 }
 

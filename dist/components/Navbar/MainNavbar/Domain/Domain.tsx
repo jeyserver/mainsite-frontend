@@ -13,12 +13,13 @@ import {
 import styles from './Domain.module.scss';
 import { withRouter, NextRouter } from 'next/router';
 import classNames from 'classnames';
-import { Tlds } from '../../../../pages/_app';
+import { Tld } from '../../../../pages/_app';
 import formatPriceWithCurrency from '../../../../helper/formatPriceWithCurrency';
 import { setDomainForShop } from '../../../../redux/actions';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import { RootState } from '../../../../store';
+import Link from 'next/link';
 
 type error = 'data_validation' | 'data_duplicate';
 
@@ -33,7 +34,7 @@ const showError = (errorMsg: error) => {
 interface DomainProps {
   changeShowDropDown: () => void;
   router: NextRouter;
-  tlds: Tlds;
+  tlds: Tld[];
   currencies: RootState['currencies'];
   setDomainForShop: (domain: { tld: string; name: string }) => void;
 }
@@ -169,9 +170,9 @@ class Domain extends React.Component<DomainProps, DomainState> {
               <Col xs={12} md={4}>
                 <div className="d-flex flex-column justify-content-between mt-4">
                   <div className="d-flex align-items-center justify-content-between">
-                    <a href="/fa/domain" className={styles.tableTitle}>
-                      تعرفه ثبت دامنه
-                    </a>
+                    <Link href="/domain">
+                      <a className={styles.tableTitle}>تعرفه ثبت دامنه</a>
+                    </Link>
                     <OverlayTrigger
                       placement="top"
                       overlay={

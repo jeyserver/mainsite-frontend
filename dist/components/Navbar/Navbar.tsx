@@ -2,12 +2,12 @@ import React from 'react';
 import MainNavbar from './MainNavbar/MainNavbar';
 import TopNavbar from './TopNavbar/TopNavbar';
 import styles from './Navbar.module.scss';
-import { License, Tlds } from '../../pages/_app';
+import { License, Tld } from '../../pages/_app';
 
 interface NavbarProps {
   appIsScrolling?: boolean;
   getThemeFromLocalStorage?: () => void;
-  tlds: Tlds;
+  tlds: Tld[];
   licenses: License[];
 }
 

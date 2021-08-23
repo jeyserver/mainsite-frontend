@@ -6,6 +6,16 @@ import 'select2/dist/js/select2.min.js';
 import { Form } from 'react-bootstrap';
 import classNames from 'classnames';
 
+type error = 'data_validation' | 'data_duplicate';
+
+const showError = (errorMsg: error) => {
+  if (errorMsg === 'data_duplicate') {
+    return 'داده وارد شده تکراری است';
+  } else if (errorMsg === 'data_validation') {
+    return 'داده وارد شده معتبر نیست';
+  }
+};
+
 interface country {
   code: string;
   name: string;
@@ -32,6 +42,7 @@ interface Props {
     placeholder: string;
     icon: string;
   };
+  errorCode?: error;
 }
 
 const useStyles = createUseStyles((props) => ({
@@ -100,6 +111,7 @@ export const ReactPhonenumber: React.FC<Props> = ({
   isSelectHide,
   selectName,
   floatPlaceHolder,
+  errorCode = 'data_validation',
 }) => {
   const [isFocusedOnInput, setIsFocusedOnInput] =
     React.useState<boolean>(false);
@@ -280,12 +292,13 @@ export const ReactPhonenumber: React.FC<Props> = ({
           value={phoneNumberValue}
           onChange={(e) => handleOnChangePhoneNumberValue(e)}
           className="phone-number-input"
+          name="credential"
           dir="ltr"
           required
           disabled={options?.disabled}
         />
         <Form.Control.Feedback type="invalid">
-          داده وارد شده معتبر نیست
+          {showError(errorCode)}
         </Form.Control.Feedback>
         {floatPlaceHolder && floatPlaceHolder.placeholder && (
           <div

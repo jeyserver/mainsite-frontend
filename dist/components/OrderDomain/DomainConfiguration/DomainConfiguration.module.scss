@@ -42,6 +42,9 @@
   display: block;
   width: 100%;
   font-family: BYekan;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
     color: #fff;
@@ -60,5 +63,14 @@
     color: #fff;
     background-color: #449d44;
     border-color: #398439;
+    box-shadow: none !important;
+  }
+
+  &:disabled {
+    background-color: lighten(#449d44, 25);
+    border-color: lighten(#449d44, 25);
+    div {
+      margin-left: 10px;
+    }
   }
 }

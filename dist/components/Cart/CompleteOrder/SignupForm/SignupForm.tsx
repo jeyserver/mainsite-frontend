@@ -1,9 +1,13 @@
-import classNames from 'classnames';
 import * as React from 'react';
-import { Row, Col, Form, Button } from 'react-bootstrap';
+import axios from 'axios';
+import classNames from 'classnames';
+import { Row, Col, Form, Button, Spinner } from 'react-bootstrap';
 import { countriesType } from '../../../../pages/order/cart/complete';
 import { ReactPhonenumber } from '../../../ReactPhonenumber/ReactPhonenumber';
+import { NotificationManager } from 'react-notifications';
 import styles from './SignupForm.module.scss';
+import { connect } from 'react-redux';
+import { signUp } from '../../../../redux/actions';
 
 type error = 'data_validation' | 'data_duplicate';
 
@@ -18,6 +22,7 @@ const showError = (errorMsg: error) => {
 export interface SignupFormProps {
   countries: countriesType;
   defaultCountrySelected: string;
+  signUp: (signUpDetails: any) => void;
 }
 
 export interface SignupFormState {
@@ -26,7 +31,9 @@ export interface SignupFormState {
   emailError: error;
   phonenumberError: error;
   passwordError: error;
+  password2Error: error;
   formValidated: boolean;
+  submitBtnLoading: boolean;
 }
 
 class SignupForm extends React.Component<SignupFormProps, SignupFormState> {
@@ -38,8 +45,11 @@ class SignupForm extends React.Component<SignupFormProps, SignupFormState> {
       emailError: 'data_validation',
       phonenumberError: 'data_validation',
       passwordError: 'data_validation',
+      password2Error: 'data_validation',
       formValidated: false,
+      submitBtnLoading: false,
     };
+    this.onSubmitForm = this.onSubmitForm.bind(this);
   }
 
   changePhoneNumber() {}
@@ -51,7 +61,52 @@ class SignupForm extends React.Component<SignupFormProps, SignupFormState> {
     if (form.checkValidity() === false) {
       e.stopPropagation();
     } else {
-      //go
+      this.setState({ submitBtnLoading: true });
+
+      axios
+        .get(
+          `https://jsonblob.com/api/jsonBlob/57cf67c8-eb0b-11eb-8813-cda002dae790`
+        )
+        .then((respone) => {
+          this.setState({ submitBtnLoading: false });
+          // this.props.signUp()
+
+          // if (respone.data.status) {
+          //   this.setState({ submitBtnLoading: false });
+          //   // this.props.router.push('');
+          // } else if (!respone.data.status) {
+          //   respone.data.error.forEach((errorItem) => {
+          //     if (errorItem.input === 'name') {
+          //       form.firstName.value = '';
+          //       this.setState({ firstNameError: errorItem.code });
+          //     } else if (errorItem.input === 'lastName') {
+          //       form.lastName.value = '';
+          //       this.setState({ lastNameError: errorItem.code });
+          //     } else if (errorItem.input === 'email') {
+          //       form.email.value = '';
+          //       this.setState({ emailError: errorItem.code });
+          //     } else if (errorItem.input === 'cellphone[number]') {
+          //       form.credential.value = '';
+          //       this.setState({ phonenumberError: errorItem.code });
+          //     } else if (errorItem.input === 'password') {
+          //       form.password1.value = '';
+          //       this.setState({ passwordError: errorItem.code });
+          //     } else if (errorItem.input === 'password2') {
+          //       form.password2.value = '';
+          //       this.setState({ password2Error: errorItem.code });
+          //     }
+          //   });
+          //   this.setState({ submitBtnLoading: false });
+          // }
+        })
+        .catch((error) => {
+          this.setState({ submitBtnLoading: false });
+
+          NotificationManager.error(
+            'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
+            'خطا'
+          );
+        });
     }
 
     this.setState({ formValidated: true });
@@ -125,6 +180,7 @@ class SignupForm extends React.Component<SignupFormProps, SignupFormState> {
                   className="phoneNumberEmail"
                   selectName="signUpForm"
                   options={{ dir: 'rtl' }}
+                  errorCode={this.state.phonenumberError}
                 />
               </div>
             </Form.Group>
@@ -132,7 +188,7 @@ class SignupForm extends React.Component<SignupFormProps, SignupFormState> {
         </Row>
         <Row>
           <Col md={6}>
-            <Form.Group className={styles.formGroup} controlId="password1">
+            <Form.Group className={styles.formGroup} controlId="password">
               <Form.Label>گذرواژه*</Form.Label>
               <Form.Control type="password" name="password1" required />
               <Form.Control.Feedback type="invalid">
@@ -145,7 +201,7 @@ class SignupForm extends React.Component<SignupFormProps, SignupFormState> {
               <Form.Label>تکرار گذرواژه*</Form.Label>
               <Form.Control type="password" name="password2" required />
               <Form.Control.Feedback type="invalid">
-                {showError(this.state.passwordError)}
+                {showError(this.state.password2Error)}
               </Form.Control.Feedback>
             </Form.Group>
           </Col>
@@ -155,7 +211,7 @@ class SignupForm extends React.Component<SignupFormProps, SignupFormState> {
             <Form.Group>
               <label className={styles.termsCheckBox}>
                 <input type="checkbox" name="tos" required defaultValue={1} />
-                <a target="_blank" href="/fa/terms">
+                <a target="_blank" href="/terms">
                   شرایط سرویس
                 </a>
                 را خواندم و موافق هستم.
@@ -168,8 +224,19 @@ class SignupForm extends React.Component<SignupFormProps, SignupFormState> {
         </Row>
         <Row>
           <Col xs={12}>
-            <Button className={styles.submitBtn} type="submit">
-              تکمیل سفارش
+            <Button
+              className={styles.submitBtn}
+              type="submit"
+              disabled={this.state.submitBtnLoading}
+            >
+              {this.state.submitBtnLoading ? (
+                <>
+                  <Spinner animation="border" size="sm" />
+                  <span>لطفا صبر کنید</span>
+                </>
+              ) : (
+                'تکمیل سفارش'
+              )}
             </Button>
           </Col>
         </Row>
@@ -178,4 +245,4 @@ class SignupForm extends React.Component<SignupFormProps, SignupFormState> {
   }
 }
 
-export default SignupForm;
+export default connect(null, { signUp })(SignupForm);

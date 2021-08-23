@@ -94,17 +94,22 @@
     font-family: BNazanin;
     padding: 15px;
     .formInputGroup {
-      height: 33px;
       > select {
-        width: min-content;
+        width: 80px;
         height: 100%;
         flex: unset;
         background-color: #ffffff;
         border: 1px solid #ffffff;
         border-bottom-right-radius: 5px;
         border-top-right-radius: 5px;
+        height: 33px;
+        border-left: 2px solid rgba(221, 221, 221, 0.507);
+        color: #555;
+        font-family: Tahoma, Geneva, Verdana, sans-serif;
+
         &:focus {
           box-shadow: none;
+          outline: none !important;
         }
       }
       > input {
@@ -113,26 +118,60 @@
         flex: 1 1 auto;
         direction: ltr;
         padding-left: 0;
+        height: 33px;
+        font-family: DejaVu Sans Mono, sans-serif;
+
         &:focus {
           box-shadow: none;
           border: 1px solid #ffffff;
         }
+
+        &:invalid,
+        &:valid {
+          padding: 0.375rem 0.75rem;
+          padding-left: 0.1rem;
+        }
+
+        &:valid {
+          border: 1px solid #ffffff;
+
+          &:focus {
+            border: 1px solid #ffffff;
+            box-shadow: none;
+          }
+        }
+
+        &:invalid {
+          &:focus {
+            box-shadow: none;
+          }
+        }
       }
-      > div:last-child {
+
+      > div:nth-child(3) {
         height: 100%;
-        background-color: #ffffff;
-        border: 1px solid #ffffff;
+        padding-right: 0;
         border-radius: 0;
         border-bottom-left-radius: 5px;
         border-top-left-radius: 5px;
+        height: 33px;
+
         > span {
           background-color: #ffffff;
           border: 1px solid #ffffff;
           border-radius: 0;
+          padding-right: 0;
           border-bottom-left-radius: 5px;
           border-top-left-radius: 5px;
           height: 100%;
+          color: #555;
+          font-family: Tahoma, Geneva, Verdana, sans-serif;
         }
+      }
+
+      .errorMsg {
+        font-size: 15px;
+        font-family: BYekan;
       }
     }
     .searchDomainBtn {

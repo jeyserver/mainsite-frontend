@@ -13,6 +13,20 @@
       }
     }
   }
+  input {
+    &:invalid,
+    &:valid {
+      padding: 0.375rem 0.75rem !important;
+    }
+
+    &:valid {
+      border-color: #ced4da !important;
+
+      &:focus {
+        border-color: #198754 !important;
+      }
+    }
+  }
   label {
     color: #313131;
     font-size: 13px;
@@ -63,6 +77,10 @@
     width: 100%;
     font-family: BYekan;
     min-width: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 34px;
 
     &:hover {
       color: #fff;
@@ -72,6 +90,16 @@
 
     &:focus {
       box-shadow: none;
+    }
+
+    &:disabled {
+      background-color: lighten(#5cb85c, 10);
+      border-color: lighten(#5cb85c, 10);
+      cursor: not-allowed;
+
+      > div {
+        margin-left: 10px;
+      }
     }
   }
 }

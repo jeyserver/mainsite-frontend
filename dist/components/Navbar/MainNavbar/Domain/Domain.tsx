@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import React from 'react';
-import { OverlayTrigger, Spinner, Tooltip } from 'react-bootstrap';
+import { Form, OverlayTrigger, Spinner, Tooltip } from 'react-bootstrap';
 import {
   Col,
   Image,
@@ -20,6 +20,16 @@ import { setDomainForShop } from '../../../../redux/actions';
 import { connect } from 'react-redux';
 import axios from 'axios';
 
+type error = 'data_validation' | 'data_duplicate';
+
+const showError = (errorMsg: error) => {
+  if (errorMsg === 'data_duplicate') {
+    return 'داده وارد شده تکراری است';
+  } else if (errorMsg === 'data_validation') {
+    return 'داده وارد شده معتبر نیست';
+  }
+};
+
 export interface DomainProps {
   changeShowDropDown: () => void;
   router: NextRouter;
@@ -30,12 +40,21 @@ export interface DomainProps {
 export interface DomainState {
   selectedDomain: string | null;
   loading: boolean;
+  isFormValidated: boolean;
+  errorCode: error;
+  selectedDomains: any;
 }
 
 class Domain extends React.Component<DomainProps, DomainState> {
   constructor(props: DomainProps) {
     super(props);
-    this.state = { selectedDomain: null, loading: false };
+    this.state = {
+      selectedDomain: null,
+      selectedDomains: [],
+      loading: false,
+      isFormValidated: false,
+      errorCode: 'data_validation',
+    };
     this.moreBtn = this.moreBtn.bind(this);
     this.checkDomain = this.checkDomain.bind(this);
   }
@@ -52,16 +71,41 @@ class Domain extends React.Component<DomainProps, DomainState> {
   }
 
   changeSelectedDomain(e: any) {
-    this.setState({ selectedDomain: e.target.value }, () => {
-      const tr = document.querySelectorAll(
-        'tr > td[data-selected="true"]'
-      ) as any;
+    const domainCurrentlyExist =
+      this.state.selectedDomains.find(
+        (domain) => domain.tld === e.target.value
+      ) ||
+      this.props.domains.items
+        .slice(0, 10)
+        .find((domain) => domain.tld === e.target.value);
 
-      if (this.state.selectedDomain) {
-        const tableWrapper = document.querySelector('#tableWrapper') as any;
-        tableWrapper.scrollTop = tr[0].parentElement.offsetTop;
+    this.setState(
+      (prev) => {
+        if (domainCurrentlyExist) {
+          return { ...prev, selectedDomain: e.target.value };
+        } else {
+          const domain = this.props.domains.items.find(
+            (domain) => domain.tld === e.target.value
+          );
+
+          return {
+            ...prev,
+            selectedDomain: e.target.value,
+            selectedDomains: [...prev.selectedDomains, domain],
+          };
+        }
+      },
+      () => {
+        const tr = document.querySelectorAll(
+          'tr > td[data-selected="true"]'
+        ) as any;
+
+        if (this.state.selectedDomain) {
+          const tableWrapper = document.querySelector('#tableWrapper') as any;
+          tableWrapper.scrollTop = tr[0].parentElement.offsetTop;
+        }
       }
-    });
+    );
   }
 
   moreBtn() {
@@ -72,20 +116,37 @@ class Domain extends React.Component<DomainProps, DomainState> {
     e.preventDefault();
     const form = e.currentTarget;
 
-    this.setState({ loading: true });
-    axios(
-      'https://jsonblob.com/api/jsonBlob/d3196d4f-e2e1-11eb-b284-d50b7a049077'
-    )
-      .then(() => {
-        this.props.setDomainForShop({
-          tld: form.tld.value,
-          name: form.domainName.value,
+    if (form.checkValidity() === false) {
+      e.stopPropagation();
+    } else {
+      this.setState({ loading: true });
+
+      axios(
+        'https://jsonblob.com/api/jsonBlob/d3196d4f-e2e1-11eb-b284-d50b7a049077'
+      )
+        .then((res) => {
+          this.props.setDomainForShop({
+            tld: form.tld.value,
+            name: form.domainName.value,
+          });
+          this.setState({ loading: false });
+
+          // if (res.data.status) {
+          // } else if (!res.data.status) {
+          //   res.data.error.forEach((errorItem) => {
+          //     if (errorItem.input === 'name') {
+          //       form.domainName.value = '';
+          //       this.setState({ errorCode: errorItem.code });
+          //     }
+          //   });
+          // }
+        })
+        .catch(() => {
+          this.setState({ loading: false });
         });
-        this.setState({ loading: false });
-      })
-      .catch(() => {
-        this.setState({ loading: false });
-      });
+    }
+
+    this.setState({ isFormValidated: true });
   }
 
   render() {
@@ -141,7 +202,28 @@ class Domain extends React.Component<DomainProps, DomainState> {
                     <div className={styles.tableWrapper} id="tableWrapper">
                       <table className="table">
                         <tbody>
-                          {this.props.domains.items.map((domain) => (
+                          {this.props.domains.items
+                            .slice(0, 10)
+                            .map((domain) => (
+                              <tr key={domain.id}>
+                                <td
+                                  data-selected={
+                                    this.state.selectedDomain === domain.tld
+                                  }
+                                >
+                                  {domain.tld}
+                                </td>
+                                <td
+                                  data-selected={
+                                    this.state.selectedDomain === domain.tld
+                                  }
+                                >
+                                  {formatPrice(domain.new)}{' '}
+                                  {this.props.domains.currency.title}
+                                </td>
+                              </tr>
+                            ))}
+                          {this.state.selectedDomains.map((domain) => (
                             <tr key={domain.id}>
                               <td
                                 data-selected={
@@ -169,7 +251,12 @@ class Domain extends React.Component<DomainProps, DomainState> {
               <Col xs={12} md={4} className={styles.centerCol}>
                 <div className={styles.domainCheck}>
                   <h4>نقطه شروع همه چیز اینجاست!</h4>
-                  <form className="mt-5" onSubmit={this.checkDomain}>
+                  <Form
+                    className="mt-5"
+                    onSubmit={this.checkDomain}
+                    validated={this.state.isFormValidated}
+                    noValidate
+                  >
                     <InputGroup className={styles.formInputGroup}>
                       <FormControl
                         as="select"
@@ -178,8 +265,14 @@ class Domain extends React.Component<DomainProps, DomainState> {
                         name="tld"
                         onChange={(e) => this.changeSelectedDomain(e)}
                         required
+                        custom
                       >
                         {this.props.domains.items.map((domain) => (
+                          <option key={domain.id} value={domain.tld}>
+                            .{domain.tld}
+                          </option>
+                        ))}
+                        {this.state.selectedDomains.map((domain) => (
                           <option key={domain.id} value={domain.tld}>
                             .{domain.tld}
                           </option>
@@ -194,6 +287,12 @@ class Domain extends React.Component<DomainProps, DomainState> {
                       <InputGroup.Prepend>
                         <InputGroup.Text dir="ltr">www.</InputGroup.Text>
                       </InputGroup.Prepend>
+                      <Form.Control.Feedback
+                        type="invalid"
+                        className={styles.errorMsg}
+                      >
+                        {showError(this.state.errorCode)}
+                      </Form.Control.Feedback>
                     </InputGroup>
                     <Button
                       type="submit"
@@ -210,7 +309,7 @@ class Domain extends React.Component<DomainProps, DomainState> {
                         </>
                       )}
                     </Button>
-                  </form>
+                  </Form>
                 </div>
               </Col>
               <Col xs={12} md={4} className={styles.infoCol}>

@@ -12,6 +12,7 @@ import { domainsForNavbarType } from '../../../pages/_app';
 
 export interface MainNavbarProps {
   domains: domainsForNavbarType;
+  licenses: any;
 }
 
 export interface MainNavbarState {
@@ -78,7 +79,11 @@ class MainNavbar extends React.Component<MainNavbarProps, MainNavbarState> {
                   domains={this.props.domains}
                 />
                 <Server changeShowDropDown={this.changeShowDropDown} />
-                <License changeShowDropDown={this.changeShowDropDown} />
+                <License
+                  changeShowDropDown={this.changeShowDropDown}
+                  changeShowMenu={this.changeShowMenu}
+                  licenses={this.props.licenses}
+                />
                 <Support changeShowDropDown={this.changeShowDropDown} />
                 <Link href="/jobs">
                   <a className={styles.jobsLinkOnNav}>

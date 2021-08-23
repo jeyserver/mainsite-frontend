@@ -1,0 +1,85 @@
+.form {
+  .formGroup {
+    margin-bottom: 15px;
+    font-family: IRANSans;
+    font-size: 13px;
+    line-height: 20px;
+    font-weight: 700;
+
+    label {
+      font-family: BNazanin;
+      font-size: 13px;
+      line-height: 20px;
+      font-weight: 700;
+    }
+
+    input {
+      font-family: IRANSans;
+      &:invalid {
+        padding-left: 0.75rem;
+      }
+
+      &:valid {
+        padding-left: 0.75rem;
+      }
+    }
+  }
+
+  .sendBtnWrapper {
+    @media screen and (max-width: 767px) {
+      padding: 0 30px;
+    }
+
+    button {
+      font-weight: 400;
+      text-align: center;
+      white-space: nowrap;
+      cursor: pointer;
+      border: 1px solid transparent;
+      padding: 6px 12px;
+      font-size: 14px;
+      line-height: 1.42857143;
+      border-radius: 4px;
+      user-select: none;
+      color: #fff;
+      background-color: #5cb85c;
+      border-color: #4cae4c;
+      display: block;
+      width: 100%;
+      font-family: BYekan;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &:hover {
+        background-color: #4cae4c;
+        border-color: #4cae4c;
+      }
+
+      &:focus {
+        box-shadow: 0 0 0 3px lighten(#5cb85c, 25);
+        background-color: #4cae4c;
+        border-color: #4cae4c;
+      }
+
+      &:active {
+        box-shadow: 0 0 0 1px lighten(#5cb85c, 25) !important;
+        background-color: darken($color: #4cae4c, $amount: 10);
+        border-color: #4cae4c;
+      }
+
+      &:disabled {
+        background-color: lighten(#5cb85c, 10);
+        border-color: #5cb85c;
+      }
+
+      .loadingTxt {
+        margin-right: 5px;
+      }
+
+      i {
+        margin-left: 5px;
+      }
+    }
+  }
+}

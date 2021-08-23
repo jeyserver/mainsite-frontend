@@ -4,9 +4,7 @@ import ContactUs from '../components/ContactUs/ContactUs';
 import Layout from '../components/Layout/Layout';
 import { pageProps } from './_app';
 
-export interface IndexProps extends pageProps {
-  postsForFooter: any;
-}
+export interface IndexProps extends pageProps {}
 
 export interface IndexState {}
 
@@ -27,6 +25,7 @@ class Index extends React.Component<IndexProps, IndexState> {
         <Layout
           postsForFooter={this.props.postsForFooter}
           domainsForNavbar={this.props.domainsForNavbar}
+          licensesForNavbar={this.props.licensesForNavbar}
         >
           <ContactUs />
         </Layout>
@@ -44,18 +43,8 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const postsForFooterRes = await fetch(
-    'https://jsonblob.com/api/jsonBlob/ff048401-e7cd-11eb-971c-9ff88820de62'
-  );
-  const postsForFooter = await postsForFooterRes.json();
-
-  const domainsForNavbarRes = await fetch(
-    `${process.env.SCHEMA}://${process.env.DOMAIN}/fa/domain?ajax=1`
-  );
-  const domainsForNavbar = await domainsForNavbarRes.json();
-
   return {
-    props: { postsForFooter },
+    props: {},
   };
 }
 

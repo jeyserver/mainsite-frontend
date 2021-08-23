@@ -6,7 +6,6 @@ import { pageProps } from '../../../_app';
 
 export interface IndexProps extends pageProps {
   hostingCartItems: any;
-  postsForFooter: any;
 }
 
 export interface IndexState {}
@@ -29,6 +28,7 @@ class Index extends React.Component<IndexProps, IndexState> {
         <Layout
           postsForFooter={this.props.postsForFooter}
           domainsForNavbar={this.props.domainsForNavbar}
+          licensesForNavbar={this.props.licensesForNavbar}
         >
           <HostingConfigure hostingCartItems={this.props.hostingCartItems} />
         </Layout>
@@ -46,18 +46,13 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const postsForFooterRes = await fetch(
-    'https://jsonblob.com/api/jsonBlob/ff048401-e7cd-11eb-971c-9ff88820de62'
-  );
-  const postsForFooter = await postsForFooterRes.json();
-
   const hostingCartItemsRes = await fetch(
     `https://jsonblob.com/api/jsonBlob/6b49c8d2-e7b0-11eb-971c-85fdd4ff3087`
   );
   const hostingCartItems = await hostingCartItemsRes.json();
 
   return {
-    props: { hostingCartItems, postsForFooter },
+    props: { hostingCartItems },
   };
 }
 

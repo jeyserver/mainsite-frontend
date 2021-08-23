@@ -4,9 +4,9 @@ import CountryServer from '../../../components/Dedicated/CountryServers/CountryS
 import CountryPlan from '../../../components/Dedicated/CountryPlan/CountryPlan';
 import { countries } from '../../../components/Dedicated/lib/countries';
 import Layout from '../../../components/Layout/Layout';
-import { domainsForNavbarType } from '../../_app';
+import { domainsForNavbarType, pageProps } from '../../_app';
 
-export interface IndexProps {
+export interface IndexProps extends pageProps {
   domainsForNavbar: domainsForNavbarType;
   countryPlans: {
     status: boolean;
@@ -41,7 +41,6 @@ export interface IndexProps {
   country: string;
   countryPlan: any | null;
   param: string;
-  postsForFooter: any;
 }
 
 export interface IndexState {}
@@ -71,6 +70,7 @@ class Index extends React.Component<IndexProps, IndexState> {
           <Layout
             postsForFooter={this.props.postsForFooter}
             domainsForNavbar={this.props.domainsForNavbar}
+            licensesForNavbar={this.props.licensesForNavbar}
           >
             <CountryServer countryPlans={this.props.countryPlans} />
           </Layout>
@@ -85,7 +85,10 @@ class Index extends React.Component<IndexProps, IndexState> {
             <link rel="icon" href="/favicon.ico" />
           </Head>
 
-          <Layout postsForFooter={this.props.postsForFooter}>
+          <Layout
+            postsForFooter={this.props.postsForFooter}
+            licensesForNavbar={this.props.licensesForNavbar}
+          >
             <CountryPlan countryPlan={this.props.countryPlan} />
           </Layout>
         </div>
@@ -107,11 +110,6 @@ export async function getServerSideProps(context) {
 
   let countryPlans = null;
   let countryPlan = null;
-
-  const postsForFooterRes = await fetch(
-    'https://jsonblob.com/api/jsonBlob/ff048401-e7cd-11eb-971c-9ff88820de62'
-  );
-  const postsForFooter = await postsForFooterRes.json();
 
   if (Number(param)) {
     const countryPlanRes = await fetch(
@@ -142,7 +140,6 @@ export async function getServerSideProps(context) {
       countryPlans,
       countryPlan,
       param: param,
-      postsForFooter,
     },
   };
 }

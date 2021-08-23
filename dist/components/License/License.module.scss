@@ -1,0 +1,130 @@
+.mainContent {
+  position: relative;
+  padding: 40px 10px;
+  background-color: #fff;
+
+  .licenseInfo {
+    margin-bottom: 35px;
+
+    > p {
+      text-align: justify;
+      font-family: IRANSans;
+      color: #717171;
+      line-height: 24px;
+      margin: 0 0 10px;
+      font-size: 13px;
+
+      > span {
+        line-height: 24px;
+        background-color: transparent;
+        font-size: 40px;
+        color: #3dc4e4;
+        font-family: BKoodakBold;
+      }
+
+      a {
+        color: #00db40;
+
+        &:hover {
+          color: #c96a00;
+        }
+      }
+    }
+  }
+
+  .plan {
+    margin-top: 15px;
+
+    .palnTitle {
+      color: #313131;
+      font-size: 13px;
+      line-height: 20px;
+      direction: rtl;
+      font-family: BYekan;
+      box-sizing: border-box;
+      display: block;
+      border-bottom: 1px solid #e1e1e1;
+      padding-right: 0;
+      margin-bottom: 20px;
+
+      h5 {
+        margin-bottom: 10px;
+        line-height: 24px;
+        letter-spacing: 1px;
+        margin-top: 0;
+        font-size: 15px;
+        font-weight: 400;
+        font-family: BKoodakBold;
+        display: inline-block;
+        position: relative;
+
+        &::after {
+          border-bottom: 1px solid #00c6ff;
+          content: ' ';
+          display: block;
+          padding-top: 10px;
+          width: 100%;
+          position: absolute;
+        }
+      }
+    }
+
+    .info {
+      font-family: IRANSans;
+      text-align: justify;
+      color: #717171;
+      line-height: 24px;
+      margin: 0 0 10px;
+      font-size: 13px;
+    }
+
+    .options {
+      color: #313131;
+      font-size: 13px;
+      line-height: 20px;
+      direction: rtl;
+      font-family: BYekan;
+      box-sizing: border-box;
+      margin-top: 0;
+      margin-bottom: 10px;
+      list-style: none;
+      padding-right: 0;
+      padding-left: 0;
+      margin-left: 2.14285714em;
+      list-style-type: none;
+
+      li {
+        color: #717171;
+        padding-bottom: 15px;
+        width: 100%;
+
+        i {
+          width: 2.14285714em;
+        }
+
+        .orderLink {
+          cursor: pointer;
+          border: 1px solid transparent;
+          padding: 5px 10px;
+          font-size: 12px;
+          line-height: 1.5;
+          border-radius: 3px;
+          font-family: BYekan;
+          color: #fff;
+          background-color: #5bc0de;
+          border-color: #46b8da;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin-right: 2.14285714em;
+
+          &:hover {
+            color: #fff;
+            background-color: #269abc;
+            border-color: #1b6d85;
+          }
+        }
+      }
+    }
+  }
+}

@@ -33,7 +33,6 @@ export interface IndexProps extends pageProps {
   };
   mostViewedNews: any;
   newsArchive: number[];
-  postsForFooter: any;
 }
 
 export interface IndexState {}
@@ -56,6 +55,7 @@ class Index extends React.Component<IndexProps, IndexState> {
         <Layout
           postsForFooter={this.props.postsForFooter}
           domainsForNavbar={this.props.domainsForNavbar}
+          licensesForNavbar={this.props.licensesForNavbar}
         >
           <News
             headerTitle={`نوشته های ${this.props.postsData.user.name}`}
@@ -86,11 +86,6 @@ export async function getServerSideProps(context) {
   // );
   // const postsData = await postsDataRes.json();
 
-  const postsForFooterRes = await fetch(
-    'https://jsonblob.com/api/jsonBlob/ff048401-e7cd-11eb-971c-9ff88820de62'
-  );
-  const postsForFooter = await postsForFooterRes.json();
-
   const postsDataRes = await fetch(
     `https://jsonblob.com/api/jsobBlob/69e72cd5-e534-11eb-931c-e97e85a950b6`
   );
@@ -111,7 +106,6 @@ export async function getServerSideProps(context) {
       postsData: { ...postsData, current_page: curPage },
       mostViewedNews,
       newsArchive,
-      postsForFooter,
     },
   };
 }

@@ -7,7 +7,6 @@ import { setCartItems } from '../../../redux/actions';
 import { pageProps } from './../../_app';
 
 export interface IndexProps extends pageProps {
-  postsForFooter: any;
   cartItems: any;
   setCartItems: (cartItems) => void;
 }
@@ -36,6 +35,7 @@ class Index extends React.Component<IndexProps, IndexState> {
         <Layout
           postsForFooter={this.props.postsForFooter}
           domainsForNavbar={this.props.domainsForNavbar}
+          licensesForNavbar={this.props.licensesForNavbar}
         >
           <Review />
         </Layout>
@@ -58,13 +58,8 @@ export async function getServerSideProps(context) {
   );
   const cartItems = await cartItemsRes.json();
 
-  const postsForFooterRes = await fetch(
-    'https://jsonblob.com/api/jsonBlob/ff048401-e7cd-11eb-971c-9ff88820de62'
-  );
-  const postsForFooter = await postsForFooterRes.json();
-
   return {
-    props: { postsForFooter, cartItems },
+    props: { cartItems },
   };
 }
 

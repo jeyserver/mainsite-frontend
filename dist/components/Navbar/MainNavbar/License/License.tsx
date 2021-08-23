@@ -1,6 +1,6 @@
+import * as React from 'react';
 import classNames from 'classnames';
 import Link from 'next/link';
-import * as React from 'react';
 import { Container, Dropdown, Row, Col } from 'react-bootstrap';
 import styles from './License.module.scss';
 import { License as LicenseType } from '../../../../pages/_app';
@@ -8,146 +8,179 @@ import formatPriceWithCurrency from '../../../../helper/formatPriceWithCurrency'
 import { connect } from 'react-redux';
 import { RootState } from '../../../../store';
 
-type Licenses = 'DirectAdmin' | 'Cpanel' | 'LiteSpeed' | 'WHMCS' | 'CloudLinux';
+type LicenseTitle =
+  | 'DirectAdmin'
+  | 'Cpanel'
+  | 'LiteSpeed'
+  | 'WHMCS'
+  | 'CloudLinux';
 
-const renderLicense = (license: Licenses) => {
-  if (license === 'DirectAdmin') {
-    return (
-      <div className={styles.renderedLicenseWrapper}>
-        <img
-          src="/images/directadmin.png"
-          alt="لایسنس دایرکت ادمین"
-          height="61px"
-          width="87px"
-        />
-        <p>
-          دایرکت ادمین که بسیار ساده ، کاربردی و انعطاف پذیر است این روز ها
-          مشتریان زیادی در کشورمان ایران پیدا کرده و با نسخه‌های متعددی از
-          لینوکس CentOs، Ubuntu و Debian سازگاری کامل دارد. دایرکت ادمین اغلب به
-          صورت کوتاه، DA نامیده می‌شود.
-        </p>
-      </div>
-    );
-  } else if (license === 'Cpanel') {
-    return (
-      <div className={styles.renderedLicenseWrapper}>
-        <img
-          src="/images/cpanel.png"
-          alt="لایسنس دایرکت ادمین"
-          height="59px"
-          width="88px"
-        />
-        <p>
-          سی پنل را همه میشناسند!سی پنل بسیار پویا و خوش ظاهر است،بسیاری از
-          وبمستر ها به دلیل ظاهر آراسته اش به آن علاقمند شدند.سی پنل که محصول یک
-          شرکت آمریکایی با همین نام است بر روی سرور های لینوکسی نصب میشود.ابزار
-          معروف EasyApache را سال های قبل برای راحت کردن امور فنی ارائه کرد.
-        </p>
-      </div>
-    );
-  } else if (license === 'LiteSpeed') {
-    return (
-      <div className={styles.renderedLicenseWrapper}>
-        <img
-          src="/images/litespeed.png"
-          alt="لایسنس دایرکت ادمین"
-          height="59px"
-          width="88px"
-        />
-        <p>
-          وب سرور LiteSpeed ، یک وب سرور با کارایی بالا و مقیاس پذیری بالا هست.
-          بطور کامل قابل تعویض با وب سرور آپاچی Apache میباشد آزمایش های ما ثابت
-          کردن که 6 بار سریع تر از آپاچی عمل می کند.همچنین وقتی محتوا پویا باشد
-          و پردازش PHP مورد بحث باشد ، لایت اسپید بیش از ۵۰% سریع تر از زمانی که
-          آپاچی با mod_php عمل می کنه محتوای PHP رو تحویل خواهد داد.{' '}
-        </p>
-      </div>
-    );
-  } else if (license === 'WHMCS') {
-    return (
-      <div className={styles.renderedLicenseWrapper}>
-        <img
-          src="/images/whmcs.png"
-          alt="لایسنس دایرکت ادمین"
-          height="75px"
-          width="75px"
-        />
-        <p>
-          همان سیستمی است که تاکنون در بازار فروش جهانی جای خود را باز کرده و
-          خودش یک پا "همه فن حریف" است!درگاه های پرداخت خود را به این سیستم
-          معرفی کنید و بگویید که چه محصولاتی را ارائه میکنید، خودش همه ی کار ها
-          را انجام میدهد.
-        </p>
-      </div>
-    );
-  } else if (license === 'CloudLinux') {
-    return (
-      <div className={styles.renderedLicenseWrapper}>
-        <img
-          src="/images/cloudlinux.png"
-          alt="لایسنس دایرکت ادمین"
-          height="69px"
-          width="66px"
-        />
-        <p>
-          کلاود لینوکس،اولین توزیع تجاری لینوکس، برای بهبود و کنترل شرایط سرور
-          پدید آمده.اکثر مشتریان این توزیع مدیران سرور های میزبانی وب هستند که
-          تمایل دارند تا کاربرانشان را در حالت ایزوله جدا از یکدگیر میزبانی
-          کنند. کلاود لینوکس این امکان را صاحبان سرور میدهد تا برای هر کاربر
-          منابع دقیقی(مثل رم و پردازشگر) مشخص کنند و درصورت استفاده بی رویه
-          اکانت آن کاربر را غیرفعال کند.
-        </p>
-      </div>
-    );
+const renderLicenseCard = (license: LicenseTitle) => {
+  switch (license) {
+    case 'DirectAdmin':
+      return (
+        <div className={styles.renderedLicenseWrapper}>
+          <img
+            src="/images/directadmin.png"
+            alt="لایسنس دایرکت ادمین"
+            height="61px"
+            width="87px"
+          />
+          <p>
+            دایرکت ادمین که بسیار ساده ، کاربردی و انعطاف پذیر است این روز ها
+            مشتریان زیادی در کشورمان ایران پیدا کرده و با نسخه‌های متعددی از
+            لینوکس CentOs، Ubuntu و Debian سازگاری کامل دارد. دایرکت ادمین اغلب
+            به صورت کوتاه، DA نامیده می‌شود.
+          </p>
+        </div>
+      );
+    case 'Cpanel':
+      return (
+        <div className={styles.renderedLicenseWrapper}>
+          <img
+            src="/images/cpanel.png"
+            alt="لایسنس دایرکت ادمین"
+            height="59px"
+            width="88px"
+          />
+          <p>
+            سی پنل را همه میشناسند!سی پنل بسیار پویا و خوش ظاهر است،بسیاری از
+            وبمستر ها به دلیل ظاهر آراسته اش به آن علاقمند شدند.سی پنل که محصول
+            یک شرکت آمریکایی با همین نام است بر روی سرور های لینوکسی نصب
+            میشود.ابزار معروف EasyApache را سال های قبل برای راحت کردن امور فنی
+            ارائه کرد.
+          </p>
+        </div>
+      );
+    case 'LiteSpeed':
+      return (
+        <div className={styles.renderedLicenseWrapper}>
+          <img
+            src="/images/litespeed.png"
+            alt="لایسنس دایرکت ادمین"
+            height="59px"
+            width="88px"
+          />
+          <p>
+            وب سرور LiteSpeed ، یک وب سرور با کارایی بالا و مقیاس پذیری بالا
+            هست. بطور کامل قابل تعویض با وب سرور آپاچی Apache میباشد آزمایش های
+            ما ثابت کردن که 6 بار سریع تر از آپاچی عمل می کند.همچنین وقتی محتوا
+            پویا باشد و پردازش PHP مورد بحث باشد ، لایت اسپید بیش از ۵۰% سریع تر
+            از زمانی که آپاچی با mod_php عمل می کنه محتوای PHP رو تحویل خواهد
+            داد.{' '}
+          </p>
+        </div>
+      );
+    case 'WHMCS':
+      return (
+        <div className={styles.renderedLicenseWrapper}>
+          <img
+            src="/images/whmcs.png"
+            alt="لایسنس دایرکت ادمین"
+            height="75px"
+            width="75px"
+          />
+          <p>
+            همان سیستمی است که تاکنون در بازار فروش جهانی جای خود را باز کرده و
+            خودش یک پا "همه فن حریف" است!درگاه های پرداخت خود را به این سیستم
+            معرفی کنید و بگویید که چه محصولاتی را ارائه میکنید، خودش همه ی کار
+            ها را انجام میدهد.
+          </p>
+        </div>
+      );
+    case 'CloudLinux':
+      return (
+        <div className={styles.renderedLicenseWrapper}>
+          <img
+            src="/images/cloudlinux.png"
+            alt="لایسنس دایرکت ادمین"
+            height="69px"
+            width="66px"
+          />
+          <p>
+            کلاود لینوکس،اولین توزیع تجاری لینوکس، برای بهبود و کنترل شرایط سرور
+            پدید آمده.اکثر مشتریان این توزیع مدیران سرور های میزبانی وب هستند که
+            تمایل دارند تا کاربرانشان را در حالت ایزوله جدا از یکدگیر میزبانی
+            کنند. کلاود لینوکس این امکان را صاحبان سرور میدهد تا برای هر کاربر
+            منابع دقیقی(مثل رم و پردازشگر) مشخص کنند و درصورت استفاده بی رویه
+            اکانت آن کاربر را غیرفعال کند.
+          </p>
+        </div>
+      );
   }
 };
 
-const renderLicenseImg = (licenseRegistrar: number) => {
+const renderLicenseImageAndTilte = (licenseRegistrar: number) => {
   switch (licenseRegistrar) {
     case 1:
       return (
-        <img
-          src="/images/directadmin.png"
-          alt="لایسنس دایرکت ادمین"
-          height="40px"
-          width="59px"
-        />
+        <div className={styles.imageAndNameWrapper}>
+          <div className={styles.imgWrapper}>
+            <img
+              src="/images/directadmin.png"
+              alt="لایسنس دایرکت ادمین"
+              height="40px"
+              width="59px"
+            />
+          </div>
+          <span>DirectAdmin</span>
+        </div>
       );
     case 2:
       return (
-        <img
-          src="/images/cpanel.png"
-          alt="لایسنس سی پنل"
-          height="40px"
-          width="59px"
-        />
+        <div className={styles.imageAndNameWrapper}>
+          <div className={styles.imgWrapper}>
+            <img
+              src="/images/cpanel.png"
+              alt="لایسنس سی پنل"
+              height="40px"
+              width="59px"
+            />
+          </div>
+          <span>Cpanel</span>
+        </div>
       );
     case 3:
       return (
-        <img
-          src="/images/litespeed.png"
-          alt="لایسنس لایت اسپید"
-          height="40px"
-          width="59px"
-        />
+        <div className={styles.imageAndNameWrapper}>
+          <div className={styles.imgWrapper}>
+            <img
+              src="/images/litespeed.png"
+              alt="لایسنس لایت اسپید"
+              height="40px"
+              width="59px"
+            />
+          </div>
+          <span>LiteSpeed</span>
+        </div>
       );
     case 4:
       return (
-        <img
-          src="/images/whmcs.png"
-          alt="لایسنس whmcs"
-          height="40px"
-          width="40px"
-        />
+        <div className={styles.imageAndNameWrapper}>
+          <div className={styles.imgWrapper}>
+            <img
+              src="/images/whmcs.png"
+              alt="لایسنس whmcs"
+              height="40px"
+              width="40px"
+            />
+          </div>
+          <span>WHMCS</span>
+        </div>
       );
     case 5:
       return (
-        <img
-          src="/images/cloudlinux.png"
-          alt="لایسنس کلود لینوکس"
-          height="40px"
-          width="38px"
-        />
+        <div className={styles.imageAndNameWrapper}>
+          <div className={styles.imgWrapper}>
+            <img
+              src="/images/cloudlinux.png"
+              alt="لایسنس کلود لینوکس"
+              height="40px"
+              width="38px"
+            />
+          </div>
+          <span>CloudLinux</span>
+        </div>
       );
     default:
       break;
@@ -169,8 +202,8 @@ const renderLicenseTitle = (licenseRegistrar: number) => {
   }
 };
 
-const renderPanelPeriod = (panelPeriod) => {
-  switch (panelPeriod) {
+const renderPeriod = (period: number) => {
+  switch (period) {
     case 0:
       return 'برای همیشه';
     case 1:
@@ -192,7 +225,7 @@ interface LicenseProps {
 }
 
 interface LicenseState {
-  hoveredLicense: Licenses;
+  hoveredLicense: LicenseTitle;
 }
 
 class License extends React.Component<LicenseProps, LicenseState> {
@@ -216,7 +249,7 @@ class License extends React.Component<LicenseProps, LicenseState> {
     clearInterval(interval);
   }
 
-  goAutoToNextLicense(license: Licenses) {
+  goAutoToNextLicense(license: LicenseTitle) {
     switch (license) {
       case 'DirectAdmin':
         this.setState({ hoveredLicense: 'Cpanel' });
@@ -238,7 +271,7 @@ class License extends React.Component<LicenseProps, LicenseState> {
     }
   }
 
-  handleChangeHoveredLicense(license: Licenses) {
+  handleChangeHoveredLicense(license: LicenseTitle) {
     clearInterval(interval);
     this.setState({ hoveredLicense: license }, () => {
       interval = setInterval(() => {
@@ -248,15 +281,16 @@ class License extends React.Component<LicenseProps, LicenseState> {
   }
 
   render() {
-    const licenseWithLowestPrice = Object.values(
-      this.props.licenses.reduce((r, o) => {
+    const licensesWithLowestPrice = Object.values(
+      this.props.licenses.reduce((accumulator, currentValue) => {
         if (
-          (!r[o.registrar] || o.price > r[o.registrar].price) &&
-          o.status === 1
+          (!accumulator[currentValue.registrar] ||
+            currentValue.price > accumulator[currentValue.registrar].price) &&
+          currentValue.status === 1
         )
-          r[o.registrar] = o;
+          accumulator[currentValue.registrar] = currentValue;
 
-        return r;
+        return accumulator;
       }, {})
     );
 
@@ -274,7 +308,7 @@ class License extends React.Component<LicenseProps, LicenseState> {
             <Row>
               <Col xs={12} md={6} className="px-0">
                 <div className={styles.btnsWrapper}>
-                  {licenseWithLowestPrice.map((license: LicenseType) => (
+                  {licensesWithLowestPrice.map((license: LicenseType) => (
                     <Link
                       href={`/licenses/${renderLicenseTitle(
                         license.registrar
@@ -298,12 +332,7 @@ class License extends React.Component<LicenseProps, LicenseState> {
                           renderLicenseTitle(license.registrar)
                         }
                       >
-                        <div className={styles.imageAndNameWrapper}>
-                          <div className={styles.imgWrapper}>
-                            {renderLicenseImg(license.registrar)}
-                          </div>
-                          <span>{renderLicenseTitle(license.registrar)}</span>
-                        </div>
+                        {renderLicenseImageAndTilte(license.registrar)}
                         <div>
                           <span>
                             از{' '}
@@ -313,7 +342,7 @@ class License extends React.Component<LicenseProps, LicenseState> {
                               license.price
                             )}{' '}
                           </span>
-                          <span> {renderPanelPeriod(license.pp)}</span>
+                          <span>{renderPeriod(license.pp)}</span>
                         </div>
                       </a>
                     </Link>
@@ -321,7 +350,7 @@ class License extends React.Component<LicenseProps, LicenseState> {
                 </div>
               </Col>
               <Col xs={12} md={6} className="px-0">
-                {renderLicense(this.state.hoveredLicense)}
+                {renderLicenseCard(this.state.hoveredLicense)}
               </Col>
             </Row>
           </Container>

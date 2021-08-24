@@ -2,27 +2,20 @@ import * as React from 'react';
 import { Table, OverlayTrigger, Tooltip, Button } from 'react-bootstrap';
 import Link from 'next/link';
 import styles from './ServerDedicatedTab.module.scss';
-import classNames from 'classnames';
-import { formatHards } from '../../../helper/formatHards';
-import { formatSpaceInPersian } from '../../../helper/formatSpace';
-import CountryFlagTooltip from '../../../helper/components/CountryFlagTooltip';
-import { formatPrice } from '../../../helper/formatPrice';
+import { formatHards } from '../../../../helper/formatHards';
+import { formatSpaceInPersian } from '../../../../helper/formatSpace';
+import CountryFlagTooltip from '../../../../helper/components/CountryFlagTooltip/CountryFlagTooltip';
+import formatPriceWithCurrency from '../../../../helper/formatPriceWithCurrency';
+import { RootState } from '../../../../store';
+import { connect } from 'react-redux';
+import { IDedicatedPlan } from '../../../../helper/types/products/Dedicated/plan';
 
-export interface ServerDedicatedTabProps {
-  data: any;
+interface IProps {
+  data: IDedicatedPlan[];
+  currencies: RootState['currencies'];
 }
 
-export interface ServerDedicatedTabState {}
-
-class ServerDedicatedTab extends React.Component<
-  ServerDedicatedTabProps,
-  ServerDedicatedTabState
-> {
-  constructor(props: ServerDedicatedTabProps) {
-    super(props);
-    this.state = {};
-  }
-
+class ServerDedicatedTab extends React.Component<IProps> {
   render() {
     return (
       <div>
@@ -48,28 +41,30 @@ class ServerDedicatedTab extends React.Component<
             </tr>
           </thead>
           <tbody>
-            {this.props.data.panels.map((panel) => (
+            {this.props.data.map((panel) => (
               <tr key={panel.id}>
                 <td>{panel.title}</td>
                 <td>{formatHards(panel.hard)}</td>
-                <td>{panel.cpu} گیگاهرتز</td>
+                <td>{panel.cpu.speed} گیگاهرتز</td>
                 <td>{formatSpaceInPersian(panel.ram)}</td>
                 <td>
-                  <CountryFlagTooltip
-                    name={panel.location.country}
-                    flag={{
-                      address: panel.location.flag,
-                      width: 24,
-                      height: 24,
-                    }}
-                  />
+                  <CountryFlagTooltip country={panel.datacenter.country} />
                 </td>
                 <td>
                   <div>
-                    {formatPrice(panel.price)} {panel.currency.title} ماهیانه
+                    {formatPriceWithCurrency(
+                      this.props.currencies.items,
+                      panel.currency,
+                      panel.price
+                    )}{' '}
+                    ماهیانه
                   </div>
                   <div>
-                    {formatPrice(panel.price * 12)} {panel.currency.title}{' '}
+                    {formatPriceWithCurrency(
+                      this.props.currencies.items,
+                      panel.currency,
+                      panel.price * 12
+                    )}{' '}
                     سالیانه
                   </div>
                 </td>
@@ -79,12 +74,32 @@ class ServerDedicatedTab extends React.Component<
                     <Link href={`/server/dedicated/${panel.id}`}>
                       <a className={styles.moreInfoLink}>اطلاعات بیشتر</a>
                     </Link>
-                    <Link href={`/order/server/dedicated/${panel.id}`}>
-                      <a className={styles.orderLink}>
-                        <i className="fas fa-shopping-cart"></i>
-                        <span>سفارش</span>
-                      </a>
-                    </Link>
+                    {!panel.sold_out ? (
+                      <Link href={`/order/server/dedicated/${panel.id}`}>
+                        <a className={styles.orderLink}>
+                          <i className="fas fa-shopping-cart"></i>
+                          <span>سفارش</span>
+                        </a>
+                      </Link>
+                    ) : (
+                      <OverlayTrigger
+                        overlay={
+                          <Tooltip
+                            id="tooltip-disabled"
+                            className={styles.tooltip}
+                          >
+                            این پلن در حال حاظر برای فروش فعال نمیباشد
+                          </Tooltip>
+                        }
+                      >
+                        <span className={styles.tooltipWrapper}>
+                          <Button className={styles.orderLink} disabled>
+                            <i className="fas fa-shopping-cart"></i>
+                            سفارش{' '}
+                          </Button>
+                        </span>
+                      </OverlayTrigger>
+                    )}
                   </div>
                 </td>
               </tr>
@@ -96,4 +111,8 @@ class ServerDedicatedTab extends React.Component<
   }
 }
 
-export default ServerDedicatedTab;
+export default connect((state: RootState) => {
+  return {
+    currencies: state.currencies,
+  };
+})(ServerDedicatedTab);

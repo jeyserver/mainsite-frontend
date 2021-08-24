@@ -1,51 +1,77 @@
 import * as React from 'react';
-import { Container, Row, Col, Dropdown } from 'react-bootstrap';
+import { Row, Col, Dropdown } from 'react-bootstrap';
 import Link from 'next/link';
 import styles from './VpsNav.module.scss';
 
-export interface VpsNavProps {
-  data: any;
-}
+const vpsNavData = {
+  professional: [
+    {
+      name_en: 'france',
+      name_fa: 'فرانسه',
+    },
+    {
+      name_en: 'germany',
+      name_fa: 'آلمان',
+    },
+    {
+      name_en: 'iran',
+      name_fa: 'ایران',
+    },
+  ],
+  economic: [
+    {
+      name_en: 'france',
+      name_fa: 'فرانسه',
+    },
+    {
+      name_en: 'germany',
+      name_fa: 'آلمان',
+    },
+    {
+      name_en: 'iran',
+      name_fa: 'ایران',
+    },
+  ],
+  storage: [
+    {
+      name_en: 'france',
+      name_fa: 'فرانسه',
+    },
+  ],
+};
 
-export interface VpsNavState {}
-
-class VpsNav extends React.Component<VpsNavProps, VpsNavState> {
-  constructor(props: VpsNavProps) {
-    super(props);
-    this.state = {};
+const tarnslateType = (type) => {
+  switch (type) {
+    case 'professional':
+      return 'حرفه ای';
+    case 'economic':
+      return 'اقتصادی';
+    case 'storage':
+      return 'حجیم';
+    default:
+      return '';
   }
+};
+
+class VpsNav extends React.Component {
   render() {
     return (
       <Row className="justify-content-center">
         <Col md={10}>
           <ul className={styles.vpsNav}>
-            {this.props.data.professionals.map((item) => (
-              <li key={item.country_name_en}>
-                <Link
-                  href={`/server/vps/professional#server_vps_professional_${item.country_name_en}`}
-                >
-                  <a>سرور مجازی حرفه ای {item.country_name_fa}</a>
-                </Link>
-              </li>
-            ))}
-            {this.props.data.economics.map((item) => (
-              <li key={item.country_name_en}>
-                <Link
-                  href={`/server/vps/professional#server_vps_economic_${item.country_name_en}`}
-                >
-                  <a>سرور مجازی اقتصادی {item.country_name_fa}</a>
-                </Link>
-              </li>
-            ))}
-            {this.props.data.storages.map((item) => (
-              <li key={item.country_name_en}>
-                <Link
-                  href={`/server/vps/professional#server_vps_storage_${item.country_name_en}`}
-                >
-                  <a>سرور مجازی حجیم {item.country_name_fa}</a>
-                </Link>
-              </li>
-            ))}
+            {Object.keys(vpsNavData).map((type) => {
+              return vpsNavData[type].map((country) => (
+                <li key={country.name_en}>
+                  <Link
+                    href={`/server/vps/${type}#server_vps_${type}_${country.name_en}`}
+                  >
+                    <a>
+                      سرور مجازی {tarnslateType(type)} {country.name_fa}
+                    </a>
+                  </Link>
+                </li>
+              ));
+            })}
           </ul>
 
           <ul className={styles.vpsNavOnMobile}>
@@ -56,12 +82,12 @@ class VpsNav extends React.Component<VpsNavProps, VpsNavState> {
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu className={styles.dropdownMenu}>
-                  {this.props.data.professionals.map((item) => (
+                  {vpsNavData.professional.map((country) => (
                     <Link
-                      key={item.country_name_en}
-                      href={`/server/vps/professional#server_vps_professional_${item.country_name_en}`}
+                      key={country.name_en}
+                      href={`/server/vps/professional#server_vps_professional_${country.name_en}`}
                     >
-                      <a>سرور مجازی حرفه ای {item.country_name_fa}</a>
+                      <a>سرور مجازی حرفه ای {country.name_fa}</a>
                     </Link>
                   ))}
                 </Dropdown.Menu>
@@ -75,23 +101,24 @@ class VpsNav extends React.Component<VpsNavProps, VpsNavState> {
                 </Dropdown.Toggle>
 
                 <Dropdown.Menu className={styles.dropdownMenu}>
-                  {this.props.data.economics.map((item) => (
+                  {vpsNavData.economic.map((country) => (
                     <Link
-                      key={item.country_name_en}
-                      href={`/server/vps/professional#server_vps_professional_${item.country_name_en}`}
+                      key={country.name_en}
+                      href={`/server/vps/professional#server_vps_professional_${country.name_en}`}
                     >
-                      <a>سرور مجازی اقتصادی {item.country_name_fa}</a>
+                      <a>سرور مجازی اقتصادی {country.name_fa}</a>
                     </Link>
                   ))}
                 </Dropdown.Menu>
               </Dropdown>
             </li>
-            {this.props.data.storages.map((item) => (
-              <li key={item.country_name_en}>
+
+            {vpsNavData.storage.map((country) => (
+              <li key={country.name_fa}>
                 <Link
-                  href={`/server/vps/professional#server_vps_storage_${item.country_name_en}`}
+                  href={`/server/vps/professional#server_vps_storage_${country.name_en}`}
                 >
-                  <a>سرور مجازی حجیم {item.country_name_fa}</a>
+                  <a>سرور مجازی حجیم {country.name_fa}</a>
                 </Link>
               </li>
             ))}

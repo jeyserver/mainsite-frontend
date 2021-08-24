@@ -3,33 +3,28 @@ import { Table, OverlayTrigger, Tooltip, Button } from 'react-bootstrap';
 import Link from 'next/link';
 import styles from './SharedHostingTab.module.scss';
 import classNames from 'classnames';
-import { formatPrice } from '../../../helper/formatPrice';
-import CountryFlagTooltip from '../../../helper/components/CountryFlagTooltip';
+import CountryFlagTooltip from '../../../../helper/components/CountryFlagTooltip/CountryFlagTooltip';
+import { formatSpaceInPersian } from '../../../../helper/formatSpace';
+import formatPriceWithCurrency from '../../../../helper/formatPriceWithCurrency';
+import { connect } from 'react-redux';
+import { RootState } from '../../../../store';
+import { IHostPlan } from '../../../../helper/types/products/Host/plan';
+import translateHostPanel from '../../../../helper/translators/translateHostPanel';
 
-export interface SharedHostingTabProps {
-  data: any;
+interface IProps {
+  data: IHostPlan[];
   type: 'windows' | 'linux';
-  isOrderBtnHidden?: boolean;
+  currencies: RootState['currencies'];
 }
 
-export interface SharedHostingTabState {
+interface IState {
   isMoreInfoOpen: boolean;
 }
 
-class SharedHostingTab extends React.Component<
-  SharedHostingTabProps,
-  SharedHostingTabState
-> {
-  constructor(props: SharedHostingTabProps) {
+class SharedHostingTab extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
     this.state = { isMoreInfoOpen: false };
-    this.toggleMoreInfo = this.toggleMoreInfo.bind(this);
-  }
-
-  toggleMoreInfo() {
-    this.setState((prev) => {
-      return { isMoreInfoOpen: !prev.isMoreInfoOpen };
-    });
   }
 
   render() {
@@ -114,13 +109,17 @@ class SharedHostingTab extends React.Component<
               </th>
               <th>وب سرور</th>
               <th>هارد سرور</th>
-              <th style={{ lineHeight: '50px' }}>قیمت</th>
+              <th>قیمت</th>
 
               <th className="text-center" style={{ lineHeight: '34px' }}>
                 <button
                   type="button"
                   className={styles.moreInfoBtn}
-                  onClick={this.toggleMoreInfo}
+                  onClick={() =>
+                    this.setState({
+                      isMoreInfoOpen: !this.state.isMoreInfoOpen,
+                    })
+                  }
                 >
                   اطلاعات بیشتر{' '}
                 </button>
@@ -128,35 +127,35 @@ class SharedHostingTab extends React.Component<
             </tr>
           </thead>
           <tbody>
-            {this.props.data.panels.map((panel) => (
+            {this.props.data.map((panel) => (
               <tr key={panel.id}>
                 <td>{panel.title}</td>
-                <td>{panel.space}</td>
+                <td>{formatSpaceInPersian(panel.space)}</td>
                 <td>
-                  {panel.bandwidth === '-' ? (
-                    <span className={styles.jUnlimited}>بدون محدودیت</span>
+                  {panel.bandwidth ? (
+                    formatSpaceInPersian(panel.bandwidth)
                   ) : (
-                    panel.bandwidth
+                    <span className={styles.jUnlimited}>بدون محدودیت</span>
                   )}
                 </td>
-                <td>{panel.host_panel}</td>
+                <td>{translateHostPanel(panel.cp)}</td>
                 <td
                   className={classNames(styles.jHidden, {
                     [styles.open]: this.state.isMoreInfoOpen,
                   })}
                 >
-                  {panel.park_domains === '-' ? (
-                    <span className={styles.jUnlimited}>بدون محدودیت</span>
+                  {panel.parkdomain ? (
+                    `${panel.parkdomain} عدد`
                   ) : (
-                    `${panel.park_domains} عدد`
+                    <span className={styles.jUnlimited}>بدون محدودیت</span>
                   )}
                 </td>
 
                 <td>
-                  {panel.additional_sites === '-' ? (
-                    <span className={styles.jUnlimited}>بدون محدودیت</span>
+                  {panel.addondomain ? (
+                    `${panel.addondomain} عدد`
                   ) : (
-                    `${panel.additional_sites} عدد`
+                    <span className={styles.jUnlimited}>بدون محدودیت</span>
                   )}
                 </td>
                 <td
@@ -164,10 +163,10 @@ class SharedHostingTab extends React.Component<
                     [styles.open]: this.state.isMoreInfoOpen,
                   })}
                 >
-                  {panel.subdomains === '-' ? (
-                    <span className={styles.jUnlimited}>بدون محدودیت</span>
+                  {panel.subdomain ? (
+                    `${panel.subdomain} عدد`
                   ) : (
-                    `${panel.subdomains} عدد`
+                    <span className={styles.jUnlimited}>بدون محدودیت</span>
                   )}
                 </td>
                 <td
@@ -175,10 +174,10 @@ class SharedHostingTab extends React.Component<
                     [styles.open]: this.state.isMoreInfoOpen,
                   })}
                 >
-                  {panel.emails === '-' ? (
-                    <span className={styles.jUnlimited}>بدون محدودیت</span>
+                  {panel.email ? (
+                    `${panel.email} عدد`
                   ) : (
-                    panel.emails
+                    <span className={styles.jUnlimited}>بدون محدودیت</span>
                   )}
                 </td>
                 <td
@@ -186,10 +185,10 @@ class SharedHostingTab extends React.Component<
                     [styles.open]: this.state.isMoreInfoOpen,
                   })}
                 >
-                  {panel.ftp === '-' ? (
-                    <span className={styles.jUnlimited}>بدون محدودیت</span>
+                  {panel.ftp ? (
+                    `${panel.ftp} عدد`
                   ) : (
-                    panel.ftp
+                    <span className={styles.jUnlimited}>بدون محدودیت</span>
                   )}
                 </td>
                 <td
@@ -197,10 +196,10 @@ class SharedHostingTab extends React.Component<
                     [styles.open]: this.state.isMoreInfoOpen,
                   })}
                 >
-                  {panel.database === '-' ? (
-                    <span className={styles.jUnlimited}>بدون محدودیت</span>
+                  {panel.dbs ? (
+                    `${panel.dbs} عدد`
                   ) : (
-                    panel.database
+                    <span className={styles.jUnlimited}>بدون محدودیت</span>
                   )}
                 </td>
                 <td
@@ -208,7 +207,7 @@ class SharedHostingTab extends React.Component<
                     [styles.open]: this.state.isMoreInfoOpen,
                   })}
                 >
-                  {panel.daily_backup ? (
+                  {panel.backups[0] ? (
                     <i
                       className={classNames(
                         'far fa-check-square',
@@ -224,7 +223,7 @@ class SharedHostingTab extends React.Component<
                     [styles.open]: this.state.isMoreInfoOpen,
                   })}
                 >
-                  {panel.monthly_backup ? (
+                  {panel.backups[1] ? (
                     <i
                       className={classNames(
                         'far fa-check-square',
@@ -240,7 +239,7 @@ class SharedHostingTab extends React.Component<
                     [styles.open]: this.state.isMoreInfoOpen,
                   })}
                 >
-                  {panel.annual_backup ? (
+                  {panel.backups[2] ? (
                     <i
                       className={classNames(
                         'far fa-check-square',
@@ -256,7 +255,7 @@ class SharedHostingTab extends React.Component<
                     [styles.jHidden]: this.state.isMoreInfoOpen,
                   })}
                 >
-                  {panel.daily_backup && (
+                  {panel.backups[0] && (
                     <div>
                       <i
                         className={classNames(
@@ -267,7 +266,7 @@ class SharedHostingTab extends React.Component<
                       روزانه
                     </div>
                   )}
-                  {panel.monthly_backup && (
+                  {panel.backups[1] && (
                     <div>
                       <i
                         className={classNames(
@@ -278,7 +277,7 @@ class SharedHostingTab extends React.Component<
                       ماهانه
                     </div>
                   )}
-                  {panel.annual_backup && (
+                  {panel.backups[2] && (
                     <div>
                       <i
                         className={classNames(
@@ -290,27 +289,43 @@ class SharedHostingTab extends React.Component<
                     </div>
                   )}
                 </td>
-                <td>{panel.web_server}</td>
-                <td>{panel.hard_server}</td>
+                <td>
+                  {this.props.type === 'linux' ? 'Apache + Nginx' : 'IIS'}
+                </td>
+                <td>SSD</td>
                 <td>
                   <div>
-                    {formatPrice(panel.price)} {panel.currency.title} ماهیانه
-                  </div>
-                  <div>
-                    {formatPrice(panel.price * 12)} {panel.currency.title}{' '}
-                    سالیانه
+                    {formatPriceWithCurrency(
+                      this.props.currencies.items,
+                      panel.currency,
+                      panel.price
+                    )}{' '}
+                    ماهیانه
                   </div>
                 </td>
                 <td>
-                  {!this.props.isOrderBtnHidden && (
+                  {panel.is_available && (
+                    <Link href={`/order/server/vps/${panel.id}`}>
+                      <a className={styles.orderLink}>
+                        <CountryFlagTooltip
+                          country={panel.country}
+                          flag={{
+                            width: 24,
+                            height: 24,
+                          }}
+                        />
+                        <span>سفارش</span>{' '}
+                      </a>
+                    </Link>
+                  )}
+                  {/* {!this.props.isOrderBtnHidden && (
                     <div>
-                      {panel.active ? (
+                      {panel.is_available && (
                         <Link href={`/order/server/vps/${panel.id}`}>
                           <a className={styles.orderLink}>
                             <CountryFlagTooltip
-                              name={this.props.data.country_name_en}
+                              country={panel.country}
                               flag={{
-                                address: this.props.data.flag,
                                 width: 24,
                                 height: 24,
                               }}
@@ -332,8 +347,8 @@ class SharedHostingTab extends React.Component<
                           <span className={styles.tooltipWrapper}>
                             <Button className={styles.orderLink} disabled>
                               <img
-                                src={this.props.data.flag}
-                                alt={this.props.data.country_name_en}
+                                src={`./images/flags/${panel.country.code.toLowerCase()}.svg`}
+                                alt={panel.country.name}
                               />
                               سفارش{' '}
                             </Button>
@@ -341,7 +356,7 @@ class SharedHostingTab extends React.Component<
                         </OverlayTrigger>
                       )}
                     </div>
-                  )}
+                  )} */}
                 </td>
               </tr>
             ))}
@@ -352,4 +367,8 @@ class SharedHostingTab extends React.Component<
   }
 }
 
-export default SharedHostingTab;
+export default connect((state: RootState) => {
+  return {
+    currencies: state.currencies,
+  };
+})(SharedHostingTab);

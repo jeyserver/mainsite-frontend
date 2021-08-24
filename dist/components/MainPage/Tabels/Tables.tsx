@@ -5,20 +5,31 @@ import styles from './Tables.module.scss';
 import VpsServerTab from './VpsServerTab/VpsServerTab';
 import ServerDedicatedTab from './ServerDedicatedTab/ServerDedicatedTab';
 import VpsNav from './VpsServerTab/VpsNav/VpsNav';
+import { ITablesData } from '../../../pages';
+import { IVPSPlan } from '../../../helper/types/products/VPS/plan';
 
-export interface TablesProps {
-  tablesData: any;
+interface IProps {
+  tablesData: ITablesData;
 }
 
-export interface TablesState { }
-
-class Tables extends React.Component<TablesProps, TablesState> {
-  constructor(props: TablesProps) {
-    super(props);
-    this.state = {};
-  }
-
+class Tables extends React.Component<IProps> {
   render() {
+    const vpsPlans = this.props.tablesData.servers.vps.reduce(
+      (accumulator, currentValue) => {
+        if (accumulator && accumulator[currentValue.country.name]) {
+          accumulator[currentValue.country.name] = [
+            ...accumulator[currentValue.country.name],
+            currentValue,
+          ];
+        } else {
+          accumulator[currentValue.country.name] = [currentValue];
+        }
+
+        return accumulator;
+      },
+      {}
+    );
+
     return (
       <div>
         <Tab.Container defaultActiveKey="tab-server-vps">
@@ -78,26 +89,25 @@ class Tables extends React.Component<TablesProps, TablesState> {
           <Tab.Content style={{ marginBottom: '5em' }}>
             <Tab.Pane eventKey="tab-hosting-linux">
               <SharedHostingTab
-                data={this.props.tablesData.linuxHosts[0]}
+                data={this.props.tablesData.hosts.linux}
                 type="linux"
               />
             </Tab.Pane>
             <Tab.Pane eventKey="tab-hosting-windows">
               <SharedHostingTab
-                data={this.props.tablesData.linuxHosts[0]}
+                data={this.props.tablesData.hosts.windows}
                 type="windows"
-                isOrderBtnHidden={true}
               />
             </Tab.Pane>
             <Tab.Pane eventKey="tab-server-vps">
-              <VpsNav data={this.props.tablesData.vps.navData} />
-              {this.props.tablesData.vps.tableData.map((data) => (
-                <VpsServerTab data={data} type={data.type} />
+              <VpsNav />
+              {Object.values(vpsPlans).map((data: IVPSPlan[], index) => (
+                <VpsServerTab data={data} key={index} />
               ))}
             </Tab.Pane>
             <Tab.Pane eventKey="tab-server-dedicated">
               <ServerDedicatedTab
-                data={this.props.tablesData.dedicatedServers[0]}
+                data={this.props.tablesData.servers.dedicated}
               />
             </Tab.Pane>
           </Tab.Content>

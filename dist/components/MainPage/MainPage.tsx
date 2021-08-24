@@ -1,21 +1,15 @@
 import * as React from 'react';
 import { Container, Row } from 'react-bootstrap';
+import { ITablesData } from '../../pages';
 import Features from './Features/Features';
 import Services from './Services/Services';
 import Tables from './Tabels/Tables';
 
-export interface MainPageProps {
-  tablesData: any;
+interface MainPageProps {
+  tablesData: ITablesData;
 }
 
-export interface MainPageState {}
-
-class MainPage extends React.Component<MainPageProps, MainPageState> {
-  constructor(props: MainPageProps) {
-    super(props);
-    this.state = {};
-  }
-
+class MainPage extends React.Component<MainPageProps> {
   render() {
     return (
       <section>

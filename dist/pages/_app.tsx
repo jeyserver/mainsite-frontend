@@ -39,7 +39,7 @@ export default function App({
   );
 }
 
-export interface Currency {
+export interface ICurrency {
   active?: boolean;
   id: number;
   prefix: null;
@@ -56,7 +56,7 @@ export interface Currency {
   }[];
 }
 
-export interface Tld {
+export interface ITld {
   id: number;
   new: number;
   renew: number;
@@ -72,7 +72,7 @@ enum LicensePP {
   Yearly,
 }
 
-export interface License {
+export interface ILicense {
   id: number;
   registrar: number;
   title: string;
@@ -83,16 +83,16 @@ export interface License {
   status: 0 | 1;
 }
 
-export interface FooterPost {
+export interface IFooterPost {
   title: string;
   permalink: string;
 }
 
 export interface pageProps {
-  domainsForNavbar: Tld[];
-  licensesForNavbar: License[];
-  postsForFooter: FooterPost[];
-  currencies: Currency[];
+  domainsForNavbar: ITld[];
+  licensesForNavbar: ILicense[];
+  postsForFooter: IFooterPost[];
+  currencies: ICurrency[];
 }
 
 App.getInitialProps = async ({ Component, ctx }) => {

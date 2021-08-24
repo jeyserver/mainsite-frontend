@@ -5,18 +5,11 @@ import { Dropdown, Container, Row, Col } from 'react-bootstrap';
 import styles from './Server.module.scss';
 import classNames from 'classnames';
 
-interface ServerProps {
+interface IProps {
   changeShowDropDown: () => void;
 }
 
-interface ServerState {}
-
-class Server extends React.Component<ServerProps, ServerState> {
-  constructor(props: ServerProps) {
-    super(props);
-    this.state = {};
-  }
-
+class Server extends React.Component<IProps> {
   render() {
     return (
       <Dropdown className="nav-item-dropdown">

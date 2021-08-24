@@ -4,18 +4,18 @@ import { Container, Row, Col, Image } from 'react-bootstrap';
 import styles from './Footer.module.scss';
 import axios from 'axios';
 import { NotificationManager } from 'react-notifications';
-import { FooterPost } from '../../pages/_app';
+import { IFooterPost } from '../../pages/_app';
 
-export interface FooterProps {
-  posts: FooterPost[];
+export interface IProps {
+  posts: IFooterPost[];
 }
 
-export interface FooterState {
+export interface IState {
   newsLettersbtnLoading: boolean;
 }
 
-class Footer extends React.Component<FooterProps, FooterState> {
-  constructor(props: FooterProps) {
+class Footer extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
     this.state = {
       newsLettersbtnLoading: false,

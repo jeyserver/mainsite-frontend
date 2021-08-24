@@ -5,18 +5,11 @@ import { Button } from 'react-bootstrap';
 import { Dropdown, Container, Row, Col } from 'react-bootstrap';
 import styles from './Support.module.scss';
 
-interface SupportProps {
+interface IProps {
   changeShowDropDown: () => void;
 }
 
-interface SupportState {}
-
-class Support extends React.Component<SupportProps, SupportState> {
-  constructor(props: SupportProps) {
-    super(props);
-    this.state = {};
-  }
-
+class Support extends React.Component<IProps> {
   render() {
     return (
       <Dropdown className="nav-item-dropdown">

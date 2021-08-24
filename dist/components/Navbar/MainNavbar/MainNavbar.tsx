@@ -8,20 +8,20 @@ import Server from './Server/Server';
 import License from './License/License';
 import Support from './Support/Support';
 import Link from 'next/link';
-import { Tld, License as LicenseType } from '../../../pages/_app';
+import { ITld, ILicense as ILicense } from '../../../pages/_app';
 
-interface MainNavbarProps {
-  tlds: Tld[];
-  licenses: LicenseType[];
+interface IProps {
+  tlds: ITld[];
+  licenses: ILicense[];
 }
 
-interface MainNavbarState {
+interface IState {
   isMenuOpen: boolean;
   dropDownOpend: boolean;
 }
 
-class MainNavbar extends React.Component<MainNavbarProps, MainNavbarState> {
-  constructor(props: MainNavbarProps) {
+class MainNavbar extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
     this.state = { isMenuOpen: false, dropDownOpend: false };
     this.changeShowDropDown = this.changeShowDropDown.bind(this);

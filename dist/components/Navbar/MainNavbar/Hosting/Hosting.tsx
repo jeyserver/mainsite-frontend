@@ -3,18 +3,11 @@ import Link from 'next/link';
 import { Col, Image, Dropdown, Row, Container } from 'react-bootstrap';
 import styles from './Hosting.module.scss';
 
-interface HostingProps {
+interface IProps {
   changeShowDropDown: () => void;
 }
 
-interface HostingState {}
-
-class Hosting extends React.Component<HostingProps, HostingState> {
-  constructor(props: HostingProps) {
-    super(props);
-    this.state = {};
-  }
-
+class Hosting extends React.Component<IProps> {
   render() {
     return (
       <Dropdown className="nav-item-dropdown">

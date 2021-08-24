@@ -13,7 +13,7 @@ import {
 import styles from './Domain.module.scss';
 import { withRouter, NextRouter } from 'next/router';
 import classNames from 'classnames';
-import { Tld } from '../../../../pages/_app';
+import { ITld } from '../../../../pages/_app';
 import formatPriceWithCurrency from '../../../../helper/formatPriceWithCurrency';
 import { setDomainForShop } from '../../../../redux/actions';
 import { connect } from 'react-redux';
@@ -31,15 +31,15 @@ const showError = (errorMsg: error) => {
   }
 };
 
-interface DomainProps {
+interface IProps {
   changeShowDropDown: () => void;
   router: NextRouter;
-  tlds: Tld[];
+  tlds: ITld[];
   currencies: RootState['currencies'];
   setDomainForShop: (domain: { tld: string; name: string }) => void;
 }
 
-interface DomainState {
+interface IState {
   selectedDomain: string | null;
   loading: boolean;
   isFormValidated: boolean;
@@ -47,8 +47,8 @@ interface DomainState {
   selectedDomains: any;
 }
 
-class Domain extends React.Component<DomainProps, DomainState> {
-  constructor(props: DomainProps) {
+class Domain extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
     this.state = {
       selectedDomain: null,

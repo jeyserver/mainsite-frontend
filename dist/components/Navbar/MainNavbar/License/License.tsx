@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import Link from 'next/link';
 import { Container, Dropdown, Row, Col } from 'react-bootstrap';
 import styles from './License.module.scss';
-import { License as LicenseType } from '../../../../pages/_app';
+import { ILicense } from '../../../../pages/_app';
 import formatPriceWithCurrency from '../../../../helper/formatPriceWithCurrency';
 import { connect } from 'react-redux';
 import { RootState } from '../../../../store';
@@ -215,12 +215,12 @@ const renderPeriod = (period: number) => {
   }
 };
 
-let interval;
+// let interval;
 
 interface LicenseProps {
   changeShowDropDown: () => void;
   changeShowMenu: () => void;
-  licenses: LicenseType[];
+  licenses: ILicense[];
   currencies: RootState['currencies'];
 }
 
@@ -239,14 +239,18 @@ class License extends React.Component<LicenseProps, LicenseState> {
       this.handleChangeHoveredLicense.bind(this);
   }
 
+  licenseInterval = null;
+
   componentDidMount() {
-    interval = setInterval(() => {
+    this.licenseInterval = setInterval(() => {
       this.goAutoToNextLicense(this.state.hoveredLicense);
     }, 8000);
   }
 
   componentWillUnmount() {
-    clearInterval(interval);
+    if (this.licenseInterval) {
+      clearInterval(this.licenseInterval);
+    }
   }
 
   goAutoToNextLicense(license: LicenseTitle) {
@@ -272,9 +276,11 @@ class License extends React.Component<LicenseProps, LicenseState> {
   }
 
   handleChangeHoveredLicense(license: LicenseTitle) {
-    clearInterval(interval);
+    if (this.licenseInterval) {
+      clearInterval(this.licenseInterval);
+    }
     this.setState({ hoveredLicense: license }, () => {
-      interval = setInterval(() => {
+      this.licenseInterval = setInterval(() => {
         this.goAutoToNextLicense(this.state.hoveredLicense);
       }, 8000);
     });
@@ -308,7 +314,7 @@ class License extends React.Component<LicenseProps, LicenseState> {
             <Row>
               <Col xs={12} md={6} className="px-0">
                 <div className={styles.btnsWrapper}>
-                  {licensesWithLowestPrice.map((license: LicenseType) => (
+                  {licensesWithLowestPrice.map((license: ILicense) => (
                     <Link
                       href={`/licenses/${renderLicenseTitle(
                         license.registrar

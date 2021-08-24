@@ -4,22 +4,16 @@ import Link from 'next/link';
 import styles from './TopNavbar.module.scss';
 import { connect } from 'react-redux';
 import { signUp, logout } from '../../../redux/actions';
+import { RootState } from '../../../store';
 
-interface TopNavbarProps {
-  isLoggedIn: boolean;
-  logout: () => void;
-  signUp: () => void;
-  user: { name: string };
+interface IProps {
+  isLoggedIn: RootState['auth']['isLoggedIn'];
+  logout: any;
+  signUp: any;
+  user: RootState['auth']['user'];
 }
 
-interface TopNavbarState {}
-
-class TopNavbar extends React.Component<TopNavbarProps, TopNavbarState> {
-  constructor(props: TopNavbarProps) {
-    super(props);
-    this.state = {};
-  }
-
+class TopNavbar extends React.Component<IProps> {
   render() {
     return (
       <div id="top-nav" className={styles.topNav}>
@@ -98,11 +92,12 @@ class TopNavbar extends React.Component<TopNavbarProps, TopNavbarState> {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    user: state.auth.user,
-    isLoggedIn: state.auth.isLoggedIn,
-  };
-}
-
-export default connect(mapStateToProps, { signUp, logout })(TopNavbar);
+export default connect(
+  (state: RootState) => {
+    return {
+      user: state.auth.user,
+      isLoggedIn: state.auth.isLoggedIn,
+    };
+  },
+  { signUp, logout }
+)(TopNavbar);

@@ -1,18 +1,16 @@
 import * as React from 'react';
 import Navbar from '../Navbar/Navbar';
 import Footer from '../Footer/Footer';
-import { FooterPost, License, Tld } from '../../pages/_app';
+import { IFooterPost, ILicense, ITld } from '../../pages/_app';
 
-interface LayoutProps {
-  postsForFooter: FooterPost[];
+interface IProps {
+  postsForFooter: IFooterPost[];
   appIsScrolling?: boolean;
-  domainsForNavbar?: Tld[];
-  licensesForNavbar?: License[];
+  domainsForNavbar?: ITld[];
+  licensesForNavbar?: ILicense[];
 }
 
-interface LayoutState {}
-
-class Layout extends React.Component<LayoutProps, LayoutState> {
+class Layout extends React.Component<IProps> {
   render() {
     return (
       <React.Fragment>

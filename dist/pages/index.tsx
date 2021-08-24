@@ -4,21 +4,22 @@ import Header from '../components/Header/Header';
 import MainPage from '../components/MainPage/MainPage';
 import Layout from '../components/Layout/Layout';
 import { pageProps } from './_app';
+import { IVPSPlan } from '../helper/types/products/VPS/plan';
+import { IDedicatedPlan } from '../helper/types/products/Dedicated/plan';
+import { IHostPlan } from '../helper/types/products/Host/plan';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-export interface IndexProps extends pageProps {
-  tablesData: { linuxHosts: any };
+export interface ITablesData {
+  hosts: { linux: IHostPlan[]; windows: IHostPlan[] };
+  servers: { vps: IVPSPlan[]; dedicated: IDedicatedPlan[] };
 }
 
-export interface IndexState {}
+interface IProps extends pageProps {
+  tablesData: ITablesData;
+}
 
-class Index extends React.Component<IndexProps, IndexState> {
-  constructor(props: IndexProps) {
-    super(props);
-    this.state = {};
-  }
-
+class Index extends React.Component<IProps> {
   render() {
     return (
       <div dir="rtl">
@@ -50,32 +51,16 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const linuxHostsRes = await fetch(
-    `https://jsonblob.com/api/jsonBlob/7278ac52-e1a0-11eb-9c37-87e17a3457b8`
+  const respone = await fetch(
+    `${process.env.SCHEMA}://${process.env.DOMAIN}/${locale}?ajax=1`
   );
-  const linuxHosts = await linuxHostsRes.json();
-
-  const vpsDataRes = await fetch(
-    'https://jsonblob.com/api/jsonBlob/3534965c-e4be-11eb-84d8-a31c8d45a9be'
-  );
-  const vpsData = await vpsDataRes.json();
-
-  const navDataRes = await fetch(
-    'https://jsonblob.com/api/jsonBlob/5402e9a0-e49c-11eb-84d8-39f7df0bb25d'
-  );
-  const navData = await navDataRes.json();
-
-  const dedicatedServersRes = await fetch(
-    'https://jsonblob.com/api/jsonBlob/ab0768a5-e4a8-11eb-84d8-e58710bba8f1'
-  );
-  const dedicatedServers = await dedicatedServersRes.json();
+  const data = await respone.json();
 
   return {
     props: {
       tablesData: {
-        linuxHosts,
-        vps: { navData, tableData: vpsData },
-        dedicatedServers,
+        hosts: data.hosts,
+        servers: data.servers,
       },
     },
   };

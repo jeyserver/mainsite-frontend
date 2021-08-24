@@ -3,45 +3,28 @@ import { Table, OverlayTrigger, Tooltip, Button } from 'react-bootstrap';
 import Link from 'next/link';
 import styles from './VpsServerTab.module.scss';
 import classNames from 'classnames';
-import { formatPrice } from '../../../helper/formatPrice';
-import CountryFlagTooltip from '../../../helper/components/CountryFlagTooltip';
+import CountryFlagTooltip from '../../../../helper/components/CountryFlagTooltip/CountryFlagTooltip';
+import { formatSpaceInPersian } from '../../../../helper/formatSpace';
+import { connect } from 'react-redux';
+import { RootState } from '../../../../store';
+import formatPriceWithCurrency from '../../../../helper/formatPriceWithCurrency';
+import translateCountryNameToPersian from '../../../../helper/translateCountryNameToPersian';
+import getVpsPlanTypeInPersian from '../../../../helper/getVpsPlanTypeInPersian';
+import { IVPSPlan } from '../../../../helper/types/products/VPS/plan';
 
-export interface VpsServerTabProps {
-  data: any;
-  type: 'professional' | 'storage' | 'economic';
+interface IProps {
+  data: IVPSPlan[];
+  currencies: RootState['currencies'];
 }
 
-export interface VpsServerTabState {
+interface IState {
   isMoreInfoOpen: boolean;
 }
 
-class VpsServerTab extends React.Component<
-  VpsServerTabProps,
-  VpsServerTabState
-> {
-  constructor(props: VpsServerTabProps) {
+class VpsServerTab extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
     this.state = { isMoreInfoOpen: false };
-    this.toggleMoreInfo = this.toggleMoreInfo.bind(this);
-  }
-
-  toggleMoreInfo() {
-    this.setState((prev) => {
-      return { isMoreInfoOpen: !prev.isMoreInfoOpen };
-    });
-  }
-
-  getType(type) {
-    switch (type) {
-      case 'professional':
-        return 'حرفه ای';
-      case 'storage':
-        return 'حجیم';
-      case 'economic':
-        return 'اقتصادی';
-      default:
-        return '';
-    }
   }
 
   render() {
@@ -49,28 +32,14 @@ class VpsServerTab extends React.Component<
       <div>
         <div className={styles.tittleLine}>
           <h5>
-            سرور مجازی {this.getType(this.props.type)} <br />
-            <CountryFlagTooltip
-              name={this.props.data.country_title_en}
-              flag={{
-                address: this.props.data.flag,
-                width: 24,
-                height: 24,
-              }}
-            />
-            {this.props.data.country}
+            سرور مجازی {getVpsPlanTypeInPersian(this.props.data[0].title)}
+            <br />
+            <CountryFlagTooltip country={this.props.data[0].country} />
+            {translateCountryNameToPersian(this.props.data[0].country.code)}
           </h5>
           <div className={styles.divider}>
             <div />
           </div>
-          {this.props.data.info && (
-            <div
-              className={styles.content}
-              dangerouslySetInnerHTML={{
-                __html: this.props.data.info,
-              }}
-            ></div>
-          )}
         </div>
 
         <Table className={styles.table}>
@@ -118,12 +87,16 @@ class VpsServerTab extends React.Component<
               </th>
               <th>مانیتورینگ</th>
               <th>پشتیبانی</th>
-              <th style={{ lineHeight: '50px' }}>قیمت</th>
+              <th>قیمت</th>
               <th className="text-center" style={{ lineHeight: '34px' }}>
                 <button
                   type="button"
                   className={styles.moreInfoBtn}
-                  onClick={this.toggleMoreInfo}
+                  onClick={() =>
+                    this.setState({
+                      isMoreInfoOpen: !this.state.isMoreInfoOpen,
+                    })
+                  }
                 >
                   اطلاعات بیشتر{' '}
                 </button>
@@ -131,25 +104,21 @@ class VpsServerTab extends React.Component<
             </tr>
           </thead>
           <tbody>
-            {this.props.data.plans.map((plan) => (
+            {this.props.data.map((plan) => (
               <tr key={plan.id}>
                 <td>{plan.title}</td>
-                <td>{plan.hard}</td>
-                <td>{plan.cpu}</td>
-                <td>{plan.ram}</td>
+                <td>{formatSpaceInPersian(plan.hard)}</td>
+                <td>{plan.cpu} مگاهرتز</td>
+                <td>{formatSpaceInPersian(plan.ram)}</td>
                 <td>
-                  {plan.traffic ? (
-                    plan.traffic
-                  ) : (
-                    <span className={styles.jUnlimited}>بدون محدودیت</span>
-                  )}
+                  <span className={styles.jUnlimited}>بدون محدودیت</span>
                 </td>
                 <td
                   className={classNames(styles.jHidden, {
                     [styles.open]: this.state.isMoreInfoOpen,
                   })}
                 >
-                  {plan.port}
+                  1 گیگابیت
                 </td>
                 <td
                   className={classNames(
@@ -157,14 +126,10 @@ class VpsServerTab extends React.Component<
                     {
                       [styles.open]: this.state.isMoreInfoOpen,
                     },
-                    { [styles.check]: plan.rebootPanel }
+                    { [styles.check]: true }
                   )}
                 >
-                  {plan.rebootPanel ? (
-                    <i className="fa fa-check fa-lg" />
-                  ) : (
-                    <i className="fa fa-times fa-lg" />
-                  )}
+                  <i className="fa fa-check fa-lg" />
                 </td>
                 <td
                   className={classNames(
@@ -172,14 +137,10 @@ class VpsServerTab extends React.Component<
                     {
                       [styles.open]: this.state.isMoreInfoOpen,
                     },
-                    { [styles.check]: plan.consoleAccess }
+                    { [styles.check]: true }
                   )}
                 >
-                  {plan.consoleAccess ? (
-                    <i className="fa fa-check fa-lg" />
-                  ) : (
-                    <i className="fa fa-times fa-lg" />
-                  )}
+                  <i className="fa fa-check fa-lg" />
                 </td>
                 <td
                   className={classNames(
@@ -187,14 +148,10 @@ class VpsServerTab extends React.Component<
                     {
                       [styles.open]: this.state.isMoreInfoOpen,
                     },
-                    { [styles.check]: plan.automaticOS }
+                    { [styles.check]: true }
                   )}
                 >
-                  {plan.automaticOS ? (
-                    <i className="fa fa-check fa-lg" />
-                  ) : (
-                    <i className="fa fa-times fa-lg" />
-                  )}
+                  <i className="fa fa-check fa-lg" />
                 </td>
                 <td
                   className={classNames(
@@ -202,45 +159,30 @@ class VpsServerTab extends React.Component<
                     {
                       [styles.open]: this.state.isMoreInfoOpen,
                     },
-                    { [styles.check]: plan.bandwidthGraph }
+                    { [styles.check]: true }
                   )}
                 >
-                  {plan.bandwidthGraph ? (
-                    <i className="fa fa-check fa-lg" />
-                  ) : (
-                    <i className="fa fa-times fa-lg" />
-                  )}
+                  <i className="fa fa-check fa-lg" />
                 </td>
-                <td className={classNames({ [styles.check]: plan.monitoring })}>
-                  {plan.monitoring ? (
-                    <i className="fa fa-check fa-lg" />
-                  ) : (
-                    <i className="fa fa-times fa-lg" />
-                  )}
+                <td className={classNames({ [styles.check]: true })}>
+                  <i className="fa fa-check fa-lg" />
                 </td>
-                <td>{plan.support}</td>
+                <td>18 ساعت</td>
                 <td>
                   <span>
-                    {formatPrice(plan.price)} {plan.currency.title}
+                    {formatPriceWithCurrency(
+                      this.props.currencies.items,
+                      plan.currency,
+                      plan.price
+                    )}
                   </span>{' '}
-                  ماهیانه <br />
-                  <span>
-                    {formatPrice(plan.price * 12)} {plan.currency.title}
-                  </span>{' '}
-                  سالیانه{' '}
+                  ماهیانه
                 </td>
                 <td>
-                  {plan.active ? (
+                  {plan.is_available ? (
                     <Link href={`/order/server/vps/${plan.id}`}>
                       <a className={styles.orderLink}>
-                        <CountryFlagTooltip
-                          name={this.props.data.country_title_en}
-                          flag={{
-                            address: this.props.data.flag,
-                            width: 24,
-                            height: 24,
-                          }}
-                        />
+                        <CountryFlagTooltip country={plan.country} />
                         <span>سفارش</span>{' '}
                       </a>
                     </Link>
@@ -258,8 +200,8 @@ class VpsServerTab extends React.Component<
                       <span className={styles.tooltipWrapper}>
                         <Button className={styles.orderLink} disabled>
                           <img
-                            src={this.props.data.flag}
-                            alt={this.props.data.country_title_en}
+                            src={`./images/flags/${plan.country.code.toLowerCase()}.svg`}
+                            alt={plan.country.name}
                           />
                           سفارش{' '}
                         </Button>
@@ -276,4 +218,8 @@ class VpsServerTab extends React.Component<
   }
 }
 
-export default VpsServerTab;
+export default connect((state: RootState) => {
+  return {
+    currencies: state.currencies,
+  };
+})(VpsServerTab);

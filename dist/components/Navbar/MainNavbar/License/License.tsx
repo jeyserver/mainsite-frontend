@@ -366,10 +366,8 @@ class License extends React.Component<LicenseProps, LicenseState> {
   }
 }
 
-const mapStateToProps = (state: RootState) => {
+export default connect((state: RootState) => {
   return {
     currencies: state.currencies,
   };
-};
-
-export default connect(mapStateToProps)(License);
+})(License);

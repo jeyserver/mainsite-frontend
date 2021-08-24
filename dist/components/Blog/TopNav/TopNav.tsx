@@ -357,10 +357,11 @@ class TopNav extends React.Component<TopNavProps, TopNavState> {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    store: state.theme,
-  };
-};
-
-export default connect(mapStateToProps, { toggleTheme })(withRouter(TopNav));
+export default connect(
+  (state) => {
+    return {
+      store: state.theme,
+    };
+  },
+  { toggleTheme }
+)(withRouter(TopNav));

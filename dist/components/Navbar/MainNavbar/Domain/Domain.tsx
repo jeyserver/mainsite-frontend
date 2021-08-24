@@ -345,12 +345,11 @@ class Domain extends React.Component<IProps, IState> {
   }
 }
 
-const mapStateToProps = (state: RootState) => {
-  return {
-    currencies: state.currencies,
-  };
-};
-
-export default connect(mapStateToProps, { setDomainForShop })(
-  withRouter(Domain)
-);
+export default connect(
+  (state: RootState) => {
+    return {
+      currencies: state.currencies,
+    };
+  },
+  { setDomainForShop }
+)(withRouter(Domain));

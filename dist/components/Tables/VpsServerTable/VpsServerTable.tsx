@@ -1,20 +1,21 @@
 import * as React from 'react';
 import { Table, OverlayTrigger, Tooltip, Button } from 'react-bootstrap';
 import Link from 'next/link';
-import styles from './VpsServerTab.module.scss';
+import styles from './VpsServerTable.module.scss';
 import classNames from 'classnames';
-import CountryFlagTooltip from '../../../../helper/components/CountryFlagTooltip/CountryFlagTooltip';
-import { formatSpaceInPersian } from '../../../../helper/formatSpace';
+import CountryFlagTooltip from '../../../helper/components/CountryFlagTooltip/CountryFlagTooltip';
+import { formatSpaceInPersian } from '../../../helper/formatSpace';
 import { connect } from 'react-redux';
-import { RootState } from '../../../../store';
-import formatPriceWithCurrency from '../../../../helper/formatPriceWithCurrency';
-import translateCountryNameToPersian from '../../../../helper/translateCountryNameToPersian';
-import getVpsPlanTypeInPersian from '../../../../helper/getVpsPlanTypeInPersian';
-import { IVPSPlan } from '../../../../helper/types/products/VPS/plan';
+import { RootState } from '../../../store';
+import formatPriceWithCurrency from '../../../helper/formatPriceWithCurrency';
+import translateCountryNameToPersian from '../../../helper/translateCountryNameToPersian';
+import getVpsPlanTypeInPersian from '../../../helper/getVpsPlanTypeInPersian';
+import { IVPSPlan } from '../../../helper/types/products/VPS/plan';
 
 interface IProps {
   data: IVPSPlan[];
   currencies: RootState['currencies'];
+  homePageTable: boolean;
 }
 
 interface IState {
@@ -31,7 +32,11 @@ class VpsServerTab extends React.Component<IProps, IState> {
     return (
       <div>
         <div className={styles.tittleLine}>
-          <h5>
+          <h5
+            className={classNames({
+              [styles.pageTitle]: !this.props.homePageTable,
+            })}
+          >
             سرور مجازی {getVpsPlanTypeInPersian(this.props.data[0].title)}
             <br />
             <CountryFlagTooltip country={this.props.data[0].country} />

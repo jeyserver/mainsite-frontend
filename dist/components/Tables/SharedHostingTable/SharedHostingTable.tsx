@@ -28,7 +28,7 @@ interface IState {
   isMoreInfoOpen: boolean;
 }
 
-class SharedHostingTab extends React.Component<IProps, IState> {
+class SharedHostingTable extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.state = { isMoreInfoOpen: false };
@@ -558,4 +558,4 @@ export default connect((state: RootState) => {
   return {
     currencies: state.currencies,
   };
-})(SharedHostingTab);
+})(SharedHostingTable);

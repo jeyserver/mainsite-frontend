@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { Col, Tab, Row, Nav } from 'react-bootstrap';
-import SharedHostingTab from '../../Tables/SharedHostingTable/SharedHostingTable';
+import SharedHostingTable from '../../Tables/SharedHostingTable/SharedHostingTable';
 import styles from './Tables.module.scss';
-import VpsServerTab from './VpsServerTab/VpsServerTab';
+import VpsServerTable from '../../Tables/VpsServerTable/VpsServerTable';
 import ServerDedicatedTab from './ServerDedicatedTab/ServerDedicatedTab';
-import VpsNav from './VpsServerTab/VpsNav/VpsNav';
+import VpsNav from './VpsNav/VpsNav';
 import { ITablesData } from '../../../pages';
 import { IVPSPlan } from '../../../helper/types/products/VPS/plan';
 
@@ -88,14 +88,14 @@ class Tables extends React.Component<IProps> {
 
           <Tab.Content style={{ marginBottom: '5em' }}>
             <Tab.Pane eventKey="tab-hosting-linux">
-              <SharedHostingTab
+              <SharedHostingTable
                 data={this.props.tablesData.hosts.linux}
                 type="linux"
                 homePageTable={true}
               />
             </Tab.Pane>
             <Tab.Pane eventKey="tab-hosting-windows">
-              <SharedHostingTab
+              <SharedHostingTable
                 data={this.props.tablesData.hosts.windows}
                 type="windows"
                 homePageTable={true}
@@ -104,7 +104,7 @@ class Tables extends React.Component<IProps> {
             <Tab.Pane eventKey="tab-server-vps">
               <VpsNav />
               {Object.values(vpsPlans).map((data: IVPSPlan[], index) => (
-                <VpsServerTab data={data} key={index} />
+                <VpsServerTable data={data} key={index} homePageTable={false} />
               ))}
             </Tab.Pane>
             <Tab.Pane eventKey="tab-server-dedicated">

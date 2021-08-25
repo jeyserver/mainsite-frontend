@@ -1,158 +1,77 @@
 import * as React from 'react';
 import axios from 'axios';
-import { Form } from 'react-bootstrap';
-import { Col, Container, FormGroup, Row, Table } from 'react-bootstrap';
+import { Col, Container, FormLabel, Row, Table } from 'react-bootstrap';
+import showErrorMsg from '../../helper/showErrorMsg';
+import { Form, Field, Formik, FormikHelpers, ErrorMessage } from 'formik';
+import * as Yup from 'yup';
+import { IBankAccount } from '../../pages/bankaccounts';
+import { NotificationManager } from 'react-notifications';
 import styles from './BankAccounts.module.scss';
+import PagesHeader from '../PagesHeader/PagesHeader';
 
-interface bankAccount {
-  id: number;
-  title: string;
-  owner: string;
-  account: string;
-  cart: string;
-  sheba: string;
+interface IProps {
+  bankAccounts: IBankAccount[];
 }
 
-type error = 'data_validation' | 'data_duplicate';
-
-const showError = (error: error | null) => {
-  if (error === 'data_duplicate') {
-    return 'داده وارد شده تکراری است';
-  } else if (error === 'data_validation' || error === null) {
-    return 'داده وارد شده معتبر نیست';
-  }
-};
-
-export interface BankAccountsProps {
-  bankAccounts: bankAccount[];
+interface IState {
+  isFormSubmited: boolean;
 }
 
-export interface BankAccountsState {
-  validated: boolean;
-  bankAccounts: bankAccount[];
-  phoneNumber: string;
-  selectedAccount: string;
-  isBtnDisabled: boolean;
-  isBtnLoading: boolean;
-  phoneNumberError: error | null;
-  selectedAccountError: error | null;
+interface IInputs {
+  account: number;
+  cellphone: string;
 }
 
-class BankAccounts extends React.Component<
-  BankAccountsProps,
-  BankAccountsState
-> {
-  constructor(props: BankAccountsProps) {
+class BankAccounts extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
     this.state = {
-      validated: false,
-      bankAccounts: this.props.bankAccounts,
-      phoneNumber: '',
-      selectedAccount: '1',
-      isBtnDisabled: false,
-      isBtnLoading: false,
-      phoneNumberError: null,
-      selectedAccountError: null,
+      isFormSubmited: false,
     };
-    this.submitForm = this.submitForm.bind(this);
-    this.onChangePhoneNumber = this.onChangePhoneNumber.bind(this);
-    this.onChangeSelectedAccount = this.onChangeSelectedAccount.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
   }
 
-  submitForm(e) {
-    const form = e.currentTarget;
-    if (form.checkValidity() === false) {
-      e.preventDefault();
-      e.stopPropagation();
-    } else {
-      e.preventDefault();
-      this.setState({ isBtnLoading: true, isBtnDisabled: true });
-      axios
-        .post(
-          `${process.env.SCHEMA}://${process.env.DOMAIN}/fa/bankaccounts?ajax=1`,
-          {
-            account: this.state.selectedAccount,
-            cellPhone: this.state.phoneNumber,
-          }
-        )
-        .then((res) => {
-          if (res.data.status) {
-            this.setState({
-              isBtnLoading: false,
-              isBtnDisabled: true,
-              phoneNumber: '',
-              selectedAccount: '1',
-              validated: false,
-              selectedAccountError: null,
-              phoneNumberError: null,
-            });
+  onSubmit(
+    values: IInputs,
+    { setSubmitting, setErrors, resetForm }: FormikHelpers<IInputs>
+  ) {
+    axios
+      .post(
+        `${process.env.SCHEMA}://${process.env.DOMAIN}/fa/bankaccounts?ajax=1&account=${values.account}&cellphone=${values.cellphone}`
+      )
+      .then((res) => {
+        if (res.data.status) {
+          NotificationManager.success(
+            'کارشناسان ما در اولین فرصت پیام شما را بررسی و پاسخ خواهند داد. از صبر شما متشکریم.',
+            'پیام شما دریافت شد.'
+          );
+          resetForm();
+          this.setState({ isFormSubmited: true });
 
-            setTimeout(() => {
-              this.setState({ isBtnDisabled: false });
-            }, 15000);
-          } else if (!res.data.status) {
-            res.data.error.forEach((errorItem) => {
-              if (errorItem.input === 'account') {
-                this.setState({
-                  selectedAccountError: errorItem.code,
-                  selectedAccount: '1',
-                });
-              } else if (errorItem.input === 'cellPhone') {
-                this.setState({
-                  phoneNumberError: errorItem.code,
-                  phoneNumber: '',
-                });
-              }
-            });
-          }
-        })
-        .catch((error) => {
-          this.setState({ isBtnLoading: false, isBtnDisabled: false });
-        });
-    }
-    this.setState({ validated: true });
-  }
-
-  onChangePhoneNumber(e) {
-    this.setState({ phoneNumber: e.target.value, isBtnDisabled: false });
-  }
-
-  onChangeSelectedAccount(e) {
-    this.setState({ selectedAccount: e.target.value, isBtnDisabled: false });
+          setTimeout(() => {
+            this.setState({ isFormSubmited: false });
+          }, 15000);
+        } else {
+          res.data.error.map((error) => {
+            setErrors({ [error.input]: showErrorMsg(error.code) });
+          });
+          setSubmitting(false);
+        }
+      })
+      .catch(() => {
+        NotificationManager.error(
+          'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
+          'خطا'
+        );
+        setSubmitting(false);
+      });
   }
 
   render() {
-    const showBtnContent = () => {
-      if (this.state.isBtnLoading) {
-        return (
-          <div className={styles.loadingBtn}>
-            <span className={styles.loadingBox}></span>
-            <span className={styles.loadingTxt}>لطفا صبر کنید...</span>
-          </div>
-        );
-      } else if (this.state.isBtnDisabled) {
-        return (
-          <div className={styles.sentTxt}>
-            <i className="far fa-check-square"></i>
-            <span>ارسال شد</span>
-          </div>
-        );
-      } else {
-        return (
-          <div>
-            <i className="fas fa-paper-plane"></i> ارسال
-          </div>
-        );
-      }
-    };
-
     return (
       <section className="BankAccounts">
-        <div className={styles.innerBanner} id="top" data-ix="shotop-btn">
-          <div className="container">
-            <h2 className="text-center">شماره حساب ها</h2>
-          </div>
-        </div>
+        <PagesHeader title="شماره حساب ها" />
+
         <div className={styles.sectionBankAccounts}>
           <Container>
             <Row className="row">
@@ -204,8 +123,8 @@ class BankAccounts extends React.Component<
                     </tr>
                   </thead>
                   <tbody>
-                    {this.state.bankAccounts &&
-                      this.state.bankAccounts.map((bankAccount) => (
+                    {this.props.bankAccounts &&
+                      this.props.bankAccounts.map((bankAccount) => (
                         <tr key={bankAccount.id}>
                           <td>{bankAccount.id}</td>
                           <td>{bankAccount.title}</td>
@@ -234,69 +153,99 @@ class BankAccounts extends React.Component<
               </Col>
               <Col xs={12} lg={3}>
                 <div className={styles.panelSend}>
-                  <Form
-                    onSubmit={this.submitForm}
-                    noValidate
-                    validated={this.state.validated}
+                  <Formik
+                    initialValues={{ account: 1, cellphone: '' }}
+                    validationSchema={Yup.object({
+                      account: Yup.string().required(
+                        'داده وارد شده معتبر نیست'
+                      ),
+                      cellphone: Yup.string().required(
+                        'داده وارد شده معتبر نیست'
+                      ),
+                    })}
+                    onSubmit={(values, helpers) =>
+                      this.onSubmit(values, helpers)
+                    }
                   >
-                    <div className={styles.panelHeading}>
-                      <i className="far fa-paper-plane"></i>
-                      <span>ارسال با پیام</span>
-                    </div>
-                    <div className={styles.panelBody}>
-                      <FormGroup className={styles.formGroup}>
-                        <Form.Label>حساب</Form.Label>
-                        <Form.Control
-                          as="select"
-                          name="account"
-                          value={this.state.selectedAccount}
-                          onChange={this.onChangeSelectedAccount}
-                          isInvalid={Boolean(
-                            this.state.selectedAccountError !== null
+                    {(formik) => (
+                      <Form autoComplete="off" className={styles.form}>
+                        <div className={styles.panelHeading}>
+                          <i className="far fa-paper-plane"></i>
+                          <span>ارسال با پیام</span>
+                        </div>
+                        <div className={styles.panelBody}>
+                          <div className={styles.formGroup}>
+                            <FormLabel>حساب</FormLabel>
+                            <Field name="account" as="select">
+                              {this.props.bankAccounts &&
+                                this.props.bankAccounts.map((bankAccount) => (
+                                  <option
+                                    key={bankAccount.id}
+                                    value={bankAccount.id}
+                                  >
+                                    {bankAccount.title} ({bankAccount.account})
+                                  </option>
+                                ))}
+                            </Field>
+                            <div className="form-err-msg">
+                              {!this.state.isFormSubmited && (
+                                <ErrorMessage name="account" />
+                              )}
+                            </div>
+                          </div>
+
+                          <div className={styles.formGroup}>
+                            <FormLabel>شماره همراه</FormLabel>
+                            <Field
+                              type="text"
+                              name="cellphone"
+                              className="form-control"
+                              placeholder="09123456789"
+                            />
+                            <div className="form-err-msg">
+                              {!this.state.isFormSubmited && (
+                                <ErrorMessage name="cellphone" />
+                              )}
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className={styles.panelFooter}>
+                          {this.state.isFormSubmited ? (
+                            <button
+                              type="submit"
+                              className="btn btn-success btn-block"
+                              disabled={true}
+                            >
+                              <div className={styles.sentTxt}>
+                                <i className="far fa-check-square"></i>
+                                <span>ارسال شد</span>
+                              </div>
+                            </button>
+                          ) : (
+                            <button
+                              type="submit"
+                              className="btn btn-success btn-block"
+                              disabled={formik.isSubmitting}
+                            >
+                              {formik.isSubmitting ? (
+                                <div className={styles.loadingBtn}>
+                                  <span className={styles.loadingBox}></span>
+                                  <span className={styles.loadingTxt}>
+                                    لطفا صبر کنید...
+                                  </span>
+                                </div>
+                              ) : (
+                                <div>
+                                  <i className="fas fa-paper-plane"></i> ارسال
+                                </div>
+                              )}
+                            </button>
                           )}
-                        >
-                          {this.state.bankAccounts &&
-                            this.state.bankAccounts.map((bankAccount) => (
-                              <option
-                                key={bankAccount.id}
-                                value={bankAccount.id}
-                              >
-                                {bankAccount.title} ({bankAccount.account})
-                              </option>
-                            ))}
-                        </Form.Control>
-                        <Form.Control.Feedback type="invalid">
-                          {showError(this.state.selectedAccountError)}
-                        </Form.Control.Feedback>
-                      </FormGroup>
-                      <FormGroup className={styles.formGroup}>
-                        <Form.Label>شماره همراه</Form.Label>
-                        <Form.Control
-                          type="text"
-                          name="cellphone"
-                          placeholder="09123456789"
-                          value={this.state.phoneNumber}
-                          onChange={this.onChangePhoneNumber}
-                          isInvalid={Boolean(
-                            this.state.phoneNumberError !== null
-                          )}
-                          required
-                        />
-                        <Form.Control.Feedback type="invalid">
-                          {showError(this.state.phoneNumberError)}
-                        </Form.Control.Feedback>
-                      </FormGroup>
-                    </div>
-                    <div className={styles.panelFooter}>
-                      <button
-                        disabled={this.state.isBtnDisabled}
-                        type="submit"
-                        className="btn btn-success btn-block"
-                      >
-                        {showBtnContent()}
-                      </button>
-                    </div>
-                  </Form>
+                        </div>
+                      </Form>
+                    )}
+                  </Formik>
                 </div>
               </Col>
             </Row>

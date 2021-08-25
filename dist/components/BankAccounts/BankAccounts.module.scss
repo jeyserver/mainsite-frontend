@@ -1,40 +1,13 @@
-.innerBanner {
-  font-family: BYekan, sans-serif;
-  color: #313131;
-  font-size: 13px;
-  line-height: 20px;
-  direction: rtl;
-  box-sizing: border-box;
-  padding: 40px 10px;
-  position: relative;
-  padding-top: 40px;
-  padding-bottom: 30px;
-  background-color: #3dc4e4;
-  h2 {
-    box-sizing: border-box;
-    font-weight: 400;
-    line-height: 36px;
-    letter-spacing: 1px;
-    font-family: BYekan, sans-serif;
-    margin-top: auto;
-    margin-bottom: auto;
-    padding-bottom: 10px;
-    color: #fff;
-    font-size: 26px;
-    text-align: center;
-  }
-}
-
 .sectionBankAccounts {
   color: #313131;
   line-height: 20px;
-  direction: rtl;
   box-sizing: border-box;
   position: relative;
   padding: 40px 10px;
   background-color: #fff;
   font-family: IranSans;
   font-size: 13px;
+
   h2 {
     color: inherit;
     margin-top: 0;
@@ -45,9 +18,10 @@
     letter-spacing: 1px;
     font-family: BNazanin;
   }
+
   .alert {
     line-height: 20px;
-    direction: rtl;
+
     font-family: IranSans;
     font-size: 13px;
     box-sizing: border-box;
@@ -87,7 +61,7 @@
     > thead {
       color: #313131;
       line-height: 20px;
-      direction: rtl;
+
       font-family: IranSans;
       font-size: 13px;
       border-collapse: collapse;
@@ -95,7 +69,7 @@
       box-sizing: border-box;
       > tr {
         line-height: 20px;
-        direction: rtl;
+
         font-family: IranSans;
         font-size: 13px;
         border-collapse: collapse;
@@ -123,7 +97,7 @@
     > tbody {
       color: #313131;
       line-height: 20px;
-      direction: rtl;
+
       font-size: 13px;
       border-collapse: collapse;
       border-spacing: 0;
@@ -135,7 +109,6 @@
           font-size: 13px;
           border-collapse: collapse;
           border-spacing: 0;
-          box-sizing: border-box;
           padding: 8px;
           line-height: 1.42857143;
           vertical-align: top;
@@ -155,7 +128,6 @@
 .panelSend {
   color: #313131;
   line-height: 20px;
-  direction: rtl;
   font-family: IRANSans;
   font-size: 13px;
   box-sizing: border-box;
@@ -171,16 +143,13 @@
   > form {
     color: #313131;
     line-height: 20px;
-    direction: rtl;
     font-family: IRANSans;
     font-size: 13px;
     box-sizing: border-box;
     > .panelHeading {
       line-height: 20px;
-      direction: rtl;
-      font-family: IranSans;
+      font-family: IRANSans;
       font-size: 13px;
-      box-sizing: border-box;
       padding: 10px 15px;
       border-bottom: 1px solid transparent;
       border-top-left-radius: 3px;
@@ -190,28 +159,16 @@
       background-color: #1ba99b;
       > i {
         color: #fff;
-        box-sizing: border-box;
-        display: inline-block;
-        font-size: inherit;
-        text-rendering: auto;
-        -webkit-font-smoothing: antialiased;
         margin-left: 5px;
       }
     }
     > .panelBody {
-      color: #313131;
-      line-height: 20px;
-      direction: rtl;
-      font-size: 13px;
-      box-sizing: border-box;
       padding: 15px;
-      font-family: BYekan;
       .formGroup {
         margin-bottom: 15px;
         > label {
           color: #313131;
           line-height: 20px;
-          direction: rtl;
           font-size: 13px;
           font-family: BYekan;
           box-sizing: border-box;
@@ -221,12 +178,7 @@
           font-weight: 700;
         }
         > select {
-          direction: rtl;
-          box-sizing: border-box;
-          font: inherit;
           margin: 0;
-          text-transform: none;
-          font-family: inherit;
           transition: border-color 0.15s ease-in-out,
             box-shadow 0.15s ease-in-out;
           display: block;
@@ -237,14 +189,22 @@
           line-height: 1.42857143;
           color: #555;
           background-color: #fff;
-          background-image: none;
           border: 1px solid #ccc;
           border-radius: 4px;
           box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+          color: #313131;
+          line-height: 20px;
+          font-size: 13px;
+          font-family: BYekan;
+          font-weight: 500;
+          outline: none;
+
+          &:focus {
+            outline: none;
+          }
         }
+
         > input {
-          box-sizing: border-box;
-          font: inherit;
           margin: 0;
           font-family: Menlo, 'DejaVu Sans Mono', 'Liberation Mono', Consolas,
             'Ubuntu Mono', 'Courier New', 'andale mono', 'lucida console',
@@ -258,8 +218,6 @@
           font-size: 14px;
           line-height: 1.42857143;
           color: #555;
-          background-color: #fff;
-          background-image: none;
           border: 1px solid;
           border-color: #ccc;
           border-radius: 4px;
@@ -275,31 +233,17 @@
     .panelFooter {
       color: #313131;
       line-height: 20px;
-      direction: rtl;
       font-family: IRANSans;
       font-size: 13px;
-      box-sizing: border-box;
       background-color: #f5f5f5;
       border-top: 1px solid #ddd;
       border-bottom-right-radius: 3px;
       border-bottom-left-radius: 3px;
       padding: 0;
       > button {
-        direction: rtl;
-        box-sizing: border-box;
-        font: inherit;
-        margin: 0;
-        overflow: visible;
-        text-transform: none;
-        -webkit-appearance: button;
-        cursor: pointer;
-        user-select: none;
-        margin-bottom: 0;
         font-weight: 400;
         text-align: center;
         white-space: nowrap;
-        touch-action: manipulation;
-        background-image: none;
         border: 1px solid transparent;
         padding: 6px 12px;
         font-size: 14px;
@@ -318,7 +262,6 @@
           border-color: #398439;
         }
         > i {
-          direction: rtl;
           text-transform: none;
           cursor: pointer;
           user-select: none;

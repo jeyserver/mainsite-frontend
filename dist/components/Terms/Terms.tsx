@@ -1,24 +1,14 @@
 import * as React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
+import PagesHeader from '../PagesHeader/PagesHeader';
 import styles from './Terms.module.scss';
 
-export interface TermsProps {}
-
-export interface TermsState {}
-
-class Terms extends React.Component<TermsProps, TermsState> {
-  constructor(props: TermsProps) {
-    super(props);
-    this.state = {};
-  }
+class Terms extends React.Component {
   render() {
     return (
       <section>
-        <div className={styles.innerBanner} id="top" data-ix="shotop-btn">
-          <Container>
-            <h2 className="text-center">شرایط و قوانین جی سرور</h2>
-          </Container>
-        </div>
+        <PagesHeader title="شرایط و قوانین جی سرور" />
+
         <Container>
           <Row className={styles.section}>
             <Col xs={12}>

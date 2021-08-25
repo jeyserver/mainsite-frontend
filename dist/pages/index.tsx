@@ -3,7 +3,7 @@ import Head from 'next/head';
 import Header from '../components/Header/Header';
 import MainPage from '../components/MainPage/MainPage';
 import Layout from '../components/Layout/Layout';
-import { pageProps } from './_app';
+import { IPageProps } from './_app';
 import { IVPSPlan } from '../helper/types/products/VPS/plan';
 import { IDedicatedPlan } from '../helper/types/products/Dedicated/plan';
 import { IHostPlan } from '../helper/types/products/Host/plan';
@@ -15,7 +15,7 @@ export interface ITablesData {
   servers: { vps: IVPSPlan[]; dedicated: IDedicatedPlan[] };
 }
 
-interface IProps extends pageProps {
+interface IProps extends IPageProps {
   tablesData: ITablesData;
 }
 

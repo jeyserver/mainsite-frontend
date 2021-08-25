@@ -95,6 +95,13 @@ export interface pageProps {
   currencies: ICurrency[];
 }
 
+export interface IPageProps {
+  domainsForNavbar: ITld[];
+  licensesForNavbar: ILicense[];
+  postsForFooter: IFooterPost[];
+  currencies: ICurrency[];
+}
+
 App.getInitialProps = async ({ Component, ctx }) => {
   const locale = ctx.locale;
 

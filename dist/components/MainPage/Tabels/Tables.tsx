@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Col, Tab, Row, Nav } from 'react-bootstrap';
-import SharedHostingTab from './SharedHostingTab/SharedHostingTab';
+import SharedHostingTab from '../../Tables/SharedHostingTable/SharedHostingTable';
 import styles from './Tables.module.scss';
 import VpsServerTab from './VpsServerTab/VpsServerTab';
 import ServerDedicatedTab from './ServerDedicatedTab/ServerDedicatedTab';
@@ -91,12 +91,14 @@ class Tables extends React.Component<IProps> {
               <SharedHostingTab
                 data={this.props.tablesData.hosts.linux}
                 type="linux"
+                homePageTable={true}
               />
             </Tab.Pane>
             <Tab.Pane eventKey="tab-hosting-windows">
               <SharedHostingTab
                 data={this.props.tablesData.hosts.windows}
                 type="windows"
+                homePageTable={true}
               />
             </Tab.Pane>
             <Tab.Pane eventKey="tab-server-vps">

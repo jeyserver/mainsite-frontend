@@ -1,3 +1,38 @@
+.title {
+  h5 {
+    text-align: center;
+    margin-bottom: 10px;
+    line-height: 24px;
+    letter-spacing: 1px;
+    margin-top: 0;
+    font-size: 15px;
+    font-weight: 400;
+    font-family: BKoodakBold;
+    color: #313131;
+  }
+
+  .divider {
+    color: #313131;
+    line-height: 20px;
+    direction: rtl;
+    font-family: IRANSans;
+    text-align: center;
+    box-sizing: border-box;
+    font-size: 85%;
+    width: 100%;
+    height: 1px;
+    background-color: #e1e1e1;
+    margin-bottom: -1px;
+
+    > div {
+      width: 98px;
+      height: 1px;
+      background-color: #00c6ff;
+      margin: 0 auto;
+    }
+  }
+}
+
 .tableInfo {
   color: #717171;
   line-height: 24px;
@@ -214,6 +249,27 @@
           }
         }
 
+        .scoreWrapper {
+          display: flex;
+          justify-content: center;
+          > div {
+            > div {
+              display: flex;
+              flex-direction: row;
+              > span {
+                height: min-content;
+                font-size: 13px !important;
+                > i {
+                  font-size: 13px;
+                }
+                .emptyIcon {
+                  color: #888;
+                }
+              }
+            }
+          }
+        }
+
         .orderLink {
           direction: rtl;
           border-collapse: collapse;
@@ -264,6 +320,7 @@
             line-height: 9px;
             font-size: 15px;
             height: 24px;
+            width: 24px;
           }
           > span {
             border-right: 1px solid hsla(0, 0%, 100%, 0.29);

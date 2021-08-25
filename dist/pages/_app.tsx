@@ -9,6 +9,7 @@ import { NotificationContainer } from 'react-notifications';
 import { store } from '../store/index';
 import NProgress from '../components/NProgress/NProgress';
 import { setCurrencies } from '../store/Currencies';
+import { setLanguage } from '../store/Language';
 
 export default function App({
   Component,
@@ -17,8 +18,10 @@ export default function App({
   licensesForNavbar,
   postsForFooter,
   currencies,
+  locale,
 }) {
   store.dispatch(setCurrencies(currencies));
+  store.dispatch(setLanguage(locale));
 
   return (
     <Provider store={store}>
@@ -128,5 +131,6 @@ App.getInitialProps = async ({ Component, ctx }) => {
     licensesForNavbar: data.licenses,
     postsForFooter: data.posts,
     currencies: data.currencies,
+    locale,
   };
 };

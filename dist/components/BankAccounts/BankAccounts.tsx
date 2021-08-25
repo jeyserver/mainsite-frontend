@@ -8,9 +8,12 @@ import { IBankAccount } from '../../pages/bankaccounts';
 import { NotificationManager } from 'react-notifications';
 import styles from './BankAccounts.module.scss';
 import PagesHeader from '../PagesHeader/PagesHeader';
+import { connect } from 'react-redux';
+import { RootState } from '../../store';
 
 interface IProps {
   bankAccounts: IBankAccount[];
+  language: RootState['language'];
 }
 
 interface IState {
@@ -37,7 +40,7 @@ class BankAccounts extends React.Component<IProps, IState> {
   ) {
     axios
       .post(
-        `${process.env.SCHEMA}://${process.env.DOMAIN}/fa/bankaccounts?ajax=1&account=${values.account}&cellphone=${values.cellphone}`
+        `${process.env.SCHEMA}://${process.env.DOMAIN}/${this.props.language.locale}/bankaccounts?ajax=1&account=${values.account}&cellphone=${values.cellphone}`
       )
       .then((res) => {
         if (res.data.status) {
@@ -256,4 +259,8 @@ class BankAccounts extends React.Component<IProps, IState> {
   }
 }
 
-export default BankAccounts;
+export default connect((state: RootState) => {
+  return {
+    language: state.language,
+  };
+})(BankAccounts);

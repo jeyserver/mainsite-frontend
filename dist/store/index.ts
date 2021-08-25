@@ -1,11 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit';
 import currenciesReducer from './Currencies';
 import authReducer from './Auth';
+import languageReducer from './Language';
 
 export const store = configureStore({
   reducer: {
     currencies: currenciesReducer,
     auth: authReducer,
+    language: languageReducer,
   },
 });
 

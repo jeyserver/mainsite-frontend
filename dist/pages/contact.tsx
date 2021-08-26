@@ -2,17 +2,9 @@ import * as React from 'react';
 import Head from 'next/head';
 import ContactUs from '../components/ContactUs/ContactUs';
 import Layout from '../components/Layout/Layout';
-import { pageProps } from './_app';
+import { IPageProps } from './_app';
 
-export interface IndexProps extends pageProps {}
-
-export interface IndexState {}
-
-class Index extends React.Component<IndexProps, IndexState> {
-  constructor(props: IndexProps) {
-    super(props);
-    this.state = {};
-  }
+class Index extends React.Component<IPageProps> {
   render() {
     return (
       <div dir="rtl">

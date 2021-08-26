@@ -2,18 +2,14 @@ import * as React from 'react';
 import Head from 'next/head';
 import Faqs from '../components/Faqs/Faqs';
 import Layout from '../components/Layout/Layout';
-import { pageProps } from './_app';
+import { IPageProps } from './_app';
 
-export interface IndexProps extends pageProps {}
-
-export interface IndexState {
+interface IState {
   appIsScrolling: boolean;
 }
 
-let appIsScrollingTimeout;
-
-class Index extends React.Component<IndexProps, IndexState> {
-  constructor(props: IndexProps) {
+class Index extends React.Component<IPageProps, IState> {
+  constructor(props: IPageProps) {
     super(props);
     this.state = {
       appIsScrolling: false,
@@ -21,21 +17,21 @@ class Index extends React.Component<IndexProps, IndexState> {
     this.switchAppIsScrolling = this.switchAppIsScrolling.bind(this);
   }
 
+  appIsScrollingTimeout = null;
+
   switchAppIsScrolling() {
-    clearTimeout(appIsScrollingTimeout);
+    clearTimeout(this.appIsScrollingTimeout);
     this.setState((prev) => {
       return { appIsScrolling: true };
     });
 
-    appIsScrollingTimeout = setTimeout(() => {
-      this.setState((prev) => {
-        return { appIsScrolling: false };
-      });
+    this.appIsScrollingTimeout = setTimeout(() => {
+      this.setState({ appIsScrolling: false });
     }, 1000);
   }
 
   componentWillUnmount() {
-    clearTimeout(appIsScrollingTimeout);
+    clearTimeout(this.appIsScrollingTimeout);
   }
 
   render() {

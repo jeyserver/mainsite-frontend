@@ -7,79 +7,42 @@ import moment from 'jalali-moment';
 import { NextRouter, withRouter } from 'next/router';
 import MostViewedNews from './MostViewedNews/MostViewedNews';
 import NewsArchive from './NewsArchive/NewsArchive';
+import IPopularPost from '../../helper/types/news/PopularPost';
+import IPost from '../../helper/types/news/Post';
+import PagesHeader from '../PagesHeader/PagesHeader';
 
-export interface NewsProps {
-  postsData: {
-    status: boolean;
-    items: {
-      id: number;
-      title: string;
-      date: number;
-      user: {
-        id: number;
-        name: string;
-      };
-      comments: number;
-      description: string;
-      author: number;
-      content: string;
-      image: string;
-      view: number;
-      status: number;
-    }[];
-    items_per_page: number;
-    current_page: number;
-    total_items: number;
-  };
-  router: NextRouter;
-  mostViewedNews: any;
-  newsArchive: number[];
+interface IProps {
+  items: IPost[];
+  itemsPerPage: number;
+  currentPage: number;
+  totalItems: number;
+  popularPosts: IPopularPost[];
+  archives: { [T: string]: number };
   headerTitle: string;
+  router: NextRouter;
 }
 
-export interface NewsState {}
-
-class News extends React.Component<NewsProps, NewsState> {
-  constructor(props: NewsProps) {
-    super(props);
-    this.state = {};
-    this.changeCurPage = this.changeCurPage.bind(this);
-  }
-
-  changeCurPage(page) {
-    this.props.router.push({ query: { page: page.selected + 1, ipp: 10 } });
-  }
-
+class News extends React.Component<IProps> {
   render() {
     const lastPage = Math.round(
-      this.props.postsData.total_items / this.props.postsData.items_per_page
+      this.props.totalItems / this.props.itemsPerPage
     );
-
-    const currentPage = Number(this.props.postsData.current_page);
 
     return (
       <section>
-        <div className={styles.innerBanner}>
-          <Container>
-            <h2 className="text-center">{this.props.headerTitle}</h2>
-          </Container>
-        </div>
+        <PagesHeader title={this.props.headerTitle} />
 
         <div className={styles.contentWrapper}>
           <Container>
             <Row>
               <Col lg={8}>
                 <div className={styles.blogPosts}>
-                  {this.props.postsData.items.map((post) => (
+                  {this.props.items.map((post) => (
                     <div className={styles.mediaPost} key={post.id}>
                       <Row>
                         <Col md={3}>
                           <Image
-                            src={
-                              post.image
-                                ? `${process.env.SCHEMA}://${process.env.DOMAIN}/packages/news/${post.image}`
-                                : '/images/defaultimage.jpg'
-                            }
+                            src={post.image}
                             width="150px"
                             height="150px"
                             alt={post.title}
@@ -96,10 +59,10 @@ class News extends React.Component<NewsProps, NewsState> {
                             </Link>
                             <ul className={styles.list}>
                               <li>
-                                <Link href={`/news/author/${post.user.id}`}>
+                                <Link href={`/news/author/${post.author.id}`}>
                                   <a>
                                     <i className="fa fa-user" />{' '}
-                                    {post.user.name}{' '}
+                                    {`${post.author.name} ${post.author.lastname}`}{' '}
                                   </a>
                                 </Link>
                               </li>
@@ -125,8 +88,8 @@ class News extends React.Component<NewsProps, NewsState> {
                               <li>|</li>
                               <span>
                                 <i className="far fa-comment" />{' '}
-                                {post.comments
-                                  ? `${post.comments} نظر`
+                                {post.comments_count
+                                  ? `${post.comments_count} نظر`
                                   : 'بدون نظر'}
                               </span>
                             </ul>
@@ -150,7 +113,7 @@ class News extends React.Component<NewsProps, NewsState> {
                 <hr className={styles.breakLine} />
                 <div className="d-flex justify-content-center d-md-none">
                   <div className={styles.newsPaginateOnMobile}>
-                    {currentPage !== 1 && (
+                    {this.props.currentPage !== 1 && (
                       <button className={styles.firstPage}>
                         <Link href={{ query: { ipp: 10, page: 1 } }}>
                           <a>
@@ -162,17 +125,18 @@ class News extends React.Component<NewsProps, NewsState> {
                     )}
 
                     <button
-                      disabled={currentPage === 1}
+                      disabled={this.props.currentPage === 1}
                       className={styles.prevBtn}
                     >
-                      {currentPage === 1 ? (
+                      {this.props.currentPage === 1 ? (
                         <span>قبلی</span>
                       ) : (
                         <Link
                           href={{
+                            pathname: '/news',
                             query: {
                               ipp: 10,
-                              page: currentPage - 1,
+                              page: this.props.currentPage - 1,
                             },
                           }}
                         >
@@ -182,21 +146,22 @@ class News extends React.Component<NewsProps, NewsState> {
                     </button>
 
                     <button className={styles.currentPage}>
-                      <span>{currentPage}</span>
+                      <span>{this.props.currentPage}</span>
                     </button>
 
                     <button
-                      disabled={currentPage === lastPage}
+                      disabled={this.props.currentPage === lastPage}
                       className={styles.nextBtn}
                     >
-                      {currentPage === lastPage ? (
+                      {this.props.currentPage === lastPage ? (
                         <span>بعدی</span>
                       ) : (
                         <Link
                           href={{
+                            pathname: '/news',
                             query: {
                               ipp: 10,
-                              page: currentPage + 1,
+                              page: this.props.currentPage + 1,
                             },
                           }}
                         >
@@ -205,9 +170,14 @@ class News extends React.Component<NewsProps, NewsState> {
                       )}
                     </button>
 
-                    {currentPage !== lastPage && (
+                    {this.props.currentPage !== lastPage && (
                       <button className={styles.lastPage}>
-                        <Link href={{ query: { ipp: 10, page: lastPage } }}>
+                        <Link
+                          href={{
+                            pathname: '/news',
+                            query: { ipp: 10, page: lastPage },
+                          }}
+                        >
                           <a>
                             اخرین
                             <i className="fas fa-angle-double-left"></i>
@@ -226,10 +196,14 @@ class News extends React.Component<NewsProps, NewsState> {
                       breakLabel={'...'}
                       breakClassName={'break-me'}
                       pageCount={lastPage}
-                      initialPage={this.props.postsData.current_page - 1}
+                      initialPage={this.props.currentPage - 1}
                       marginPagesDisplayed={2}
                       pageRangeDisplayed={5}
-                      onPageChange={(page) => this.changeCurPage(page)}
+                      onPageChange={(page) =>
+                        this.props.router.push({
+                          query: { page: page.selected + 1, ipp: 10 },
+                        })
+                      }
                       disableInitialCallback={true}
                       containerClassName={'pagination'}
                       activeClassName={'active'}
@@ -238,8 +212,8 @@ class News extends React.Component<NewsProps, NewsState> {
                 </div>
               </Col>
               <Col lg={3}>
-                <MostViewedNews mostViewedNews={this.props.mostViewedNews} />
-                <NewsArchive newsArchive={this.props.newsArchive} />
+                <MostViewedNews popularPosts={this.props.popularPosts} />
+                <NewsArchive archives={this.props.archives} />
               </Col>
             </Row>
           </Container>

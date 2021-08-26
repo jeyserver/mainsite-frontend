@@ -2,43 +2,26 @@ import * as React from 'react';
 import Head from 'next/head';
 import ViewNews from '../../../components/News/ViewNews/ViewNews';
 import Layout from '../../../components/Layout/Layout';
-import { pageProps } from './../../_app';
+import { IPageProps } from './../../_app';
+import IPost from '../../../helper/types/news/Post';
+import IPopularPost from '../../../helper/types/news/PopularPost';
+import IComment from '../../../helper/types/news/Comment';
 
-export interface IndexProps extends pageProps {
-  postData: {
-    id: number;
-    title: string;
-    date: number;
-    user: {
-      id: number;
-      name: string;
-    };
-    comments: any;
-    description: string;
-    author: number;
-    content: string;
-    image: string;
-    view: number;
-    status: number;
-  };
-  mostViewedNews: any;
-  newsArchive: number[];
+interface IProps extends IPageProps {
+  status: boolean;
+  post: IPost;
+  comments: IComment[];
+  popular_posts: IPopularPost[];
+  archives: { [T: string]: number };
 }
 
-export interface IndexState {}
-
-class Index extends React.Component<IndexProps, IndexState> {
-  constructor(props: IndexProps) {
-    super(props);
-    this.state = {};
-  }
-
+class Index extends React.Component<IProps> {
   render() {
     return (
       <div dir="rtl">
         <Head>
-          <title>{this.props.postData.title}</title>
-          <meta name="description" content={this.props.postData.description} />
+          <title>{this.props.post.title}</title>
+          <meta name="description" content={this.props.post.description} />
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
@@ -48,9 +31,10 @@ class Index extends React.Component<IndexProps, IndexState> {
           licensesForNavbar={this.props.licensesForNavbar}
         >
           <ViewNews
-            postData={this.props.postData}
-            mostViewedNews={this.props.mostViewedNews}
-            newsArchive={this.props.newsArchive}
+            post={this.props.post}
+            comments={this.props.comments}
+            popular_posts={this.props.popular_posts}
+            archives={this.props.archives}
           />
         </Layout>
       </div>
@@ -60,6 +44,7 @@ class Index extends React.Component<IndexProps, IndexState> {
 
 export async function getServerSideProps(context) {
   const locale = context.locale;
+  const newsId = context.query.newsId;
 
   if (locale !== 'fa') {
     return {
@@ -67,37 +52,22 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const newsId = context.query.newsId;
-
-  // const postDataRes = await fetch(
-  //   `${process.env.SCHEMA}://${process.env.DOMAIN}/fa/news/view/${newsId}?ajax=1`
-  // );
-  // const postData = await postDataRes.json();
-
-  // // 404
-  // if (!postData.status) {
-  //   return {
-  //     notFound: true,
-  //   };
-  // }
-
-  const postDataRes = await fetch(
-    `https://jsonblob.com/api/jsobBlob/ce905c51-de4c-11eb-80f0-81ce1174db56`
+  const respone = await fetch(
+    `${process.env.SCHEMA}://${process.env.DOMAIN}/${locale}/news/view/${newsId}?ajax=1`
   );
-  const postData = await postDataRes.json();
+  const data = await respone.json();
 
-  const mostViewedNewsRes = await fetch(
-    'https://jsonblob.com/api/jsobBlob/922e55bb-de42-11eb-80f0-3966496a21f4'
-  );
-  const mostViewedNews = await mostViewedNewsRes.json();
-
-  const newsArchiveRes = await fetch(
-    'https://jsonblob.com/api/jsobBlob/32c9b931-de46-11eb-80f0-11e165911648'
-  );
-  const newsArchive = await newsArchiveRes.json();
+  // 404
+  if (!data.status) {
+    return {
+      notFound: true,
+    };
+  }
 
   return {
-    props: { postData, mostViewedNews, newsArchive },
+    props: {
+      ...data,
+    },
   };
 }
 

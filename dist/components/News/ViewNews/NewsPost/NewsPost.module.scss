@@ -1,0 +1,67 @@
+.portfolioTittle {
+  margin-bottom: 0;
+  font-family: BYekan, sans-serif;
+  letter-spacing: 0;
+  text-transform: capitalize;
+
+  > a {
+    -webkit-transition: all 0.4s ease;
+    transition: all 0.4s ease;
+    color: #313131;
+    font-size: 18px;
+    line-height: 50px;
+    font-weight: 400;
+    font-family: BYekan, sans-serif;
+
+    &:hover {
+      color: #3dc4e4;
+    }
+  }
+}
+
+.metaTag {
+  color: #919191;
+  font-size: 13px;
+  line-height: 24px;
+  direction: rtl;
+
+  .user,
+  .date {
+    -webkit-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+    color: #717171;
+    text-decoration: none;
+    font-family: Tahoma, sans-serif;
+
+    &:hover {
+      color: #3dc4e4;
+    }
+  }
+
+  .blueLine {
+    color: #3dc4e4;
+    padding: 0 8px;
+  }
+}
+
+.imgWrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+
+  > img {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+.newsText {
+  margin-top: 20px;
+  font-family: IRANSans;
+  font-size: 13px;
+
+  p {
+    color: #717171;
+    line-height: 24px;
+  }
+}

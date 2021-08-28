@@ -1,5 +1,4 @@
 import * as React from 'react';
-import axios from 'axios';
 import { Col, Container, FormLabel, Row, Table } from 'react-bootstrap';
 import showErrorMsg from '../../helper/showErrorMsg';
 import { Form, Field, Formik, FormikHelpers, ErrorMessage } from 'formik';
@@ -8,12 +7,10 @@ import { IBankAccount } from '../../pages/bankaccounts';
 import { NotificationManager } from 'react-notifications';
 import styles from './BankAccounts.module.scss';
 import PagesHeader from '../PagesHeader/PagesHeader';
-import { connect } from 'react-redux';
-import { RootState } from '../../store';
+import backend from '../../axios-config';
 
 interface IProps {
   bankAccounts: IBankAccount[];
-  language: RootState['language'];
 }
 
 interface IState {
@@ -38,9 +35,9 @@ class BankAccounts extends React.Component<IProps, IState> {
     values: IInputs,
     { setSubmitting, setErrors, resetForm }: FormikHelpers<IInputs>
   ) {
-    axios
+    backend
       .post(
-        `${process.env.SCHEMA}://${process.env.DOMAIN}/${this.props.language.locale}/bankaccounts?ajax=1&account=${values.account}&cellphone=${values.cellphone}`
+        `/bankaccounts?ajax=1&account=${values.account}&cellphone=${values.cellphone}`
       )
       .then((res) => {
         if (res.data.status) {
@@ -259,8 +256,4 @@ class BankAccounts extends React.Component<IProps, IState> {
   }
 }
 
-export default connect((state: RootState) => {
-  return {
-    language: state.language,
-  };
-})(BankAccounts);
+export default BankAccounts;

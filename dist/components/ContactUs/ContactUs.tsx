@@ -1,5 +1,4 @@
 import * as React from 'react';
-import axios from 'axios';
 import { Card, InputGroup } from 'react-bootstrap';
 import { Button } from 'react-bootstrap';
 import { Container, Row, Col, Form } from 'react-bootstrap';
@@ -15,25 +14,9 @@ import {
 } from 'formik';
 import * as Yup from 'yup';
 import classNames from 'classnames';
-import { connect } from 'react-redux';
-import { RootState } from '../../store';
 import showErrorMsg from '../../helper/showErrorMsg';
 import PagesHeader from '../PagesHeader/PagesHeader';
-
-// import dynamic from 'next/dynamic';
-
-// const Map = dynamic(import('../Map/Map'), {
-//   ssr: false,
-//   loading: () => (
-//     <div style={{ textAlign: 'center', paddingTop: 20 }}>
-//       در حال دریافت نقشه...
-//     </div>
-//   ),
-// });
-
-interface IProps {
-  language: RootState['language'];
-}
+import backend from '../../axios-config';
 
 interface IState {
   isMapOpen: boolean;
@@ -46,8 +29,8 @@ interface IInputs {
   text: string;
 }
 
-class ContactUs extends React.Component<IProps, IState> {
-  constructor(props: IProps) {
+class ContactUs extends React.Component<null, IState> {
+  constructor(props) {
     super(props);
     this.state = {
       isMapOpen: true,
@@ -58,9 +41,9 @@ class ContactUs extends React.Component<IProps, IState> {
     values: IInputs,
     { setSubmitting, setErrors, resetForm }: FormikHelpers<IInputs>
   ) {
-    axios
+    backend
       .post(
-        `${process.env.SCHEMA}://${process.env.DOMAIN}/${this.props.language.locale}/contact?ajax=1&name=${values.name}&subject=${values.subject}&email=${values.email}&text=${values.text}`
+        `/contact?ajax=1&name=${values.name}&subject=${values.subject}&email=${values.email}&text=${values.text}`
         // {
         //   name: values.name,
         //   subject: values.subject,
@@ -367,8 +350,4 @@ class ContactUs extends React.Component<IProps, IState> {
   }
 }
 
-export default connect((state: RootState) => {
-  return {
-    language: state.language,
-  };
-})(ContactUs);
+export default ContactUs;

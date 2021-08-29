@@ -2,11 +2,13 @@ import * as React from 'react';
 import Link from 'next/link';
 import { Accordion } from 'react-bootstrap';
 import classNames from 'classnames';
+import ICategory from '../../../../helper/types/blog/Category';
 
 interface param {
-  category?: string[];
+  category?: ICategory;
   tag?: string;
   search?: string;
+  breedcrumb?: ICategory[];
 }
 
 export interface CategoryAccordionProps {
@@ -40,7 +42,9 @@ class CategoryAccordion extends React.Component<
     const isOpenFromPath =
       this.props.param &&
       this.props.param.category &&
-      this.props.param.category.some((i) => i === this.props.categoryName)
+      this.props.param.breedcrumb.some(
+        (i) => i.title === this.props.categoryName
+      )
         ? '0'
         : '1';
 

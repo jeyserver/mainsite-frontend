@@ -4,31 +4,29 @@ import PostCard from './PostCard/PostCard';
 import styles from './BlogPosts.module.scss';
 import Link from 'next/link';
 import TopNav from '../TopNav/TopNav';
+import IPost from '../../../helper/types/blog/Post';
+import IPopularPost from '../../../helper/types/blog/PopularPost';
+import ICategory from '../../../helper/types/blog/Category';
 
-export interface BlogPostsProps {
-  posts: any;
-  categories: any;
+interface IProps {
+  recentPosts: IPost[];
+  popularPosts: IPopularPost[];
+  categories: ICategory[];
 }
 
-export interface BlogPostsState {}
-
-class BlogPosts extends React.Component<BlogPostsProps, BlogPostsState> {
-  constructor(props: BlogPostsProps) {
-    super(props);
-    this.state = {};
-  }
-
+class BlogPosts extends React.Component<IProps> {
   render() {
     return (
       <section>
-        <TopNav
+        {/* <TopNav
           categories={this.props.categories}
-          nightMode={false}
+          nightMode={true}
           page="blog"
           title="آموزش ها و مقالات کاربردی برای وبمستران"
-        />
+          data={this.props.data}
+        /> */}
 
-        <div className={styles.mostViewedPosts}>
+        {/* <div className={styles.mostViewedPosts}>
           <Container>
             <Row>
               <div className={styles.header}>
@@ -36,16 +34,16 @@ class BlogPosts extends React.Component<BlogPostsProps, BlogPostsState> {
               </div>
             </Row>
             <Row>
-              {this.props.posts.mostViewedPosts.map((post, index) => (
-                <Col xs={12} sm={6} lg={3} key={index}>
+              {this.props.popularPosts.map((post, index) => (
+                <Col xs={12} sm={6} lg={3} key={post.id}>
                   <PostCard post={post} />
                 </Col>
               ))}
             </Row>
           </Container>
-        </div>
+        </div> */}
 
-        <div className={styles.linuxPosts}>
+        {/* <div className={styles.linuxPosts}>
           <Container>
             <Row>
               <Col xs={12} sm={6} lg={3} className="d-flex align-items-center">
@@ -75,7 +73,7 @@ class BlogPosts extends React.Component<BlogPostsProps, BlogPostsState> {
               })}
             </Row>
           </Container>
-        </div>
+        </div> */}
 
         <div className={styles.newestPosts}>
           <Container>
@@ -85,8 +83,8 @@ class BlogPosts extends React.Component<BlogPostsProps, BlogPostsState> {
               </div>
             </Row>
             <Row>
-              {this.props.posts.mostViewedPosts.map((post, index) => (
-                <Col xs={12} sm={6} lg={3} key={index}>
+              {this.props.recentPosts.slice(0, 4).map((post, index) => (
+                <Col xs={12} sm={6} lg={3} key={post.id}>
                   <PostCard post={post} />
                 </Col>
               ))}
@@ -94,7 +92,7 @@ class BlogPosts extends React.Component<BlogPostsProps, BlogPostsState> {
           </Container>
         </div>
 
-        <div className={styles.programmingLangsPosts}>
+        {/* <div className={styles.programmingLangsPosts}>
           <Container>
             <Row>
               <Col xs={12} sm={6} lg={3} className="d-flex align-items-center">
@@ -126,7 +124,7 @@ class BlogPosts extends React.Component<BlogPostsProps, BlogPostsState> {
               })}
             </Row>
           </Container>
-        </div>
+        </div> */}
       </section>
     );
   }

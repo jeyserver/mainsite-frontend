@@ -1,0 +1,155 @@
+html[data-theme='dark'] {
+  #blog-category,
+  #blog-post,
+  #blog-tag {
+    background-color: #272d3d;
+
+    nav {
+      #top-nav {
+        background-color: #343b4d;
+        > div {
+          > div {
+            > div {
+              &:nth-child(1) {
+                > div {
+                  color: #fffcfc;
+                  > button {
+                    color: #fffcfc;
+                  }
+                  .dropdown-menu {
+                    background-color: #343b4d;
+                    > a {
+                      color: #fffcfc;
+
+                      &:hover {
+                        background-color: #272d3d;
+                        color: #fffcfc;
+                      }
+                    }
+                  }
+                }
+              }
+              &:nth-child(2) {
+                color: #fffcfc;
+                > a {
+                  color: #fffcfc;
+                }
+                > button {
+                  color: #fffcfc;
+                }
+              }
+            }
+          }
+        }
+      }
+
+      #mainNavbar {
+        background-color: #343b4d;
+        > div {
+          > div {
+            > button {
+              color: #ffffff;
+              > i {
+                color: #ffffff;
+              }
+
+              &:focus {
+                box-shadow: none;
+              }
+            }
+            > div {
+              > div {
+                background-color: #343b4d;
+                .nav-item-dropdown.dropdown {
+                  > button {
+                    color: #fffcfc;
+                    > div {
+                      color: #fffcfc !important;
+                    }
+                    &::after {
+                      color: #fffcfc !important;
+                    }
+                  }
+                  .nav-item-dropdown-menu {
+                    background-color: #343b4d;
+                    > div {
+                      > div {
+                        > div {
+                          .serverLeftSide {
+                            box-shadow: none;
+                          }
+
+                          > div {
+                            ul {
+                              li {
+                                color: #fffcfc;
+                              }
+                            }
+                            i {
+                              color: #fffcfc;
+                            }
+                            p {
+                              color: #fffcfc;
+                            }
+
+                            .serverTitle {
+                              color: #fffcfc;
+                            }
+
+                            .serverBtn {
+                              > div {
+                                &:nth-child(1) {
+                                  background-color: #343b4d;
+                                  border-color: #fffcfc;
+                                }
+                                &:nth-child(2) {
+                                  color: #fffcfc;
+                                }
+                              }
+                              &:hover {
+                                > div {
+                                  &:nth-child(2) {
+                                    color: #000000;
+                                  }
+                                }
+                              }
+                            }
+
+                            .license-btn {
+                              span {
+                                color: #fffcfc;
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                  .domain-drop-down-menu {
+                    .tableHeader {
+                      color: #fffcfc;
+                    }
+                    table {
+                      tr {
+                        td,
+                        th {
+                          color: #fffcfc;
+                          &[data-selected='true'] {
+                            background-color: #272d3d;
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+                > a {
+                  color: #fffcfc;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

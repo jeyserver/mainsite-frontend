@@ -1,0 +1,89 @@
+.wrapper {
+  .reply {
+    margin-right: 25px;
+    @media screen and (max-width: 767px) {
+      margin-right: 10px;
+    }
+  }
+}
+.box {
+  display: flex;
+  font-family: IRANSans;
+  margin-bottom: 2rem;
+
+  @media screen and (max-width: 767px) {
+    grid-template-columns: 70px 1fr;
+    margin-right: 0;
+  }
+
+  .avatarWrapper {
+    padding: 5px;
+    border-radius: 5px;
+    width: min-content;
+    height: min-content;
+    margin-left: 25px;
+
+    > img {
+      width: 50px;
+      height: auto;
+    }
+  }
+
+  .body {
+    padding: 10px 22px;
+    border: 1px solid #dddddd;
+    width: 100%;
+  }
+
+  .header {
+    display: flex;
+    justify-content: space-between;
+
+    .right {
+      @media screen and (max-width: 576px) {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .user {
+        font-weight: bold;
+        font-size: 0.9rem;
+        color: #212121;
+        margin-left: 5px;
+
+        @media screen and (max-width: 576px) {
+          margin-bottom: 10px;
+        }
+      }
+
+      .time {
+        color: #6a5e62;
+        font-size: 0.85rem;
+        white-space: nowrap;
+      }
+    }
+
+    .replyBtn {
+      background-color: transparent;
+      border: none;
+      padding: 0;
+      color: #09729c;
+
+      i {
+        font-size: 13px;
+      }
+
+      &:active {
+        i {
+          transform: scale(0.9);
+        }
+      }
+    }
+  }
+
+  .text {
+    margin-top: 2rem;
+    font-size: 0.85rem;
+    color: #212121;
+  }
+}

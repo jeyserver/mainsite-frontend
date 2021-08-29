@@ -1,0 +1,420 @@
+.post {
+  padding-top: 35px;
+  padding-bottom: 35px;
+
+  .title {
+    font-size: 18px;
+    font-family: IRANSans;
+
+    color: #000000;
+
+    margin-bottom: 18px;
+
+    @media screen and (max-width: 767px) {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+  }
+
+  .postInfo {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+
+    @media screen and (max-width: 767px) {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    .authorWrapper {
+      margin-left: 22px;
+
+      > span {
+        color: #474747;
+        font-size: 12px;
+        font-family: IRANSans;
+        > i {
+          margin-left: 5px;
+        }
+      }
+      > a {
+        color: #3dc4e4;
+        font-size: 12px;
+        font-family: IRANSans;
+      }
+    }
+    .timeWrapper {
+      display: flex;
+      align-items: center;
+
+      font-size: 12px;
+      font-family: IRANSans;
+
+      color: #474747;
+
+      > i {
+        margin-left: 5px;
+      }
+    }
+  }
+
+  .postImage {
+    width: 100%;
+  }
+
+  .postCategories,
+  .postSources {
+    margin-top: 25px;
+    margin-bottom: 25px;
+
+    @media screen and (max-width: 767px) {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    > span {
+      font-size: 12px;
+      font-family: IRANSans;
+
+      color: #222222;
+
+      margin-left: 8px;
+    }
+
+    > a {
+      font-size: 12px;
+      font-family: IRANSans;
+
+      color: #3dc4e4;
+    }
+  }
+
+  > .content {
+    font-size: 13px;
+    font-family: IRANSans;
+    color: #4b4b4b;
+
+    img:nth-child(1) {
+      display: none !important;
+    }
+
+    @media screen and (max-width: 767px) {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    img {
+      width: 100%;
+    }
+  }
+
+  .postSources {
+    > span {
+      font-size: 13px;
+    }
+
+    > a {
+      font-size: 13px;
+    }
+  }
+
+  .socialLinks {
+    padding-top: 25px;
+    margin-bottom: 15px;
+
+    border-top: 1px solid #dddddd;
+
+    @media screen and (max-width: 767px) {
+      margin-left: 20px;
+      margin-right: 20px;
+    }
+
+    > span {
+      font-size: 13px;
+      font-family: IRANSans;
+
+      color: #222222;
+
+      margin-left: 8px;
+    }
+
+    > a {
+      font-size: 13px;
+      color: #3dc4e4;
+      margin-left: 15px;
+    }
+  }
+
+  .lables {
+    padding: 18px 25px;
+    margin-bottom: 15px;
+    margin-top: 40px;
+
+    background-color: #f0f0f0;
+    color: #4b4b4b;
+
+    font-size: 12px;
+    font-family: IRANSans;
+
+    @media screen and (max-width: 767px) {
+      margin-left: 20px;
+      margin-right: 20px;
+    }
+  }
+
+  .comments {
+    margin-top: 35px;
+
+    @media screen and (max-width: 767px) {
+      margin-left: 20px;
+      margin-right: 20px;
+    }
+
+    > h3 {
+      font-size: 18px;
+      font-family: IRANSans;
+
+      margin-bottom: 40px;
+    }
+
+    .comment {
+      display: flex;
+      margin-bottom: 25px;
+
+      > img {
+        margin-left: 25px;
+        height: 60px;
+        width: 60px;
+      }
+
+      .content {
+        border: 1px solid #dddddd;
+        padding: 10px 20px;
+        padding-bottom: 20px;
+
+        .user {
+          font-size: 13px;
+          font-family: IRANSans;
+
+          color: #000000;
+        }
+
+        .time {
+          font-size: 11px;
+          font-family: IRANSans;
+
+          color: #7c7c7c;
+
+          margin: 5px 0;
+        }
+
+        .body {
+          font-size: 12px;
+          font-family: IRANSans;
+
+          color: #555555;
+        }
+      }
+    }
+
+    .formWrapper {
+      > h3 {
+        font-size: 13px;
+        font-family: IRANSans;
+        margin-bottom: 10px;
+      }
+
+      > h4 {
+        color: #504f4f;
+
+        font-size: 13px;
+        font-family: IRANSans;
+
+        margin-bottom: 20px;
+      }
+
+      .form {
+        .formGroup {
+          margin-bottom: 35px;
+          .label {
+            color: #504f4f;
+
+            font-size: 13px;
+            font-family: IRANSans;
+
+            margin-bottom: 12px;
+
+            .star {
+              color: #3dc4e4;
+            }
+          }
+
+          input,
+          textarea {
+            border: 1px solid #dddddd;
+            border-radius: 3px;
+            padding: 9px;
+            font-family: IRANSans;
+
+            &:focus {
+              border-color: #3dc4e4;
+              box-shadow: 0 0 0 0.25rem #3dc5e47a;
+            }
+          }
+
+          > div {
+            font-size: 13px;
+            font-family: IRANSans;
+          }
+        }
+
+        .sendBtn {
+          background-color: #3dc4e4;
+          color: #ffffff;
+          border-radius: 3px;
+          border: 1px solid #3dc4e4;
+
+          font-size: 18px;
+          font-family: IRANSans;
+          font-weight: bold;
+
+          padding-right: 28px;
+          padding-left: 28px;
+
+          &:active,
+          &:focus {
+            box-shadow: 0 0 0 0.25rem #3dc5e47a;
+          }
+        }
+      }
+    }
+  }
+}
+
+/* ----------------------------- DARK -----------------------------*/
+
+.post.dark {
+  .title {
+    color: #fafafa;
+  }
+
+  .postInfo {
+    .authorWrapper {
+      > span {
+        color: #fffcfc;
+        i {
+          color: #7c7c7c;
+        }
+      }
+      > a {
+        color: #3dc4e4;
+      }
+    }
+    .timeWrapper {
+      color: #fffcfc;
+      i {
+        color: #7c7c7c;
+      }
+    }
+  }
+
+  .postCategories,
+  .postSources {
+    > span {
+      color: #fffcfc;
+    }
+
+    > a {
+      color: #3dc4e4;
+    }
+  }
+
+  > .content {
+    color: #fffcfc;
+  }
+
+  .socialLinks {
+    > span {
+      color: #fffcfc;
+    }
+
+    > a {
+      color: #3dc4e4;
+    }
+  }
+
+  .lables {
+    background-color: #343b4d;
+    color: #fffcfc;
+  }
+
+  .comments {
+    > h3 {
+      color: #fffcfc;
+    }
+
+    .comment {
+      .content {
+        border: 1px solid #dddddd;
+        background-color: #343b4d;
+
+        .user {
+          color: #fffcfc;
+        }
+
+        .time {
+          color: #dddddd;
+        }
+
+        .body {
+          color: #fffcfc;
+        }
+      }
+    }
+
+    .formWrapper {
+      > h3 {
+        color: #ffffff;
+      }
+
+      > h4 {
+        color: #fffcfc;
+      }
+
+      .form {
+        .formGroup {
+          .label {
+            color: #fffcfc;
+
+            .star {
+              color: #3dc4e4;
+            }
+          }
+
+          input,
+          textarea {
+            border: 1px solid #dddddd;
+            background-color: #343b4d;
+            color: #fffcfc;
+
+            &:focus {
+              border-color: #3dc4e4;
+              box-shadow: 0 0 0 0.25rem #3dc5e47a;
+            }
+          }
+        }
+
+        .sendBtn {
+          background-color: #3dc4e4;
+          color: #ffffff;
+          border: 1px solid #3dc4e4;
+
+          &:active,
+          &:focus {
+            box-shadow: 0 0 0 0.25rem #3dc5e47a;
+          }
+        }
+      }
+    }
+  }
+}

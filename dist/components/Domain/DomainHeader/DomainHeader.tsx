@@ -9,57 +9,37 @@ import {
   Spinner,
 } from 'react-bootstrap';
 import styles from './DomainHeader.module.scss';
-import { setDomainForShop } from '../../../redux/actions';
 import { connect } from 'react-redux';
-import axios from 'axios';
+import { ITld } from '../../../pages/_app';
+import { setSelectedDomain } from '../../../store/Domain';
 
-export interface DomainHeaderProps {
-  domainsData: {
-    status: boolean;
-    items: {
-      id: number;
-      tld: string;
-      new: number;
-      renew: number;
-      transfer: number;
-    }[];
-  };
+interface IProps {
+  tlds: ITld[];
   router: NextRouter;
-  setDomainForShop: (user: { tld: string; name: string }) => void;
+  setSelectedDomain: typeof setSelectedDomain;
 }
 
-export interface DomainHeaderState {
+interface IState {
   loading: boolean;
 }
 
-class DomainHeader extends React.Component<
-  DomainHeaderProps,
-  DomainHeaderState
-> {
-  constructor(props: DomainHeaderProps) {
+class DomainHeader extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
-    this.state = {
-      loading: false,
-    };
+    this.state = { loading: false };
   }
-
   submitDomainForm(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const form = e.currentTarget;
 
     this.setState({ loading: true });
-    axios(
-      'https://jsonblob.com/api/jsonBlob/d3196d4f-e2e1-11eb-b284-d50b7a049077'
-    )
-      .then(() => {
-        this.props.setDomainForShop({
-          tld: form.tld.value,
-          name: form.domainName.value,
-        });
-      })
-      .catch(() => {
-        this.setState({ loading: false });
-      });
+
+    this.props.setSelectedDomain({
+      tld: form.tld.value,
+      name: form.domainName.value,
+    });
+
+    this.props.router.push('/order/domain');
   }
 
   render() {
@@ -79,6 +59,7 @@ class DomainHeader extends React.Component<
                     <Form
                       onSubmit={(e) => this.submitDomainForm(e)}
                       className={styles.form}
+                      autoComplete="off"
                     >
                       <div>
                         <Form.Control
@@ -88,7 +69,7 @@ class DomainHeader extends React.Component<
                           custom
                           required
                         >
-                          {this.props.domainsData.items.map((domain) => (
+                          {this.props.tlds.map((domain) => (
                             <option value={domain.tld} key={domain.tld}>
                               .{domain.tld}
                             </option>
@@ -133,4 +114,4 @@ class DomainHeader extends React.Component<
   }
 }
 
-export default connect(null, { setDomainForShop })(withRouter(DomainHeader));
+export default connect(null, { setSelectedDomain })(withRouter(DomainHeader));

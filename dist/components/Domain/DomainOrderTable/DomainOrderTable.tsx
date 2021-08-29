@@ -4,27 +4,26 @@ import { Alert, Spinner } from 'react-bootstrap';
 import { Button } from 'react-bootstrap';
 import { Col, Table } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import { formatPrice } from '../../helper/formatPrice';
-import { setDomainForShop } from '../../../redux/actions';
 import styles from './DomainOrderTable.module.scss';
-import { domainReducerType } from '../../../redux/reducers/domainReducer';
-import axios from 'axios';
+import { IRoundDomain } from '../../../pages/domain';
+import { RootState } from '../../../store';
+import formatPriceWithCurrency from '../../../helper/formatPriceWithCurrency';
+import { setSelectedDomain } from '../../../store/Domain';
+import { NextRouter, withRouter } from 'next/router';
 
-export interface DomainOrderTableProps {
-  roundDomains: any;
-  setDomainForShop: (domain: any) => void;
-  domain: domainReducerType;
+interface IProps {
+  roundDomains: IRoundDomain[];
+  setSelectedDomain: typeof setSelectedDomain;
+  currencies: RootState['currencies'];
+  router: NextRouter;
 }
 
-export interface DomainOrderTableState {
+interface IState {
   loading: boolean;
 }
 
-class DomainOrderTable extends React.Component<
-  DomainOrderTableProps,
-  DomainOrderTableState
-> {
-  constructor(props: DomainOrderTableProps) {
+class DomainOrderTable extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
     this.state = {
       loading: false,
@@ -32,18 +31,15 @@ class DomainOrderTable extends React.Component<
     this.order = this.order.bind(this);
   }
 
-  order(domain) {
+  order(domain: IRoundDomain) {
     this.setState({ loading: true });
 
-    axios(
-      'https://jsonblob.com/api/jsonBlob/d3196d4f-e2e1-11eb-b284-d50b7a049077'
-    )
-      .then(() => {
-        this.props.setDomainForShop(domain);
-      })
-      .catch(() => {
-        this.setState({ loading: false });
-      });
+    this.props.setSelectedDomain({
+      name: domain.domain.replace(/.+\/\/|www.|\..+/g, ''),
+      tld: domain.tld.id,
+    });
+
+    this.props.router.push('/order/domain');
   }
 
   render() {
@@ -51,7 +47,7 @@ class DomainOrderTable extends React.Component<
       <Col xs={12} lg={4} className={classNames(styles.orderTable, 'px-0')}>
         <img src="/images/domain/mobile.png" className="float-left mobile" />
         <h5 className={styles.tableOrderTitle}>لیست دامنه های رند</h5>
-        {this.props.roundDomains.items.length === 0 ? (
+        {this.props.roundDomains.length === 0 ? (
           <Alert variant="info" className={styles.roundDomainsNotFoundMsg}>
             به محض پیدا کردن دامنه رند، در این قسمت براتون اضافه میکنیم.
           </Alert>
@@ -66,14 +62,18 @@ class DomainOrderTable extends React.Component<
                 </tr>
               </thead>
               <tbody>
-                {this.props.roundDomains.items.map((domain) => (
-                  <tr key={domain.id}>
+                {this.props.roundDomains.map((roundDomain) => (
+                  <tr key={roundDomain.domain}>
+                    <td>{roundDomain.domain}</td>
                     <td>
-                      {domain.name}.{domain.tld}
+                      {formatPriceWithCurrency(
+                        this.props.currencies.items,
+                        roundDomain.tld.currency,
+                        roundDomain.tld.new
+                      )}
                     </td>
-                    <td>{formatPrice(domain.new)} تومان</td>
                     <td>
-                      <Button onClick={() => this.order(domain)}>
+                      <Button onClick={() => this.order(roundDomain)}>
                         <a>سفارش</a>
                       </Button>
                     </td>
@@ -94,10 +94,11 @@ class DomainOrderTable extends React.Component<
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    domain: state.domain,
-  };
-};
-
-export default connect(mapStateToProps, { setDomainForShop })(DomainOrderTable);
+export default connect(
+  (state: RootState) => {
+    return {
+      currencies: state.currencies,
+    };
+  },
+  { setSelectedDomain }
+)(withRouter(DomainOrderTable));

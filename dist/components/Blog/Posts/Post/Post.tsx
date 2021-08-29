@@ -2,62 +2,78 @@ import * as React from 'react';
 import Link from 'next/link';
 import { Image } from 'react-bootstrap';
 import moment from 'jalali-moment';
+import IPost from '../../../../helper/types/blog/Post';
+import styles from './Post.module.scss';
+import { connect } from 'react-redux';
+import { RootState } from '../../../../store';
+import classNames from 'classnames';
 
-export interface PostProps {
-  post: any;
+interface IProps {
+  post: IPost;
+  theme: RootState['theme'];
 }
 
-export interface PostState {}
-
-class Post extends React.Component<PostProps, PostState> {
-  constructor(props: PostProps) {
-    super(props);
-    this.state = {};
-  }
+class Post extends React.Component<IProps> {
   render() {
     return (
-      <div className="post">
-        <Link href={`/blog/${this.props.post.title_en}`}>
-          <a className="title">{this.props.post.title}</a>
+      <div
+        className={classNames(styles.post, {
+          [styles.dark]: this.props.theme.current === 'dark',
+        })}
+      >
+        <Link href={`/blog/${this.props.post.permalink}`}>
+          <a className={styles.title}>{this.props.post.title}</a>
         </Link>
-        <div className="post-info">
-          <div className="author-wrapper">
+        <div className={styles.postInfo}>
+          <div className={styles.authorWrapper}>
             <span>
               <i className="far fa-user"></i>
               <span>نویسنده: </span>
             </span>
-            <Link href={`/blog/author/${this.props.post.author}`}>
-              <a>{this.props.post.author}</a>
+            <Link href={`/blog/author/${this.props.post.author.id}`}>
+              <a>{`${this.props.post.author.name} ${this.props.post.author.lastname}`}</a>
             </Link>
           </div>
-          <div className="time-wrapper">
+          <div className={styles.timeWrapper}>
             <i className="far fa-calendar-alt"></i>
             <span>{moment().locale('fa').format('D MMM YYYY')}</span>
           </div>
         </div>
-        <Image src={this.props.post.img} className="post-image" />
-        <div className="post-categories">
+
+        <Image src={this.props.post.image} className={styles.postImage} />
+
+        <div className={styles.postCategories}>
           <span>دسته بندی:</span>
           {this.props.post.categories.map((category, index) => {
             if (index === this.props.post.categories.length - 1) {
               return (
-                <Link href={category} key={index}>
-                  <a>{category}</a>
+                <Link
+                  href={`/blog/category/${category.permalink}`}
+                  key={category.id}
+                >
+                  <a>{category.title}</a>
                 </Link>
               );
             } else {
               return (
-                <Link href={category} key={index}>
-                  <a>{category}، </a>
+                <Link
+                  href={`/blog/category/${category.permalink}`}
+                  key={category.id}
+                >
+                  <a>{category.title}، </a>
                 </Link>
               );
             }
           })}
         </div>
-        <div className="large-summary">{this.props.post.largeSummary}</div>
-        <div className="post-link-wrapper">
-          <Link href={`/blog/${this.props.post.title_en}`}>
-            <a className="post-link">ادامه مطلب</a>
+
+        <div
+          className={styles.largeSummary}
+          dangerouslySetInnerHTML={{ __html: this.props.post.content }}
+        ></div>
+        <div className={styles.postLinkWrapper}>
+          <Link href={`/blog/${this.props.post.permalink}`}>
+            <a className={styles.postLink}>ادامه مطلب</a>
           </Link>
         </div>
       </div>
@@ -65,4 +81,8 @@ class Post extends React.Component<PostProps, PostState> {
   }
 }
 
-export default Post;
+export default connect((state: RootState) => {
+  return {
+    theme: state.theme,
+  };
+})(Post);

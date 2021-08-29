@@ -1,22 +1,45 @@
 import * as React from 'react';
 import Link from 'next/link';
-import { Image, Form, Col, Row } from 'react-bootstrap';
+import { Image, Col, Row, FormGroup, FormLabel } from 'react-bootstrap';
 import moment from 'jalali-moment';
 import { Button } from 'react-bootstrap';
 import axios from 'axios';
 import { NotificationManager } from 'react-notifications';
+import IPost from '../../../../helper/types/blog/Post';
+import IComment from '../../../../helper/types/blog/Comment';
+import { withRouter, NextRouter } from 'next/router';
+import { connect } from 'react-redux';
+import { RootState } from '../../../../store';
+import Comment from '../Comment/Comment';
+import classNames from 'classnames';
+import styles from './Post.module.scss';
+import { Formik, Form, Field, ErrorMessage, FormikHelpers } from 'formik';
+import * as Yup from 'yup';
+import backend from '../../../../axios-config';
+import showErrorMsg from '../../../../helper/showErrorMsg';
 
-export interface PostProps {
-  post: any;
+interface IProps {
+  post: IPost;
+  comments: IComment[];
+  router: NextRouter;
+  language: RootState['language'];
+  theme: RootState['theme'];
 }
 
-export interface PostState {
+interface IState {
   commentFormValidated: boolean;
   commentSendBtnLoading: boolean;
 }
 
-class Post extends React.Component<PostProps, PostState> {
-  constructor(props: PostProps) {
+interface IInputs {
+  name: string;
+  email: string;
+  site: string;
+  text: string;
+}
+
+class Post extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
     this.state = {
       commentFormValidated: false,
@@ -25,74 +48,99 @@ class Post extends React.Component<PostProps, PostState> {
     this.onSubmitCommentForm = this.onSubmitCommentForm.bind(this);
   }
 
-  onSubmitCommentForm(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const form = e.currentTarget;
+  getPageLink() {
+    return `${process.env.SCHEMA}://${process.env.DOMAIN}/${this.props.language.locale}/blog/${this.props.post.permalink}`;
+  }
 
-    if (form.checkValidity() === false) {
-      e.stopPropagation();
-    } else {
-      this.setState({ commentSendBtnLoading: true });
-
-      axios(
-        'https://jsonblob.com/api/jsonBlob/d8eccd84-d821-11eb-9f33-07821a14b37b'
+  onSubmitCommentForm(
+    values: IInputs,
+    { setSubmitting, setErrors, resetForm }: FormikHelpers<IInputs>
+  ) {
+    backend
+      .post(
+        `/blog/${this.props.post.permalink}?ajax=1&name=${values.name}&text=${values.text}&site=${values.site}&email=${values.email}`
+        // {
+        //   name: values.name,
+        //   text: values.text,
+        //   site: values.site,
+        //   email: values.email,
+        // }
       )
-        .then(() => {
-          form.email.value = '';
-          form.comment.value = '';
-          form.user.value = '';
-          form.website.value = '';
-
-          NotificationManager.success('ایمیل شما با موفقیت ثبت شد', '');
-          this.setState({
-            commentSendBtnLoading: false,
-            commentFormValidated: false,
-          });
-        })
-        .catch(() => {
-          NotificationManager.error(
-            'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
-            'خطا'
+      .then((res) => {
+        if (res.data.status) {
+          NotificationManager.success(
+            'کارشناسان ما در اولین فرصت پیام شما را بررسی و پاسخ خواهند داد. از صبر شما متشکریم.',
+            'پیام شما دریافت شد.'
           );
-          this.setState({ commentSendBtnLoading: true });
-        });
-    }
-    this.setState({ commentFormValidated: true });
+          resetForm();
+        } else {
+          res.data.error.map((error) => {
+            setErrors({ [error.input]: showErrorMsg(error.code) });
+          });
+        }
+      })
+      .catch(() => {
+        NotificationManager.error(
+          'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
+          'خطا'
+        );
+      })
+      .finally(() => {
+        setSubmitting(false);
+      });
   }
 
   render() {
+    const { title, author, image, date, categories, content, description } =
+      this.props.post;
+
     return (
-      <div className="post">
-        <h3 className="title">{this.props.post.title}</h3>
-        <div className="post-info">
-          <div className="author-wrapper">
+      <div
+        className={classNames(styles.post, {
+          [styles.dark]: this.props.theme.current === 'dark',
+        })}
+      >
+        <h3 className={styles.title}>{this.props.post.title}</h3>
+        <div className={styles.postInfo}>
+          <div className={styles.authorWrapper}>
             <span>
               <i className="far fa-user"></i>
               <span>نویسنده: </span>
             </span>
-            <Link href={`/blog/author/${this.props.post.author}`}>
-              <a>{this.props.post.author}</a>
+            <Link href={`/blog/author/${author.id}`}>
+              <a>{`${author.name} ${author.lastname}`}</a>
             </Link>
           </div>
-          <div className="time-wrapper">
+          <div className={styles.timeWrapper}>
             <i className="far fa-calendar-alt"></i>
-            <span>{moment().locale('fa').format('D MMM YYYY')}</span>
+            <span>
+              {moment(date * 1000)
+                .locale('fa')
+                .format('D MMM YYYY')}
+            </span>
           </div>
         </div>
-        <Image src={this.props.post.img} className="post-image" />
-        <div className="post-categories">
+        <Image src={image} className={styles.postImage} />
+
+        <div className={styles.postCategories}>
           <span>دسته بندی:</span>
-          {this.props.post.categories.map((category, index) => {
-            if (index === this.props.post.categories.length - 1) {
+          {categories.map((category, index) => {
+            if (index === categories.length - 1) {
               return (
-                <Link href={category} key={index}>
-                  <a>{category}</a>
+                <Link
+                  href={`/blog/category/${category.permalink}`}
+                  key={category.id}
+                >
+                  <a>{category.title}</a>
                 </Link>
               );
             } else {
               return (
-                <Link href={category} key={index}>
-                  <a>{category}، </a>
+                <Link
+                  href={`/blog/category/${category.permalink}`}
+                  key={category.id}
+                >
+                  <a>{category.title}، </a>
                 </Link>
               );
             }
@@ -100,64 +148,49 @@ class Post extends React.Component<PostProps, PostState> {
         </div>
 
         <div
-          className="content"
+          className={styles.content}
           dangerouslySetInnerHTML={{
-            __html: new Buffer(this.props.post.content, 'base64').toString(),
+            __html: content,
           }}
         ></div>
 
-        <div className="post-sources">
-          <span>منبع:</span>
-          {this.props.post.source.map((source, index) => {
-            if (index === this.props.post.source.length - 1) {
-              return (
-                <Link href={source.link} key={index}>
-                  <a>{source.title}</a>
-                </Link>
-              );
-            } else {
-              return (
-                <Link href={source.link} key={index}>
-                  <a>{source.title} ، </a>
-                </Link>
-              );
-            }
-          })}
-        </div>
-
-        <div className="social-links">
+        <div className={styles.socialLinks}>
           <span>اشتراک مطلب:</span>
-          <a href="http://www.facebook.com/sharer.php?u=">
+          <a
+            href={`http://www.facebook.com/sharer.php?u=${this.getPageLink()}`}
+          >
             <i className="fab fa-facebook-f"></i>
           </a>
-          <a href="mailto:?subject=URL= &body">
+          <a href={`mailto:?subject=${title}&body=${description}`}>
             <i className="far fa-envelope"></i>
           </a>
-          <a href="http://www.twitter.com/sharer?url=">
+          <a href={`http://www.twitter.com/sharer?url=${this.getPageLink()}`}>
             <i className="fab fa-twitter"></i>
           </a>
           <a href="">
             <i className="fab fa-google-plus-g"></i>
           </a>
-          <a href="http://www.linkedin.com/shareArticle?mini=true&title=">
+          <a
+            href={`http://www.linkedin.com/shareArticle?mini=true&title=${this.getPageLink()}`}
+          >
             <i className="fab fa-linkedin"></i>
           </a>
         </div>
 
-        <div className="lables">
+        <div className={styles.lables}>
           <span> برچسب ها:</span>
-          <span className="labels-wrapper">
-            {this.props.post.labels.map((label, index) => {
+          <span className={styles.labelsWrapper}>
+            {this.props.post.tags.map((tag, index) => {
               if (index === this.props.post.categories.length - 1) {
                 return (
-                  <Link href={label} key={label}>
-                    <a>{label}</a>
+                  <Link href={`/blog/tag/${tag.permalink}`} key={tag.id}>
+                    <a>{tag.title}</a>
                   </Link>
                 );
               } else {
                 return (
-                  <Link href={label} key={label}>
-                    <a>{label}، </a>
+                  <Link href={`/blog/tag/${tag.permalink}`} key={tag.id}>
+                    <a>{tag.title}، </a>
                   </Link>
                 );
               }
@@ -165,89 +198,92 @@ class Post extends React.Component<PostProps, PostState> {
           </span>
         </div>
 
-        <div className="comments">
-          <h3>دیدگاه ها ({this.props.post.comments.length})</h3>
+        <div className={styles.comments}>
+          <h3>دیدگاه ها ({this.props.comments.length})</h3>
 
-          {this.props.post.comments.map((comment, index) => (
-            <div className="comment" key={index}>
-              <Image
-                src={comment.img ? comment.img : '/images/none-user.png'}
+          {this.props.comments
+            // .filter((i) => !i.reply)
+            .map((comment) => (
+              <Comment
+                key={comment.id}
+                comment={comment}
+                comments={this.props.comments}
               />
-              <div className="content">
-                <div className="user">{comment.user}</div>
-                <div className="time">
-                  {moment(comment.time * 1000)
-                    .locale('fa')
-                    .format('dddd DD MMM YYYY')}
-                </div>
-                <div className="body">{comment.body}</div>
-              </div>
-            </div>
-          ))}
+            ))}
 
-          <div className="form-wrapper">
+          <div className={styles.formWrapper}>
             <h3>افزودن دیدگاه</h3>
             <h4>
               آدرس ایمیل شما منتشر نخواهد شد. قسمت های ضروری که با * مشخص شده
               اند را کامل کنید.
             </h4>
 
-            <Form
-              className="form"
-              onSubmit={(e) => this.onSubmitCommentForm(e)}
-              noValidate
-              validated={this.state.commentFormValidated}
+            <Formik
+              onSubmit={(values, helpers) =>
+                this.onSubmitCommentForm(values, helpers)
+              }
+              initialValues={{ name: '', email: '', text: '', site: '' }}
+              validationSchema={Yup.object({
+                name: Yup.string().required('داده وارد شده معتبر نیست'),
+                email: Yup.string()
+                  .required('داده وارد شده معتبر نیست')
+                  .email('داده وارد شده معتبر نیست'),
+                text: Yup.string().required('داده وارد شده معتبر نیست'),
+              })}
             >
-              <Form.Group as={Col} md="12" controlId="comment">
-                <Form.Label>
-                  دیدگاه شما <span className="star">*</span>
-                </Form.Label>
-                <Form.Control
-                  required
-                  type="text"
-                  as="textarea"
-                  name="comment"
-                />
-                <Form.Control.Feedback type="invalid">
-                  لطفا دیدگاه خود را وارد کنید.
-                </Form.Control.Feedback>
-              </Form.Group>
+              {(formik) => (
+                <Form className={styles.form}>
+                  <FormGroup as={Col} className={styles.formGroup} md="12">
+                    <FormLabel className={styles.label}>
+                      دیدگاه شما <span className="star">*</span>
+                    </FormLabel>
+                    <Field as="textarea" name="text" className="form-control" />
+                    <div className="form-err-msg">
+                      <ErrorMessage name="text" />
+                    </div>
+                  </FormGroup>
 
-              <Row>
-                <Form.Group as={Col} md="4" controlId="user">
-                  <Form.Label>
-                    نام <span className="star">*</span>
-                  </Form.Label>
-                  <Form.Control required type="text" name="user" />
-                  <Form.Control.Feedback type="invalid">
-                    لطفا نام خود را وارد کنید.
-                  </Form.Control.Feedback>
-                </Form.Group>
+                  <Row>
+                    <FormGroup as={Col} className={styles.formGroup} md="4">
+                      <FormLabel className={styles.label}>
+                        نام <span className="star">*</span>
+                      </FormLabel>
+                      <Field type="text" name="name" className="form-control" />
+                      <div className="form-err-msg">
+                        <ErrorMessage name="name" />
+                      </div>
+                    </FormGroup>
 
-                <Form.Group as={Col} md="4" controlId="email">
-                  <Form.Label>
-                    ایمیل <span className="star">*</span>
-                  </Form.Label>
-                  <Form.Control required type="email" name="email" />
-                  <Form.Control.Feedback type="invalid">
-                    لطفا ایمیل خود را وارد کنید.
-                  </Form.Control.Feedback>
-                </Form.Group>
+                    <FormGroup as={Col} className={styles.formGroup} md="4">
+                      <FormLabel className={styles.label}>
+                        ایمیل <span className="star">*</span>
+                      </FormLabel>
+                      <Field
+                        type="email"
+                        name="email"
+                        className="form-control"
+                      />
+                      <div className="form-err-msg">
+                        <ErrorMessage name="email" />
+                      </div>
+                    </FormGroup>
 
-                <Form.Group as={Col} md="4" controlId="website">
-                  <Form.Label>وب سایت</Form.Label>
-                  <Form.Control type="text" name="website" />
-                </Form.Group>
-              </Row>
+                    <FormGroup as={Col} className={styles.formGroup} md="4">
+                      <FormLabel className={styles.label}>وب سایت</FormLabel>
+                      <Field type="text" name="site" className="form-control" />
+                    </FormGroup>
+                  </Row>
 
-              <Button
-                type="submit"
-                className="send-btn"
-                disabled={this.state.commentSendBtnLoading}
-              >
-                {this.state.commentSendBtnLoading ? 'لطفا صبر کنید' : 'ارسال'}
-              </Button>
-            </Form>
+                  <Button
+                    type="submit"
+                    className={styles.sendBtn}
+                    disabled={formik.isSubmitting}
+                  >
+                    {formik.isSubmitting ? 'لطفا صبر کنید' : 'ارسال'}
+                  </Button>
+                </Form>
+              )}
+            </Formik>
           </div>
         </div>
       </div>
@@ -255,4 +291,9 @@ class Post extends React.Component<PostProps, PostState> {
   }
 }
 
-export default Post;
+export default connect((state: RootState) => {
+  return {
+    language: state.language,
+    theme: state.theme,
+  };
+})(withRouter(Post));

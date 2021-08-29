@@ -1,5 +1,6 @@
 .postCard {
   margin-bottom: 55px;
+  height: 100%;
 
   &:hover {
     .postImageWrapper {
@@ -16,7 +17,8 @@
       display: block;
       > img {
         width: 100%;
-        height: auto;
+        height: 158px;
+        object-fit: cover;
       }
     }
 
@@ -86,6 +88,10 @@
       font-family: IRANSans;
 
       color: #4b4b4b;
+
+      img {
+        display: none !important;
+      }
     }
     .linkWrapper {
       display: flex;

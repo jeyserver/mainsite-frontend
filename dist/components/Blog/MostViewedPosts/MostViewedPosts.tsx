@@ -27,27 +27,24 @@ class MostViewedPosts extends React.Component<IProps> {
         <div className="line"></div>
         <Container fluid="lg">
           <Row className={styles.row}>
-            {this.props.posts.map((post, index) => {
-              let url = encodeURI(post.title);
+            {this.props.posts.map((post) => (
+              <Col xs={12} md={6} lg={3} key={post.id}>
+                <Link href={`/blog/${post.permalink}`}>
+                  <a className={styles.post}>
+                    <Image src={post.image} />
 
-              return (
-                <Col xs={12} md={6} lg={3} key={post.id}>
-                  <Link href={`/blog/${url}`}>
-                    <a className={styles.post}>
-                      <Image src={post.image} />
-                      <div className={styles.content}>
-                        <h3 className={styles.time}>
-                          {moment(post.date * 1000)
-                            .locale('fa')
-                            .format('DD MMM YYYY')}
-                        </h3>
-                        <div className={styles.title}>{post.title}</div>
-                      </div>
-                    </a>
-                  </Link>
-                </Col>
-              );
-            })}
+                    <div className={styles.content}>
+                      <h3 className={styles.time}>
+                        {moment(post.date * 1000)
+                          .locale('fa')
+                          .format('DD MMM YYYY')}
+                      </h3>
+                      <div className={styles.title}>{post.title}</div>
+                    </div>
+                  </a>
+                </Link>
+              </Col>
+            ))}
           </Row>
         </Container>
       </div>

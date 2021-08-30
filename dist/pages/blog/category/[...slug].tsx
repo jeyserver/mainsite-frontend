@@ -24,6 +24,24 @@ interface IProps extends IPageProps {
 
 class Index extends React.Component<IProps> {
   render() {
+    const breedcrumb = [this.props.category];
+    const getBreedcrumb = (targetCategory) => {
+      const parentId = targetCategory.parent;
+
+      if (parentId) {
+        const parent = this.props.categories.find(
+          (category) => category.id === parentId
+        );
+        if (parent.parent) {
+          breedcrumb.push(parent);
+          getBreedcrumb(parent);
+        } else {
+          breedcrumb.push(parent);
+        }
+      }
+    };
+    getBreedcrumb(this.props.category);
+
     return (
       <div dir="rtl" id="blog-category">
         <Head>
@@ -47,7 +65,7 @@ class Index extends React.Component<IProps> {
             topNavTitle={this.props.category.title}
             param={{
               category: this.props.category,
-              breedcrumb: this.props.items[0].categories,
+              breedcrumb: breedcrumb.reverse(),
             }}
           />
         </Layout>

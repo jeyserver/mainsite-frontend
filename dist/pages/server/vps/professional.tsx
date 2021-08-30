@@ -2,35 +2,35 @@ import * as React from 'react';
 import Head from 'next/head';
 import VpsPricing from '../../../components/VpsPricing/VpsPricing';
 import Layout from '../../../components/Layout/Layout';
-import { pageProps } from '../../_app';
+import { IPageProps } from '../../_app';
+import { IVPSPlan } from '../../../helper/types/products/VPS/plan';
 
-export interface IndexProps extends pageProps {
-  vpsData: any;
-  topNav: any;
+interface IProps extends IPageProps {
+  status: boolean;
+  plans: IVPSPlan[];
 }
 
-export interface IndexState {
+interface IState {
   appIsScrolling: boolean;
 }
 
-let appIsScrollingTimeout;
-
-class Index extends React.Component<IndexProps, IndexState> {
-  constructor(props: IndexProps) {
+class Index extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
     this.state = {
       appIsScrolling: false,
     };
     this.switchAppIsScrolling = this.switchAppIsScrolling.bind(this);
   }
+  appIsScrollingTimeout = null;
 
   switchAppIsScrolling() {
-    clearTimeout(appIsScrollingTimeout);
+    clearTimeout(this.appIsScrollingTimeout);
     this.setState((prev) => {
       return { appIsScrolling: true };
     });
 
-    appIsScrollingTimeout = setTimeout(() => {
+    this.appIsScrollingTimeout = setTimeout(() => {
       this.setState((prev) => {
         return { appIsScrolling: false };
       });
@@ -38,7 +38,7 @@ class Index extends React.Component<IndexProps, IndexState> {
   }
 
   componentWillUnmount() {
-    clearTimeout(appIsScrollingTimeout);
+    clearTimeout(this.appIsScrollingTimeout);
   }
 
   render() {
@@ -57,9 +57,8 @@ class Index extends React.Component<IndexProps, IndexState> {
           licensesForNavbar={this.props.licensesForNavbar}
         >
           <VpsPricing
-            vpsData={this.props.vpsData}
-            topNav={this.props.topNav}
             type="professional"
+            plans={this.props.plans}
             appIsScrolling={this.state.appIsScrolling}
             switchAppIsScrolling={this.switchAppIsScrolling}
           />
@@ -78,22 +77,21 @@ export async function getServerSideProps(context) {
     };
   }
 
-  // const data = await fetch(
-  //   `${process.env.SCHEMA}://${process.env.DOMAIN}`
-  // );
-
-  const vpsDataRes = await fetch(
-    'https://jsonblob.com/api/jsonBlob/5e968f2d-df13-11eb-b7ed-fbe0d5824189'
+  const respone = await fetch(
+    `${process.env.SCHEMA}://${process.env.DOMAIN}/${locale}/server/vps/professional?ajax=1`
   );
-  const vpsData = await vpsDataRes.json();
+  const data = await respone.json();
 
-  const topNavRes = await fetch(
-    'https://jsonblob.com/api/jsonBlob/3156ddcb-df56-11eb-b7ed-bd16078826a6'
-  );
-  const topNav = await topNavRes.json();
+  if (!data.status) {
+    return {
+      notFound: true,
+    };
+  }
 
   return {
-    props: { vpsData, topNav },
+    props: {
+      ...data,
+    },
   };
 }
 

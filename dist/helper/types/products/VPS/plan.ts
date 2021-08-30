@@ -15,7 +15,7 @@ export interface IVPSPlan {
   ram: number;
   setup: number;
   addonip: number;
-  currency: number;
+  currency: any;
   status: number;
   sold_out: boolean;
   periods: number[];

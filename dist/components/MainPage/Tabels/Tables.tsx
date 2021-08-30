@@ -104,7 +104,7 @@ class Tables extends React.Component<IProps> {
             <Tab.Pane eventKey="tab-server-vps">
               <VpsNav />
               {Object.values(vpsPlans).map((data: IVPSPlan[], index) => (
-                <VpsServerTable data={data} key={index} homePageTable={false} />
+                <VpsServerTable data={data} key={index} homePageTable={true} />
               ))}
             </Tab.Pane>
             <Tab.Pane eventKey="tab-server-dedicated">

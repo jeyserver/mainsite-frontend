@@ -1,62 +1,39 @@
 import moment from 'jalali-moment';
 import * as React from 'react';
 import { Container, Row, Col, Form, Image } from 'react-bootstrap';
+import { connect } from 'react-redux';
+import { IDedicatedPlan } from '../../../helper/types/products/Dedicated/plan';
+import { RootState } from '../../../store';
+import PagesHeader from '../../PagesHeader/PagesHeader';
 import { countries } from '../lib/countries';
 import styles from './CountryServers.module.scss';
 import Plan from './Plan/Plan';
 import Recommended from './Recommended/Recommended';
 
-type plans = {
-  id: number;
-  title: string;
-  price: number;
-  datacenter: { title: string; country: { code: string; name: string } };
-  hard: [
-    [{ type: string; space: number; price: number; onsell?: boolean }],
-    [{ type: string; space: number; price: number; onsell?: boolean }]
-  ];
-  cpu: {
-    type: string;
-    title: string;
-    cores: number;
-    threads: number;
-    speed: number;
-    num: number;
-  };
-  bandwidth: number;
-  port: number;
-  ram: number;
-  raid: null;
-  setup: number;
-  currency: { id: number; title: string; update_at: number };
-  sold_out: number;
-  status: number;
-}[];
-
 type countryPlans = {
   status: boolean;
   recommended: [];
-  plans: plans;
+  plans: IDedicatedPlan[];
 };
 
-export interface CountryServerProps {
+interface IProps {
   countryPlans: countryPlans;
+  currencies: RootState['currencies'];
 }
 
-export interface CountryServerState {
-  filtredPlans: plans;
-  plans: plans;
+interface IState {
+  filtredPlans: IDedicatedPlan[];
+  plans: IDedicatedPlan[];
+
+  // Filter and search
   title: string;
   sortName: '' | 'cpu' | 'ram' | 'bandwidth' | 'port' | 'price' | 'setup';
   hardType: string;
   sortAscOrDesc: 'asc' | 'desc';
 }
 
-class CountryServer extends React.Component<
-  CountryServerProps,
-  CountryServerState
-> {
-  constructor(props: CountryServerProps) {
+class CountryServer extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
     this.state = {
       filtredPlans: this.props.countryPlans.plans,
@@ -75,149 +52,12 @@ class CountryServer extends React.Component<
   filterWithTitle(e) {
     this.setState({
       title: e.target.value,
-      filtredPlans: this.state.plans
-        .filter((plan) => {
-          const planHrads = plan.hard.map((hard) =>
-            hard.map((i) => {
-              if (i.onsell) {
-                return i.type;
-              }
-            })
-          );
-          if (this.state.hardType.length === 0) {
-            return (
-              plan.title.toLowerCase().search(e.target.value.toLowerCase()) > -1
-            );
-          } else {
-            return (
-              planHrads
-                .join()
-                .split(',')
-                .find(
-                  (hardType) =>
-                    hardType
-                      .toLowerCase()
-                      .search(this.state.hardType.toLowerCase()) > -1
-                ) &&
-              plan.title.toLowerCase().search(e.target.value.toLowerCase()) > -1
-            );
-          }
-        })
-        .sort((a, b) => {
-          if (this.state.sortName.length === 0) {
-            return a.id - b.id;
-          } else {
-            if (this.state.sortAscOrDesc === 'asc') {
-              if (this.state.sortName === 'price') {
-                return a.price - b.price;
-              } else if (this.state.sortName === 'cpu') {
-                const aCpuScore = a.cpu.cores * a.cpu.speed * a.cpu.threads;
-                const bCpuScore = b.cpu.cores * b.cpu.speed * b.cpu.threads;
-                return aCpuScore - bCpuScore;
-              } else if (this.state.sortName === 'ram') {
-                return a.ram - b.ram;
-              } else if (this.state.sortName === 'bandwidth') {
-                return a.bandwidth - b.bandwidth;
-              } else if (this.state.sortName === 'port') {
-                return a.port - b.port;
-              } else if (this.state.sortName === 'setup') {
-                return a.setup - b.setup;
-              }
-            } else if (this.state.sortAscOrDesc === 'desc') {
-              if (this.state.sortName === 'price') {
-                return b.price - a.price;
-              } else if (this.state.sortName === 'cpu') {
-                const aCpuScore = a.cpu.cores * a.cpu.speed * a.cpu.threads;
-                const bCpuScore = b.cpu.cores * b.cpu.speed * b.cpu.threads;
-                return bCpuScore - aCpuScore;
-              } else if (this.state.sortName === 'ram') {
-                return b.ram - a.ram;
-              } else if (this.state.sortName === 'bandwidth') {
-                return b.bandwidth - a.bandwidth;
-              } else if (this.state.sortName === 'port') {
-                return b.port - a.port;
-              } else if (this.state.sortName === 'setup') {
-                return b.setup - a.setup;
-              }
-            }
-          }
-        }),
     });
   }
 
   filterByHardType(e) {
     this.setState({
       hardType: e.target.value,
-      filtredPlans: this.state.plans
-        .filter((plan) => {
-          const planHrads = plan.hard.map((hard) =>
-            hard.map((i) => {
-              if (i.onsell) {
-                return i.type;
-              }
-            })
-          );
-
-          if (e.target.value.length === 0) {
-            return (
-              plan.title.toLowerCase().search(this.state.title.toLowerCase()) >
-              -1
-            );
-          } else {
-            return (
-              planHrads
-                .join()
-                .split(',')
-                .find(
-                  (hardType) =>
-                    hardType
-                      .toLowerCase()
-                      .search(e.target.value.toLowerCase()) > -1
-                ) &&
-              plan.title.toLowerCase().search(this.state.title.toLowerCase()) >
-                -1
-            );
-          }
-        })
-        .sort((a, b) => {
-          if (this.state.sortName.length === 0) {
-            return a.id - b.id;
-          } else {
-            if (this.state.sortAscOrDesc === 'asc') {
-              if (this.state.sortName === 'price') {
-                return a.price - b.price;
-              } else if (this.state.sortName === 'cpu') {
-                const aCpuScore = a.cpu.cores * a.cpu.speed * a.cpu.threads;
-                const bCpuScore = b.cpu.cores * b.cpu.speed * b.cpu.threads;
-                return aCpuScore - bCpuScore;
-              } else if (this.state.sortName === 'ram') {
-                return a.ram - b.ram;
-              } else if (this.state.sortName === 'bandwidth') {
-                return a.bandwidth - b.bandwidth;
-              } else if (this.state.sortName === 'port') {
-                return a.port - b.port;
-              } else if (this.state.sortName === 'setup') {
-                return a.setup - b.setup;
-              }
-            } else if (this.state.sortAscOrDesc === 'desc') {
-              if (this.state.sortName === 'price') {
-                return b.price - a.price;
-              } else if (this.state.sortName === 'cpu') {
-                const aCpuScore = a.cpu.cores * a.cpu.speed * a.cpu.threads;
-                const bCpuScore = b.cpu.cores * b.cpu.speed * b.cpu.threads;
-                return bCpuScore - aCpuScore;
-              } else if (this.state.sortName === 'ram') {
-                return b.ram - a.ram;
-              } else if (this.state.sortName === 'bandwidth') {
-                return b.bandwidth - a.bandwidth;
-              } else if (this.state.sortName === 'port') {
-                return b.port - a.port;
-              } else if (this.state.sortName === 'setup') {
-                return b.setup - a.setup;
-              }
-            }
-          }
-        }),
     });
   }
 
@@ -225,45 +65,6 @@ class CountryServer extends React.Component<
     this.setState((prev) => {
       return {
         sortName: e.target.value,
-        filtredPlans: prev.filtredPlans.sort((a, b) => {
-          if (e.target.value.length === 0) {
-            return a.id - b.id;
-          } else {
-            if (prev.sortAscOrDesc === 'asc') {
-              if (e.target.value === 'price') {
-                return a.price - b.price;
-              } else if (e.target.value === 'cpu') {
-                const aCpuScore = a.cpu.cores * a.cpu.speed * a.cpu.threads;
-                const bCpuScore = b.cpu.cores * b.cpu.speed * b.cpu.threads;
-                return aCpuScore - bCpuScore;
-              } else if (e.target.value === 'ram') {
-                return a.ram - b.ram;
-              } else if (e.target.value === 'bandwidth') {
-                return a.bandwidth - b.bandwidth;
-              } else if (e.target.value === 'port') {
-                return a.port - b.port;
-              } else if (e.target.value === 'setup') {
-                return a.setup - b.setup;
-              }
-            } else if (prev.sortAscOrDesc === 'desc') {
-              if (e.target.value === 'price') {
-                return b.price - a.price;
-              } else if (e.target.value === 'cpu') {
-                const aCpuScore = a.cpu.cores * a.cpu.speed * a.cpu.threads;
-                const bCpuScore = b.cpu.cores * b.cpu.speed * b.cpu.threads;
-                return bCpuScore - aCpuScore;
-              } else if (e.target.value === 'ram') {
-                return b.ram - a.ram;
-              } else if (e.target.value === 'bandwidth') {
-                return b.bandwidth - a.bandwidth;
-              } else if (e.target.value === 'port') {
-                return b.port - a.port;
-              } else if (e.target.value === 'setup') {
-                return b.setup - a.setup;
-              }
-            }
-          }
-        }),
       };
     });
   }
@@ -272,8 +73,47 @@ class CountryServer extends React.Component<
     this.setState((prev) => {
       return {
         sortAscOrDesc: e.target.value,
-        filtredPlans: prev.filtredPlans.sort((a, b) => {
-          if (e.target.value === 'asc') {
+      };
+    });
+  }
+
+  render() {
+    const targetCountry =
+      countries[this.props.countryPlans.plans[0].datacenter.country.code];
+
+    const filtredPlans = this.state.plans
+      .filter((plan) => {
+        const planHrads = plan.hard.map((hard) =>
+          hard.map((i) => {
+            if (i.onsell) {
+              return i.type;
+            }
+          })
+        );
+        if (this.state.hardType.length === 0) {
+          return (
+            plan.title.toLowerCase().search(this.state.title.toLowerCase()) > -1
+          );
+        } else {
+          return (
+            planHrads
+              .join()
+              .split(',')
+              .find(
+                (hardType) =>
+                  hardType
+                    .toLowerCase()
+                    .search(this.state.hardType.toLowerCase()) > -1
+              ) &&
+            plan.title.toLowerCase().search(this.state.title.toLowerCase()) > -1
+          );
+        }
+      })
+      .sort((a, b) => {
+        if (this.state.sortName.length === 0) {
+          return a.id - b.id;
+        } else {
+          if (this.state.sortAscOrDesc === 'asc') {
             if (this.state.sortName === 'price') {
               return a.price - b.price;
             } else if (this.state.sortName === 'cpu') {
@@ -289,7 +129,7 @@ class CountryServer extends React.Component<
             } else if (this.state.sortName === 'setup') {
               return a.setup - b.setup;
             }
-          } else if (e.target.value === 'desc') {
+          } else if (this.state.sortAscOrDesc === 'desc') {
             if (this.state.sortName === 'price') {
               return b.price - a.price;
             } else if (this.state.sortName === 'cpu') {
@@ -306,21 +146,13 @@ class CountryServer extends React.Component<
               return b.setup - a.setup;
             }
           }
-        }),
-      };
-    });
-  }
+        }
+      });
 
-  render() {
-    const targetCountry =
-      countries[this.props.countryPlans.plans[0].datacenter.country.code];
     return (
       <div>
-        <div className={styles.innerBanner}>
-          <Container>
-            <h2>سرور اختصاصی {targetCountry.title_fa}</h2>
-          </Container>
-        </div>
+        <PagesHeader title={`سرور اختصاصی ${targetCountry.title_fa}`} />
+
         <div className={styles.wrapper}>
           <Container fluid="lg">
             <Row className={styles.summary}>
@@ -339,16 +171,14 @@ class CountryServer extends React.Component<
                 <div className="alert alert-info">
                   قیمت های موجود براساس آخرین قیمت ارز در تاریخ{' '}
                   <span className="ltr" style={{ display: 'inline-block' }}>
-                    {moment(
-                      this.props.countryPlans.plans
-                        .map((i) => i.currency.update_at)
-                        .reduce(
-                          (acc, value) => Math.max(acc, value),
-                          this.props.countryPlans.plans[0].currency.update_at
-                        ) * 1000
-                    )
-                      .locale('fa')
-                      .format('YYYY/MM/DD LT')}
+                    {typeof this.props.countryPlans.plans[0].currency !==
+                      'number' &&
+                      moment(
+                        this.props.countryPlans.plans[0].currency.update_at *
+                          1000
+                      )
+                        .locale('fa')
+                        .format('YYYY/MM/DD LT')}
                   </span>{' '}
                   می باشد.
                 </div>
@@ -474,7 +304,7 @@ class CountryServer extends React.Component<
                 </Form.Group>
               </Col>
               <Col lg={9} className={styles.plans}>
-                {this.state.filtredPlans.map((plan) => (
+                {filtredPlans.map((plan) => (
                   <Plan key={plan.id} plan={plan} />
                 ))}
               </Col>
@@ -486,4 +316,8 @@ class CountryServer extends React.Component<
   }
 }
 
-export default CountryServer;
+export default connect((state: RootState) => {
+  return {
+    currencies: state.currencies,
+  };
+})(CountryServer);

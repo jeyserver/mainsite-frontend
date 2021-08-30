@@ -109,7 +109,7 @@ class Server extends React.Component<IProps> {
                         />
                       </a>
                     </Link>
-                    <Link href="/server/dedicated/France">
+                    <Link href="/server/dedicated/france">
                       <a className={styles.countryBox}>
                         <Image
                           src="/images/countries/France.png"
@@ -118,7 +118,7 @@ class Server extends React.Component<IProps> {
                         />
                       </a>
                     </Link>
-                    <Link href="/server/dedicated/Germany">
+                    <Link href="/server/dedicated/germany">
                       <a className={styles.countryBox}>
                         <Image
                           src="/images/countries/Germany.png"
@@ -127,7 +127,7 @@ class Server extends React.Component<IProps> {
                         />
                       </a>
                     </Link>
-                    <Link href="/server/dedicated/Netherlands">
+                    <Link href="/server/dedicated/netherlands">
                       <a className={styles.countryBox}>
                         <Image
                           src="/images/countries/Netherlands.png"
@@ -136,7 +136,7 @@ class Server extends React.Component<IProps> {
                         />
                       </a>
                     </Link>
-                    <Link href="/server/dedicated/Canada">
+                    <Link href="/server/dedicated/canada">
                       <a className={styles.countryBox}>
                         <Image
                           src="/images/countries/Canada.png"
@@ -145,7 +145,7 @@ class Server extends React.Component<IProps> {
                         />
                       </a>
                     </Link>
-                    <Link href="/server/dedicated/Finland">
+                    <Link href="/server/dedicated/finland">
                       <a className={styles.countryBox}>
                         <Image
                           src="/images/countries/Finland.png"

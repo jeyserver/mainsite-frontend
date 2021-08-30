@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import PostCard from './PostCard/PostCard';
-import styles from './BlogPosts.module.scss';
+import styles from './MainPage.module.scss';
 import Link from 'next/link';
 import TopNav from '../TopNav/TopNav';
 import IPost from '../../../helper/types/blog/Post';
@@ -14,17 +14,15 @@ interface IProps {
   categories: ICategory[];
 }
 
-class BlogPosts extends React.Component<IProps> {
+class MainPage extends React.Component<IProps> {
   render() {
     return (
       <section>
-        {/* <TopNav
+        <TopNav
           categories={this.props.categories}
-          nightMode={true}
-          page="blog"
+          nightMode={false}
           title="آموزش ها و مقالات کاربردی برای وبمستران"
-          data={this.props.data}
-        /> */}
+        />
 
         {/* <div className={styles.mostViewedPosts}>
           <Container>
@@ -130,4 +128,4 @@ class BlogPosts extends React.Component<IProps> {
   }
 }
 
-export default BlogPosts;
+export default MainPage;

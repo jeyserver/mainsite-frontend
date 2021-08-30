@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Head from 'next/head';
-import BlogPosts from '../components/Blog/BlogPosts/BlogPosts';
+import MainPage from '../components/Blog/MainPage/MainPage';
 import Layout from '../components/Layout/Layout';
 import { IPageProps } from './_app';
 import IPost from '../helper/types/blog/Post';
@@ -33,7 +33,7 @@ class Index extends React.Component<IProps> {
           domainsForNavbar={this.props.domainsForNavbar}
           licensesForNavbar={this.props.licensesForNavbar}
         >
-          <BlogPosts
+          <MainPage
             recentPosts={this.props.items}
             popularPosts={this.props.popular_posts}
             categories={this.props.categories}

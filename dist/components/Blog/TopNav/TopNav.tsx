@@ -5,12 +5,11 @@ import { connect } from 'react-redux';
 import { toggleTheme } from '../../../store/Theme';
 import { Button } from 'react-bootstrap';
 import { NextRouter, withRouter } from 'next/router';
-import CategoryAccordion from './CategoryAccordion/CategoryAccordion';
 import classNames from 'classnames';
 import styles from './TopNav.module.scss';
 import { RootState } from '../../../store';
 import ICategory from '../../../helper/types/blog/Category';
-import CAccordion from './CAccordion/CAccordion';
+import CategoryAccordion from './CategoryAccordion/CategoryAccordion';
 
 interface param {
   category?: ICategory;
@@ -49,7 +48,7 @@ class TopNav extends React.Component<IProps, IState> {
   componentDidMount() {
     // For categories menu on desktop
     const scroller = document.querySelector('#top-nav-links-and-dropdowns');
-    const dropDown = document.querySelectorAll('.top-nav-dropdown-menu') as any;
+    const dropDown = document.querySelectorAll('.mainMenu') as any;
     scroller.addEventListener('scroll', checkScroll);
 
     function checkScroll() {
@@ -102,22 +101,22 @@ class TopNav extends React.Component<IProps, IState> {
     });
   }
 
-  categoryWithMenu(category: ICategory) {
+  categoryMenu(category: ICategory) {
     return (
       <div className={styles.menu}>
         {this.props.categories
           .filter((c) => c.parent === category.id)
-          .map((subCategory, index) => (
+          .map((subCategory) => (
             <Link
               href={`/blog/category/${subCategory.permalink}`}
               key={subCategory.id}
             >
-              <a>
+              <a className={styles.linkInside}>
                 <i className="fas fa-angle-left"></i>
                 {subCategory.title}
                 {this.props.categories.some(
                   (i) => i.parent === subCategory.id
-                ) && this.categoryWithMenu(subCategory)}
+                ) && this.categoryMenu(subCategory)}
               </a>
             </Link>
           ))}
@@ -125,13 +124,18 @@ class TopNav extends React.Component<IProps, IState> {
     );
   }
 
-  mouseOverLink(e: any) {
-    e.target.children[1].style.left = `${e.clientX}px`;
-    e.target.children[1].style.top = `${e.clientY}px`;
+  mouseOverLink(e: any, id) {
+    const rect = e.target.getBoundingClientRect();
+    const menu = document.querySelector(`#${id}`) as HTMLDivElement;
+
+    if (menu) {
+      // e.target.children[1].style.left = `${rect.left}px`;
+      menu.style.top = `${rect.top + 38}px`;
+    }
   }
 
   render() {
-    const showBreedcrumb = (param: param) => {
+    const showSub = (param: param) => {
       if (param.breedcrumb) {
         return (
           <h3 className={styles.titleUnderLinks}>
@@ -173,7 +177,7 @@ class TopNav extends React.Component<IProps, IState> {
             <div className={styles.top}>
               <div className={styles.right}>
                 <h1 className={styles.headerTitle}>{this.props.title}</h1>
-                {this.props.param && showBreedcrumb(this.props.param)}
+                {this.props.param && showSub(this.props.param)}
               </div>
 
               <div className={styles.left}>
@@ -201,6 +205,7 @@ class TopNav extends React.Component<IProps, IState> {
                     className={styles.searchInput}
                     required
                   />
+
                   <button type="submit" className={styles.searchBtn}>
                     <i className="fas fa-search"></i>
                   </button>
@@ -215,33 +220,47 @@ class TopNav extends React.Component<IProps, IState> {
                 id="top-nav-links-and-dropdowns"
                 className={styles.linksAndDropdowns}
               >
-                {this.props.categories.map((category, index) => {
-                  if (category.parent && category.parent !== 1) {
-                    return (
-                      <button
-                        className={classNames(
-                          styles.item,
-                          styles.dropDownToggle
-                        )}
-                        key={category.id}
-                      >
-                        <Link href={`/blog/category/${category.permalink}`}>
-                          <a>{category.title}</a>
+                {this.props.categories
+                  .filter((i) => i.parent === 1 && i.id !== 1)
+                  .map((category, index) => {
+                    if (
+                      this.props.categories.some(
+                        (i) => i.parent === category.id
+                      )
+                    ) {
+                      return (
+                        <button
+                          className={classNames(
+                            styles.item,
+                            styles.dropDownToggle
+                          )}
+                          key={category.id}
+                          onMouseEnter={(e) =>
+                            this.mouseOverLink(e, `c-${category.id}`)
+                          }
+                        >
+                          <Link href={`/blog/category/${category.permalink}`}>
+                            <a>{category.title}</a>
+                          </Link>
+                          <div
+                            className={classNames(styles.mainMenu, 'mainMenu')}
+                            id={`c-${category.id}`}
+                          >
+                            {this.categoryMenu(category)}
+                          </div>
+                        </button>
+                      );
+                    } else {
+                      return (
+                        <Link
+                          href={`/blog/category/${category.permalink}`}
+                          key={category.id}
+                        >
+                          <a className={styles.link}>{category.title}</a>
                         </Link>
-                        {this.categoryWithMenu(category)}
-                      </button>
-                    );
-                  } else {
-                    return (
-                      <Link
-                        href={`/blog/category/${category.permalink}`}
-                        key={category.id}
-                      >
-                        <a className={styles.link}>{category.title}</a>
-                      </Link>
-                    );
-                  }
-                })}
+                      );
+                    }
+                  })}
               </div>
             </div>
           </Row>
@@ -274,7 +293,7 @@ class TopNav extends React.Component<IProps, IState> {
                 {this.props.categories
                   .filter((i) => i.parent === 1)
                   .map((category, index) => (
-                    <CAccordion
+                    <CategoryAccordion
                       category={category}
                       categories={this.props.categories}
                       key={index}

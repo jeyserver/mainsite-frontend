@@ -86,11 +86,17 @@
     .summary {
       font-size: 12px;
       font-family: IRANSans;
-
       color: #4b4b4b;
+      margin-top: 10px;
 
       img {
         display: none !important;
+      }
+      p {
+        &:nth-child(1),
+        &:nth-child(2) {
+          display: none !important;
+        }
       }
     }
     .linkWrapper {

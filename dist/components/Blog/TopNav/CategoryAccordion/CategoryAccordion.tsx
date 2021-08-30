@@ -1,83 +1,68 @@
-import * as React from 'react';
-import Link from 'next/link';
-import { Accordion } from 'react-bootstrap';
 import classNames from 'classnames';
+import Link from 'next/link';
+import * as React from 'react';
+import { Accordion } from 'react-bootstrap';
 import ICategory from '../../../../helper/types/blog/Category';
+import styles from './CategoryAccordion.module.scss';
 
-interface param {
-  category?: ICategory;
-  tag?: string;
-  search?: string;
-  breedcrumb?: ICategory[];
+interface IProps {
+  category: ICategory;
+  categories: ICategory[];
 }
 
-export interface CategoryAccordionProps {
-  param?: param;
-  categoryName: string;
-  changeDropdown: () => void;
-}
-
-export interface CategoryAccordionState {
+interface IState {
   isOpen: boolean;
 }
 
-class CategoryAccordion extends React.Component<
-  CategoryAccordionProps,
-  CategoryAccordionState
-> {
-  constructor(props: CategoryAccordionProps) {
+class CategoryAccordion extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
     this.state = {
       isOpen: false,
     };
   }
 
-  changeAccordionOpen() {
-    this.setState((prev) => {
-      return { isOpen: !prev.isOpen };
-    });
-  }
-
   render() {
-    const isOpenFromPath =
-      this.props.param &&
-      this.props.param.category &&
-      this.props.param.breedcrumb.some(
-        (i) => i.title === this.props.categoryName
-      )
-        ? '0'
-        : '1';
-
-    const isOpened = isOpenFromPath === '0' ? true : false;
-
     return (
-      <Accordion
-        defaultActiveKey={isOpenFromPath}
-        className="categoryAccordion"
-      >
+      <Accordion defaultActiveKey="1">
         <Accordion.Toggle
           eventKey="0"
-          onClick={() => this.changeAccordionOpen()}
-          className={classNames('categoriesAccordionToggle', {
-            active: this.state.isOpen || isOpened,
+          className={classNames(styles.toggle, {
+            [styles.open]: this.state.isOpen,
           })}
+          onClick={() => this.setState({ isOpen: !this.state.isOpen })}
         >
-          <Link href={`/blog/category/${this.props.categoryName}`}>
-            <a onClick={() => this.props.changeDropdown()}>
-              {this.props.categoryName}
-            </a>
+          <Link href={`/blog/category/${this.props.category.permalink}`}>
+            <a>{this.props.category.title}</a>
           </Link>
-          <span>
-            {this.state.isOpen || isOpened ? (
-              <i className="fas fa-chevron-down"></i>
-            ) : (
-              <i className="fas fa-chevron-left"></i>
-            )}
-          </span>
+          {this.props.categories.filter(
+            (category) => category.parent === this.props.category.id
+          ).length > 0 && (
+            <span>
+              {this.state.isOpen ? (
+                <i className="fas fa-chevron-down"></i>
+              ) : (
+                <i className="fas fa-chevron-left"></i>
+              )}
+            </span>
+          )}
         </Accordion.Toggle>
         <Accordion.Collapse eventKey="0">
-          <div className="categoriesAccordionCollapse">
-            {this.props.children}
+          <div className={styles.collapse}>
+            {this.props.categories.some(
+              (category) => category.parent === this.props.category.id
+            ) &&
+              this.props.categories
+                .filter(
+                  (category) => category.parent === this.props.category.id
+                )
+                .map((c) => (
+                  <CategoryAccordion
+                    category={c}
+                    categories={this.props.categories}
+                    key={c.id}
+                  />
+                ))}
           </div>
         </Accordion.Collapse>
       </Accordion>

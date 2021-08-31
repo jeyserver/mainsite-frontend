@@ -240,7 +240,7 @@ class VpsServerTab extends React.Component<IProps, IState> {
                   <span>
                     {formatPriceWithCurrency(
                       this.props.currencies.items,
-                      this.props.homePageTable
+                      typeof plan.currency === 'number'
                         ? plan.currency
                         : plan.currency.id,
                       plan.price

@@ -1,3 +1,5 @@
+import { ICurrency } from '../../../../pages/_app';
+
 export interface IVPSPlan {
   id: number;
   title: string;
@@ -15,7 +17,7 @@ export interface IVPSPlan {
   ram: number;
   setup: number;
   addonip: number;
-  currency: any;
+  currency: number | ICurrency;
   status: number;
   sold_out: boolean;
   periods: number[];

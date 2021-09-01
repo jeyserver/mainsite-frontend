@@ -215,7 +215,6 @@ const renderPeriod = (period: number) => {
   }
 };
 
-// let interval;
 
 interface LicenseProps {
   changeShowDropDown: () => void;

@@ -16,6 +16,7 @@ interface IProps {
   data: IVPSPlan[];
   currencies: RootState['currencies'];
   homePageTable: boolean;
+  hideTopInfo?: boolean;
 }
 
 interface IState {
@@ -54,61 +55,59 @@ class VpsServerTab extends React.Component<IProps, IState> {
 
   render() {
     return (
-      <div
-        id={`vps_${this.getVpsPlanType(this.props.data[0].title).en}_${
-          this.props.data[0].country.name === 'ایران'
-            ? 'iran'
-            : this.props.data[0].country.name.toLocaleLowerCase()
-        }`}
-      >
-        <div className={styles.tittleLine}>
-          <h5
-            className={classNames({
-              [styles.pageTitle]: !this.props.homePageTable,
-            })}
-          >
-            سرور مجازی {this.getVpsPlanType(this.props.data[0].title).fa}
-            <br />
-            <CountryFlagTooltip country={this.props.data[0].country} />
-            {translateCountryNameToPersian(this.props.data[0].country.code)}
-          </h5>
-          <div className={styles.divider}>
-            <div />
-          </div>
-        </div>
-
-        {this.props.data[0].country.name === 'France' &&
-          this.getVpsPlanType(this.props.data[0].title).fa === 'حجیم' && (
-            <div>
-              <p>
-                اگر میخواهید سرور دانلود راه اندازی کنید یا وب سایتتان فایل های
-                سنگین دارد، این سرور های مجازی بهترین انتخاب شما خواهد بود.در
-                این سرور ها هم میتوانید لینوکس و هم ویندوز نصب کنید.
-              </p>
-              <p>
-                سرور های دانلود فرانسه از آپتایم و سرعت پورت بسیار بالا و با
-                کیفیتی برخوردار هستند و ما برای مجازی سازی از VMWare استفاده
-                میکنیم؛ بنابراین دسترسی کنسول به این سرور مجازی به راحتی و با
-                درخواست شما قابل ارائه است.
-              </p>
-              <p>
-                این سرویس ها بر روی هارد های پرسرعت و جدید با تکنولوژی RAID
-                میزبانی خواهند شد تا امنیت اطلاعات شما حفظ شود.
-              </p>
-              <p>
-                تمامی سرور های دانلود آنی تحویل داده خواهد شد و امکان تغییر
-                سیستم عامل آن ها خودکار از و از طریق پنل کاربری جی سرور صورت
-                میگیرد.
-              </p>
-              <p>
-                اگر این سرور ها را به عنوان هاست دانلود استفاده میکنید، ما
-                استفاده از وب سرور انجین ایکس را به شما پیشنهاد میکنیم. همچنین
-                در صورت نیاز به کانفیگ سرور لطفا با پشتیبانی ۲۴ ساعته ما ارتباط
-                برقرار کنید تا همکاران ما به سرعت خدمات مورد نیاز شما را فراهم
-                کنند.
-              </p>
+      <div>
+        {!this.props.hideTopInfo && (
+          <>
+            <div className={styles.tittleLine}>
+              <h5
+                className={classNames({
+                  [styles.pageTitle]: !this.props.homePageTable,
+                })}
+              >
+                سرور مجازی {this.getVpsPlanType(this.props.data[0].title).fa}
+                <br />
+                <CountryFlagTooltip country={this.props.data[0].country} />
+                {translateCountryNameToPersian(this.props.data[0].country.code)}
+              </h5>
+              <div className={styles.divider}>
+                <div />
+              </div>
             </div>
-          )}
+
+            {this.props.data[0].country.name === 'France' &&
+              this.getVpsPlanType(this.props.data[0].title).fa === 'حجیم' && (
+                <div>
+                  <p>
+                    اگر میخواهید سرور دانلود راه اندازی کنید یا وب سایتتان فایل
+                    های سنگین دارد، این سرور های مجازی بهترین انتخاب شما خواهد
+                    بود.در این سرور ها هم میتوانید لینوکس و هم ویندوز نصب کنید.
+                  </p>
+                  <p>
+                    سرور های دانلود فرانسه از آپتایم و سرعت پورت بسیار بالا و با
+                    کیفیتی برخوردار هستند و ما برای مجازی سازی از VMWare استفاده
+                    میکنیم؛ بنابراین دسترسی کنسول به این سرور مجازی به راحتی و
+                    با درخواست شما قابل ارائه است.
+                  </p>
+                  <p>
+                    این سرویس ها بر روی هارد های پرسرعت و جدید با تکنولوژی RAID
+                    میزبانی خواهند شد تا امنیت اطلاعات شما حفظ شود.
+                  </p>
+                  <p>
+                    تمامی سرور های دانلود آنی تحویل داده خواهد شد و امکان تغییر
+                    سیستم عامل آن ها خودکار از و از طریق پنل کاربری جی سرور صورت
+                    میگیرد.
+                  </p>
+                  <p>
+                    اگر این سرور ها را به عنوان هاست دانلود استفاده میکنید، ما
+                    استفاده از وب سرور انجین ایکس را به شما پیشنهاد میکنیم.
+                    همچنین در صورت نیاز به کانفیگ سرور لطفا با پشتیبانی ۲۴ ساعته
+                    ما ارتباط برقرار کنید تا همکاران ما به سرعت خدمات مورد نیاز
+                    شما را فراهم کنند.
+                  </p>
+                </div>
+              )}
+          </>
+        )}
 
         <Table className={styles.table}>
           <thead>
@@ -283,6 +282,9 @@ class VpsServerTab extends React.Component<IProps, IState> {
             ))}
           </tbody>
         </Table>
+        {this.props.data[0].country.code === 'IR' && (
+          <div>*** توجه فرمائید سرورهای ایران قابلیت انصراف ندارند.</div>
+        )}
       </div>
     );
   }

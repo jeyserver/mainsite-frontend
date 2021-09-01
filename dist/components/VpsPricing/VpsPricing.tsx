@@ -117,6 +117,7 @@ interface IProps {
 
 interface IState {
   isNavFixed: boolean;
+  plansSepratedByCountryName: IVPSPlan[][];
 }
 
 class VpsPricing extends React.Component<IProps, IState> {
@@ -124,6 +125,7 @@ class VpsPricing extends React.Component<IProps, IState> {
     super(props);
     this.state = {
       isNavFixed: false,
+      plansSepratedByCountryName: [],
     };
     this.onScroll = this.onScroll.bind(this);
   }
@@ -179,27 +181,62 @@ class VpsPricing extends React.Component<IProps, IState> {
 
   componentDidMount() {
     window.addEventListener('scroll', this.onScroll, false);
-
     this.props.switchAppIsScrolling();
+    this.setState({
+      plansSepratedByCountryName: Object.values(
+        this.props.plans.reduce((accumulator, currentValue) => {
+          if (accumulator && accumulator[currentValue.country.name]) {
+            accumulator[currentValue.country.name] = [
+              ...accumulator[currentValue.country.name],
+              currentValue,
+            ];
+          } else {
+            accumulator[currentValue.country.name] = [currentValue];
+          }
+
+          return accumulator;
+        }, {})
+      ),
+    });
   }
 
   componentWillUnmount() {
     window.removeEventListener('scroll', this.onScroll, false);
   }
 
-  render() {
-    const vpsPlans = this.props.plans.reduce((accumulator, currentValue) => {
-      if (accumulator && accumulator[currentValue.country.name]) {
-        accumulator[currentValue.country.name] = [
-          ...accumulator[currentValue.country.name],
-          currentValue,
-        ];
-      } else {
-        accumulator[currentValue.country.name] = [currentValue];
-      }
+  chunkedPlans(size: number, plans: IVPSPlan[]) {
+    let chunked = [];
+    for (let i = 0; i < plans.length; i += size) {
+      chunked.push(plans.slice(i, i + size));
+    }
+    return chunked;
+  }
 
-      return accumulator;
-    }, {});
+  getVpsPlanType = (title) => {
+    if (title.search('اقتصادی') > -1) {
+      return {
+        fa: 'اقتصادی',
+        en: 'economic',
+      };
+    } else if (title.search('حرفه ای') > -1) {
+      return {
+        en: 'professional',
+        fa: 'حرفه ای',
+      };
+    } else if (title.search('حجیم') > -1) {
+      return {
+        en: 'storage',
+        fa: 'حجیم',
+      };
+    } else {
+      return {
+        en: '',
+        fa: '',
+      };
+    }
+  };
+
+  render() {
     return (
       <section>
         <PagesHeader
@@ -293,13 +330,28 @@ class VpsPricing extends React.Component<IProps, IState> {
                 </Col>
               </Row>
               <div className={styles.tables}>
-                {Object.values(vpsPlans).map((data: IVPSPlan[], index) => (
-                  <VpsServerTable
-                    data={data}
-                    key={index}
-                    homePageTable={false}
-                  />
-                ))}
+                {this.state.plansSepratedByCountryName.map(
+                  (plans: IVPSPlan[], index) => (
+                    <div
+                      id={`vps_${this.getVpsPlanType(plans[0].title).en}_${
+                        plans[0].country.name === 'ایران'
+                          ? 'iran'
+                          : plans[0].country.name.toLocaleLowerCase()
+                      }`}
+                    >
+                      {this.chunkedPlans(5, plans).map(
+                        (chunkedPlans, chunkedIndex) => (
+                          <VpsServerTable
+                            data={chunkedPlans}
+                            key={`${index}-${chunkedIndex}`}
+                            homePageTable={false}
+                            hideTopInfo={chunkedIndex > 0}
+                          />
+                        )
+                      )}
+                    </div>
+                  )
+                )}
               </div>
             </div>
           </Container>

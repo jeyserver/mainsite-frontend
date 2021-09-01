@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Table, OverlayTrigger, Tooltip, Button } from 'react-bootstrap';
-import ReactStars from 'react-rating-stars-component';
 import Link from 'next/link';
 import styles from './SharedHostingTable.module.scss';
 import classNames from 'classnames';
@@ -10,8 +9,11 @@ import { formatPriceWithCurrency } from '../../../store/Currencies';
 import { connect } from 'react-redux';
 import { RootState } from '../../../store';
 import { IHostPlan } from '../../../helper/types/products/Host/plan';
-import translateHostPanel from '../../../helper/translators/translateHostPanel';
+import translateHostplan from '../../../helper/translators/translateHostPanel';
 import translateCountryNameToPersian from '../../../helper/translateCountryNameToPersian';
+import StarredCell from '../../HostsPricing/TablesUtils/StarredCell';
+import { formatSpace } from '../../HostsPricing/helper/formatSpace';
+import BackupsCell from '../../HostsPricing/TablesUtils/BackupsCell';
 
 type TableType = 'windows' | 'linux';
 type TableSubTitle = 'professional' | 'standard';
@@ -64,11 +66,13 @@ class SharedHostingTable extends React.Component<IProps, IState> {
             <h5>
               میزبانی{' '}
               {this.tableTitle(`${this.props.type}-${this.props.subType}`)}{' '}
-              {this.props.data[0].cp !== 'websitepanel' &&
-                translateHostPanel(this.props.data[0].cp)}
+              {this.props.data[0].cp !== 'websiteplan' &&
+                translateHostplan(this.props.data[0].cp)}
               <br />
               <CountryFlagTooltip country={this.props.data[0].country} />
-              {translateCountryNameToPersian(this.props.data[0].country.code)}
+              <span className={styles.countryName}>
+                {translateCountryNameToPersian(this.props.data[0].country.code)}
+              </span>
             </h5>
             <div className={styles.divider}>
               <div />
@@ -80,7 +84,7 @@ class SharedHostingTable extends React.Component<IProps, IState> {
           <p className={styles.tableInfo}>
             {this.props.type === 'linux'
               ? 'سرویس هاست لینوکس معمولی جهت ارائه خدمات به وب سایت هایی با بازدید و مصرف معمولی از منابع سرور است که کدنویسی و برنامه نویسی آن بر پایه سیستم عامل لینوکس و با زبان های برنامه نویسی php و ... می باشد. البته هاست لینوکس بدین معناست که فقط سیستم عامل نصب شده، روی سرور لینوکس است و هیچ ارتباطی با سیستم عامل کامپیوتر شخصی شما ندارد و چنانچه روی کامپیوتر شما ویندوز نصب باشد به راحتی می توانید از هاست لینوکس استفاده کنید.'
-              : 'هاست ویندوز جی سرور مجهز به آخرین تکنولوژی های سخت افزاری،نرم افزاری بوده واز کنترل پنل هاست Website Panel جهت مدیریت هاست ویندوز بهره مند میباشد. سیستم عامل این هاست ، ویندوز سرور 2012 می باشد و تمامی کامپوننت های زبان های برنامه نویسی asp,asp.net,... را پشتیبانی می کند.در واقع این هاست تمامی نیازهای شما را به عنوان یک برنامه نویس مرتفع می نماید. از ویژگی های بارز این هاست می توان به آپ تایم بالا،امنیت بالاو پشتیبانی از تمامی زبان های برنامه نویسی اشاره کرد.'}
+              : 'هاست ویندوز جی سرور مجهز به آخرین تکنولوژی های سخت افزاری،نرم افزاری بوده واز کنترل پنل هاست Website plan جهت مدیریت هاست ویندوز بهره مند میباشد. سیستم عامل این هاست ، ویندوز سرور 2012 می باشد و تمامی کامپوننت های زبان های برنامه نویسی asp,asp.net,... را پشتیبانی می کند.در واقع این هاست تمامی نیازهای شما را به عنوان یک برنامه نویس مرتفع می نماید. از ویژگی های بارز این هاست می توان به آپ تایم بالا،امنیت بالاو پشتیبانی از تمامی زبان های برنامه نویسی اشاره کرد.'}
           </p>
         )}
 
@@ -155,7 +159,11 @@ class SharedHostingTable extends React.Component<IProps, IState> {
                 className={classNames({
                   [styles.jHidden]: this.state.isMoreInfoOpen,
                 })}
-                style={{ lineHeight: '75px' }}
+                style={
+                  this.props.data.some((i) => i.backups.length > 0) && {
+                    lineHeight: '75px',
+                  }
+                }
               >
                 دوره های بکاپ گیری
               </th>
@@ -212,18 +220,18 @@ class SharedHostingTable extends React.Component<IProps, IState> {
             </tr>
           </thead>
           <tbody>
-            {this.props.data.map((panel) => (
-              <tr key={panel.id}>
-                <td>{panel.title}</td>
-                <td>{formatSpaceInPersian(panel.space)}</td>
+            {this.props.data.map((plan) => (
+              <tr key={plan.id}>
+                <td>{plan.title}</td>
+                <td>{formatSpaceInPersian(plan.space)}</td>
                 <td>
-                  {panel.bandwidth ? (
-                    formatSpaceInPersian(panel.bandwidth)
+                  {plan.bandwidth ? (
+                    formatSpaceInPersian(plan.bandwidth)
                   ) : (
                     <span className={styles.jUnlimited}>بدون محدودیت</span>
                   )}
                 </td>
-                <td>{translateHostPanel(panel.cp)}</td>
+                <td>{translateHostplan(plan.cp)}</td>
 
                 {!this.props.homePageTable && (
                   <td>
@@ -245,16 +253,16 @@ class SharedHostingTable extends React.Component<IProps, IState> {
                     [styles.open]: this.state.isMoreInfoOpen,
                   })}
                 >
-                  {panel.parkdomain ? (
-                    `${panel.parkdomain} عدد`
+                  {plan.parkdomain ? (
+                    `${plan.parkdomain} عدد`
                   ) : (
                     <span className={styles.jUnlimited}>بدون محدودیت</span>
                   )}
                 </td>
 
                 <td>
-                  {panel.addondomain ? (
-                    `${panel.addondomain} عدد`
+                  {plan.addondomain ? (
+                    `${plan.addondomain} عدد`
                   ) : (
                     <span className={styles.jUnlimited}>بدون محدودیت</span>
                   )}
@@ -264,8 +272,8 @@ class SharedHostingTable extends React.Component<IProps, IState> {
                     [styles.open]: this.state.isMoreInfoOpen,
                   })}
                 >
-                  {panel.subdomain ? (
-                    `${panel.subdomain} عدد`
+                  {plan.subdomain ? (
+                    `${plan.subdomain} عدد`
                   ) : (
                     <span className={styles.jUnlimited}>بدون محدودیت</span>
                   )}
@@ -275,8 +283,8 @@ class SharedHostingTable extends React.Component<IProps, IState> {
                     [styles.open]: this.state.isMoreInfoOpen,
                   })}
                 >
-                  {panel.email ? (
-                    `${panel.email} عدد`
+                  {plan.email ? (
+                    `${plan.email} عدد`
                   ) : (
                     <span className={styles.jUnlimited}>بدون محدودیت</span>
                   )}
@@ -286,8 +294,8 @@ class SharedHostingTable extends React.Component<IProps, IState> {
                     [styles.open]: this.state.isMoreInfoOpen,
                   })}
                 >
-                  {panel.ftp ? (
-                    `${panel.ftp} عدد`
+                  {plan.ftp ? (
+                    `${plan.ftp} عدد`
                   ) : (
                     <span className={styles.jUnlimited}>بدون محدودیت</span>
                   )}
@@ -297,8 +305,8 @@ class SharedHostingTable extends React.Component<IProps, IState> {
                     [styles.open]: this.state.isMoreInfoOpen,
                   })}
                 >
-                  {panel.dbs ? (
-                    `${panel.dbs} عدد`
+                  {plan.dbs ? (
+                    `${plan.dbs} عدد`
                   ) : (
                     <span className={styles.jUnlimited}>بدون محدودیت</span>
                   )}
@@ -308,7 +316,7 @@ class SharedHostingTable extends React.Component<IProps, IState> {
                     [styles.open]: this.state.isMoreInfoOpen,
                   })}
                 >
-                  {panel.backups[0] ? (
+                  {plan.backups[2] ? (
                     <i
                       className={classNames(
                         'far fa-check-square',
@@ -324,7 +332,7 @@ class SharedHostingTable extends React.Component<IProps, IState> {
                     [styles.open]: this.state.isMoreInfoOpen,
                   })}
                 >
-                  {panel.backups[1] ? (
+                  {plan.backups[1] ? (
                     <i
                       className={classNames(
                         'far fa-check-square',
@@ -340,7 +348,7 @@ class SharedHostingTable extends React.Component<IProps, IState> {
                     [styles.open]: this.state.isMoreInfoOpen,
                   })}
                 >
-                  {panel.backups[2] ? (
+                  {plan.backups[0] ? (
                     <i
                       className={classNames(
                         'far fa-check-square',
@@ -355,141 +363,55 @@ class SharedHostingTable extends React.Component<IProps, IState> {
                   className={classNames({
                     [styles.jHidden]: this.state.isMoreInfoOpen,
                   })}
+                  style={{
+                    height:
+                      this.props.data.some((i) => i.backups.length > 0) &&
+                      !this.state.isMoreInfoOpen &&
+                      '92px',
+                  }}
                 >
-                  {panel.backups[0] && (
-                    <div>
-                      <i
-                        className={classNames(
-                          'far fa-check-square',
-                          styles.check
-                        )}
-                      ></i>{' '}
-                      روزانه
-                    </div>
-                  )}
-                  {panel.backups[1] && (
-                    <div>
-                      <i
-                        className={classNames(
-                          'far fa-check-square',
-                          styles.check
-                        )}
-                      ></i>{' '}
-                      ماهانه
-                    </div>
-                  )}
-                  {panel.backups[2] && (
-                    <div>
-                      <i
-                        className={classNames(
-                          'far fa-check-square',
-                          styles.check
-                        )}
-                      ></i>{' '}
-                      سالیانه
-                    </div>
-                  )}
+                  <BackupsCell backups={plan.backups} />
                 </td>
-                {!this.props.homePageTable && (
-                  <td>
-                    {panel.cpu < 100
-                      ? `% ${panel.cpu} یک هسته`
-                      : `% ${panel.cpu / 10} هسته`}
-
-                    <br />
-                    <div className={styles.scoreWrapper}>
-                      <ReactStars
-                        size={50}
-                        count={5}
-                        value={(panel.cpu / maximumCpu) * 5}
-                        edit={false}
-                        emptyIcon={
-                          <i
-                            className={classNames(
-                              'far fa-star',
-                              styles.emptyIcon
-                            )}
-                          />
-                        }
-                        filledIcon={<i className="fa fa-star" />}
-                        halfIcon={<i className="fas fa-star-half-alt"></i>}
-                      />
-                    </div>
-                  </td>
-                )}
-                {!this.props.homePageTable && (
-                  <td>
-                    {formatSpaceInPersian(panel.ram)}
-
-                    <br />
-                    <div className={styles.scoreWrapper}>
-                      <ReactStars
-                        size={50}
-                        count={5}
-                        value={(panel.ram / maximumRam) * 5}
-                        edit={false}
-                        emptyIcon={
-                          <i
-                            className={classNames(
-                              'far fa-star',
-                              styles.emptyIcon
-                            )}
-                          />
-                        }
-                        filledIcon={<i className="fa fa-star" />}
-                        halfIcon={<i className="fas fa-star-half-alt"></i>}
-                      />
-                    </div>
-                  </td>
-                )}
-                {!this.props.homePageTable && (
-                  <td>
-                    {panel.IO} مگابایت بر ثانیه
-                    <br />
-                    <div className={styles.scoreWrapper}>
-                      <ReactStars
-                        size={50}
-                        count={5}
-                        value={(panel.IO / maximumIO) * 5}
-                        edit={false}
-                        emptyIcon={
-                          <i
-                            className={classNames(
-                              'far fa-star',
-                              styles.emptyIcon
-                            )}
-                          />
-                        }
-                        filledIcon={<i className="fa fa-star" />}
-                        halfIcon={<i className="fas fa-star-half-alt"></i>}
-                      />
-                    </div>
-                  </td>
-                )}
-                {!this.props.homePageTable && (
-                  <td>
-                    {panel.entryprocess} عدد
-                    <br />
-                    <div className={styles.scoreWrapper}>
-                      <ReactStars
-                        size={50}
-                        count={5}
-                        value={(panel.entryprocess / maximumEntryProcess) * 5}
-                        edit={false}
-                        emptyIcon={
-                          <i
-                            className={classNames(
-                              'far fa-star',
-                              styles.emptyIcon
-                            )}
-                          />
-                        }
-                        filledIcon={<i className="fa fa-star" />}
-                        halfIcon={<i className="fas fa-star-half-alt"></i>}
-                      />
-                    </div>
-                  </td>
-                )}
+                {!this.props.homePageTable &&
+                  (plan.cpu ? (
+                    <StarredCell
+                      text={
+                        plan.cpu < 100
+                          ? `% ${plan.cpu} یک هسته`
+                          : `${plan.cpu / 100} هسته`
+                      }
+                      star={(plan.cpu / maximumCpu) * 5}
+                    />
+                  ) : (
+                    <StarredCell text={null} star={5} />
+                  ))}
+                {!this.props.homePageTable &&
+                  (plan.ram ? (
+                    <StarredCell
+                      text={formatSpace(plan.ram, 'persian')}
+                      star={(plan.ram / maximumRam) * 5}
+                    />
+                  ) : (
+                    <StarredCell text={null} star={5} />
+                  ))}
+                {!this.props.homePageTable &&
+                  (plan.IO ? (
+                    <StarredCell
+                      text={`${plan.IO} مگابایت بر ثانیه`}
+                      star={(plan.IO / maximumIO) * 5}
+                    />
+                  ) : (
+                    <StarredCell text={null} star={5} />
+                  ))}
+                {!this.props.homePageTable &&
+                  (plan.entryprocess ? (
+                    <StarredCell
+                      text={`${plan.entryprocess} عدد`}
+                      star={(plan.entryprocess / maximumEntryProcess) * 5}
+                    />
+                  ) : (
+                    <StarredCell text={null} star={5} />
+                  ))}
                 <td>
                   {this.props.type === 'linux' ? 'Apache + Nginx' : 'IIS'}
                 </td>
@@ -498,27 +420,27 @@ class SharedHostingTable extends React.Component<IProps, IState> {
                   <div>
                     {formatPriceWithCurrency(
                       this.props.currencies,
-                      panel.currency,
-                      panel.price
+                      plan.currency,
+                      plan.price
                     )}{' '}
                     ماهیانه
                   </div>
                 </td>
                 <td>
-                  {this.props.homePageTable && panel.is_available && (
-                    <Link href={`/order/server/vps/${panel.id}`}>
+                  {this.props.homePageTable && plan.is_available && (
+                    <Link href={`/order/server/vps/${plan.id}`}>
                       <a className={styles.orderLink}>
-                        <CountryFlagTooltip country={panel.country} />
+                        <CountryFlagTooltip country={plan.country} />
                         <span>سفارش</span>{' '}
                       </a>
                     </Link>
                   )}
 
                   {!this.props.homePageTable &&
-                    (panel.is_available ? (
-                      <Link href={`/order/server/vps/${panel.id}`}>
+                    (plan.is_available ? (
+                      <Link href={`/order/server/vps/${plan.id}`}>
                         <a className={styles.orderLink}>
-                          <CountryFlagTooltip country={panel.country} />
+                          <CountryFlagTooltip country={plan.country} />
                           <span>سفارش</span>{' '}
                         </a>
                       </Link>
@@ -536,8 +458,8 @@ class SharedHostingTable extends React.Component<IProps, IState> {
                         <span className={styles.tooltipWrapper}>
                           <Button className={styles.orderLink} disabled>
                             <img
-                              src={`./images/flags/${panel.country.code.toLowerCase()}.svg`}
-                              alt={panel.country.name}
+                              src={`/images/flags/${plan.country.code.toLowerCase()}.svg`}
+                              alt={plan.country.name}
                             />
                             سفارش{' '}
                           </Button>

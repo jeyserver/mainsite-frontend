@@ -2,21 +2,21 @@ import * as React from 'react';
 import Head from 'next/head';
 import BackupHosting from '../../components/HostsPricing/BackupHosting/BackupHosting';
 import Layout from '../../components/Layout/Layout';
-import { pageProps } from '../_app';
+import { IPageProps } from '../_app';
+import { IHostPlan } from '../../helper/types/products/Host/plan';
 
-export interface IndexProps extends pageProps {
-  backupHosts: any;
-  navData: any;
+interface IProps extends IPageProps {
+  plans: IHostPlan[];
 }
 
-export interface IndexState {
+interface IState {
   appIsScrolling: boolean;
 }
 
 let appIsScrollingTimeout;
 
-class Index extends React.Component<IndexProps, IndexState> {
-  constructor(props: IndexProps) {
+class Index extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
     this.state = {
       appIsScrolling: false,
@@ -57,8 +57,7 @@ class Index extends React.Component<IndexProps, IndexState> {
           licensesForNavbar={this.props.licensesForNavbar}
         >
           <BackupHosting
-            backupHosts={this.props.backupHosts}
-            navData={this.props.navData}
+            plans={this.props.plans}
             appIsScrolling={this.state.appIsScrolling}
             switchAppIsScrolling={this.switchAppIsScrolling}
           />
@@ -77,20 +76,14 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const backupHostsRes = await fetch(
-    `https://jsonblob.com/api/jsonBlob/89483316-e177-11eb-9c37-473477df6148`
+  const respone = await fetch(
+    `${process.env.SCHEMA}://${process.env.DOMAIN}/${locale}/hosting/backup?ajax=1`
   );
-  const backupHosts = await backupHostsRes.json();
-
-  const navDataRes = await fetch(
-    'https://jsonblob.com/api/jsonBlob/14b7037a-e155-11eb-9c37-51d866f9d6a7'
-  );
-  const navData = await navDataRes.json();
+  const data = await respone.json();
 
   return {
     props: {
-      backupHosts,
-      navData,
+      ...data,
     },
   };
 }

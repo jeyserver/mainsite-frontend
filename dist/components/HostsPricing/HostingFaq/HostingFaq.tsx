@@ -1,135 +1,93 @@
 import * as React from 'react';
-import { Col, Container, Row, Dropdown, Form } from 'react-bootstrap';
+import {
+  Col,
+  Container,
+  Row,
+  Dropdown,
+  FormGroup,
+  FormLabel,
+} from 'react-bootstrap';
 import Link from 'next/link';
 import PagesHeader from '../../PagesHeader/PagesHeader';
 import styles from './HostingFaq.module.scss';
 import classNames from 'classnames';
 import { NotificationManager } from 'react-notifications';
-import axios from 'axios';
+import { Formik, Form, FormikHelpers, ErrorMessage, Field } from 'formik';
+import * as Yup from 'yup';
+import backend from '../../../axios-config';
+import showErrorMsg from '../../../helper/showErrorMsg';
+import hosts from '../../../lib/products/host';
 
-export interface HostingFaqProps {
-  navData: any;
+interface IInputs {
+  name: string;
+  email: string;
+  text: string;
 }
 
-type error = 'data_validation' | 'data_duplicate';
-
-const showError = (errorMsg: error) => {
-  if (errorMsg === 'data_duplicate') {
-    return 'داده وارد شده تکراری است';
-  } else if (errorMsg === 'data_validation') {
-    return 'داده وارد شده معتبر نیست';
-  }
-};
-
-export interface HostingFaqState {
-  nameInputError: error;
-  emailInputError: error;
-  textInputError: error;
-  sendBtnLoading: boolean;
-  formValidated: boolean;
-}
-
-class HostingFaq extends React.Component<HostingFaqProps, HostingFaqState> {
-  constructor(props: HostingFaqProps) {
-    super(props);
-    this.state = {
-      nameInputError: 'data_validation',
-      emailInputError: 'data_validation',
-      textInputError: 'data_validation',
-      sendBtnLoading: false,
-      formValidated: false,
-    };
-  }
-
-  submitForm(e) {
-    e.preventDefault();
-    const form = e.currentTarget;
-
-    if (form.checkValidity() === false) {
-      e.stopPropagation();
-    } else {
-      this.setState({ sendBtnLoading: true });
-
-      axios
-        // .post(
-        //   `${process.env.SCHEMA}://${process.env.DOMAIN}`,
-        //   {
-        //     name: form.name.value,
-        //     email: form.email.value,
-        //     text: form.text.value,
-        //   }
-        // )
-        .get(
-          'https://jsonblob.com/api/jsobBlob/14b7037a-e155-11eb-9c37-51d866f9d6a7'
-        )
-        .then((respone) => {
-          if (respone.data.status) {
-            form.name.value = '';
-            form.email.value = '';
-            form.text.value = '';
-
-            NotificationManager.success(
-              'کارشناسان ما در اولین فرصت پیام شما را بررسی و پاسخ خواهند داد. از صبر شما متشکریم.',
-              'پیام شما دریافت شد.'
-            );
-            this.setState({ formValidated: false, sendBtnLoading: false });
-          } else if (!respone.data.status) {
-            respone.data.error.forEach((errorItem) => {
-              if (errorItem.input === 'name') {
-                form.elements[0].value = '';
-                this.setState({ nameInputError: errorItem.code });
-              } else if (errorItem.input === 'email') {
-                form.elements[2].value = '';
-                this.setState({ emailInputError: errorItem.code });
-              } else if (errorItem.input === 'text') {
-                form.elements[3].value = '';
-                this.setState({ textInputError: errorItem.code });
-              }
-            });
-          }
-        })
-        .catch((error) => {
-          this.setState({ sendBtnLoading: false });
-          NotificationManager.error(
-            'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
-            'خطا'
-          );
-        });
-    }
-
-    this.setState({ formValidated: true });
-  }
+class HostingFaq extends React.Component {
+  lastScrollTop = 0;
 
   componentDidMount() {
-    var lastScrollTop = 0;
+    window.addEventListener('scroll', this.onScroll, false);
+  }
 
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.onScroll, false);
+  }
+
+  onScroll() {
+    var st = window.pageYOffset || document.documentElement.scrollTop;
     const nav = document.querySelector('#faq-nav') as HTMLDivElement;
 
-    window.addEventListener(
-      'scroll',
-      function () {
-        var st = window.pageYOffset || document.documentElement.scrollTop;
+    if (st > this.lastScrollTop) {
+      // downscroll code
+      nav.style.top = '0px';
+    } else {
+      // upscroll code
+      nav.style.top = '80px';
+    }
 
-        if (st > lastScrollTop) {
-          // downscroll code
-          nav.style.top = '0px';
+    let fromTop = window.scrollY;
+
+    if (fromTop > 225) {
+      nav.style.position = 'fixed';
+    } else {
+      nav.style.position = 'static';
+    }
+
+    this.lastScrollTop = st <= 0 ? 0 : st;
+  }
+
+  onSubmit(
+    values: IInputs,
+    { setSubmitting, resetForm, setErrors }: FormikHelpers<IInputs>
+  ) {
+    backend
+      .post(
+        `/contact?ajax=1&subject=طرح سوال در سوالات متداول هاست های میزبانی&name=${values.name}&email=${values.email}&text=${values.text}`
+      )
+      .then((res) => {
+        if (res.data.status) {
+          NotificationManager.success(
+            'کارشناسان ما در اولین فرصت پیام شما را بررسی و پاسخ خواهند داد. از صبر شما متشکریم.',
+            'پیام شما دریافت شد.'
+          );
+          resetForm();
         } else {
-          // upscroll code
-          nav.style.top = '80px';
+          res.data.error.map((error) => {
+            setErrors({ [error.input]: showErrorMsg(error.code) });
+          });
         }
-
-        let fromTop = window.scrollY;
-
-        if (fromTop > 225) {
-          nav.style.position = 'fixed';
-        } else {
-          nav.style.position = 'static';
-        }
-
-        lastScrollTop = st <= 0 ? 0 : st;
-      },
-      false
-    );
+      })
+      .catch(() => {
+        NotificationManager.error(
+          'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
+          'خطا'
+        );
+      })
+      .finally(() => {
+        setSubmitting(false);
+      });
   }
 
   render() {
@@ -151,7 +109,7 @@ class HostingFaq extends React.Component<HostingFaqProps, HostingFaqState> {
                         className={styles.dropdownMenu}
                         align="right"
                       >
-                        {this.props.navData.dedicated_hosts.map((host) => (
+                        {hosts.dedicated_hosts.map((host) => (
                           <Link
                             key={host.link}
                             href={`/hosting/linux/dedicated#${host.link}`}
@@ -171,7 +129,7 @@ class HostingFaq extends React.Component<HostingFaqProps, HostingFaqState> {
                         className={styles.dropdownMenu}
                         align="right"
                       >
-                        {this.props.navData.linux_vps_hosts.map((host) => (
+                        {hosts.linux_vps_hosts.map((host) => (
                           <Link
                             key={host.link}
                             href={`/hosting/linux/vps#${host.link}`}
@@ -191,16 +149,14 @@ class HostingFaq extends React.Component<HostingFaqProps, HostingFaqState> {
                         className={styles.dropdownMenu}
                         align="right"
                       >
-                        {this.props.navData.professional_linux_shared_hosts.map(
-                          (host) => (
-                            <Link
-                              key={host.link}
-                              href={`/hosting/linux/professional#${host.link}`}
-                            >
-                              <a>هاست اشتراکی حرفه ای {host.title}</a>
-                            </Link>
-                          )
-                        )}
+                        {hosts.professional_linux_shared_hosts.map((host) => (
+                          <Link
+                            key={host.link}
+                            href={`/hosting/linux/professional#${host.link}`}
+                          >
+                            <a>هاست اشتراکی حرفه ای {host.title}</a>
+                          </Link>
+                        ))}
                       </Dropdown.Menu>
                     </Dropdown>
                   </li>
@@ -213,16 +169,14 @@ class HostingFaq extends React.Component<HostingFaqProps, HostingFaqState> {
                         className={styles.dropdownMenu}
                         align="right"
                       >
-                        {this.props.navData.standard_linux_shared_hosts.map(
-                          (host) => (
-                            <Link
-                              key={host.link}
-                              href={`/hosting/linux/standard#${host.link}`}
-                            >
-                              <a>هاست اشتراکی ساده {host.title}</a>
-                            </Link>
-                          )
-                        )}
+                        {hosts.standard_linux_shared_hosts.map((host) => (
+                          <Link
+                            key={host.link}
+                            href={`/hosting/linux/standard#${host.link}`}
+                          >
+                            <a>هاست اشتراکی ساده {host.title}</a>
+                          </Link>
+                        ))}
                       </Dropdown.Menu>
                     </Dropdown>
                   </li>
@@ -403,117 +357,130 @@ class HostingFaq extends React.Component<HostingFaqProps, HostingFaqState> {
                     <div />
                   </div>
                 </div>
-                <Form
-                  className={styles.form}
-                  noValidate
-                  validated={this.state.formValidated}
-                  onSubmit={(e) => this.submitForm(e)}
+                <Formik
+                  validationSchema={Yup.object({
+                    name: Yup.string().required('داده وارد شده معتبر نیست'),
+                    email: Yup.string()
+                      .required('داده وارد شده معتبر نیست')
+                      .email('داده وارد شده معتبر نیست'),
+                    text: Yup.string().required('داده وارد شده معتبر نیست'),
+                  })}
+                  initialValues={{ name: '', email: '', text: '' }}
+                  onSubmit={(values, helpers) => this.onSubmit(values, helpers)}
                 >
-                  <Row>
-                    <Col md={6}>
+                  {(formik) => (
+                    <Form className={styles.form}>
                       <Row>
-                        <Col xs={12}>
-                          <Form.Group
-                            controlId="name"
-                            className={styles.formGroup}
-                          >
-                            <Form.Label>نام شما</Form.Label>
-                            <div className={styles.inputWrapper}>
-                              <Form.Control type="text" name="name" required />
-                              <Form.Control.Feedback type="invalid">
-                                {showError(this.state.nameInputError)}
-                              </Form.Control.Feedback>
-
-                              <span className={styles.iconWrapper}>
-                                <i className="fa fa-user" />
-                              </span>
-                            </div>
-                          </Form.Group>
-                        </Col>
-                      </Row>
-                      <Row>
-                        <Col xs={12}>
-                          <Form.Group
-                            controlId="email"
-                            className={styles.formGroup}
-                          >
-                            <Form.Label>ایمیل شما</Form.Label>
-                            <div className={styles.inputWrapper}>
-                              <Form.Control
-                                type="email"
-                                name="email"
-                                required
-                              />
-                              <Form.Control.Feedback type="invalid">
-                                {showError(this.state.emailInputError)}
-                              </Form.Control.Feedback>
-                              <span
-                                className={classNames(
-                                  styles.iconWrapper,
-                                  styles.left
-                                )}
+                        <Col md={6}>
+                          <Row>
+                            <Col xs={12}>
+                              <FormGroup
+                                controlId="name"
+                                className={styles.formGroup}
                               >
-                                <i className="fas fa-at"></i>
-                              </span>
-                            </div>
-                          </Form.Group>
-                          <p className={styles.formDes}>
-                            ایمیل شما برای پاسخگویی به سوالتان نیاز است. <br />{' '}
-                            ما هم مثل شما از ایمیل های اسپم بیزاریم !
-                          </p>
+                                <FormLabel>نام شما</FormLabel>
+                                <div className={styles.inputWrapper}>
+                                  <Field
+                                    type="text"
+                                    name="name"
+                                    className="form-control"
+                                  />
+                                  <div className="form-err-msg">
+                                    <ErrorMessage name="name" />
+                                  </div>
+                                  <span className={styles.iconWrapper}>
+                                    <i className="fa fa-user" />
+                                  </span>
+                                </div>
+                              </FormGroup>
+                            </Col>
+                          </Row>
+
+                          <Row>
+                            <Col xs={12}>
+                              <FormGroup
+                                controlId="email"
+                                className={styles.formGroup}
+                              >
+                                <FormLabel>ایمیل شما</FormLabel>
+                                <div className={styles.inputWrapper}>
+                                  <Field
+                                    type="email"
+                                    name="email"
+                                    className="form-control"
+                                  />
+                                  <div className="form-err-msg">
+                                    <ErrorMessage name="email" />
+                                  </div>
+                                  <span
+                                    className={classNames(
+                                      styles.iconWrapper,
+                                      styles.left
+                                    )}
+                                  >
+                                    <i className="fas fa-at"></i>
+                                  </span>
+                                </div>
+                              </FormGroup>
+                              <p className={styles.formDes}>
+                                ایمیل شما برای پاسخگویی به سوالتان نیاز است.{' '}
+                                <br /> ما هم مثل شما از ایمیل های اسپم بیزاریم !
+                              </p>
+                            </Col>
+                          </Row>
+                        </Col>
+                        <Col md={6}>
+                          <Row>
+                            <Col xs={12}>
+                              <FormGroup
+                                controlId="text"
+                                className={styles.formGroup}
+                              >
+                                <FormLabel>سوال</FormLabel>
+                                <div className={styles.inputWrapper}>
+                                  <Field
+                                    as="textarea"
+                                    rows={8}
+                                    name="text"
+                                    className="form-control"
+                                  />
+                                  <span className={styles.iconWrapper}>
+                                    <i className="fa fa-comments" />
+                                  </span>
+                                  <div className="form-err-msg">
+                                    <ErrorMessage name="text" />
+                                  </div>
+                                </div>
+                              </FormGroup>
+                            </Col>
+                          </Row>
                         </Col>
                       </Row>
-                    </Col>
-                    <Col md={6}>
-                      <Row>
-                        <Col xs={12}>
-                          <Form.Group
-                            controlId="text"
-                            className={styles.formGroup}
+                      <Row className="justify-content-end">
+                        <Col md={4}>
+                          <button
+                            className={styles.sendBtn}
+                            disabled={formik.isSubmitting}
+                            type="submit"
                           >
-                            <Form.Label>سوال</Form.Label>
-                            <div className={styles.inputWrapper}>
-                              <Form.Control
-                                as="textarea"
-                                rows={8}
-                                name="text"
-                                required
-                              />
-                              <span className={styles.iconWrapper}>
-                                <i className="fa fa-comments" />
-                              </span>
-                              <Form.Control.Feedback type="invalid">
-                                {showError(this.state.textInputError)}
-                              </Form.Control.Feedback>
-                            </div>
-                          </Form.Group>
+                            {formik.isSubmitting ? (
+                              <div className={styles.loading}>
+                                <i className="fas fa-spinner"></i>
+                              </div>
+                            ) : (
+                              <div>
+                                <div className={styles.icon}>
+                                  <i className="fa fa-paper-plane" />
+                                </div>
+                                ارسال{' '}
+                              </div>
+                            )}
+                          </button>
                         </Col>
                       </Row>
-                    </Col>
-                  </Row>
-                  <Row className="justify-content-end">
-                    <Col md={4}>
-                      <button
-                        className={styles.sendBtn}
-                        disabled={this.state.sendBtnLoading}
-                        type="submit"
-                      >
-                        {this.state.sendBtnLoading ? (
-                          <div className={styles.loading}>
-                            <i className="fas fa-spinner"></i>
-                          </div>
-                        ) : (
-                          <div>
-                            <div className={styles.icon}>
-                              <i className="fa fa-paper-plane" />
-                            </div>
-                            ارسال{' '}
-                          </div>
-                        )}
-                      </button>
-                    </Col>
-                  </Row>
-                </Form>
+                    </Form>
+                  )}
+                </Formik>
               </Col>
             </Row>
           </Container>

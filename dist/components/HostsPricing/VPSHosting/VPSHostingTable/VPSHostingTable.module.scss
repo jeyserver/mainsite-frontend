@@ -279,6 +279,10 @@
                 .emptyIcon {
                   color: #888;
                 }
+
+                i {
+                  transform: scaleX(-1);
+                }
               }
             }
           }

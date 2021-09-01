@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import styles from '../../PageInfoStyles.module.scss';
 import { Dropdown } from 'react-bootstrap';
+import hosts from '../../../../lib/products/host';
 
 type os = 'windows' | 'linux';
 type planType = 'standard' | 'professional';
@@ -235,30 +236,18 @@ export const getScrollTopForFixNav = (type: page) => {
 };
 
 const scrollToTargetElement = (appIsScrollingFunction) => {
-  const mainNavLinks = document.querySelectorAll(
-    `#linux_professional-nav li[data-main="true"] > a`
-  );
-
-  // window.scroll({ top: 100 });
-
-  // setTimeout(() => {
-  //   mainNavLinks.forEach((link: any) => (link.dataset.active = 'false'));
-  //   e.target.dataset.active = 'true';
-  // }, 1000);
-
   appIsScrollingFunction();
 };
 
 export const renderTopNav = (
   type: page,
-  topNavData: any,
   appIsScrollingFunction?: () => void
 ) => {
   switch (type) {
     case 'linux_professional':
       return (
         <ul className={styles.nav}>
-          {topNavData.professional_linux_shared_hosts.map((host) => (
+          {hosts.professional_linux_shared_hosts.map((host) => (
             <li key={host.title} data-main="true">
               <a
                 href={`#${host.link}`}
@@ -274,7 +263,7 @@ export const renderTopNav = (
                 هاست اشتراکی لینوکس ساده
               </Dropdown.Toggle>
               <Dropdown.Menu className={styles.dropdownMenu} align="right">
-                {topNavData.standard_linux_shared_hosts.map((host) => (
+                {hosts.standard_linux_shared_hosts.map((host) => (
                   <Link
                     key={host.link}
                     href={`/hosting/linux/standard#${host.link}`}
@@ -291,7 +280,7 @@ export const renderTopNav = (
                 هاست نیمه اختصاصی
               </Dropdown.Toggle>
               <Dropdown.Menu className={styles.dropdownMenu} align="right">
-                {topNavData.linux_vps_hosts.map((host) => (
+                {hosts.linux_vps_hosts.map((host) => (
                   <Link
                     key={host.link}
                     href={`/hosting/linux/vps#${host.link}`}
@@ -312,7 +301,7 @@ export const renderTopNav = (
     case 'linux_standard':
       return (
         <ul className={styles.nav}>
-          {topNavData.standard_linux_shared_hosts.map((host) => (
+          {hosts.standard_linux_shared_hosts.map((host) => (
             <li key={host.title} data-main="true">
               <a
                 href={`#${host.link}`}
@@ -328,7 +317,7 @@ export const renderTopNav = (
                 هاست اشتراکی لینوکس حرفه ای
               </Dropdown.Toggle>
               <Dropdown.Menu className={styles.dropdownMenu} align="right">
-                {topNavData.professional_linux_shared_hosts.map((host) => (
+                {hosts.professional_linux_shared_hosts.map((host) => (
                   <Link
                     key={host.link}
                     href={`/hosting/linux/professional#${host.link}`}
@@ -345,7 +334,7 @@ export const renderTopNav = (
                 هاست نیمه اختصاصی
               </Dropdown.Toggle>
               <Dropdown.Menu className={styles.dropdownMenu} align="right">
-                {topNavData.linux_vps_hosts.map((host) => (
+                {hosts.linux_vps_hosts.map((host) => (
                   <Link
                     key={host.link}
                     href={`/hosting/linux/vps#${host.link}`}
@@ -366,7 +355,7 @@ export const renderTopNav = (
     case 'windows_professional':
       return (
         <ul className={styles.nav}>
-          {topNavData.professional_windows_shared_hosts.map((host) => (
+          {hosts.professional_windows_shared_hosts.map((host) => (
             <li key={host.title} data-main="true">
               <a
                 href={`#${host.link}`}
@@ -382,7 +371,7 @@ export const renderTopNav = (
                 هاست اشتراکی لینوکس ساده
               </Dropdown.Toggle>
               <Dropdown.Menu className={styles.dropdownMenu} align="right">
-                {topNavData.standard_linux_shared_hosts.map((host) => (
+                {hosts.standard_linux_shared_hosts.map((host) => (
                   <Link
                     key={host.link}
                     href={`/hosting/linux/professional#${host.link}`}
@@ -399,7 +388,7 @@ export const renderTopNav = (
                 هاست اشتراکی لینوکس حرفه ای
               </Dropdown.Toggle>
               <Dropdown.Menu className={styles.dropdownMenu} align="right">
-                {topNavData.professional_linux_shared_hosts.map((host) => (
+                {hosts.professional_linux_shared_hosts.map((host) => (
                   <Link
                     key={host.link}
                     href={`/hosting/linux/professional#${host.link}`}
@@ -416,7 +405,7 @@ export const renderTopNav = (
                 هاست نیمه اختصاصی
               </Dropdown.Toggle>
               <Dropdown.Menu className={styles.dropdownMenu} align="right">
-                {topNavData.linux_vps_hosts.map((host) => (
+                {hosts.linux_vps_hosts.map((host) => (
                   <Link
                     key={host.link}
                     href={`/hosting/linux/vps#${host.link}`}
@@ -432,7 +421,7 @@ export const renderTopNav = (
     case 'windows_standard':
       return (
         <ul className={styles.nav}>
-          {topNavData.standard_windows_shared_hosts.map((host) => (
+          {hosts.standard_windows_shared_hosts.map((host) => (
             <li key={host.title} data-main="true">
               <a
                 href={`#${host.link}`}
@@ -448,7 +437,7 @@ export const renderTopNav = (
                 هاست اشتراکی لینوکس ساده
               </Dropdown.Toggle>
               <Dropdown.Menu className={styles.dropdownMenu} align="right">
-                {topNavData.standard_linux_shared_hosts.map((host) => (
+                {hosts.standard_linux_shared_hosts.map((host) => (
                   <Link
                     key={host.link}
                     href={`/hosting/linux/professional#${host.link}`}
@@ -465,7 +454,7 @@ export const renderTopNav = (
                 هاست اشتراکی لینوکس حرفه ای
               </Dropdown.Toggle>
               <Dropdown.Menu className={styles.dropdownMenu} align="right">
-                {topNavData.professional_linux_shared_hosts.map((host) => (
+                {hosts.professional_linux_shared_hosts.map((host) => (
                   <Link
                     key={host.link}
                     href={`/hosting/linux/professional#${host.link}`}
@@ -482,7 +471,7 @@ export const renderTopNav = (
                 هاست نیمه اختصاصی
               </Dropdown.Toggle>
               <Dropdown.Menu className={styles.dropdownMenu} align="right">
-                {topNavData.linux_vps_hosts.map((host) => (
+                {hosts.linux_vps_hosts.map((host) => (
                   <Link
                     key={host.link}
                     href={`/hosting/linux/vps#${host.link}`}

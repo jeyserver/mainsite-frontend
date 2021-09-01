@@ -184,14 +184,13 @@ class Domain extends React.Component<IProps, IState> {
                         </Tooltip>
                       }
                     >
-                      <Button
-                        type="submit"
-                        variant="success"
-                        className={styles.moreBtn}
-                        onClick={this.moreBtn}
-                      >
-                        <span>بیشتر</span>
-                      </Button>
+                      <button className={styles.moreBtn}>
+                        <Link href="/domain">
+                          <a>
+                            <div>بیشتر</div>
+                          </a>
+                        </Link>
+                      </button>
                     </OverlayTrigger>
                   </div>
                   <div className="mt-3">

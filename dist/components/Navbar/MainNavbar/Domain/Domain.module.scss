@@ -11,12 +11,18 @@
   justify-content: center;
   align-items: center;
   background-color: #5cb85c;
+  color: #ffffff;
   border: 1px solid #5cb85c;
   font-family: BKoodakBold;
   font-size: 13.5px;
   width: 40px;
   height: 27px;
   animation: pulse 1.25s cubic-bezier(0.66, 0, 0, 1) both infinite;
+  padding: 0.2em 0.6em 0.3em;
+  font-size: 14px;
+  font-weight: 700;
+  text-align: center;
+  border-radius: 0.25em;
   @keyframes pulse {
     0% {
       -webkit-transform: scale(1);

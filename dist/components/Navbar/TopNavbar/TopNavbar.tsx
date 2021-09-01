@@ -2,14 +2,11 @@ import * as React from 'react';
 import { Dropdown, Container } from 'react-bootstrap';
 import Link from 'next/link';
 import styles from './TopNavbar.module.scss';
-import { connect } from 'react-redux';
-import { signUp, logout } from '../../../redux/actions';
 import { RootState } from '../../../store';
+import { connect } from 'react-redux';
 
 interface IProps {
   isLoggedIn: RootState['auth']['isLoggedIn'];
-  logout: any;
-  signUp: any;
   user: RootState['auth']['user'];
 }
 
@@ -59,29 +56,25 @@ class TopNavbar extends React.Component<IProps> {
                       <span>{this.props.user.name}</span>
                     </a>
                   </Link>
-                  <button
-                    className={styles.authLink}
-                    onClick={() => this.props.logout()}
-                  >
+                  <button className={styles.authLink}>
                     <i className="fas fa-sign-out-alt"></i>
                     <span>خروج</span>
                   </button>
                 </>
               ) : (
                 <>
-                  <Link href="#login">
+                  <Link href="/userpanel/login">
                     <a className={styles.authLink}>
                       <i className="fas fa-sign-in-alt"></i>
                       <span>ورود</span>
                     </a>
                   </Link>
-                  <button
-                    className={styles.authLink}
-                    onClick={() => this.props.signUp()}
-                  >
-                    <i className="fas fa-user-plus"></i>
-                    <span>ثبت نام</span>
-                  </button>
+                  <Link href="/userpanel/register">
+                    <a className={styles.authLink}>
+                      <i className="fas fa-user-plus"></i>
+                      <span>ثبت نام</span>
+                    </a>
+                  </Link>
                 </>
               )}
             </div>
@@ -92,12 +85,9 @@ class TopNavbar extends React.Component<IProps> {
   }
 }
 
-export default connect(
-  (state: RootState) => {
-    return {
-      user: state.auth.user,
-      isLoggedIn: state.auth.isLoggedIn,
-    };
-  },
-  { signUp, logout }
-)(TopNavbar);
+export default connect((state: RootState) => {
+  return {
+    isLoggedIn: state.auth.isLoggedIn,
+    user: state.auth.user,
+  };
+})(TopNavbar);

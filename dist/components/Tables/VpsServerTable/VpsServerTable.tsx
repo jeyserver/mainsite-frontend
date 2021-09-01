@@ -7,7 +7,7 @@ import CountryFlagTooltip from '../../../helper/components/CountryFlagTooltip/Co
 import { formatSpaceInPersian } from '../../../helper/formatSpace';
 import { connect } from 'react-redux';
 import { RootState } from '../../../store';
-import formatPriceWithCurrency from '../../../helper/formatPriceWithCurrency';
+import { formatPriceWithCurrency } from '../../../store/Currencies';
 import translateCountryNameToPersian from '../../../helper/translateCountryNameToPersian';
 import getVpsPlanTypeInPersian from '../../../helper/getVpsPlanTypeInPersian';
 import { IVPSPlan } from '../../../helper/types/products/VPS/plan';
@@ -176,7 +176,7 @@ class VpsServerTab extends React.Component<IProps, IState> {
                 <td>
                   <span>
                     {formatPriceWithCurrency(
-                      this.props.currencies.items,
+                      this.props.currencies,
                       plan.currency,
                       plan.price
                     )}

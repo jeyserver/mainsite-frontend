@@ -5,7 +5,7 @@ import styles from './ServerDedicatedTab.module.scss';
 import { formatHards } from '../../../../helper/formatHards';
 import { formatSpaceInPersian } from '../../../../helper/formatSpace';
 import CountryFlagTooltip from '../../../../helper/components/CountryFlagTooltip/CountryFlagTooltip';
-import formatPriceWithCurrency from '../../../../helper/formatPriceWithCurrency';
+import { formatPriceWithCurrency } from '../../../../store/Currencies';
 import { RootState } from '../../../../store';
 import { connect } from 'react-redux';
 import { IDedicatedPlan } from '../../../../helper/types/products/Dedicated/plan';
@@ -53,7 +53,7 @@ class ServerDedicatedTab extends React.Component<IProps> {
                 <td>
                   <div>
                     {formatPriceWithCurrency(
-                      this.props.currencies.items,
+                      this.props.currencies,
                       panel.currency,
                       panel.price
                     )}{' '}
@@ -61,7 +61,7 @@ class ServerDedicatedTab extends React.Component<IProps> {
                   </div>
                   <div>
                     {formatPriceWithCurrency(
-                      this.props.currencies.items,
+                      this.props.currencies,
                       panel.currency,
                       panel.price * 12
                     )}{' '}

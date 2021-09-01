@@ -6,7 +6,7 @@ import styles from './SharedHostingTable.module.scss';
 import classNames from 'classnames';
 import CountryFlagTooltip from '../../../helper/components/CountryFlagTooltip/CountryFlagTooltip';
 import { formatSpaceInPersian } from '../../../helper/formatSpace';
-import formatPriceWithCurrency from '../../../helper/formatPriceWithCurrency';
+import { formatPriceWithCurrency } from '../../../store/Currencies';
 import { connect } from 'react-redux';
 import { RootState } from '../../../store';
 import { IHostPlan } from '../../../helper/types/products/Host/plan';
@@ -497,7 +497,7 @@ class SharedHostingTable extends React.Component<IProps, IState> {
                 <td>
                   <div>
                     {formatPriceWithCurrency(
-                      this.props.currencies.items,
+                      this.props.currencies,
                       panel.currency,
                       panel.price
                     )}{' '}

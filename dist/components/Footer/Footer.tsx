@@ -4,17 +4,18 @@ import { Container, Row, Col, Image } from 'react-bootstrap';
 import styles from './Footer.module.scss';
 import axios from 'axios';
 import { NotificationManager } from 'react-notifications';
+import { IFooterPost } from '../../pages/_app';
 
-export interface FooterProps {
-  posts?: { title: string; link: string }[];
+interface IProps {
+  posts: IFooterPost[];
 }
 
-export interface FooterState {
+interface IState {
   newsLettersbtnLoading: boolean;
 }
 
-class Footer extends React.Component<FooterProps, FooterState> {
-  constructor(props: FooterProps) {
+class Footer extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
     this.state = {
       newsLettersbtnLoading: false,
@@ -91,12 +92,14 @@ class Footer extends React.Component<FooterProps, FooterState> {
               <div className={styles.blogLinks}>
                 <h3>مطالب آموزشی بلاگ</h3>
                 <ul>
-                  {this.props.posts.map((post) => (
-                    <li key={post.link}>
-                      <Link href={`/blog/${post.link}`}>
+                  {this.props.posts.slice(0, 5).map((post) => (
+                    <li key={post.permalink}>
+                      <Link href={`/blog/${post.permalink}`}>
                         <a>
                           <i className="far fa-edit"></i>
-                          <span>{post.title}</span>
+                          <span
+                            dangerouslySetInnerHTML={{ __html: post.title }}
+                          ></span>
                         </a>
                       </Link>
                     </li>

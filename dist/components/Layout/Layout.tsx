@@ -1,40 +1,22 @@
 import * as React from 'react';
 import Navbar from '../Navbar/Navbar';
 import Footer from '../Footer/Footer';
+import { IFooterPost, ILicense, ITld } from '../../pages/_app';
 
-export interface LayoutProps {
-  postsForFooter: { title: string; link: string }[];
+interface IProps {
+  postsForFooter: IFooterPost[];
   appIsScrolling?: boolean;
-  domainsForNavbar?: {
-    items: {
-      id: number;
-      new: number;
-      renew: number;
-      tld: string;
-      transfer: number;
-    }[];
-    status: boolean;
-    currency: {
-      title: string;
-    };
-  };
-  licensesForNavbar?: any;
+  domainsForNavbar?: ITld[];
+  licensesForNavbar?: ILicense[];
 }
 
-export interface LayoutState {}
-
-class Layout extends React.Component<LayoutProps, LayoutState> {
-  constructor(props: LayoutProps) {
-    super(props);
-    this.state = {};
-  }
-
+class Layout extends React.Component<IProps> {
   render() {
     return (
       <React.Fragment>
         <Navbar
           appIsScrolling={this.props.appIsScrolling}
-          domains={this.props.domainsForNavbar}
+          tlds={this.props.domainsForNavbar}
           licenses={this.props.licensesForNavbar}
         />
         {this.props.children}

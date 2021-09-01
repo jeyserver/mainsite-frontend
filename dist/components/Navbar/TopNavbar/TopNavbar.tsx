@@ -2,24 +2,15 @@ import * as React from 'react';
 import { Dropdown, Container } from 'react-bootstrap';
 import Link from 'next/link';
 import styles from './TopNavbar.module.scss';
+import { RootState } from '../../../store';
 import { connect } from 'react-redux';
-import { signUp, logout } from '../../../redux/actions';
 
-export interface TopNavbarProps {
-  isLoggedIn: boolean;
-  logout: () => void;
-  signUp: () => void;
-  user: { name: string };
+interface IProps {
+  isLoggedIn: RootState['auth']['isLoggedIn'];
+  user: RootState['auth']['user'];
 }
 
-export interface TopNavbarState {}
-
-class TopNavbar extends React.Component<TopNavbarProps, TopNavbarState> {
-  constructor(props: TopNavbarProps) {
-    super(props);
-    this.state = {};
-  }
-
+class TopNavbar extends React.Component<IProps> {
   render() {
     return (
       <div id="top-nav" className={styles.topNav}>
@@ -65,29 +56,25 @@ class TopNavbar extends React.Component<TopNavbarProps, TopNavbarState> {
                       <span>{this.props.user.name}</span>
                     </a>
                   </Link>
-                  <button
-                    className={styles.authLink}
-                    onClick={() => this.props.logout()}
-                  >
+                  <button className={styles.authLink}>
                     <i className="fas fa-sign-out-alt"></i>
                     <span>خروج</span>
                   </button>
                 </>
               ) : (
                 <>
-                  <Link href="#login">
+                  <Link href="/userpanel/login">
                     <a className={styles.authLink}>
                       <i className="fas fa-sign-in-alt"></i>
                       <span>ورود</span>
                     </a>
                   </Link>
-                  <button
-                    className={styles.authLink}
-                    onClick={() => this.props.signUp()}
-                  >
-                    <i className="fas fa-user-plus"></i>
-                    <span>ثبت نام</span>
-                  </button>
+                  <Link href="/userpanel/register">
+                    <a className={styles.authLink}>
+                      <i className="fas fa-user-plus"></i>
+                      <span>ثبت نام</span>
+                    </a>
+                  </Link>
                 </>
               )}
             </div>
@@ -98,11 +85,9 @@ class TopNavbar extends React.Component<TopNavbarProps, TopNavbarState> {
   }
 }
 
-function mapStateToProps(state) {
+export default connect((state: RootState) => {
   return {
-    user: state.auth.user,
     isLoggedIn: state.auth.isLoggedIn,
+    user: state.auth.user,
   };
-}
-
-export default connect(mapStateToProps, { signUp, logout })(TopNavbar);
+})(TopNavbar);

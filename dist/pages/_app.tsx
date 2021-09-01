@@ -1,6 +1,3 @@
-// import 'bootstrap/dist/css/bootstrap.min.css';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
 import '../public/packages/leaflet/dist/leaflet.css';
 import 'react-notifications/lib/notifications.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
@@ -9,8 +6,9 @@ import '../styles/rtl-bootstrap.scss';
 import '../styles/globals.scss';
 import { Provider } from 'react-redux';
 import { NotificationContainer } from 'react-notifications';
-import { useStore } from '../redux/store';
+import { store } from '../store/index';
 import NProgress from '../components/NProgress/NProgress';
+import { setCurrencies } from '../store/Currencies';
 
 export default function App({
   Component,
@@ -18,8 +16,9 @@ export default function App({
   domainsForNavbar,
   licensesForNavbar,
   postsForFooter,
+  currencies,
 }) {
-  const store = useStore(pageProps.initialReduxState);
+  store.dispatch(setCurrencies(currencies));
 
   return (
     <Provider store={store}>
@@ -40,42 +39,69 @@ export default function App({
   );
 }
 
-export interface domainsForNavbarType {
-  items: {
+export interface ICurrency {
+  active?: boolean;
+  id: number;
+  prefix: null;
+  title: string;
+  postfix: null;
+  update_at: number;
+  rounding_behaviour: number;
+  rounding_precision: number;
+  rates: {
     id: number;
-    new: number;
-    renew: number;
-    tld: string;
-    transfer: number;
+    currency: number;
+    changeTo: number;
+    price: number;
   }[];
-  status: boolean;
-  currency: {
-    title: string;
-  };
+}
+
+export interface ITld {
+  id: number;
+  new: number;
+  renew: number;
+  tld: string;
+  transfer: number;
+  currency: number;
+}
+
+enum LicensePP {
+  Lifetime,
+  Daily,
+  Monthly,
+  Yearly,
+}
+
+export interface ILicense {
+  id: number;
+  registrar: number;
+  title: string;
+  price: number;
+  setup: number;
+  currency: number;
+  pp: LicensePP;
+  status: 0 | 1;
+}
+
+export interface IFooterPost {
+  title: string;
+  permalink: string;
 }
 
 export interface pageProps {
-  domainsForNavbar: any;
-  licensesForNavbar: any;
-  postsForFooter: any;
+  domainsForNavbar: ITld[];
+  licensesForNavbar: ILicense[];
+  postsForFooter: IFooterPost[];
+  currencies: ICurrency[];
 }
 
 App.getInitialProps = async ({ Component, ctx }) => {
-  const domainsForNavbarRes = await fetch(
-    `https://jsonblob.com/api/jsonBlob/57cdd139-eaad-11eb-8813-950ac49ad40b`
-  );
-  const domainsForNavbar: domainsForNavbarType =
-    await domainsForNavbarRes.json();
+  const locale = ctx.locale;
 
-  const licensesForNavbarRes = await fetch(
-    'https://jsonblob.com/api/jsonBlob/4913d357-eba1-11eb-9eff-219764ad97b3'
+  const respone = await fetch(
+    `${process.env.SCHEMA}://${process.env.DOMAIN}/${locale}?ajax=1`
   );
-  const licensesForNavbar = await licensesForNavbarRes.json();
-
-  const postsForFooterRes = await fetch(
-    'https://jsonblob.com/api/jsonBlob/ff048401-e7cd-11eb-971c-9ff88820de62'
-  );
-  const postsForFooter = await postsForFooterRes.json();
+  const data = await respone.json();
 
   let pageProps = {};
 
@@ -85,8 +111,9 @@ App.getInitialProps = async ({ Component, ctx }) => {
 
   return {
     pageProps,
-    domainsForNavbar,
-    licensesForNavbar,
-    postsForFooter,
+    domainsForNavbar: data.tlds,
+    licensesForNavbar: data.licenses,
+    postsForFooter: data.posts,
+    currencies: data.currencies,
   };
 };

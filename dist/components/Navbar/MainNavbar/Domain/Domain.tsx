@@ -1,4 +1,3 @@
-import Link from 'next/link';
 import React from 'react';
 import { Form, OverlayTrigger, Spinner, Tooltip } from 'react-bootstrap';
 import {
@@ -14,11 +13,13 @@ import {
 import styles from './Domain.module.scss';
 import { withRouter, NextRouter } from 'next/router';
 import classNames from 'classnames';
-import { domainsForNavbarType } from '../../../../pages/_app';
-import { formatPrice } from '../../../helper/formatPrice';
+import { ITld } from '../../../../pages/_app';
+import formatPriceWithCurrency from '../../../../helper/formatPriceWithCurrency';
 import { setDomainForShop } from '../../../../redux/actions';
 import { connect } from 'react-redux';
 import axios from 'axios';
+import { RootState } from '../../../../store';
+import Link from 'next/link';
 
 type error = 'data_validation' | 'data_duplicate';
 
@@ -30,14 +31,15 @@ const showError = (errorMsg: error) => {
   }
 };
 
-export interface DomainProps {
+interface IProps {
   changeShowDropDown: () => void;
   router: NextRouter;
-  domains: domainsForNavbarType;
+  tlds: ITld[];
+  currencies: RootState['currencies'];
   setDomainForShop: (domain: { tld: string; name: string }) => void;
 }
 
-export interface DomainState {
+interface IState {
   selectedDomain: string | null;
   loading: boolean;
   isFormValidated: boolean;
@@ -45,8 +47,8 @@ export interface DomainState {
   selectedDomains: any;
 }
 
-class Domain extends React.Component<DomainProps, DomainState> {
-  constructor(props: DomainProps) {
+class Domain extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
     this.state = {
       selectedDomain: null,
@@ -55,7 +57,6 @@ class Domain extends React.Component<DomainProps, DomainState> {
       isFormValidated: false,
       errorCode: 'data_validation',
     };
-    this.moreBtn = this.moreBtn.bind(this);
     this.checkDomain = this.checkDomain.bind(this);
   }
 
@@ -75,7 +76,7 @@ class Domain extends React.Component<DomainProps, DomainState> {
       this.state.selectedDomains.find(
         (domain) => domain.tld === e.target.value
       ) ||
-      this.props.domains.items
+      this.props.tlds
         .slice(0, 10)
         .find((domain) => domain.tld === e.target.value);
 
@@ -84,7 +85,7 @@ class Domain extends React.Component<DomainProps, DomainState> {
         if (domainCurrentlyExist) {
           return { ...prev, selectedDomain: e.target.value };
         } else {
-          const domain = this.props.domains.items.find(
+          const domain = this.props.tlds.find(
             (domain) => domain.tld === e.target.value
           );
 
@@ -106,10 +107,6 @@ class Domain extends React.Component<DomainProps, DomainState> {
         }
       }
     );
-  }
-
-  moreBtn() {
-    this.props.router.push('/domain');
   }
 
   checkDomain(e: React.ChangeEvent<HTMLFormElement>) {
@@ -168,9 +165,9 @@ class Domain extends React.Component<DomainProps, DomainState> {
               <Col xs={12} md={4}>
                 <div className="d-flex flex-column justify-content-between mt-4">
                   <div className="d-flex align-items-center justify-content-between">
-                    <a href="/fa/domain" className={styles.tableTitle}>
-                      تعرفه ثبت دامنه
-                    </a>
+                    <Link href="/domain">
+                      <a className={styles.tableTitle}>تعرفه ثبت دامنه</a>
+                    </Link>
                     <OverlayTrigger
                       placement="top"
                       overlay={
@@ -178,18 +175,17 @@ class Domain extends React.Component<DomainProps, DomainState> {
                           className={styles.moreBtnDominToolpit}
                           id="moreBtnDominToolpit"
                         >
-                          مشاهده {this.props.domains.items.length} پسوند دیگر
+                          مشاهده {this.props.tlds.length} پسوند دیگر
                         </Tooltip>
                       }
                     >
-                      <Button
-                        type="submit"
-                        variant="success"
-                        className={styles.moreBtn}
-                        onClick={this.moreBtn}
-                      >
-                        <span>بیشتر</span>
-                      </Button>
+                      <button className={styles.moreBtn}>
+                        <Link href="/domain">
+                          <a>
+                            <div>بیشتر</div>
+                          </a>
+                        </Link>
+                      </button>
                     </OverlayTrigger>
                   </div>
                   <div className="mt-3">
@@ -202,27 +198,29 @@ class Domain extends React.Component<DomainProps, DomainState> {
                     <div className={styles.tableWrapper} id="tableWrapper">
                       <table className="table">
                         <tbody>
-                          {this.props.domains.items
-                            .slice(0, 10)
-                            .map((domain) => (
-                              <tr key={domain.id}>
-                                <td
-                                  data-selected={
-                                    this.state.selectedDomain === domain.tld
-                                  }
-                                >
-                                  {domain.tld}
-                                </td>
-                                <td
-                                  data-selected={
-                                    this.state.selectedDomain === domain.tld
-                                  }
-                                >
-                                  {formatPrice(domain.new)}{' '}
-                                  {this.props.domains.currency.title}
-                                </td>
-                              </tr>
-                            ))}
+                          {this.props.tlds.slice(0, 10).map((domain) => (
+                            <tr key={domain.id}>
+                              <td
+                                data-selected={
+                                  this.state.selectedDomain === domain.tld
+                                }
+                              >
+                                {domain.tld}
+                              </td>
+                              <td
+                                data-selected={
+                                  this.state.selectedDomain === domain.tld
+                                }
+                              >
+                                {this.props.currencies.items.length > 0 &&
+                                  formatPriceWithCurrency(
+                                    this.props.currencies.items,
+                                    domain.currency,
+                                    domain.new
+                                  )}
+                              </td>
+                            </tr>
+                          ))}
                           {this.state.selectedDomains.map((domain) => (
                             <tr key={domain.id}>
                               <td
@@ -237,8 +235,12 @@ class Domain extends React.Component<DomainProps, DomainState> {
                                   this.state.selectedDomain === domain.tld
                                 }
                               >
-                                {formatPrice(domain.new)}{' '}
-                                {this.props.domains.currency.title}
+                                {this.props.currencies.items.length > 0 &&
+                                  formatPriceWithCurrency(
+                                    this.props.currencies.items,
+                                    domain.currency,
+                                    domain.new
+                                  )}
                               </td>
                             </tr>
                           ))}
@@ -267,7 +269,7 @@ class Domain extends React.Component<DomainProps, DomainState> {
                         required
                         custom
                       >
-                        {this.props.domains.items.map((domain) => (
+                        {this.props.tlds.map((domain) => (
                           <option key={domain.id} value={domain.tld}>
                             .{domain.tld}
                           </option>
@@ -337,4 +339,11 @@ class Domain extends React.Component<DomainProps, DomainState> {
   }
 }
 
-export default connect(null, { setDomainForShop })(withRouter(Domain));
+export default connect(
+  (state: RootState) => {
+    return {
+      currencies: state.currencies,
+    };
+  },
+  { setDomainForShop }
+)(withRouter(Domain));

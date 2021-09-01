@@ -2,36 +2,16 @@ import React from 'react';
 import MainNavbar from './MainNavbar/MainNavbar';
 import TopNavbar from './TopNavbar/TopNavbar';
 import styles from './Navbar.module.scss';
-import { domainsForNavbarType } from '../../pages/_app';
+import { ILicense, ITld } from '../../pages/_app';
 
-export interface NavbarProps {
+interface NavbarProps {
   appIsScrolling?: boolean;
-  getThemeFromLocalStorage?: () => void;
-  domains: domainsForNavbarType;
-  licenses: any;
+  tlds: ITld[];
+  licenses: ILicense[];
 }
 
-export interface NavbarState {}
-
-class Navbar extends React.Component<NavbarProps, NavbarState> {
-  constructor(props: NavbarProps) {
-    super(props);
-    this.state = {};
-  }
-
+class Navbar extends React.Component<NavbarProps> {
   componentDidMount() {
-    const debounce = (fn) => {
-      let frame;
-      return (...params) => {
-        if (frame) {
-          cancelAnimationFrame(frame);
-        }
-        frame = requestAnimationFrame(() => {
-          fn(...params);
-        });
-      };
-    };
-
     const mainNavbar = document.querySelector('#mainNavbar') as HTMLDivElement;
     const topNav = document.querySelector('#top-nav') as HTMLDivElement;
     const navItemDropdown = document.querySelectorAll(
@@ -121,7 +101,7 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
       lastScrollTop = st <= 0 ? 0 : st;
     };
 
-    document.addEventListener('scroll', debounce(storeScroll), {
+    document.addEventListener('scroll', storeScroll, {
       passive: true,
     });
   }
@@ -131,10 +111,7 @@ class Navbar extends React.Component<NavbarProps, NavbarState> {
       <nav className={styles.nav}>
         <TopNavbar />
         <div id="navbar-top-space" className={styles.navbarTopSpace}></div>
-        <MainNavbar
-          domains={this.props.domains}
-          licenses={this.props.licenses}
-        />
+        <MainNavbar tlds={this.props.tlds} licenses={this.props.licenses} />
       </nav>
     );
   }

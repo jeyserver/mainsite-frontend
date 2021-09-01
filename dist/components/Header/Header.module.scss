@@ -5,6 +5,11 @@
 .customArrow {
   color: #ffffff;
   padding: 1em;
+  height: 100% !important;
+  width: 50px !important;
+  top: 0 !important;
+  bottom: 0 !important;
+  transform: none !important;
   > i {
     color: #ffffff;
     font-size: 25px;

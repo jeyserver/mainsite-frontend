@@ -57,7 +57,6 @@ class Domain extends React.Component<IProps, IState> {
       isFormValidated: false,
       errorCode: 'data_validation',
     };
-    this.moreBtn = this.moreBtn.bind(this);
     this.checkDomain = this.checkDomain.bind(this);
   }
 
@@ -108,10 +107,6 @@ class Domain extends React.Component<IProps, IState> {
         }
       }
     );
-  }
-
-  moreBtn() {
-    this.props.router.push('/domain');
   }
 
   checkDomain(e: React.ChangeEvent<HTMLFormElement>) {

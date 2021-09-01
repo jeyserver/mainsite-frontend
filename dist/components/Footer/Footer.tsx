@@ -6,11 +6,11 @@ import axios from 'axios';
 import { NotificationManager } from 'react-notifications';
 import { IFooterPost } from '../../pages/_app';
 
-export interface IProps {
+interface IProps {
   posts: IFooterPost[];
 }
 
-export interface IState {
+interface IState {
   newsLettersbtnLoading: boolean;
 }
 
@@ -97,7 +97,9 @@ class Footer extends React.Component<IProps, IState> {
                       <Link href={`/blog/${post.permalink}`}>
                         <a>
                           <i className="far fa-edit"></i>
-                          <span>{post.title}</span>
+                          <span
+                            dangerouslySetInnerHTML={{ __html: post.title }}
+                          ></span>
                         </a>
                       </Link>
                     </li>

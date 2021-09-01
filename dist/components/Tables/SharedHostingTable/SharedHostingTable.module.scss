@@ -11,6 +11,10 @@
     color: #313131;
   }
 
+  .countryName {
+    margin-right: 10px;
+  }
+
   .divider {
     color: #313131;
     line-height: 20px;
@@ -261,6 +265,7 @@
                 font-size: 13px !important;
                 > i {
                   font-size: 13px;
+                  transform: scaleX(-1);
                 }
                 .emptyIcon {
                   color: #888;

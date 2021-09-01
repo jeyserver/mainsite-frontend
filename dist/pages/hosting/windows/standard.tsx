@@ -2,21 +2,20 @@ import * as React from 'react';
 import Head from 'next/head';
 import SharedHosting from '../../../components/HostsPricing/SharedHosting/SharedHosting';
 import Layout from '../../../components/Layout/Layout';
-import { pageProps } from '../../_app';
+import { IPageProps } from '../../_app';
+import { IHostPlan } from '../../../helper/types/products/Host/plan';
 
-export interface IndexProps extends pageProps {
-  sharedHosts: any;
-  navData: any;
+interface IProps extends IPageProps {
+  status: boolean;
+  plans: IHostPlan[];
 }
 
-export interface IndexState {
+interface IState {
   appIsScrolling: boolean;
 }
 
-let appIsScrollingTimeout;
-
-class Index extends React.Component<IndexProps, IndexState> {
-  constructor(props: IndexProps) {
+class Index extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
     this.state = {
       appIsScrolling: false,
@@ -24,13 +23,15 @@ class Index extends React.Component<IndexProps, IndexState> {
     this.switchAppIsScrolling = this.switchAppIsScrolling.bind(this);
   }
 
+  appIsScrollingTimeout = null;
+
   switchAppIsScrolling() {
-    clearTimeout(appIsScrollingTimeout);
+    clearTimeout(this.appIsScrollingTimeout);
     this.setState((prev) => {
       return { appIsScrolling: true };
     });
 
-    appIsScrollingTimeout = setTimeout(() => {
+    this.appIsScrollingTimeout = setTimeout(() => {
       this.setState((prev) => {
         return { appIsScrolling: false };
       });
@@ -38,7 +39,7 @@ class Index extends React.Component<IndexProps, IndexState> {
   }
 
   componentWillUnmount() {
-    clearTimeout(appIsScrollingTimeout);
+    clearTimeout(this.appIsScrollingTimeout);
   }
 
   render() {
@@ -57,8 +58,7 @@ class Index extends React.Component<IndexProps, IndexState> {
           licensesForNavbar={this.props.licensesForNavbar}
         >
           <SharedHosting
-            sharedHosts={this.props.sharedHosts}
-            navData={this.props.navData}
+            sharedHosts={this.props.plans}
             appIsScrolling={this.state.appIsScrolling}
             switchAppIsScrolling={this.switchAppIsScrolling}
             page="windows_standard"
@@ -78,20 +78,14 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const sharedHostsRes = await fetch(
-    `https://jsonblob.com/api/jsonBlob/7278ac52-e1a0-11eb-9c37-87e17a3457b8`
+  const respone = await fetch(
+    `${process.env.SCHEMA}://${process.env.DOMAIN}/${locale}/hosting/windows/standard?ajax=1`
   );
-  const sharedHosts = await sharedHostsRes.json();
-
-  const navDataRes = await fetch(
-    'https://jsonblob.com/api/jsonBlob/14b7037a-e155-11eb-9c37-51d866f9d6a7'
-  );
-  const navData = await navDataRes.json();
+  const data = await respone.json();
 
   return {
     props: {
-      sharedHosts,
-      navData,
+      ...data,
     },
   };
 }

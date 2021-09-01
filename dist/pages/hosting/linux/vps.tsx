@@ -2,21 +2,19 @@ import * as React from 'react';
 import Head from 'next/head';
 import VPSHosting from '../../../components/HostsPricing/VPSHosting/VPSHosting';
 import Layout from '../../../components/Layout/Layout';
-import { pageProps } from '../../_app';
+import { IPageProps } from '../../_app';
+import { IHostPlan } from '../../../helper/types/products/Host/plan';
 
-export interface IndexProps extends pageProps {
-  VPSHosts: any;
-  navData: any;
+interface IProps extends IPageProps {
+  plans: IHostPlan[];
 }
 
-export interface IndexState {
+interface IndexState {
   appIsScrolling: boolean;
 }
 
-let appIsScrollingTimeout;
-
-class Index extends React.Component<IndexProps, IndexState> {
-  constructor(props: IndexProps) {
+class Index extends React.Component<IProps, IndexState> {
+  constructor(props: IProps) {
     super(props);
     this.state = {
       appIsScrolling: false,
@@ -24,13 +22,15 @@ class Index extends React.Component<IndexProps, IndexState> {
     this.switchAppIsScrolling = this.switchAppIsScrolling.bind(this);
   }
 
+  appIsScrollingTimeout = null;
+
   switchAppIsScrolling() {
-    clearTimeout(appIsScrollingTimeout);
+    clearTimeout(this.appIsScrollingTimeout);
     this.setState((prev) => {
       return { appIsScrolling: true };
     });
 
-    appIsScrollingTimeout = setTimeout(() => {
+    this.appIsScrollingTimeout = setTimeout(() => {
       this.setState((prev) => {
         return { appIsScrolling: false };
       });
@@ -38,7 +38,7 @@ class Index extends React.Component<IndexProps, IndexState> {
   }
 
   componentWillUnmount() {
-    clearTimeout(appIsScrollingTimeout);
+    clearTimeout(this.appIsScrollingTimeout);
   }
 
   render() {
@@ -57,8 +57,7 @@ class Index extends React.Component<IndexProps, IndexState> {
           licensesForNavbar={this.props.licensesForNavbar}
         >
           <VPSHosting
-            VPSHosts={this.props.VPSHosts}
-            navData={this.props.navData}
+            plans={this.props.plans}
             appIsScrolling={this.state.appIsScrolling}
             switchAppIsScrolling={this.switchAppIsScrolling}
           />
@@ -77,20 +76,14 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const VPSHostsRes = await fetch(
-    `https://jsonblob.com/api/jsonBlob/874ffbe1-dfe6-11eb-a8ab-7d0108d78d09`
+  const respone = await fetch(
+    `${process.env.SCHEMA}://${process.env.DOMAIN}/${locale}/hosting/linux/vps?ajax=1`
   );
-  const VPSHosts = await VPSHostsRes.json();
-
-  const navDataRes = await fetch(
-    'https://jsonblob.com/api/jsonBlob/14b7037a-e155-11eb-9c37-51d866f9d6a7'
-  );
-  const navData = await navDataRes.json();
+  const data = await respone.json();
 
   return {
     props: {
-      VPSHosts,
-      navData,
+      ...data,
     },
   };
 }

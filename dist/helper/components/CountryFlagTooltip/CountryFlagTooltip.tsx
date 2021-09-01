@@ -25,7 +25,7 @@ class CountryFlagTooltip extends React.Component<
         overlay={<Tooltip id={`${country.name}`}>{country.name}</Tooltip>}
       >
         <Image
-          src={`./images/flags/${country.code.toLowerCase()}.svg`}
+          src={`/images/flags/${country.code.toLowerCase()}.svg`}
           width={flag && flag.width ? flag.width : 24}
           height={flag && flag.height ? flag.height : 24}
         />

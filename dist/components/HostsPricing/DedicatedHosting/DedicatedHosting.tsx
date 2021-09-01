@@ -6,31 +6,31 @@ import Facilities from '../Facilities/Facilities';
 import HostFaq from '../HostFaq/HostFaq';
 import DedicatedHostingTable from './DedicatedHostingTable/DedicatedHostingTable';
 import styles from '../PageInfoStyles.module.scss';
+import { IHostPlan } from '../../../helper/types/products/Host/plan';
+import hosts from '../../../lib/products/host';
 
-export interface DedicatedHostingProps {
-  dedicatedHosts: any;
-  navData: any;
+interface IProps {
+  plans: IHostPlan[];
   appIsScrolling: boolean;
   switchAppIsScrolling: () => void;
 }
 
-export interface DedicatedHostingState {
+interface IState {
   isNavFixed: boolean;
+  sepratedPlansByCountry: IHostPlan[][];
 }
 
-let lastScrollTop = 0;
-
-class DedicatedHosting extends React.Component<
-  DedicatedHostingProps,
-  DedicatedHostingState
-> {
-  constructor(props: DedicatedHostingProps) {
+class DedicatedHosting extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
     this.state = {
       isNavFixed: false,
+      sepratedPlansByCountry: [],
     };
     this.onScroll = this.onScroll.bind(this);
   }
+
+  lastScrollTop = 0;
 
   onScroll() {
     const nav = document.querySelector('#dedicated-nav') as HTMLDivElement;
@@ -40,7 +40,7 @@ class DedicatedHosting extends React.Component<
     );
 
     var st = window.pageYOffset || document.documentElement.scrollTop;
-    if (st > lastScrollTop) {
+    if (st > this.lastScrollTop) {
       // downscroll code
       nav.style.top = '0px';
     } else {
@@ -81,13 +81,27 @@ class DedicatedHosting extends React.Component<
       }
     });
 
-    lastScrollTop = st <= 0 ? 0 : st;
+    this.lastScrollTop = st <= 0 ? 0 : st;
   }
 
   componentDidMount() {
     window.addEventListener('scroll', this.onScroll, false);
-
     this.props.switchAppIsScrolling();
+    this.setState({
+      sepratedPlansByCountry: Object.values(
+        this.props.plans.reduce((accumulator, currentValue) => {
+          const co = currentValue.country.code;
+
+          if (accumulator && accumulator[co]) {
+            accumulator[co] = [...accumulator[co], currentValue];
+          } else {
+            accumulator[co] = [currentValue];
+          }
+
+          return accumulator;
+        }, {})
+      ),
+    });
   }
 
   componentWillUnmount() {
@@ -145,15 +159,15 @@ class DedicatedHosting extends React.Component<
           <Row className={styles.stickyNav} id="dedicated-nav">
             <Col xs={12} className={styles.mnavigation}>
               <ul className={styles.nav}>
-                {this.props.dedicatedHosts.map((panels, index) => (
-                  <li key={panels.country_name_en} data-main="true">
+                {hosts.dedicated_hosts.map((host, index) => (
+                  <li key={host.title} data-main="true">
                     <a
-                      href={`#${panels.country_name_en}`}
+                      href={`#${host.link}`}
                       onClick={() => {
                         this.props.switchAppIsScrolling();
                       }}
                     >
-                      هاستینگ اختصاصی {panels.country_name_fa}
+                      هاستینگ اختصاصی {host.title}
                     </a>
                   </li>
                 ))}
@@ -166,7 +180,7 @@ class DedicatedHosting extends React.Component<
                       className={styles.dropdownMenu}
                       align="right"
                     >
-                      {this.props.navData.linux_vps_hosts.map((host) => (
+                      {hosts.linux_vps_hosts.map((host) => (
                         <Link
                           key={host.link}
                           href={`/hosting/linux/vps#${host.link}`}
@@ -186,16 +200,14 @@ class DedicatedHosting extends React.Component<
                       className={styles.dropdownMenu}
                       align="right"
                     >
-                      {this.props.navData.professional_linux_shared_hosts.map(
-                        (host) => (
-                          <Link
-                            key={host.link}
-                            href={`/hosting/linux/professional#${host.link}`}
-                          >
-                            <a>هاست اشتراکی حرفه ای {host.title}</a>
-                          </Link>
-                        )
-                      )}
+                      {hosts.professional_linux_shared_hosts.map((host) => (
+                        <Link
+                          key={host.link}
+                          href={`/hosting/linux/professional#${host.link}`}
+                        >
+                          <a>هاست اشتراکی حرفه ای {host.title}</a>
+                        </Link>
+                      ))}
                     </Dropdown.Menu>
                   </Dropdown>
                 </li>
@@ -208,16 +220,14 @@ class DedicatedHosting extends React.Component<
                       className={styles.dropdownMenu}
                       align="right"
                     >
-                      {this.props.navData.standard_linux_shared_hosts.map(
-                        (host) => (
-                          <Link
-                            key={host.link}
-                            href={`/hosting/linux/professional#${host.link}`}
-                          >
-                            <a>هاست اشتراکی ساده {host.title}</a>
-                          </Link>
-                        )
-                      )}
+                      {hosts.standard_linux_shared_hosts.map((host) => (
+                        <Link
+                          key={host.link}
+                          href={`/hosting/linux/professional#${host.link}`}
+                        >
+                          <a>هاست اشتراکی ساده {host.title}</a>
+                        </Link>
+                      ))}
                     </Dropdown.Menu>
                   </Dropdown>
                 </li>
@@ -228,9 +238,9 @@ class DedicatedHosting extends React.Component<
         <Container>
           <Row>
             <Col>
-              {this.props.dedicatedHosts.map((panels, index) => (
+              {this.state.sepratedPlansByCountry.map((plans, index) => (
                 <div key={index}>
-                  <DedicatedHostingTable data={panels} />
+                  <DedicatedHostingTable plans={plans} />
                   <div className={styles.tableBottomSpace}></div>
                 </div>
               ))}

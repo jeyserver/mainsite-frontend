@@ -1,23 +1,15 @@
 import moment from 'jalali-moment';
 import * as React from 'react';
 import { Container } from 'react-bootstrap';
+import { IServerStatus } from '../../pages/server-status';
 import styles from './ServerStatus.module.scss';
 import ServerStatusCard from './ServerStatusCard/ServerStatusCard';
 
-export interface ServerStatusProps {
-  servers: any;
+interface IProps {
+  servers: IServerStatus[];
 }
 
-export interface ServerStatusState {}
-
-class ServerStatus extends React.Component<
-  ServerStatusProps,
-  ServerStatusState
-> {
-  constructor(props: ServerStatusProps) {
-    super(props);
-    this.state = {};
-  }
+class ServerStatus extends React.Component<IProps> {
   render() {
     return (
       <section>

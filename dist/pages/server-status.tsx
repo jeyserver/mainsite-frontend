@@ -2,19 +2,27 @@ import * as React from 'react';
 import Head from 'next/head';
 import ServerStatus from '../components/ServerStatus/ServerStatus';
 import Layout from '../components/Layout/Layout';
-import { pageProps } from './_app';
+import { IPageProps } from './_app';
 
-export interface IndexProps extends pageProps {
-  servers: any;
+enum Status {
+  ACTIVE = 1,
+  DEACTIVE = 2,
 }
 
-export interface IndexState {}
+export interface IServerStatus {
+  title: string;
+  hostname: string;
+  status: Status;
+  update_at: number;
+  uptime: number;
+  uptimes: number[];
+}
 
-class Index extends React.Component<IndexProps, IndexState> {
-  constructor(props: IndexProps) {
-    super(props);
-    this.state = {};
-  }
+interface IProps extends IPageProps {
+  servers: IServerStatus[];
+}
+
+class Index extends React.Component<IProps> {
   render() {
     return (
       <div dir="rtl">
@@ -45,14 +53,14 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const serversRes = await fetch(
-    `https://jsonblob.com/api/jsonBlob/b48ca8e1-d68a-11eb-a9ef-83f42fac2934`
+  const respone = await fetch(
+    `${process.env.SCHEMA}://${process.env.DOMAIN}/${locale}/server-status?ajax=1`
   );
-  const servers = await serversRes.json();
+  const data = await respone.json();
 
   return {
     props: {
-      servers: servers.servers,
+      ...data,
     },
   };
 }

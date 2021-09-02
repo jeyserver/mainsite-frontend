@@ -2,7 +2,7 @@ import Link from 'next/link';
 import * as React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import formatPriceWithCurrency from '../../helper/formatPriceWithCurrency';
+import { formatPriceWithCurrency } from '../../store/Currencies';
 import ILicense from '../../helper/types/products/License/plan';
 import { RootState } from '../../store';
 import PagesHeader from '../PagesHeader/PagesHeader';
@@ -132,8 +132,8 @@ class License extends React.Component<IProps> {
                           <i className="fas fa-check"></i>
                           {plan.setup
                             ? `هزینه راه‌اندازی اولیه  ${formatPriceWithCurrency(
-                                this.props.currencies.items,
-                                plan.currency.id,
+                                this.props.currencies,
+                                plan.currency,
                                 plan.setup
                               )}`
                             : 'هزینه راه‌اندازی اولیه رایگان! '}
@@ -147,8 +147,8 @@ class License extends React.Component<IProps> {
                         <li>
                           <i className="fas fa-check"></i>
                           {formatPriceWithCurrency(
-                            this.props.currencies.items,
-                            plan.currency.id,
+                            this.props.currencies,
+                            plan.currency,
                             plan.price
                           )}{' '}
                           / {this.renderPlanType(plan.pp)}

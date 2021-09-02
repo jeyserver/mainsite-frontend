@@ -13,12 +13,12 @@ import classNames from 'classnames';
 import CountryFlagTooltip from '../../../../helper/components/CountryFlagTooltip/CountryFlagTooltip';
 import { IHostPlan } from '../../../../helper/types/products/Host/plan';
 import translateCountryNameToPersian from '../../../../helper/translateCountryNameToPersian';
-import { formatSpace } from '../../helper/formatSpace';
+import { formatSpace } from '../../../../helper/formatSpace';
 import { connect } from 'react-redux';
 import { RootState } from '../../../../store';
 import translateHostPanel from '../../../../helper/translators/translateHostPanel';
 import StarredCell from '../../TablesUtils/StarredCell';
-import formatPriceWithCurrency from '../../../../helper/formatPriceWithCurrency';
+import { formatPriceWithCurrency } from '../../../../store/Currencies';
 import BackupsCell from '../../TablesUtils/BackupsCell';
 
 interface IProps {
@@ -183,7 +183,14 @@ class ResellerHostingTable extends React.Component<IProps, IState> {
                 </OverlayTrigger>
                 <th>وب سرور</th>
                 <th>هارد سرور</th>
-                <th>قیمت</th>
+                <th
+                  style={{
+                    lineHeight:
+                      this.props.plans[0].cp === 'directadmin' ? '75px' : '',
+                  }}
+                >
+                  قیمت
+                </th>
 
                 <th className="text-center" style={{ lineHeight: '34px' }}>
                   <button
@@ -204,12 +211,12 @@ class ResellerHostingTable extends React.Component<IProps, IState> {
               {this.props.plans.map((plan) => (
                 <tr key={plan.id}>
                   <td>{plan.title}</td>
-                  <td>{formatSpace(plan.space, 'persian')}</td>
+                  <td>{formatSpace(plan.space, 'fa', true)}</td>
                   <td>
                     {!plan.bandwidth ? (
                       <span className={styles.jUnlimited}>بدون محدودیت</span>
                     ) : (
-                      plan.bandwidth
+                      formatSpace(plan.bandwidth, 'fa', true)
                     )}
                   </td>
                   <td>{translateHostPanel(plan.cp)}</td>
@@ -362,7 +369,7 @@ class ResellerHostingTable extends React.Component<IProps, IState> {
                   )}
                   {plan.ram ? (
                     <StarredCell
-                      text={formatSpace(plan.ram, 'persian')}
+                      text={formatSpace(plan.ram, 'fa')}
                       star={(plan.ram / maximumRam) * 5}
                     />
                   ) : (
@@ -387,12 +394,19 @@ class ResellerHostingTable extends React.Component<IProps, IState> {
                   <td>OpenLightSpeed</td>
                   <td>SSD</td>
                   <td>
-                    {typeof plan.currency !== 'number' &&
-                      formatPriceWithCurrency(
-                        this.props.currencies.items,
-                        plan.currency.id,
+                    {formatPriceWithCurrency(
+                      this.props.currencies,
+                      plan.currency,
+                      plan.price
+                    )}{' '}
+                    ماهیانه
+                    <br />
+                    {plan.cp === 'directadmin' &&
+                      `${formatPriceWithCurrency(
+                        this.props.currencies,
+                        plan.currency,
                         plan.price
-                      )}
+                      )} سالیانه`}
                   </td>
                   <td>
                     {plan.is_available ? (

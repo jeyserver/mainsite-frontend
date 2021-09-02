@@ -14,12 +14,12 @@ import classNames from 'classnames';
 import CountryFlagTooltip from '../../../../helper/components/CountryFlagTooltip/CountryFlagTooltip';
 import { IHostPlan } from '../../../../helper/types/products/Host/plan';
 import translateHostPanel from '../../../../helper/translators/translateHostPanel';
-import formatPriceWithCurrency from '../../../../helper/formatPriceWithCurrency';
+import { formatPriceWithCurrency } from '../../../../store/Currencies';
 import { connect } from 'react-redux';
 import { RootState } from '../../../../store';
 import StarredCell from '../../TablesUtils/StarredCell';
-import { formatSpace } from '../../helper/formatSpace';
 import BackupsCell from '../../TablesUtils/BackupsCell';
+import { formatSpace } from '../../../../helper/formatSpace';
 
 interface IProps {
   plans: IHostPlan[];
@@ -88,10 +88,7 @@ class SharedHostingTable extends React.Component<IProps, IState> {
     const maximumRam = Math.max(...this.state.plans.map((host) => host.ram));
 
     return (
-      <Row
-        id={`server_vps_${this.props.plans[0].cp}`}
-        className={styles.tableWrapper}
-      >
+      <Row id={`${this.props.plans[0].cp}`} className={styles.tableWrapper}>
         <Col xs={12}>
           <div className={styles.tittleLine}>
             <h5>
@@ -100,14 +97,6 @@ class SharedHostingTable extends React.Component<IProps, IState> {
             <div className={styles.divider}>
               <div />
             </div>
-            {/* {this.props.data.info && (
-              <div
-                className={styles.content}
-                dangerouslySetInnerHTML={{
-                  __html: this.props.data.info,
-                }}
-              ></div>
-            )} */}
           </div>
           <Table className={styles.table}>
             <thead>
@@ -210,7 +199,14 @@ class SharedHostingTable extends React.Component<IProps, IState> {
                 <th>وب سرور</th>
                 <th>هارد سرور</th>
                 <th style={{ lineHeight: '50px' }}>هزینه راه اندازی</th>
-                <th style={{ lineHeight: '50px' }}>قیمت</th>
+                <th
+                  style={{
+                    lineHeight:
+                      this.props.plans[0].cp === 'cpanel' ? '50px' : '',
+                  }}
+                >
+                  قیمت
+                </th>
                 <th className="text-center" style={{ lineHeight: '73px' }}>
                   <button
                     type="button"
@@ -230,7 +226,7 @@ class SharedHostingTable extends React.Component<IProps, IState> {
               {this.state.plans.map((plan) => (
                 <tr key={plan.id}>
                   <td>{plan.title}</td>
-                  <td>{formatSpace(plan.space, 'persian')}</td>
+                  <td>{formatSpace(plan.space, 'fa', true)}</td>
                   <td>
                     {!plan.bandwidth ? (
                       <span className={styles.jUnlimited}>بدون محدودیت</span>
@@ -245,11 +241,6 @@ class SharedHostingTable extends React.Component<IProps, IState> {
                     })}
                   >
                     <i className="far fa-check-square"></i>
-                    {/* {plan.ssl ? (
-                      <i className="far fa-check-square"></i>
-                    ) : (
-                      <i className="fa fa-times fa-lg" />
-                    )} */}
                   </td>
 
                   <td
@@ -391,7 +382,7 @@ class SharedHostingTable extends React.Component<IProps, IState> {
                   )}
                   {plan.ram ? (
                     <StarredCell
-                      text={formatSpace(plan.ram, 'persian')}
+                      text={formatSpace(plan.ram, 'fa')}
                       star={(plan.ram / maximumRam) * 5}
                     />
                   ) : (
@@ -411,32 +402,30 @@ class SharedHostingTable extends React.Component<IProps, IState> {
                   </td>
                   <td>SSD</td>
                   <td>
-                    {typeof plan.currency !== 'number' &&
-                      formatPriceWithCurrency(
-                        this.props.currencies.items,
-                        plan.currency.id,
-                        plan.setup
-                      )}{' '}
+                    {formatPriceWithCurrency(
+                      this.props.currencies,
+                      plan.currency,
+                      plan.setup
+                    )}{' '}
                     ماهیانه
                     <br />
                     یکبار پرداخت ماه اول
                   </td>
                   <td>
-                    {typeof plan.currency !== 'number' &&
-                      formatPriceWithCurrency(
-                        this.props.currencies.items,
-                        plan.currency.id,
-                        plan.price
-                      )}{' '}
+                    {formatPriceWithCurrency(
+                      this.props.currencies,
+                      plan.currency,
+                      plan.price
+                    )}{' '}
                     ماهیانه
                     <br />
-                    {typeof plan.currency !== 'number' &&
-                      formatPriceWithCurrency(
-                        this.props.currencies.items,
-                        plan.currency.id,
+                    {plan.cp === 'cpanel' &&
+                      `${formatPriceWithCurrency(
+                        this.props.currencies,
+                        plan.currency,
                         plan.price * 12
-                      )}{' '}
-                    سالیانه
+                      )}
+                    سالیانه`}
                   </td>
                   <td>
                     <div className={styles.btnsWrapper}>
@@ -492,9 +481,6 @@ class SharedHostingTable extends React.Component<IProps, IState> {
               ))}
             </tbody>
           </Table>
-          {/* {this.props.data.table_ps && (
-            <div>*** {this.props.data.table_ps}</div>
-          )} */}
         </Col>
       </Row>
     );

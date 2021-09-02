@@ -1,5 +1,8 @@
 .tableWrapper {
   padding-top: 60px;
+  > div {
+    padding-top: 60px;
+  }
 }
 
 .tableBottomSpace {

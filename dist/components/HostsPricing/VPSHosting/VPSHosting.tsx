@@ -16,18 +16,10 @@ interface IProps {
   switchAppIsScrolling: () => void;
 }
 
-interface IState {
-  isNavFixed: boolean;
-  sepratedPlans: { [T: string]: IHostPlan[] };
-}
-
-class VPSHosting extends React.Component<IProps, IState> {
+class VPSHosting extends React.Component<IProps> {
   constructor(props: IProps) {
     super(props);
-    this.state = {
-      isNavFixed: false,
-      sepratedPlans: {},
-    };
+    this.state = {};
     this.onScroll = this.onScroll.bind(this);
   }
 
@@ -35,11 +27,12 @@ class VPSHosting extends React.Component<IProps, IState> {
 
   onScroll() {
     const nav = document.querySelector('#vps-nav') as HTMLDivElement;
-
     const mainNavLinks = document.querySelectorAll(
       '#vps-nav li[data-main="true"] a'
     );
-
+    const emptySpaceForNav = document.querySelector(
+      '#emptySpaceForNav'
+    ) as HTMLDivElement;
     let st = window.pageYOffset || document.documentElement.scrollTop;
 
     if (st > this.lastScrollTop) {
@@ -59,11 +52,11 @@ class VPSHosting extends React.Component<IProps, IState> {
     if (fromTop > 600) {
       nav.style.position = 'fixed';
       nav.style.margin = '0';
-      this.setState({ isNavFixed: true });
+      emptySpaceForNav.style.display = 'block';
     } else {
       nav.style.position = 'static';
       nav.style.margin = '30px 0';
-      this.setState({ isNavFixed: false });
+      emptySpaceForNav.style.display = 'none';
     }
 
     mainNavLinks.forEach((link: any) => {
@@ -88,11 +81,16 @@ class VPSHosting extends React.Component<IProps, IState> {
 
   componentDidMount() {
     window.addEventListener('scroll', this.onScroll, false);
-
     this.props.switchAppIsScrolling();
+  }
 
-    this.setState({
-      sepratedPlans: this.props.plans.reduce((accumulator, currentValue) => {
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.onScroll, false);
+  }
+
+  render() {
+    const sepratedPlans = Object.values(
+      this.props.plans.reduce((accumulator, currentValue) => {
         const co = currentValue.cp;
 
         if (accumulator && accumulator[co]) {
@@ -102,15 +100,9 @@ class VPSHosting extends React.Component<IProps, IState> {
         }
 
         return accumulator;
-      }, {}),
-    });
-  }
+      }, {})
+    ) as IHostPlan[][];
 
-  componentWillUnmount() {
-    window.removeEventListener('scroll', this.onScroll, false);
-  }
-
-  render() {
     return (
       <section>
         <PagesHeader title="هاست میزبانی نیمه اختصاصی" />
@@ -179,16 +171,13 @@ class VPSHosting extends React.Component<IProps, IState> {
           </div>
         </Container>
         <Container>
-          {this.state.isNavFixed && (
-            <div
-              style={{
-                height:
-                  document.querySelector<HTMLDivElement>('#vps-nav')
-                    .clientHeight,
-              }}
-              className={styles.emptySpaceForNav}
-            ></div>
-          )}
+          <div
+            style={{
+              height: '55px',
+            }}
+            id="emptySpaceForNav"
+            className={styles.emptySpaceForNav}
+          ></div>
 
           <Row className={styles.stickyNav} id="vps-nav">
             <Col xs={12} className={styles.mnavigation}>
@@ -196,7 +185,7 @@ class VPSHosting extends React.Component<IProps, IState> {
                 {hosts.linux_vps_hosts.map((panels, index) => (
                   <li key={panels.link} data-main="true">
                     <a
-                      href={`#server_vps_${panels.link}`}
+                      href={`#${panels.link}`}
                       onClick={() => {
                         this.props.switchAppIsScrolling();
                       }}
@@ -247,14 +236,12 @@ class VPSHosting extends React.Component<IProps, IState> {
         <Container>
           <Row>
             <Col>
-              {Object.values(this.state.sepratedPlans)
-                .reverse()
-                .map((plans, index) => (
-                  <div key={index}>
-                    <VPSHostingTable plans={plans} />
-                    <div className={styles.tableBottomSpace}></div>
-                  </div>
-                ))}
+              {sepratedPlans.reverse().map((plans, index) => (
+                <div key={index}>
+                  <VPSHostingTable plans={plans} />
+                  <div className={styles.tableBottomSpace}></div>
+                </div>
+              ))}
             </Col>
           </Row>
           <Facilities />

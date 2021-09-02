@@ -12,7 +12,7 @@ import { IHostPlan } from '../../../helper/types/products/Host/plan';
 import translateHostplan from '../../../helper/translators/translateHostPanel';
 import translateCountryNameToPersian from '../../../helper/translateCountryNameToPersian';
 import StarredCell from '../../HostsPricing/TablesUtils/StarredCell';
-import { formatSpace } from '../../HostsPricing/helper/formatSpace';
+import { formatSpace } from '../../../helper/formatSpace';
 import BackupsCell from '../../HostsPricing/TablesUtils/BackupsCell';
 
 type TableType = 'windows' | 'linux';
@@ -388,7 +388,7 @@ class SharedHostingTable extends React.Component<IProps, IState> {
                 {!this.props.homePageTable &&
                   (plan.ram ? (
                     <StarredCell
-                      text={formatSpace(plan.ram, 'persian')}
+                      text={formatSpace(plan.ram, 'fa')}
                       star={(plan.ram / maximumRam) * 5}
                     />
                   ) : (
@@ -428,7 +428,7 @@ class SharedHostingTable extends React.Component<IProps, IState> {
                 </td>
                 <td>
                   {this.props.homePageTable && plan.is_available && (
-                    <Link href={`/order/server/vps/${plan.id}`}>
+                    <Link href={`/order/hosting/linux/${plan.id}`}>
                       <a className={styles.orderLink}>
                         <CountryFlagTooltip country={plan.country} />
                         <span>سفارش</span>{' '}
@@ -438,7 +438,7 @@ class SharedHostingTable extends React.Component<IProps, IState> {
 
                   {!this.props.homePageTable &&
                     (plan.is_available ? (
-                      <Link href={`/order/server/vps/${plan.id}`}>
+                      <Link href={`/order/hosting/linux/${plan.id}`}>
                         <a className={styles.orderLink}>
                           <CountryFlagTooltip country={plan.country} />
                           <span>سفارش</span>{' '}

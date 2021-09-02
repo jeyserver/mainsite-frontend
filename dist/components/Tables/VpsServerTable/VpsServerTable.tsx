@@ -4,12 +4,11 @@ import Link from 'next/link';
 import styles from './VpsServerTable.module.scss';
 import classNames from 'classnames';
 import CountryFlagTooltip from '../../../helper/components/CountryFlagTooltip/CountryFlagTooltip';
-import { formatSpaceInPersian } from '../../../helper/formatSpace';
+import { formatSpace } from '../../../helper/formatSpace';
 import { connect } from 'react-redux';
 import { RootState } from '../../../store';
-import formatPriceWithCurrency from '../../../helper/formatPriceWithCurrency';
+import { formatPriceWithCurrency } from '../../../store/Currencies';
 import translateCountryNameToPersian from '../../../helper/translateCountryNameToPersian';
-import getVpsPlanTypeInPersian from '../../../helper/getVpsPlanTypeInPersian';
 import { IVPSPlan } from '../../../helper/types/products/VPS/plan';
 
 interface IProps {
@@ -174,11 +173,20 @@ class VpsServerTab extends React.Component<IProps, IState> {
             {this.props.data.map((plan) => (
               <tr key={plan.id}>
                 <td>{plan.title}</td>
-                <td>{formatSpaceInPersian(plan.hard)}</td>
-                <td>{plan.cpu} مگاهرتز</td>
-                <td>{formatSpaceInPersian(plan.ram)}</td>
                 <td>
-                  <span className={styles.jUnlimited}>بدون محدودیت</span>
+                  {formatSpace(plan.hard, 'fa')}{' '}
+                  {this.getVpsPlanType(plan.title).en === 'professional'
+                    ? 'SSD'
+                    : 'SATA'}
+                </td>
+                <td>{plan.cpu} مگاهرتز</td>
+                <td>{formatSpace(plan.ram, 'fa')}</td>
+                <td>
+                  {plan.bandwidth ? (
+                    formatSpace(plan.bandwidth, 'fa', true)
+                  ) : (
+                    <span className={styles.jUnlimited}>بدون محدودیت</span>
+                  )}
                 </td>
                 <td
                   className={classNames(styles.jHidden, {
@@ -238,10 +246,8 @@ class VpsServerTab extends React.Component<IProps, IState> {
                 <td>
                   <span>
                     {formatPriceWithCurrency(
-                      this.props.currencies.items,
-                      typeof plan.currency === 'number'
-                        ? plan.currency
-                        : plan.currency.id,
+                      this.props.currencies,
+                      plan.currency,
                       plan.price
                     )}
                   </span>{' '}

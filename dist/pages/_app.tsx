@@ -42,6 +42,12 @@ export default function App({
   );
 }
 
+export enum RoundingBehaviour {
+  CEIL = 1,
+  ROUND = 2,
+  FLOOR = 3,
+}
+
 export interface ICurrency {
   active?: boolean;
   id: number;
@@ -49,7 +55,7 @@ export interface ICurrency {
   title: string;
   postfix: null;
   update_at: number;
-  rounding_behaviour: number;
+  rounding_behaviour: RoundingBehaviour;
   rounding_precision: number;
   rates: {
     id: number;

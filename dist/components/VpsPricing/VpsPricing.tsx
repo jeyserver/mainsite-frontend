@@ -8,15 +8,18 @@ import vpsesWithCountries from '../../lib/products/vps';
 import { IVPSPlan } from '../../helper/types/products/VPS/plan';
 import VpsServerTable from '../Tables/VpsServerTable/VpsServerTable';
 
-const renderTopNavLinks = (type, switchAppIsScrolling) => {
+const renderTopNavLinks = (
+  type: 'professional' | 'storage' | 'economic',
+  switchAppIsScrolling
+) => {
   switch (type) {
     case 'professional':
       return (
         <ul className={styles.nav}>
           {vpsesWithCountries.professional.map((nav) => (
-            <li key={nav.name_en}>
+            <li key={nav.code}>
               <a
-                href={`#vps_professional_${nav.name_en}`}
+                href={`#vps_professional_${nav.code}`}
                 onClick={() => {
                   switchAppIsScrolling();
                 }}
@@ -26,15 +29,15 @@ const renderTopNavLinks = (type, switchAppIsScrolling) => {
             </li>
           ))}
           {vpsesWithCountries.economic.map((nav) => (
-            <li key={nav.name_en}>
-              <Link href={`/server/vps/economic#vps_economic_${nav.name_en}`}>
+            <li key={nav.code}>
+              <Link href={`/server/vps/economic#vps_economic_${nav.code}`}>
                 <a>سرور مجازی اقتصادی {nav.name_fa}</a>
               </Link>
             </li>
           ))}
           {vpsesWithCountries.storage.map((nav) => (
-            <li key={nav.name_en}>
-              <Link href={`/server/vps/storage#vps_storage_${nav.name_en}`}>
+            <li key={nav.code}>
+              <Link href={`/server/vps/storage#vps_storage_${nav.code}`}>
                 <a>سرور مجازی حجیم {nav.name_fa}</a>
               </Link>
             </li>
@@ -45,9 +48,9 @@ const renderTopNavLinks = (type, switchAppIsScrolling) => {
       return (
         <ul className={styles.nav}>
           {vpsesWithCountries.storage.map((nav) => (
-            <li key={nav.name_en}>
+            <li key={nav.code}>
               <a
-                href={`#vps_storage_${nav.name_en}`}
+                href={`#vps_storage_${nav.code}`}
                 onClick={() => switchAppIsScrolling()}
               >
                 سرور مجازی حجیم {nav.name_fa}
@@ -55,17 +58,17 @@ const renderTopNavLinks = (type, switchAppIsScrolling) => {
             </li>
           ))}
           {vpsesWithCountries.professional.map((nav) => (
-            <li key={nav.name_en}>
+            <li key={nav.code}>
               <Link
-                href={`/server/vps/professional#vps_professional_${nav.name_en}`}
+                href={`/server/vps/professional#vps_professional_${nav.code}`}
               >
                 <a>سرور مجازی حرفه ای {nav.name_fa}</a>
               </Link>
             </li>
           ))}
           {vpsesWithCountries.economic.map((nav) => (
-            <li key={nav.name_en}>
-              <Link href={`/server/vps/economic#vps_economic_${nav.name_en}`}>
+            <li key={nav.code}>
+              <Link href={`/server/vps/economic#vps_economic_${nav.code}`}>
                 <a>سرور مجازی اقتصادی {nav.name_fa}</a>
               </Link>
             </li>
@@ -76,9 +79,9 @@ const renderTopNavLinks = (type, switchAppIsScrolling) => {
       return (
         <ul className={styles.nav}>
           {vpsesWithCountries.economic.map((nav) => (
-            <li key={nav.name_en}>
+            <li key={nav.code}>
               <a
-                href={`#vps_economic_${nav.name_en}`}
+                href={`#vps_economic_${nav.code}`}
                 onClick={() => switchAppIsScrolling()}
               >
                 سرور مجازی اقتصادی {nav.name_fa}
@@ -86,17 +89,17 @@ const renderTopNavLinks = (type, switchAppIsScrolling) => {
             </li>
           ))}
           {vpsesWithCountries.professional.map((nav) => (
-            <li key={nav.name_en}>
+            <li key={nav.code}>
               <Link
-                href={`/server/vps/professional#vps_professional_${nav.name_en}`}
+                href={`/server/vps/professional#vps_professional_${nav.code}`}
               >
                 <a>سرور مجازی حرفه ای {nav.name_fa}</a>
               </Link>
             </li>
           ))}
           {vpsesWithCountries.storage.map((nav) => (
-            <li key={nav.name_en}>
-              <Link href={`/server/vps/storage#vps_storage_${nav.name_en}`}>
+            <li key={nav.code}>
+              <Link href={`/server/vps/storage#vps_storage_${nav.code}`}>
                 <a>سرور مجازی حجیم {nav.name_fa}</a>
               </Link>
             </li>
@@ -117,7 +120,6 @@ interface IProps {
 
 interface IState {
   isNavFixed: boolean;
-  plansSepratedByCountryName: IVPSPlan[][];
 }
 
 class VpsPricing extends React.Component<IProps, IState> {
@@ -125,7 +127,6 @@ class VpsPricing extends React.Component<IProps, IState> {
     super(props);
     this.state = {
       isNavFixed: false,
-      plansSepratedByCountryName: [],
     };
     this.onScroll = this.onScroll.bind(this);
   }
@@ -135,6 +136,9 @@ class VpsPricing extends React.Component<IProps, IState> {
     const nav = document.querySelector('#vps-nav') as HTMLDivElement;
 
     const mainNavLinks = document.querySelectorAll('#vps-nav li a');
+    const emptySpaceForNav = document.querySelector(
+      '#emptySpaceForNav'
+    ) as HTMLDivElement;
 
     let st = window.pageYOffset || document.documentElement.scrollTop;
     if (st > this.lastScrollTop) {
@@ -154,11 +158,11 @@ class VpsPricing extends React.Component<IProps, IState> {
     if (fromTop > 670) {
       nav.style.position = 'fixed';
       nav.style.margin = '0';
-      this.setState({ isNavFixed: true });
+      emptySpaceForNav.style.display = 'block';
     } else {
       nav.style.position = 'static';
       nav.style.margin = '30px 0';
-      this.setState({ isNavFixed: false });
+      emptySpaceForNav.style.display = 'none';
     }
 
     mainNavLinks.forEach((link: any) => {
@@ -182,22 +186,6 @@ class VpsPricing extends React.Component<IProps, IState> {
   componentDidMount() {
     window.addEventListener('scroll', this.onScroll, false);
     this.props.switchAppIsScrolling();
-    this.setState({
-      plansSepratedByCountryName: Object.values(
-        this.props.plans.reduce((accumulator, currentValue) => {
-          if (accumulator && accumulator[currentValue.country.name]) {
-            accumulator[currentValue.country.name] = [
-              ...accumulator[currentValue.country.name],
-              currentValue,
-            ];
-          } else {
-            accumulator[currentValue.country.name] = [currentValue];
-          }
-
-          return accumulator;
-        }, {})
-      ),
-    });
   }
 
   componentWillUnmount() {
@@ -212,31 +200,22 @@ class VpsPricing extends React.Component<IProps, IState> {
     return chunked;
   }
 
-  getVpsPlanType = (title) => {
-    if (title.search('اقتصادی') > -1) {
-      return {
-        fa: 'اقتصادی',
-        en: 'economic',
-      };
-    } else if (title.search('حرفه ای') > -1) {
-      return {
-        en: 'professional',
-        fa: 'حرفه ای',
-      };
-    } else if (title.search('حجیم') > -1) {
-      return {
-        en: 'storage',
-        fa: 'حجیم',
-      };
-    } else {
-      return {
-        en: '',
-        fa: '',
-      };
-    }
-  };
-
   render() {
+    const plansSepratedByCountryName = Object.values(
+      this.props.plans.reduce((accumulator, currentValue) => {
+        if (accumulator && accumulator[currentValue.country.name]) {
+          accumulator[currentValue.country.name] = [
+            ...accumulator[currentValue.country.name],
+            currentValue,
+          ];
+        } else {
+          accumulator[currentValue.country.name] = [currentValue];
+        }
+
+        return accumulator;
+      }, {})
+    );
+
     return (
       <section>
         <PagesHeader
@@ -312,16 +291,13 @@ class VpsPricing extends React.Component<IProps, IState> {
                   </div>
                 </div>
               </div>
-              {this.state.isNavFixed && (
-                <div
-                  style={{
-                    height:
-                      document.querySelector<HTMLDivElement>('#vps-nav')
-                        .clientHeight,
-                  }}
-                  className={styles.emptySpaceForNav}
-                ></div>
-              )}
+              <div
+                style={{
+                  height: '106px',
+                }}
+                id="emptySpaceForNav"
+                className={styles.emptySpaceForNav}
+              ></div>
               <Row className={styles.stickyNav} id="vps-nav">
                 <Col xs={12} className={styles.mnavigation}>
                   {renderTopNavLinks(this.props.type, () =>
@@ -330,28 +306,23 @@ class VpsPricing extends React.Component<IProps, IState> {
                 </Col>
               </Row>
               <div className={styles.tables}>
-                {this.state.plansSepratedByCountryName.map(
-                  (plans: IVPSPlan[], index) => (
-                    <div
-                      id={`vps_${this.getVpsPlanType(plans[0].title).en}_${
-                        plans[0].country.name === 'ایران'
-                          ? 'iran'
-                          : plans[0].country.name.toLocaleLowerCase()
-                      }`}
-                    >
-                      {this.chunkedPlans(5, plans).map(
-                        (chunkedPlans, chunkedIndex) => (
-                          <VpsServerTable
-                            data={chunkedPlans}
-                            key={`${index}-${chunkedIndex}`}
-                            homePageTable={false}
-                            hideTopInfo={chunkedIndex > 0}
-                          />
-                        )
-                      )}
-                    </div>
-                  )
-                )}
+                {plansSepratedByCountryName.map((plans: IVPSPlan[], index) => (
+                  <div
+                    key={`${this.props.type}_${plans[0].country.code}`}
+                    id={`vps_${this.props.type}_${plans[0].country.code}`}
+                  >
+                    {this.chunkedPlans(5, plans).map(
+                      (chunkedPlans, chunkedIndex) => (
+                        <VpsServerTable
+                          data={chunkedPlans}
+                          key={`${index}-${chunkedIndex}`}
+                          homePageTable={false}
+                          hideTopInfo={chunkedIndex > 0}
+                        />
+                      )
+                    )}
+                  </div>
+                ))}
               </div>
             </div>
           </Container>

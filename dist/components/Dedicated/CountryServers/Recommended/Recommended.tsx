@@ -7,7 +7,7 @@ import { formatHards } from '../../../../helper/formatHards';
 import { IDedicatedPlan } from '../../../../helper/types/products/Dedicated/plan';
 import { connect } from 'react-redux';
 import { RootState } from '../../../../store';
-import formatPriceWithCurrency from '../../../../helper/formatPriceWithCurrency';
+import { formatPriceWithCurrency } from '../../../../store/Currencies';
 import getCpuLink from '../../../../helper/getCpuLink';
 
 interface IProps {
@@ -61,11 +61,11 @@ class Recommended extends React.Component<IProps> {
                     {recommended.cpu.threads} <br />
                     Frequency : {recommended.cpu.speed} GHz
                   </td>
-                  <td>{formatSpace(recommended.ram, 'persian')}</td>
+                  <td>{formatSpace(recommended.ram, 'fa')}</td>
                   <td className="ltr">{formatHards(recommended.hard)}</td>
                   <td>
                     {recommended.bandwidth ? (
-                      formatSpace(recommended.bandwidth, 'persian')
+                      formatSpace(recommended.bandwidth, 'fa')
                     ) : (
                       <span className={styles.jUnlimited}>بدون محدودیت</span>
                     )}
@@ -81,8 +81,8 @@ class Recommended extends React.Component<IProps> {
                     {recommended.setup &&
                     typeof recommended.currency !== 'number'
                       ? formatPriceWithCurrency(
-                          this.props.currencies.items,
-                          recommended.currency.id,
+                          this.props.currencies,
+                          recommended.currency,
                           recommended.setup
                         )
                       : '-'}
@@ -90,15 +90,15 @@ class Recommended extends React.Component<IProps> {
                   <td>
                     {typeof recommended.currency !== 'number' &&
                       formatPriceWithCurrency(
-                        this.props.currencies.items,
-                        recommended.currency.id,
+                        this.props.currencies,
+                        recommended.currency,
                         recommended.price
                       )}
                     <span> ماهیانه</span> <br />
                     {typeof recommended.currency !== 'number' &&
                       formatPriceWithCurrency(
-                        this.props.currencies.items,
-                        recommended.currency.id,
+                        this.props.currencies,
+                        recommended.currency,
                         recommended.price * 12
                       )}
                     <span> سالیانه</span>

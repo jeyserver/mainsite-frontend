@@ -1,4 +1,4 @@
-import { formatSpaceInEnglish } from './formatSpace';
+import { formatSpace } from './formatSpace';
 
 export const formatHards = (hardsData) => {
   let allHards = [];
@@ -31,9 +31,11 @@ export const formatHards = (hardsData) => {
 
   return hards.map((hard) => {
     if (hard.number === 1) {
-      return `${hard.type}`;
+      return `${formatSpace(hard.space * 1024, 'en')} ${hard.type}`;
     } else {
-      return `${hard.number}x${formatSpaceInEnglish(hard.space)} ${hard.type}`;
+      return `${hard.number}x${formatSpace(hard.space * 1024, 'en')} ${
+        hard.type
+      }`;
     }
   });
 };

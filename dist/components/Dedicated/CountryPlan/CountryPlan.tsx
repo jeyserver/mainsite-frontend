@@ -6,7 +6,7 @@ import moment from 'jalali-moment';
 import styles from './CountryPlan.module.scss';
 import Link from 'next/link';
 import { IDedicatedPlan } from '../../../helper/types/products/Dedicated/plan';
-import formatPriceWithCurrency from '../../../helper/formatPriceWithCurrency';
+import { formatPriceWithCurrency } from '../../../store/Currencies';
 import { connect } from 'react-redux';
 import { RootState } from '../../../store';
 import { formatSpace } from '../../../helper/formatSpace';
@@ -104,12 +104,11 @@ class CountryPlan extends React.Component<IProps> {
                           هزینه ستاپ (یکبار پرداخت)
                         </p>
                         <p className={styles.setup}>
-                          {!this.props.plan.setup ||
-                          typeof this.props.plan.currency === 'number'
+                          {!this.props.plan.setup
                             ? 'مهمان ما باشید'
                             : formatPriceWithCurrency(
-                                this.props.currencies.items,
-                                this.props.plan.currency.id,
+                                this.props.currencies,
+                                this.props.plan.currency,
                                 this.props.plan.price
                               )}
                         </p>
@@ -117,21 +116,19 @@ class CountryPlan extends React.Component<IProps> {
                       <li>
                         <p className={styles.price}>
                           <span>
-                            {typeof this.props.plan.currency !== 'number' &&
-                              formatPriceWithCurrency(
-                                this.props.currencies.items,
-                                this.props.plan.currency.id,
-                                this.props.plan.price
-                              )}
+                            {formatPriceWithCurrency(
+                              this.props.currencies,
+                              this.props.plan.currency,
+                              this.props.plan.price
+                            )}
                           </span>{' '}
                           ماهیانه <br />
                           <span>
-                            {typeof this.props.plan.currency !== 'number' &&
-                              formatPriceWithCurrency(
-                                this.props.currencies.items,
-                                this.props.plan.currency.id,
-                                this.props.plan.price * 12
-                              )}
+                            {formatPriceWithCurrency(
+                              this.props.currencies,
+                              this.props.plan.currency,
+                              this.props.plan.price * 12
+                            )}
                           </span>{' '}
                           سالیانه
                         </p>
@@ -245,7 +242,7 @@ class CountryPlan extends React.Component<IProps> {
                           <li>
                             <p className={styles.title}> RAM </p>
                             <p className={styles.value}>
-                              {formatSpace(this.props.plan.ram, 'english')}
+                              {formatSpace(this.props.plan.ram, 'en')}
                             </p>
                             <p></p>
                           </li>
@@ -271,7 +268,7 @@ class CountryPlan extends React.Component<IProps> {
                               {this.props.plan.bandwidth ? (
                                 `${formatSpace(
                                   this.props.plan.bandwidth,
-                                  'english'
+                                  'en'
                                 )}`
                               ) : (
                                 <span className={styles.jUnlimited}>

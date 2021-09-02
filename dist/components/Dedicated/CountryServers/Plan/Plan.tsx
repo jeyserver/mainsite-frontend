@@ -6,7 +6,7 @@ import { IDedicatedPlan } from '../../../../helper/types/products/Dedicated/plan
 import { formatSpace } from '../../../../helper/formatSpace';
 import { connect } from 'react-redux';
 import { RootState } from '../../../../store';
-import formatPriceWithCurrency from '../../../../helper/formatPriceWithCurrency';
+import { formatPriceWithCurrency } from '../../../../store/Currencies';
 import getCpuLink from '../../../../helper/getCpuLink';
 import { formatHards } from '../../../../helper/formatHards';
 
@@ -43,7 +43,7 @@ class Plan extends React.Component<IProps> {
           </Row>
           <Row>
             <Col xs={4}>حافظه موقت:</Col>
-            <Col xs={8}>{formatSpace(this.props.plan.ram, 'persian')}</Col>
+            <Col xs={8}>{formatSpace(this.props.plan.ram, 'fa')}</Col>
           </Row>
           <Row>
             <Col xs={4}>هارد:</Col>
@@ -57,7 +57,7 @@ class Plan extends React.Component<IProps> {
             <Col xs={4}>ترافیک:</Col>
             <Col xs={8}>
               {this.props.plan.bandwidth ? (
-                formatSpace(this.props.plan.bandwidth, 'persian')
+                formatSpace(this.props.plan.bandwidth, 'fa')
               ) : (
                 <span className={styles.jUnlimited}>بدون محدودیت</span>
               )}
@@ -86,8 +86,8 @@ class Plan extends React.Component<IProps> {
                 (!this.props.plan.setup
                   ? '-'
                   : `${formatPriceWithCurrency(
-                      this.props.currencies.items,
-                      this.props.plan.currency.id,
+                      this.props.currencies,
+                      this.props.plan.currency,
                       this.props.plan.setup
                     )}`)}
             </Col>
@@ -99,8 +99,8 @@ class Plan extends React.Component<IProps> {
               (!this.props.plan.price
                 ? '-'
                 : `${formatPriceWithCurrency(
-                    this.props.currencies.items,
-                    this.props.plan.currency.id,
+                    this.props.currencies,
+                    this.props.plan.currency,
                     this.props.plan.price
                   )}`)}
             <br />

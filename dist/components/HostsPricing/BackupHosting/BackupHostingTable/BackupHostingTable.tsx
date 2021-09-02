@@ -6,12 +6,12 @@ import classNames from 'classnames';
 import CountryFlagTooltip from '../../../../helper/components/CountryFlagTooltip/CountryFlagTooltip';
 import { IHostPlan } from '../../../../helper/types/products/Host/plan';
 import translateCountryNameToPersian from '../../../../helper/translateCountryNameToPersian';
-import { formatSpace } from '../../helper/formatSpace';
+import { formatSpace } from '../../../../helper/formatSpace';
 import translateHostPanel from '../../../../helper/translators/translateHostPanel';
 import StarredCell from '../../TablesUtils/StarredCell';
 import { connect } from 'react-redux';
 import { RootState } from '../../../../store';
-import formatPriceWithCurrency from '../../../../helper/formatPriceWithCurrency';
+import { formatPriceWithCurrency } from '../../../../store/Currencies';
 import BackupsCell from '../../TablesUtils/BackupsCell';
 
 interface IProps {
@@ -193,7 +193,7 @@ class BackupHostingTable extends React.Component<IProps, IState> {
             {this.props.plans.map((plan) => (
               <tr key={plan.id}>
                 <td>{plan.title}</td>
-                <td>{formatSpace(plan.space, 'persian')}</td>
+                <td>{formatSpace(plan.space, 'fa', true)}</td>
                 <td>
                   {!plan.bandwidth ? (
                     <span className={styles.jUnlimited}>بدون محدودیت</span>
@@ -350,7 +350,7 @@ class BackupHostingTable extends React.Component<IProps, IState> {
                 )}
                 {plan.ram ? (
                   <StarredCell
-                    text={formatSpace(plan.ram, 'persian')}
+                    text={formatSpace(plan.ram, 'fa')}
                     star={(plan.ram / maximumRam) * 5}
                   />
                 ) : (
@@ -375,16 +375,23 @@ class BackupHostingTable extends React.Component<IProps, IState> {
                 <td>OpenLightSpeed</td>
                 <td>SSD</td>
                 <td>
-                  {typeof plan.currency !== 'number' &&
-                    formatPriceWithCurrency(
-                      this.props.currencies.items,
-                      plan.currency.id,
-                      plan.price
-                    )}
+                  {formatPriceWithCurrency(
+                    this.props.currencies,
+                    plan.currency,
+                    plan.price
+                  )}{' '}
+                  ماهیانه
+                  <br />
+                  {this.props.hideTopInfo &&
+                    `${formatPriceWithCurrency(
+                      this.props.currencies,
+                      plan.currency,
+                      plan.price * 12
+                    )} سالیانه`}
                 </td>
                 <td>
                   {plan.is_available ? (
-                    <Link href={`/order/server/vps/${plan.id}`}>
+                    <Link href={`/order/hosting/linux/${plan.id}`}>
                       <a className={styles.orderLink}>
                         <CountryFlagTooltip country={plan.country} />
                         <span>سفارش</span>{' '}

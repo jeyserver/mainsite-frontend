@@ -15,7 +15,6 @@ interface IProps {
 }
 
 interface BackupHostingState {
-  isNavFixed: boolean;
   sepratedPlansByCountry: IHostPlan[][];
 }
 
@@ -23,7 +22,6 @@ class BackupHosting extends React.Component<IProps, BackupHostingState> {
   constructor(props: IProps) {
     super(props);
     this.state = {
-      isNavFixed: false,
       sepratedPlansByCountry: [],
     };
     this.onScroll = this.onScroll.bind(this);
@@ -37,6 +35,9 @@ class BackupHosting extends React.Component<IProps, BackupHostingState> {
     const mainNavLinks = document.querySelectorAll(
       '#backup-nav li[data-main="true"] a'
     );
+    const emptySpaceForNav = document.querySelector(
+      '#emptySpaceForNav'
+    ) as HTMLDivElement;
 
     var st = window.pageYOffset || document.documentElement.scrollTop;
     if (st > this.lastScrollTop) {
@@ -56,11 +57,11 @@ class BackupHosting extends React.Component<IProps, BackupHostingState> {
     if (fromTop > 660) {
       nav.style.position = 'fixed';
       nav.style.margin = '0';
-      this.setState({ isNavFixed: true });
+      emptySpaceForNav.style.display = 'block';
     } else {
       nav.style.position = 'static';
       nav.style.margin = '30px 0';
-      this.setState({ isNavFixed: false });
+      emptySpaceForNav.style.display = 'none';
     }
 
     mainNavLinks.forEach((link: any) => {
@@ -88,21 +89,6 @@ class BackupHosting extends React.Component<IProps, BackupHostingState> {
   componentDidMount() {
     window.addEventListener('scroll', this.onScroll, false);
     this.props.switchAppIsScrolling();
-    this.setState({
-      sepratedPlansByCountry: Object.values(
-        this.props.plans.reduce((accumulator, currentValue) => {
-          const co = currentValue.country.code;
-
-          if (accumulator && accumulator[co]) {
-            accumulator[co] = [...accumulator[co], currentValue];
-          } else {
-            accumulator[co] = [currentValue];
-          }
-
-          return accumulator;
-        }, {})
-      ),
-    });
   }
 
   componentWillUnmount() {
@@ -118,6 +104,20 @@ class BackupHosting extends React.Component<IProps, BackupHostingState> {
   }
 
   render() {
+    const sepratedPlansByCountry = Object.values(
+      this.props.plans.reduce((accumulator, currentValue) => {
+        const co = currentValue.country.code;
+
+        if (accumulator && accumulator[co]) {
+          accumulator[co] = [...accumulator[co], currentValue];
+        } else {
+          accumulator[co] = [currentValue];
+        }
+
+        return accumulator;
+      }, {})
+    ) as IHostPlan[][];
+
     return (
       <section>
         <PagesHeader title="هاست بکاپ" />
@@ -189,16 +189,13 @@ class BackupHosting extends React.Component<IProps, BackupHostingState> {
           </div>
         </Container>
         <Container>
-          {this.state.isNavFixed && (
-            <div
-              style={{
-                height:
-                  document.querySelector<HTMLDivElement>('#backup-nav')
-                    .clientHeight,
-              }}
-              className={styles.emptySpaceForNav}
-            ></div>
-          )}
+          <div
+            style={{
+              height: '55px',
+            }}
+            id="emptySpaceForNav"
+            className={styles.emptySpaceForNav}
+          ></div>
 
           <Row className={styles.stickyNav} id="backup-nav">
             <Col xs={12} className={styles.mnavigation}>
@@ -246,21 +243,20 @@ class BackupHosting extends React.Component<IProps, BackupHostingState> {
         <Container>
           <Row>
             <Col>
-              <Row
-                id={`${this.props.plans[0].country.name}`}
-                className={styles.tableWrapper}
-              >
-                {this.state.sepratedPlansByCountry.map((plans, index) =>
-                  this.chunkedPlans(5, plans).map(
-                    (chunkedPlans, chunkedIndex) => (
-                      <BackupHostingTable
-                        plans={chunkedPlans}
-                        key={chunkedIndex}
-                        hideTopInfo={chunkedIndex === 1}
-                      />
-                    )
-                  )
-                )}
+              <Row className={styles.tableWrapper}>
+                {sepratedPlansByCountry.map((plans, index) => (
+                  <div id={plans[0].country.name} key={plans[0].country.name}>
+                    {this.chunkedPlans(5, plans).map(
+                      (chunkedPlans, chunkedIndex) => (
+                        <BackupHostingTable
+                          plans={chunkedPlans}
+                          key={`${plans[0].country.name}-${chunkedIndex}`}
+                          hideTopInfo={chunkedIndex > 0}
+                        />
+                      )
+                    )}
+                  </div>
+                ))}
               </Row>
             </Col>
           </Row>

@@ -15,18 +15,12 @@ interface IProps {
   switchAppIsScrolling: () => void;
 }
 
-interface IState {
-  isNavFixed: boolean;
-  sepratedPlansByLicence: IHostPlan[][];
-}
+interface IState {}
 
 class ResellerHosting extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
-    this.state = {
-      isNavFixed: false,
-      sepratedPlansByLicence: [],
-    };
+    this.state = {};
     this.onScroll = this.onScroll.bind(this);
   }
 
@@ -36,6 +30,9 @@ class ResellerHosting extends React.Component<IProps, IState> {
     const nav = document.querySelector('#reseller-nav') as HTMLDivElement;
 
     const mainNavLinks = document.querySelectorAll('#reseller-nav li a');
+    const emptySpaceForNav = document.querySelector(
+      '#emptySpaceForNav'
+    ) as HTMLDivElement;
 
     let st = window.pageYOffset || document.documentElement.scrollTop;
 
@@ -56,11 +53,11 @@ class ResellerHosting extends React.Component<IProps, IState> {
     if (fromTop > 750) {
       nav.style.position = 'fixed';
       nav.style.margin = '0';
-      this.setState({ isNavFixed: true });
+      emptySpaceForNav.style.display = 'block';
     } else {
       nav.style.position = 'static';
       nav.style.margin = '30px 0';
-      this.setState({ isNavFixed: false });
+      emptySpaceForNav.style.display = 'none';
     }
 
     mainNavLinks.forEach((link: any) => {
@@ -86,21 +83,6 @@ class ResellerHosting extends React.Component<IProps, IState> {
   componentDidMount() {
     window.addEventListener('scroll', this.onScroll, false);
     this.props.switchAppIsScrolling();
-    this.setState({
-      sepratedPlansByLicence: Object.values(
-        this.props.plans.reduce((accumulator, currentValue) => {
-          const co = `${currentValue.cp}_${currentValue.country.code}`;
-
-          if (accumulator && accumulator[co]) {
-            accumulator[co] = [...accumulator[co], currentValue];
-          } else {
-            accumulator[co] = [currentValue];
-          }
-
-          return accumulator;
-        }, {})
-      ),
-    });
   }
 
   componentWillUnmount() {
@@ -108,6 +90,20 @@ class ResellerHosting extends React.Component<IProps, IState> {
   }
 
   render() {
+    const sepratedPlansByLicence = Object.values(
+      this.props.plans.reduce((accumulator, currentValue) => {
+        const co = `${currentValue.cp}_${currentValue.country.code}`;
+
+        if (accumulator && accumulator[co]) {
+          accumulator[co] = [...accumulator[co], currentValue];
+        } else {
+          accumulator[co] = [currentValue];
+        }
+
+        return accumulator;
+      }, {})
+    ) as IHostPlan[][];
+
     return (
       <section>
         <PagesHeader title="نمایندگی هاست اشتراکی لینوکس" />
@@ -187,16 +183,13 @@ class ResellerHosting extends React.Component<IProps, IState> {
           </div>
         </Container>
         <Container>
-          {this.state.isNavFixed && (
-            <div
-              style={{
-                height:
-                  document.querySelector<HTMLDivElement>('#reseller-nav')
-                    .clientHeight,
-              }}
-              className={styles.emptySpaceForNav}
-            ></div>
-          )}
+          <div
+            style={{
+              height: '55px',
+            }}
+            id="emptySpaceForNav"
+            className={styles.emptySpaceForNav}
+          ></div>
 
           <Row className={styles.stickyNav} id="reseller-nav">
             <Col xs={12} className={styles.mnavigation}>
@@ -237,7 +230,7 @@ class ResellerHosting extends React.Component<IProps, IState> {
         <Container>
           <Row>
             <Col>
-              {this.state.sepratedPlansByLicence.map((plans, index) => (
+              {sepratedPlansByLicence.map((plans, index) => (
                 <div key={index}>
                   <ResellerHostingTable plans={plans} />
                   <div className={styles.tableBottomSpace}></div>

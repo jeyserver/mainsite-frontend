@@ -14,18 +14,10 @@ interface IProps {
   switchAppIsScrolling: () => void;
 }
 
-interface IState {
-  isNavFixed: boolean;
-  sepratedPlansByCountry: IHostPlan[][];
-}
-
-class DownloadHosting extends React.Component<IProps, IState> {
+class DownloadHosting extends React.Component<IProps> {
   constructor(props: IProps) {
     super(props);
-    this.state = {
-      isNavFixed: false,
-      sepratedPlansByCountry: [],
-    };
+    this.state = {};
     this.onScroll = this.onScroll.bind(this);
   }
 
@@ -37,6 +29,9 @@ class DownloadHosting extends React.Component<IProps, IState> {
     const mainNavLinks = document.querySelectorAll(
       '#file-nav li[data-main="true"] a'
     );
+    const emptySpaceForNav = document.querySelector(
+      '#emptySpaceForNav'
+    ) as HTMLDivElement;
 
     let st = window.pageYOffset || document.documentElement.scrollTop;
     if (st > this.lastScrollTop) {
@@ -56,11 +51,11 @@ class DownloadHosting extends React.Component<IProps, IState> {
     if (fromTop > 638) {
       nav.style.position = 'fixed';
       nav.style.margin = '0';
-      this.setState({ isNavFixed: true });
+      emptySpaceForNav.style.display = 'block';
     } else {
       nav.style.position = 'static';
       nav.style.margin = '30px 0';
-      this.setState({ isNavFixed: false });
+      emptySpaceForNav.style.display = 'none';
     }
 
     mainNavLinks.forEach((link: any) => {
@@ -86,22 +81,6 @@ class DownloadHosting extends React.Component<IProps, IState> {
   componentDidMount() {
     window.addEventListener('scroll', this.onScroll, false);
     this.props.switchAppIsScrolling();
-
-    this.setState({
-      sepratedPlansByCountry: Object.values(
-        this.props.plans.reduce((accumulator, currentValue) => {
-          const co = currentValue.country.code;
-
-          if (accumulator && accumulator[co]) {
-            accumulator[co] = [...accumulator[co], currentValue];
-          } else {
-            accumulator[co] = [currentValue];
-          }
-
-          return accumulator;
-        }, {})
-      ),
-    });
   }
 
   componentWillUnmount() {
@@ -109,6 +88,20 @@ class DownloadHosting extends React.Component<IProps, IState> {
   }
 
   render() {
+    const sepratedPlansByCountry = Object.values(
+      this.props.plans.reduce((accumulator, currentValue) => {
+        const co = currentValue.country.code;
+
+        if (accumulator && accumulator[co]) {
+          accumulator[co] = [...accumulator[co], currentValue];
+        } else {
+          accumulator[co] = [currentValue];
+        }
+
+        return accumulator;
+      }, {})
+    ) as IHostPlan[][];
+
     return (
       <section>
         <PagesHeader title="هاست دانلود" />
@@ -183,16 +176,13 @@ class DownloadHosting extends React.Component<IProps, IState> {
           </div>
         </Container>
         <Container>
-          {this.state.isNavFixed && (
-            <div
-              style={{
-                height:
-                  document.querySelector<HTMLDivElement>('#file-nav')
-                    .clientHeight,
-              }}
-              className={styles.emptySpaceForNav}
-            ></div>
-          )}
+          <div
+            style={{
+              height: '55px',
+            }}
+            id="emptySpaceForNav"
+            className={styles.emptySpaceForNav}
+          ></div>
 
           <Row className={styles.stickyNav} id="file-nav">
             <Col xs={12} className={styles.mnavigation}>
@@ -240,7 +230,7 @@ class DownloadHosting extends React.Component<IProps, IState> {
         <Container>
           <Row>
             <Col>
-              {this.state.sepratedPlansByCountry.map((plans, index) => (
+              {sepratedPlansByCountry.map((plans, index) => (
                 <div key={index}>
                   <DownloadHostingTable plans={plans} />
                   <div className={styles.tableBottomSpace}></div>

@@ -13,11 +13,11 @@ import classNames from 'classnames';
 import CountryFlagTooltip from '../../../../helper/components/CountryFlagTooltip/CountryFlagTooltip';
 import { IHostPlan } from '../../../../helper/types/products/Host/plan';
 import translateCountryNameToPersian from '../../../../helper/translateCountryNameToPersian';
-import { formatSpace } from '../../helper/formatSpace';
+import { formatSpace } from '../../../../helper/formatSpace';
 import translateHostPanel from '../../../../helper/translators/translateHostPanel';
 import { connect } from 'react-redux';
 import { RootState } from '../../../../store';
-import formatPriceWithCurrency from '../../../../helper/formatPriceWithCurrency';
+import { formatPriceWithCurrency } from '../../../../store/Currencies';
 import StarredCell from '../../TablesUtils/StarredCell';
 import BackupsCell from '../../TablesUtils/BackupsCell';
 
@@ -136,18 +136,23 @@ class DownloadHostingTable extends React.Component<IProps, IState> {
                   className={classNames({
                     [styles.jHidden]: this.state.isMoreInfoOpen,
                   })}
-                  style={
-                    this.props.plans.some((i) => i.backups.length > 0) && {
-                      lineHeight: '75px',
-                    }
-                  }
+                  style={{
+                    lineHeight: this.props.plans.some(
+                      (i) => i.backups.length > 0
+                    )
+                      ? '75px'
+                      : '',
+                  }}
                 >
                   دوره های بکاپ گیری
                 </th>
                 <OverlayTrigger
                   placement="top"
                   overlay={
-                    <Tooltip id={`-tooltip`} className={styles.tooltip}>
+                    <Tooltip
+                      id={`${this.props.plans[0].country.code}-cpu`}
+                      className={styles.tooltip}
+                    >
                       درصد استفاده از پردازشگر
                     </Tooltip>
                   }
@@ -157,7 +162,10 @@ class DownloadHostingTable extends React.Component<IProps, IState> {
                 <OverlayTrigger
                   placement="top"
                   overlay={
-                    <Tooltip id={`-tooltip`} className={styles.tooltip}>
+                    <Tooltip
+                      id={`${this.props.plans[0].country.code}-ram`}
+                      className={styles.tooltip}
+                    >
                       حافظه موقت
                     </Tooltip>
                   }
@@ -167,7 +175,10 @@ class DownloadHostingTable extends React.Component<IProps, IState> {
                 <OverlayTrigger
                   placement="top"
                   overlay={
-                    <Tooltip id={`-tooltip`} className={styles.tooltip}>
+                    <Tooltip
+                      id={`${this.props.plans[0].country.code}-io`}
+                      className={styles.tooltip}
+                    >
                       سرعت خواندن و نوشتن اطلاعات
                     </Tooltip>
                   }
@@ -177,7 +188,10 @@ class DownloadHostingTable extends React.Component<IProps, IState> {
                 <OverlayTrigger
                   placement="top"
                   overlay={
-                    <Tooltip id={`-tooltip`} className={styles.tooltip}>
+                    <Tooltip
+                      id={`${this.props.plans[0].country.code}-entry-process`}
+                      className={styles.tooltip}
+                    >
                       تعداد پردازش های همزمان
                     </Tooltip>
                   }
@@ -203,12 +217,12 @@ class DownloadHostingTable extends React.Component<IProps, IState> {
               {this.props.plans.map((plan) => (
                 <tr key={plan.id}>
                   <td>{plan.title}</td>
-                  <td>{formatSpace(plan.space, 'persian')}</td>
+                  <td>{formatSpace(plan.space, 'fa', true)}</td>
                   <td>
                     {!plan.bandwidth ? (
                       <span className={styles.jUnlimited}>بدون محدودیت</span>
                     ) : (
-                      formatSpace(plan.bandwidth, 'persian')
+                      formatSpace(plan.bandwidth, 'fa', true)
                     )}
                   </td>
                   <td>{translateHostPanel(plan.cp)}</td>
@@ -358,7 +372,7 @@ class DownloadHostingTable extends React.Component<IProps, IState> {
                   )}
                   {plan.ram ? (
                     <StarredCell
-                      text={formatSpace(plan.ram, 'persian')}
+                      text={formatSpace(plan.ram, 'fa')}
                       star={(plan.ram / maximumRam) * 5}
                     />
                   ) : (
@@ -383,17 +397,16 @@ class DownloadHostingTable extends React.Component<IProps, IState> {
                   <td>OpenLightSpeed</td>
                   <td>SSD</td>
                   <td>
-                    {typeof plan.currency !== 'number' &&
-                      formatPriceWithCurrency(
-                        this.props.currencies.items,
-                        plan.currency.id,
-                        plan.price
-                      )}{' '}
+                    {formatPriceWithCurrency(
+                      this.props.currencies,
+                      plan.currency,
+                      plan.price
+                    )}{' '}
                     ماهیانه
                   </td>
                   <td>
                     {plan.is_available ? (
-                      <Link href={`/order/server/vps/${plan.id}`}>
+                      <Link href={`/order/hosting/linux/${plan.id}`}>
                         <a className={styles.orderLink}>
                           <CountryFlagTooltip country={plan.country} />
                           <span>سفارش</span>{' '}

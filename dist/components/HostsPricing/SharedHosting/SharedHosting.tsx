@@ -21,9 +21,7 @@ interface IProps {
   switchAppIsScrolling: () => void;
 }
 
-interface IState {}
-
-class SharedHosting extends React.Component<IProps, IState> {
+class SharedHosting extends React.Component<IProps> {
   constructor(props: IProps) {
     super(props);
     this.state = {};
@@ -139,9 +137,6 @@ class SharedHosting extends React.Component<IProps, IState> {
 
           <div
             style={{
-              // height: document.querySelector<HTMLDivElement>(
-              //   `#${this.props.page}-nav`
-              // ).clientHeight,
               height: '80px',
             }}
             id="emptySpaceForNav"

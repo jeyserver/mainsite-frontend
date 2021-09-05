@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Head from 'next/head';
-import HostingConfigure from '../../../../components/OrderDomain/HostingConfigure/HostingConfigure';
+import HostingConfigure from '../../../../components/Order/OrderDomain/HostingConfigure/HostingConfigure';
 import Layout from '../../../../components/Layout/Layout';
 import { pageProps } from '../../../_app';
 

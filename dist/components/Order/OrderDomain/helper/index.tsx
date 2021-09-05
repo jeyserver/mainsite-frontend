@@ -21,9 +21,7 @@ export const renderStep = (step: step, data: any) => {
       return <DomainSettings data={data} />;
     case 'configuration':
       return <DomainConfiguration data={data} />;
-    case 'confirmation':
-      return 'تایید سفارش';
-    case 'complete-order':
-      return 'تکمیل سفارش';
+    default:
+      break;
   }
 };

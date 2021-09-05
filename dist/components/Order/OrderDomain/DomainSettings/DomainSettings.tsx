@@ -1,0 +1,285 @@
+import * as React from 'react';
+import axios from 'axios';
+import classNames from 'classnames';
+import { NextRouter, withRouter } from 'next/router';
+import { Form, Col, Row, Spinner } from 'react-bootstrap';
+import { connect } from 'react-redux';
+import { ITld } from '../../../../pages/_app';
+import { RootState } from '../../../../store';
+import CheckDomainForm from './CheckDomainForm/CheckDomainForm';
+import RecommendedDomains from './RecommendedDomains/RecommendedDomains';
+import styles from './DomainSettings.module.scss';
+import backend from '../../../../axios-config';
+
+interface IProps {
+  data: {
+    tlds: ITld[];
+    transferOption: boolean;
+    cheepBorder: number;
+    commercialDomains: string[];
+    tldFromQuery?: string;
+    orderHost?: boolean;
+  };
+  router: NextRouter;
+  domain: RootState['domain'];
+}
+
+interface IDomain {
+  available: boolean;
+  name: string;
+  tld: ITld;
+}
+
+interface IState {
+  domainoption: 'register' | 'transfer' | 'owndomain';
+  // domainName: string;
+  // domainTld: string;
+
+  recommendedDomains: IDomain[];
+  ordered: IDomain;
+  selectedDomains: IDomain[];
+
+  recommendedDomainsLoading: boolean;
+}
+
+class DomainSettings extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
+    super(props);
+    this.state = {
+      domainoption: 'register',
+      // domainName: !this.props.data.tldFromQuery ? '' : '',
+      // domainTld: this.props.data.tldFromQuery || '',
+      recommendedDomains: [],
+      ordered: null,
+      selectedDomains: [],
+      recommendedDomainsLoading: false,
+    };
+    // this.onChangeDomainName = this.onChangeDomainName.bind(this);
+    // this.onChangeDomainTld = this.onChangeDomainTld.bind(this);
+    this.onChangeDomainOption = this.onChangeDomainOption.bind(this);
+    this.toggleSelectedDomains = this.toggleSelectedDomains.bind(this);
+
+    this.setRecommendedDomains = this.setRecommendedDomains.bind(this);
+    this.setSelectedDomains = this.setSelectedDomains.bind(this);
+  }
+
+  onChangeDomainOption(e) {
+    this.setState({
+      domainoption: e.target.value,
+      recommendedDomains: [],
+      selectedDomains: [],
+      ordered: null,
+    });
+  }
+
+  // onChangeDomainName(e) {
+  //   this.setState({ domainName: e.target.value });
+  // }
+
+  // onChangeDomainTld(e) {
+  //   this.setState({ domainTld: e.target.value });
+  // }
+
+  setRecommendedDomains(domains: IDomain[]) {
+    this.setState({ recommendedDomains: domains });
+  }
+
+  setSelectedDomains(domains: IDomain[]) {
+    this.setState({ selectedDomains: domains });
+  }
+
+  toggleSelectedDomains(newDomain) {
+    const domainIndex = this.state.selectedDomains.findIndex(
+      (domain) => domain.tld.id === newDomain.tld.id
+    );
+
+    if (domainIndex > -1) {
+      this.setState((prev) => {
+        return {
+          selectedDomains: prev.selectedDomains.filter(
+            (domain, index) => index !== domainIndex
+          ),
+        };
+      });
+    } else {
+      this.setState((prev) => {
+        return {
+          selectedDomains: [...prev.selectedDomains, newDomain],
+        };
+      });
+    }
+  }
+
+  componentDidMount() {
+    console.log(this.props.domain.selected);
+    if (this.props.domain.selected) {
+      this.setState({ recommendedDomainsLoading: true });
+
+      const { name, tld } = this.props.domain.selected;
+
+      backend
+        .post(
+          `/order/domain?ajax=1&domainoption=${this.state.domainoption}&tld=${tld}&name=${name}`
+        )
+        .then((res) => {
+          if (res.data.status) {
+            if (res.data.ordered.available) {
+              this.setState({ selectedDomains: [res.data.ordered] });
+            }
+            this.setState({
+              recommendedDomains: [res.data.ordered, ...res.data.recomendeds],
+            });
+          }
+        })
+        .catch(() => {
+          console.log('err');
+        })
+        .finally(() => {
+          this.setState({ recommendedDomainsLoading: false });
+        });
+    }
+  }
+
+  // componentDidUpdate(prevProps) {
+  //   if (
+  //     prevProps.domain.selected.name !== this.props.domain.selected.name ||
+  //     prevProps.domain.selected.tld !== this.props.domain.selected.tld
+  //   ) {
+  //     this.setState({
+  //       recommendedDomainsLoading: true,
+  //       domainName: this.props.domain.selected.name,
+  //       domainTld: this.props.domain.selected.tld,
+  //     });
+
+  //     axios
+  //       .get(
+  //         'https://jsonblob.com/api/jsonBlob/ea5bc877-e265-11eb-a96b-95a5a070a2d6'
+  //       )
+  //       .then((res) => {
+  //         this.setState({
+  //           recommendedDomains: res.data.recomendeds,
+  //           ordered: res.data.ordered,
+  //           selectedDomains: [res.data.ordered],
+  //           recommendedDomainsLoading: false,
+  //         });
+  //       })
+  //       .catch(() => {
+  //         this.setState({
+  //           recommendedDomainsLoading: false,
+  //         });
+  //       });
+  //   }
+  // }
+
+  render() {
+    const defaultTldId = this.props.data.tlds.find(
+      (i) => i.tld === this.props.data.tldFromQuery
+    );
+
+    return (
+      <div className={styles.domainSettings}>
+        <h2 className={styles.title}>خرید دامنه</h2>
+        <p className={styles.info}>
+          لطفا نام دامین انتخابی خود را در زیر وارد کنید.
+        </p>
+        <br />
+
+        <div className={styles.orderDomainForm}>
+          <Col xs={12}>
+            <Form.Group>
+              <div className={styles.domainOptions}>
+                <label>
+                  <input
+                    type="radio"
+                    name="domainoption"
+                    value="register"
+                    onChange={this.onChangeDomainOption}
+                    defaultChecked
+                  />
+                  میخواهم جی سرور برای من دامنه جدید ثبت کند.
+                </label>
+              </div>
+
+              {this.props.data.tldFromQuery && (
+                <div className={styles.domainOptions}>
+                  <label>
+                    <input
+                      type="radio"
+                      name="domainoption"
+                      value="transfer"
+                      onChange={this.onChangeDomainOption}
+                    />
+                    میخواهم دامنه ام را منتقل کنم به جی سرور
+                  </label>
+                </div>
+              )}
+
+              {this.props.data.orderHost && (
+                <div className={styles.domainOptions}>
+                  <label>
+                    <input
+                      type="radio"
+                      name="domainoption"
+                      value="owndomain"
+                      onChange={this.onChangeDomainOption}
+                    />
+                    NameServer های شرکت را بر روی دامنه ام تنظیم می کنم.
+                  </label>
+                </div>
+              )}
+            </Form.Group>
+          </Col>
+
+          <Row
+            className={classNames(styles.alertOwnDomain, {
+              [styles.show]: this.state.domainoption === 'owndomain',
+            })}
+          >
+            <Col xs={12}>
+              <div className={styles.alert}>
+                <span>
+                  پسوند دامنه را بدون نقطه در قسمت پسوند دامنه وارد کنید
+                </span>
+              </div>
+            </Col>
+          </Row>
+
+          <CheckDomainForm
+            tlds={this.props.data.tlds}
+            domainoption={this.state.domainoption}
+            commercialDomains={this.props.data.commercialDomains}
+            cheepBorder={this.props.data.cheepBorder}
+            default={{
+              name: '',
+              tld: defaultTldId && defaultTldId.id,
+            }}
+            selectedDomains={this.state.selectedDomains}
+            setRecommendedDomains={this.setRecommendedDomains}
+            setSelectedDomains={this.setSelectedDomains}
+          >
+            {this.state.recommendedDomainsLoading && (
+              <div className={styles.recommendedDomainsLoading}>
+                <Spinner animation="border" size="sm" />
+                <span>لطفا صبر کنید</span>
+              </div>
+            )}
+
+            {this.state.recommendedDomains.length > 0 && (
+              <RecommendedDomains
+                toggleSelectedDomains={this.toggleSelectedDomains}
+                selectedDomains={this.state.selectedDomains}
+                recomendeds={this.state.recommendedDomains}
+              />
+            )}
+          </CheckDomainForm>
+        </div>
+      </div>
+    );
+  }
+}
+
+export default connect((state: RootState) => {
+  return {
+    domain: state.domain,
+  };
+})(withRouter(DomainSettings));

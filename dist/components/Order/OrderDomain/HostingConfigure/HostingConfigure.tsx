@@ -2,29 +2,19 @@ import * as React from 'react';
 import { Button, ButtonGroup } from 'react-bootstrap';
 import { Table } from 'react-bootstrap';
 import { Container, Row, Col, Form } from 'react-bootstrap';
-import CountryFlagTooltip from '../../helper/components/CountryFlagTooltip';
-import { formatPrice } from '../../helper/formatPrice';
-import PagesHeader from '../../PagesHeader/PagesHeader';
+import CountryFlagTooltip from '../../../helper/components/CountryFlagTooltip';
+import { formatPrice } from '../../../helper/formatPrice';
+import PagesHeader from '../../../PagesHeader/PagesHeader';
 import OrderSteps from '../OrderSteps';
 import router, { NextRouter, withRouter } from 'next/router';
 import styles from './HostingConfigure.module.scss';
 
-export interface HostingConfigureProps {
+interface IProps {
   hostingCartItems: any;
   router: NextRouter;
 }
 
-export interface HostingConfigureState {}
-
-class HostingConfigure extends React.Component<
-  HostingConfigureProps,
-  HostingConfigureState
-> {
-  constructor(props: HostingConfigureProps) {
-    super(props);
-    this.state = {};
-  }
-
+class HostingConfigure extends React.Component<IProps> {
   restart() {
     router.push('/');
   }

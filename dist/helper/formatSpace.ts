@@ -21,3 +21,19 @@ export const formatSpaceInPersian = (size, decimals = 2) => {
 
   return parseFloat((size / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 };
+
+export const formatSpace = (
+  size: number,
+  lang: 'fa' | 'en',
+  si = false,
+  fix = 0
+) => {
+  if (size === 0) return '0';
+  const thresh = si ? 1000 : 1024;
+  const sizes =
+    lang === 'fa' ? ['مگابایت', 'گیگابایت', 'ترابایت'] : ['MB', 'GB', 'TB'];
+
+  const i = Math.floor(Math.log(size) / Math.log(thresh));
+
+  return parseFloat((size / Math.pow(thresh, i)).toFixed(fix)) + sizes[i];
+};

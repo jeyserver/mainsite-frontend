@@ -1,23 +1,31 @@
 import * as React from 'react';
 import Head from 'next/head';
-import OrderDomain from '../../../../components/OrderDomain';
+import OrderDomain from '../../../../components/Order/OrderDomain';
 import Layout from '../../../../components/Layout/Layout';
-import { pageProps } from '../../../_app';
+import { ICurrency, IPageProps, ITld } from '../../../_app';
 
-export interface IndexProps extends pageProps {
-  domains: any;
-  cheapDomainBreakPrice: any;
-  famousAndTrendyDomains: any;
+interface IProps extends IPageProps {
+  status: boolean;
+  tlds: ITld[];
+  currencies: ICurrency[];
 }
 
-export interface IndexState {}
+const commercialDomains = [
+  'com',
+  'net',
+  'org',
+  'biz',
+  'work',
+  'agency',
+  'bid',
+  'company',
+  'holdings',
+  'institute',
+  'limited',
+  'money',
+];
 
-class Index extends React.Component<IndexProps, IndexState> {
-  constructor(props: IndexProps) {
-    super(props);
-    this.state = {};
-  }
-
+class Index extends React.Component<IProps> {
   render() {
     return (
       <div dir="rtl">
@@ -35,11 +43,11 @@ class Index extends React.Component<IndexProps, IndexState> {
           <OrderDomain
             step="settings"
             data={{
-              domains: this.props.domains,
-              transferOption: false,
+              tlds: this.props.tlds,
               orderHost: true,
-              cheapDomainBreakPrice: this.props.cheapDomainBreakPrice,
-              famousAndTrendyDomains: this.props.famousAndTrendyDomains,
+              transferOption: false,
+              cheepBorder: 200000,
+              commercialDomains,
             }}
           />
         </Layout>
@@ -50,6 +58,7 @@ class Index extends React.Component<IndexProps, IndexState> {
 
 export async function getServerSideProps(context) {
   const locale = context.locale;
+  const id = context.query.id;
 
   if (locale !== 'fa') {
     return {
@@ -57,21 +66,14 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const domainsRes = await fetch(
-    `${process.env.SCHEMA}://${process.env.DOMAIN}/fa/domain?ajax=1`
+  const respone = await fetch(
+    `${process.env.SCHEMA}://${process.env.DOMAIN}/${locale}/order/hosting/linux/${id}?ajax=1`
   );
-  const domains = await domainsRes.json();
-
-  const famousAndTrendyDomainsRes = await fetch(
-    'https://jsonblob.com/api/jsonBlob/964cc80e-e274-11eb-a96b-6b620e600ebe'
-  );
-  const famousAndTrendyDomains = await famousAndTrendyDomainsRes.json();
+  const data = await respone.json();
 
   return {
     props: {
-      domains,
-      cheapDomainBreakPrice: 200000,
-      famousAndTrendyDomains,
+      ...data,
     },
   };
 }

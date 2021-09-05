@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import * as React from 'react';
 import { Container, Col, Row, Form, Button } from 'react-bootstrap';
 import { countriesType } from '../../../pages/order/cart/complete';
-import OrderSteps from '../../OrderDedicatedServer/OrderSteps/OrderSteps';
+import OrderSteps from '../../Order/OrderDedicatedServer/OrderSteps/OrderSteps';
 import PagesHeader from '../../PagesHeader/PagesHeader';
 import styles from './CompleteOrder.module.scss';
 import SigninForm from './SigninForm/SigninForm';

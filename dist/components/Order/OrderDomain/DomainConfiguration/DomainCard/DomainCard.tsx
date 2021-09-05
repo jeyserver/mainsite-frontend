@@ -1,66 +1,48 @@
-import classNames from 'classnames';
 import * as React from 'react';
+import classNames from 'classnames';
+import { ErrorMessage } from 'formik';
 import { Row, Col, Button, Form } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import { deleteOrderedDomain } from '../../../../redux/actions';
+import IDomainProduct from '../../../../../helper/types/cart/domain';
+import { RootState } from '../../../../../store';
+import { deleteFromForConfigure as deleteDomain } from '../../../../../store/Domain';
 import styles from './DomainCard.module.scss';
 
-type error = 'data_validation' | 'data_duplicate';
-
-export interface DomainCardProps {
+interface IProps {
   nationalDomain: boolean;
-  domain: any;
+  domain: IDomainProduct;
   transfer: boolean;
   deleteOrderedDomain: (targetTld) => void;
-  store?: any;
-  errors: {
-    type: string;
-    code: error;
-    input: string;
-    error: error;
-  }[];
+  storeDomain: RootState['domain'];
+  auth: RootState['auth'];
+  deleteDomain: typeof deleteDomain;
 }
 
-export interface DomainCardState {}
-
-const showError = (errorMsg: error) => {
-  if (errorMsg === 'data_duplicate') {
-    return 'داده وارد شده تکراری است';
-  } else if (errorMsg === 'data_validation') {
-    return 'داده وارد شده معتبر نیست';
-  }
-};
-
-class DomainCard extends React.Component<DomainCardProps, DomainCardState> {
-  constructor(props: DomainCardProps) {
-    super(props);
-    this.state = {};
-  }
-
+class DomainCard extends React.Component<IProps> {
   render() {
+    const domain = this.props.domain;
+
     return (
       <div className={styles.product}>
         <div className={styles.topRow}>
           <div className={styles.title}>
             <strong>
-              {this.props.domain.name}.{this.props.domain.tld.tld}
+              {domain.domain}.{domain.tld.tld}
             </strong>
-            <span>{this.props.domain.time}</span>
+            <span>یک ساله</span>
           </div>
           <div>
             <Button
               variant="danger"
               className={styles.deleteBtn}
-              disabled={
-                this.props.store.orderedDomains.inPending.filter(
-                  (i) => i === this.props.domain.tld.tld
-                ).length > 0
-              }
-              onClick={() =>
-                this.props.deleteOrderedDomain(this.props.domain.tld.tld)
-              }
+              // disabled={
+              //   this.props.store.orderedDomains.inPending.filter(
+              //     (i) => i === this.props.domain.tld.tld
+              //   ).length > 0
+              // }
+              onClick={() => this.props.deleteDomain(domain.id)}
             >
-              {this.props.store.orderedDomains.inPending.filter(
+              {/* {this.props.store.orderedDomains.inPending.filter(
                 (i) => i === this.props.domain.tld.tld
               ).length > 0 ? (
                 <>
@@ -72,7 +54,9 @@ class DomainCard extends React.Component<DomainCardProps, DomainCardState> {
                   <i className="fa fa-trash pull-right" />
                   حذف از سبد خرید
                 </>
-              )}
+              )} */}
+              <i className="fa fa-trash pull-right" />
+              حذف از سبد خرید
             </Button>
           </div>
         </div>
@@ -87,11 +71,15 @@ class DomainCard extends React.Component<DomainCardProps, DomainCardState> {
                 <Form.Control
                   type="text"
                   required
+                  name={`products[${domain.id}][transfer_code]`}
                   placeholder=" این کد را باید از شرکت ثبت کننده فعلی دامنه درخواست کنید"
                 />
-                <Form.Control.Feedback type="invalid">
-                  لطفا این قسمت را پر کنید
-                </Form.Control.Feedback>
+                <div className="form-err-msg">
+                  <ErrorMessage
+                    name={`products[${domain.id}][transfer_code]`}
+                  />
+                </div>
+                {/* لطفا این قسمت را پر کنید */}
               </Col>
             </Row>
           </div>
@@ -118,10 +106,16 @@ class DomainCard extends React.Component<DomainCardProps, DomainCardState> {
                         <Col md={5}>
                           <Form.Group controlId="irnic">
                             <Form.Label>شناسه ی ایرنیک</Form.Label>
-                            <Form.Control type="text" required />
-                            <Form.Control.Feedback type="invalid">
-                              لطفا این قسمت را پر کنید
-                            </Form.Control.Feedback>
+                            <Form.Control
+                              type="text"
+                              name={`products[${domain.id}][panel]`}
+                            />
+                            <div className="form-err-msg">
+                              <ErrorMessage
+                                name={`products[${domain.id}][panel]`}
+                              />
+                            </div>
+                            {/* لطفا این قسمت را پر کنید */}
                           </Form.Group>
                         </Col>
                         <Col
@@ -149,7 +143,7 @@ class DomainCard extends React.Component<DomainCardProps, DomainCardState> {
                   </>
                 ) : (
                   <div>
-                    {this.props.store.auth.isLoggedIn ? (
+                    {this.props.auth.isLoggedIn ? (
                       <div className={styles.selectDomainPanel}>
                         <div>پنل دامنه را انتخاب کنید</div>
                         <Form.Control as="select" custom>
@@ -182,24 +176,16 @@ class DomainCard extends React.Component<DomainCardProps, DomainCardState> {
               <Col xs={12}>
                 <div className={styles.nameservers}>
                   <div className={styles.nameserver}>
-                    <Form.Group controlId="nameserver-1">
+                    <Form.Group>
                       <Form.Label>NameServer 1</Form.Label>
                       <Form.Control
                         type="text"
-                        defaultValue={this.props.domain.name_servers['1']}
-                        required
+                        defaultValue="ns1.jeyserver.com"
+                        name={`products[${domain.id}][dns][1]`}
                       />
-                      <Form.Control.Feedback type="invalid">
-                        {this.props.errors.find(
-                          (error) => error.input === `name_servers_1`
-                        )
-                          ? showError(
-                              this.props.errors.find(
-                                (error) => error.input === `name_servers_1`
-                              ).error
-                            )
-                          : 'داده وارد شده معتبر نیست'}
-                      </Form.Control.Feedback>
+                      <div className="form-err-msg">
+                        <ErrorMessage name={`products[${domain.id}][dns][1]`} />
+                      </div>
                     </Form.Group>
                   </div>
                   <div className={styles.nameserver}>
@@ -207,20 +193,12 @@ class DomainCard extends React.Component<DomainCardProps, DomainCardState> {
                       <Form.Label>NameServer 2</Form.Label>
                       <Form.Control
                         type="text"
-                        defaultValue={this.props.domain.name_servers['2']}
-                        required
+                        defaultValue="ns2.jeyserver.com"
+                        name={`products[${domain.id}][dns][2]`}
                       />
-                      <Form.Control.Feedback type="invalid">
-                        {this.props.errors.find(
-                          (error) => error.input === `name_servers_2`
-                        )
-                          ? showError(
-                              this.props.errors.find(
-                                (error) => error.input === `name_servers_2`
-                              ).error
-                            )
-                          : 'داده وارد شده معتبر نیست'}
-                      </Form.Control.Feedback>
+                      <div className="form-err-msg">
+                        <ErrorMessage name={`products[${domain.id}][dns][2]`} />
+                      </div>
                     </Form.Group>
                   </div>
                   <div className={styles.nameserver}>
@@ -228,22 +206,11 @@ class DomainCard extends React.Component<DomainCardProps, DomainCardState> {
                       <Form.Label>NameServer 3</Form.Label>
                       <Form.Control
                         type="text"
-                        defaultValue={this.props.domain.name_servers['3']}
-                        isInvalid={this.props.errors.some(
-                          (error) => error.input === `name_servers_3`
-                        )}
+                        name={`products[${domain.id}][dns][3]`}
                       />
-                      <Form.Control.Feedback type="invalid">
-                        {this.props.errors.find(
-                          (error) => error.input === `name_servers_3`
-                        )
-                          ? showError(
-                              this.props.errors.find(
-                                (error) => error.input === `name_servers_3`
-                              ).error
-                            )
-                          : 'داده وارد شده معتبر نیست'}
-                      </Form.Control.Feedback>
+                      <div className="form-err-msg">
+                        <ErrorMessage name={`products[${domain.id}][dns][3]`} />
+                      </div>
                     </Form.Group>
                   </div>
                   <div className={styles.nameserver}>
@@ -251,22 +218,11 @@ class DomainCard extends React.Component<DomainCardProps, DomainCardState> {
                       <Form.Label>NameServer 4</Form.Label>
                       <Form.Control
                         type="text"
-                        defaultValue={this.props.domain.name_servers['4']}
-                        isInvalid={this.props.errors.some(
-                          (error) => error.input === `name_servers_4`
-                        )}
+                        name={`products[${domain.id}][dns][4]`}
                       />
-                      <Form.Control.Feedback type="invalid">
-                        {this.props.errors.find(
-                          (error) => error.input === `name_servers_4`
-                        )
-                          ? showError(
-                              this.props.errors.find(
-                                (error) => error.input === `name_servers_4`
-                              ).error
-                            )
-                          : 'داده وارد شده معتبر نیست'}
-                      </Form.Control.Feedback>
+                      <div className="form-err-msg">
+                        <ErrorMessage name={`products[${domain.id}][dns][4]`} />
+                      </div>
                     </Form.Group>
                   </div>
                 </div>
@@ -279,8 +235,9 @@ class DomainCard extends React.Component<DomainCardProps, DomainCardState> {
   }
 }
 
-const mapStateToProps = (state) => {
-  return { store: state };
-};
-
-export default connect(mapStateToProps, { deleteOrderedDomain })(DomainCard);
+export default connect(
+  (state: RootState) => {
+    return { storeDomain: state.domain, auth: state.auth };
+  },
+  { deleteDomain }
+)(DomainCard);

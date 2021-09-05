@@ -6,16 +6,19 @@ import { connect } from 'react-redux';
 import DomainCard from './DomainCard/DomainCard';
 import { NotificationManager } from 'react-notifications';
 import styles from './DomainConfiguration.module.scss';
+import { RootState } from '../../../../store';
+import { Formik } from 'formik';
 
-export interface DomainConfigurationProps {
+interface IProps {
   data: any;
   state?: any;
   router: NextRouter;
+  domain: RootState['domain'];
 }
 
 type error = 'data_validation' | 'data_duplicate';
 
-export interface DomainConfigurationState {
+interface IState {
   formValidated: boolean;
   errors: {
     type: string;
@@ -26,11 +29,8 @@ export interface DomainConfigurationState {
   btnLoading: boolean;
 }
 
-class DomainConfiguration extends React.Component<
-  DomainConfigurationProps,
-  DomainConfigurationState
-> {
-  constructor(props: DomainConfigurationProps) {
+class DomainConfiguration extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
     this.state = {
       formValidated: false,
@@ -79,7 +79,7 @@ class DomainConfiguration extends React.Component<
   }
 
   componentDidUpdate() {
-    if (this.props.state.orderedDomains.domains.length === 0) {
+    if (this.props.domain.forConfigure.length === 0) {
       this.props.router.push('/order/domain');
     }
   }
@@ -89,50 +89,50 @@ class DomainConfiguration extends React.Component<
       <div className={styles.domainConfiguration}>
         <h2 className={styles.title}>پیکره بندی دامنه</h2>
 
-        <Form
-          onSubmit={(e) => this.submitForm(e)}
-          noValidate
-          validated={this.state.formValidated}
-        >
-          {this.props.state &&
-            this.props.state.orderedDomains.domains.map((domain) => (
-              <DomainCard
-                nationalDomain={this.props.data.nationalDomainsList.some(
-                  (tld) => tld === domain.tld.tld
-                )}
-                transfer={domain.transfer}
-                domain={domain}
-                key={domain.tld.id}
-                errors={this.state.errors}
-              />
-            ))}
+        <Formik>
+          {(formik) => (
+            <Form
+              onSubmit={(e) => this.submitForm(e)}
+              noValidate
+              validated={this.state.formValidated}
+            >
+              {this.props.domain.forConfigure.map((domain) => (
+                <DomainCard
+                  nationalDomain={this.props.data.nationalDomainsList.some(
+                    (tld) => tld === domain.tld.tld
+                  )}
+                  transfer={domain.type === 'transfer'}
+                  domain={domain}
+                  key={domain.tld.id}
+                />
+              ))}
 
-          <Row className="justify-content-center">
-            <Col xs={12} md={6}>
-              <Button
-                type="submit"
-                className={styles.continueBtn}
-                disabled={this.state.btnLoading}
-              >
-                {this.state.btnLoading ? (
-                  <>
-                    <Spinner animation="border" size="sm" />
-                    <span>لطفا صبر کنید</span>
-                  </>
-                ) : (
-                  'ادامه'
-                )}
-              </Button>
-            </Col>
-          </Row>
-        </Form>
+              <Row className="justify-content-center">
+                <Col xs={12} md={6}>
+                  <Button
+                    type="submit"
+                    className={styles.continueBtn}
+                    disabled={this.state.btnLoading}
+                  >
+                    {this.state.btnLoading ? (
+                      <>
+                        <Spinner animation="border" size="sm" />
+                        <span>لطفا صبر کنید</span>
+                      </>
+                    ) : (
+                      'ادامه'
+                    )}
+                  </Button>
+                </Col>
+              </Row>
+            </Form>
+          )}
+        </Formik>
       </div>
     );
   }
 }
 
-const mapStateToProps = (state) => {
-  return { state };
-};
-
-export default connect(mapStateToProps)(withRouter(DomainConfiguration));
+export default connect((state: RootState) => {
+  return { domain: state.domain };
+})(withRouter(DomainConfiguration));

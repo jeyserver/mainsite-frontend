@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import PagesHeader from '../PagesHeader/PagesHeader';
+import { ITld } from '../../../pages/_app';
+import PagesHeader from '../../PagesHeader/PagesHeader';
 import { renderPageTitle, renderStep } from './helper';
 import OrderSteps from './OrderSteps';
 import styles from './style.module.scss';
@@ -11,19 +12,19 @@ export type step =
   | 'configuration'
   | 'complete-order';
 
-export interface OrderDomainProps {
+interface IProps {
   step: step;
-  data: any;
+  data: {
+    tlds: ITld[];
+    transferOption: boolean;
+    cheepBorder: number;
+    commercialDomains: string[];
+    tldFromQuery?: string;
+    orderHost?: boolean;
+  };
 }
 
-export interface OrderDomainState {}
-
-class OrderDomain extends React.Component<OrderDomainProps, OrderDomainState> {
-  constructor(props: OrderDomainProps) {
-    super(props);
-    this.state = {};
-  }
-
+class OrderDomain extends React.Component<IProps> {
   render() {
     return (
       <section>

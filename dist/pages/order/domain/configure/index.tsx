@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Head from 'next/head';
-import OrderDomain from '../../../../components/OrderDomain';
+import OrderDomain from '../../../../components/Order/OrderDomain';
 import { connect } from 'react-redux';
 import { setOrderedDomains } from '../../../../redux/actions';
 import Layout from '../../../../components/Layout/Layout';

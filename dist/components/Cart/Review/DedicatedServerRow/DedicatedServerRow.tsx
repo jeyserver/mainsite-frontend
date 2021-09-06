@@ -51,25 +51,28 @@ class DedicatedServerRow extends React.Component<IProps, IState> {
         <td className={styles.noper}></td>
         <td>برای {product.price / product.plan.price} ماه</td>
         <td>
-          {this.props.data.discount
+          {product.discount
             ? `${formatPriceWithCurrency(
                 this.props.currencies,
-                this.props.data.currency,
-                this.props.data.discount
+                product.currency,
+                product.discount
               )}`
             : `0 ${this.props.currencies.active.title}`}
         </td>
         <td>
-          {this.props.data.discount
+          {product.price
             ? `${formatPriceWithCurrency(
                 this.props.currencies,
-                this.props.data.currency,
-                this.props.data.price
+                product.currency,
+                product.price
               )}`
             : `0 ${this.props.currencies.active.title}`}
         </td>
         <td>
-          <button className={styles.deleteBtn} onClick={this.deleteItem}>
+          <button
+            className={styles.deleteBtn}
+            onClick={() => this.deleteItem()}
+          >
             {this.state.loading ? (
               <Spinner animation="border" size="sm" />
             ) : (

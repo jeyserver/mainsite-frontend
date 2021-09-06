@@ -65,7 +65,7 @@ class HostRow extends React.Component<IProps, IState> {
             : `0 ${this.props.currencies.active.title}`}
         </td>
         <td>
-          {product.discount
+          {product.price
             ? `${formatPriceWithCurrency(
                 this.props.currencies,
                 product.currency,

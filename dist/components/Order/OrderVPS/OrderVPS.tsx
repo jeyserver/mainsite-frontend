@@ -60,7 +60,7 @@ class OrderVPS extends React.Component<IProps, OrderVPSState> {
     super(props);
     this.state = {
       backup: '',
-      os: this.props.oses.find((i) => i.base === 'windows')[0],
+      os: this.props.oses.find((i) => i.base === 'windows'),
       license: '',
       domain: '',
       showDomainAlert: false,
@@ -144,6 +144,7 @@ class OrderVPS extends React.Component<IProps, OrderVPSState> {
         addons: {
           hard: this.props.addons.find((i) => i.id === Number(values.hard)),
           ip: values.ip,
+          ram: this.props.addons.find((i) => i.id === Number(values.ram)),
         },
       },
     };
@@ -155,7 +156,6 @@ class OrderVPS extends React.Component<IProps, OrderVPSState> {
       .then((res) => {
         if (res.data.status) {
           this.props.setCartItems(fakeProducts);
-          console.log(fakeProducts);
           this.props.router.push('/order/cart/review');
         } else {
           res.data.error.map((error) => {
@@ -436,7 +436,7 @@ class OrderVPS extends React.Component<IProps, OrderVPSState> {
                               <div className={styles.row}>
                                 <div>آي پي</div>
                                 <div>
-                                  <Field as="select" name="ip" custom>
+                                  <Field as="select" name="ip">
                                     <option value="">1 عدد</option>
                                     {Array(3)
                                       .fill('')

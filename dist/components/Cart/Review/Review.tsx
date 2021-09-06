@@ -52,12 +52,10 @@ class Review extends React.Component<IProps, ReviewState> {
         return <BackupSpaceRow data={data} />;
       case 'server_dedicated':
         return <DedicatedServerRow data={data} />;
-      // case 'vps_server':
-      //   return <VpsRow data={data} />;
+      case 'server_vps':
+        return <VpsRow data={data} />;
       // case 'domain':
       //   return <DomainRow data={data} />;
-      // case 'host':
-      //   return <HostRow data={data} />;
       default:
         return null;
     }

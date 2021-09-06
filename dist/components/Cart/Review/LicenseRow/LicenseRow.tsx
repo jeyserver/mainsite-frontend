@@ -34,7 +34,6 @@ class LicenseRow extends React.Component<IProps, IState> {
     this.state = {
       loading: false,
     };
-    this.deleteItem = this.deleteItem.bind(this);
   }
   async deleteItem() {
     this.setState({ loading: true });
@@ -52,42 +51,43 @@ class LicenseRow extends React.Component<IProps, IState> {
   }
 
   render() {
+    const product = this.props.data;
     return (
       <>
         <td>
-          <span>لایسنس {this.props.data.plan.title}</span>
+          <span>لایسنس {product.plan.title}</span>
         </td>
         <td className={styles.noper}>
-          {this.props.data.plan.setup !== 0
+          {product.plan.setup !== 0
             ? formatPriceWithCurrency(
                 this.props.currencies,
-                this.props.data.plan.currency,
-                this.props.data.plan.setup
+                product.plan.currency,
+                product.plan.setup
               )
             : 'هزینه راه‌اندازی اولیه (اولین ماه)'}
         </td>
-        <td>برای 10 ماه</td>
+        <td>برای {product.price / product.plan.price} ماه</td>
         <td>
-          {this.props.data.discount
+          {product.price
             ? `${formatPriceWithCurrency(
                 this.props.currencies,
-                this.props.data.currency,
-                this.props.data.discount
+                product.currency,
+                product.discount
               )}`
             : `0 ${this.props.currencies.active.title}`}
         </td>
         <td>
           {formatPriceWithCurrency(
             this.props.currencies,
-            this.props.data.plan.currency,
-            this.props.data.plan.price
+            product.plan.currency,
+            product.plan.price
           )}
         </td>
         <td>
           <button
             className={styles.deleteBtn}
             disabled={this.state.loading}
-            onClick={this.deleteItem}
+            onClick={() => this.deleteItem()}
           >
             {this.state.loading ? (
               <Spinner animation="border" size="sm" />

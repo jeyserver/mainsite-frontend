@@ -1,80 +1,95 @@
 import * as React from 'react';
 import { Spinner } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import { deleteFromCart } from '../../../../redux/actions';
-import { cart } from '../../../../redux/reducers/cartReducer';
-import CountryFlagTooltip from '../../../helper/components/CountryFlagTooltip';
-import { formatPrice } from '../../../helper/formatPrice';
-import { formatSpaceInEnglish } from '../../../helper/formatSpace';
+import { AsyncThunkAction, RootState } from '../../../../store';
+import CountryFlagTooltip from '../../../../helper/components/CountryFlagTooltip/CountryFlagTooltip';
+import { NotificationManager } from 'react-notifications';
 import styles from '../productRow.module.scss';
+import IVPSProduct from '../../../../helper/types/cart/vps';
+import { formatSpace } from '../../../../helper/formatSpace';
+import { formatPriceWithCurrency } from '../../../../store/Currencies';
+import { deleteItem } from '../../../../store/Cart';
 
-export interface VpsRowProps {
-  data: any;
-  deleteFromCart: (id: number) => void;
-  cart: cart;
+interface iProps {
+  data: IVPSProduct;
+  deleteItem: AsyncThunkAction<{ status: boolean }, string | number>;
+  currencies: RootState['currencies'];
 }
 
-export interface VpsRowState {}
+interface VpsRowState {
+  loading: boolean;
+}
 
-class VpsRow extends React.Component<VpsRowProps, VpsRowState> {
-  constructor(props: VpsRowProps) {
+class VpsRow extends React.Component<iProps, VpsRowState> {
+  constructor(props: iProps) {
     super(props);
-    this.state = {};
+    this.state = { loading: false };
+  }
+
+  async deleteItem() {
+    this.setState({ loading: true });
+
+    try {
+      await this.props.deleteItem(this.props.data.id).unwrap();
+    } catch (error) {
+      NotificationManager.error(
+        'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
+        'خطا'
+      );
+    } finally {
+      this.setState({ loading: false });
+    }
   }
 
   render() {
-    const {
-      id,
-      title,
-      period,
-      discout,
-      price,
-      currency,
-      country,
-      ip,
-      ram,
-      hard,
-    } = this.props.data;
+    const product = this.props.data;
 
     return (
       <>
         <td>
-          <CountryFlagTooltip
-            name={country.name_en}
-            flag={{ address: country.flag }}
-          />
-          <span className={styles.title}>
-            سرور مجازی {title} {country.name_fa}
-          </span>
+          <CountryFlagTooltip country={product.plan.country} />
+          <span className={styles.title}>سرور مجازی {product.plan.title}</span>
         </td>
         <td>
-          {ip && <div>{ip.value} عدد آی پی اضافه</div>}
-          {ram && <div>{formatSpaceInEnglish(ram)}رم اضافه</div>}
-          {hard && (
+          {product.plan.addons.ip && (
+            <div>{product.plan.addons.ip} عدد آی پی اضافه</div>
+          )}
+          {product.plan.addons.ram && (
             <div>
-              {formatSpaceInEnglish(hard.space)} {hard.type} هارد اضافه
+              {product.plan.addons.ram.addon.title}
+              رم اضافه
             </div>
           )}
+          {product.plan.addons.hard && (
+            <div>{product.plan.addons.hard.addon.title} هارد اضافه</div>
+          )}
+        </td>
+        <td>برای {product.price / product.plan.price} ماه</td>
+        <td>
+          {product.discount
+            ? `${formatPriceWithCurrency(
+                this.props.currencies,
+                product.currency,
+                product.discount
+              )}`
+            : `0 ${this.props.currencies.active.title}`}
         </td>
         <td>
-          برای {period.value} {period.type === 'monthly' ? 'ماه' : 'سال'}
-        </td>
-        <td>
-          {discout
-            ? `${formatPrice(discout)} ${currency.title}`
-            : `0 ${currency.title}`}
-        </td>
-        <td>
-          {formatPrice(price)} {currency.title}
+          {product.price
+            ? `${formatPriceWithCurrency(
+                this.props.currencies,
+                product.currency,
+                product.price
+              )}`
+            : `0 ${this.props.currencies.active.title}`}
         </td>
         <td>
           <button
             className={styles.deleteBtn}
-            onClick={() => this.props.deleteFromCart(id)}
+            onClick={() => this.deleteItem()}
+            disabled={this.state.loading}
           >
-            {this.props.cart.itemsInLoading.some(
-              (productId) => productId === id
-            ) ? (
+            {this.state.loading ? (
               <Spinner animation="border" size="sm" />
             ) : (
               'حذف'
@@ -86,10 +101,11 @@ class VpsRow extends React.Component<VpsRowProps, VpsRowState> {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    cart: state.cart,
-  };
-};
-
-export default connect(mapStateToProps, { deleteFromCart })(VpsRow);
+export default connect(
+  (state: RootState) => {
+    return {
+      currencies: state.currencies,
+    };
+  },
+  { deleteItem }
+)(VpsRow);

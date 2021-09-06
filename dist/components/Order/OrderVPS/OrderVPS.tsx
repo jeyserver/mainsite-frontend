@@ -60,18 +60,21 @@ class OrderVPS extends React.Component<IProps, OrderVPSState> {
     super(props);
     this.state = {
       backup: '',
-      os: this.props.oses.filter((i) => i.base === 'windows')[0],
+      os: this.props.oses.find((i) => i.base === 'windows')[0],
       license: '',
       domain: '',
       showDomainAlert: false,
     };
   }
 
-  onChangeField(e, field: 'backup' | 'license' | 'domain') {
+  onChangeField(
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: 'backup' | 'license' | 'domain'
+  ) {
     this.setState({ [field]: e.target.value });
   }
 
-  onChangeOs(e) {
+  onChangeOs(e: React.ChangeEvent<HTMLInputElement>) {
     const selected = this.props.oses.find(
       (i) => i.id === Number(e.target.value)
     );

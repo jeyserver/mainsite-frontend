@@ -8,6 +8,7 @@ import { deleteItem } from '../../../../store/Cart';
 import { NotificationManager } from 'react-notifications';
 import IHostProduct from '../../../../helper/types/cart/host';
 import { formatPriceWithCurrency } from '../../../../store/Currencies';
+import { formatSpace } from '../../../../helper/formatSpace';
 
 interface IProps {
   data: IHostProduct;
@@ -50,7 +51,9 @@ class HostRow extends React.Component<IProps, IState> {
           <CountryFlagTooltip country={product.plan.country} />
           <span className={styles.title}>{product.plan.title}</span>
         </td>
-        <td>{product.plan.domain}</td>
+        <td>
+          {product.plan.domain} - {formatSpace(product.plan.space, 'en', true)}
+        </td>
         <td>برای {product.price / product.plan.price} ماه</td>
         <td>
           {product.discount

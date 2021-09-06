@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Container, Row, Col, Form, Button } from 'react-bootstrap';
+import { Container, Row, Col, Button } from 'react-bootstrap';
 import PagesHeader from '../../PagesHeader/PagesHeader';
 import OrderSteps from './OrderSteps/OrderSteps';
 import styles from './OrderDedicatedServer.module.scss';
@@ -15,6 +15,13 @@ import IOS from '../../../helper/types/products/VPS/os';
 import { formatSpace } from '../../../helper/formatSpace';
 import { formatPriceWithCurrency } from '../../../store/Currencies';
 import { RootState } from '../../../store';
+import { ErrorMessage, Field, Form, Formik, FormikHelpers } from 'formik';
+import { NotificationManager } from 'react-notifications';
+import backend from '../../../axios-config';
+import { setItems as setCartItems } from '../../../store/Cart';
+import { NextRouter, withRouter } from 'next/router';
+import showErrorMsg from '../../../helper/showErrorMsg';
+import { nanoid } from '@reduxjs/toolkit';
 
 interface IProps {
   plan: IDedicatedPlan;
@@ -23,99 +30,140 @@ interface IProps {
   oses: IOS[];
 
   currencies: RootState['currencies'];
+  setCartItems: typeof setCartItems;
+  router: NextRouter;
 }
 
 interface IState {
-  backupSpace: string;
+  backup: string;
   license: string;
+  domain: string;
   os: IOS;
-  formValidated: boolean;
-  isFormInvalid: boolean;
+  showDomainAlert: boolean;
+}
+
+interface IInputs {
+  period: string;
+  license: string;
+  backup: string;
+  description: string;
+  os: string;
 }
 
 class OrderDedicatedServer extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.state = {
-      backupSpace: '-',
-      os: this.props.oses[0],
-      license: '-',
-      formValidated: false,
-      isFormInvalid: false,
+      backup: '',
+      license: '',
+      domain: '',
+      os: this.props.oses.find((i) => i.base === 'windows'),
+      showDomainAlert: false,
     };
-    this.onChangeLicense = this.onChangeLicense.bind(this);
-    this.onChangeBackupSpace = this.onChangeBackupSpace.bind(this);
-    this.onChangeOs = this.onChangeOs.bind(this);
-    this.onSubmitForm = this.onSubmitForm.bind(this);
   }
 
-  onChangeLicense(e) {
+  onChangeLicense(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({ license: e.target.value });
   }
 
-  onChangeBackupSpace(e) {
-    this.setState({ backupSpace: e.target.value });
+  onChangeBackupSpace(e: React.ChangeEvent<HTMLInputElement>) {
+    this.setState({ backup: e.target.value });
   }
 
-  onChangeOs(e) {
-    // const selected = this.props.oses.find(
-    //   (i) => i.name === e.target.value
-    // );
-    // this.setState({ os: selected });
+  onChangeDomain(e: React.ChangeEvent<HTMLInputElement>) {
+    this.setState({ domain: e.target.value, showDomainAlert: false });
   }
 
-  onSubmitForm(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const form = e.currentTarget;
-    this.setState({ isFormInvalid: false });
+  onChangeOs(e: React.ChangeEvent<HTMLInputElement>) {
+    const selected = this.props.oses.find(
+      (i) => i.id === Number(e.target.value)
+    );
+    if (selected) {
+      this.setState({ os: selected });
+    }
+  }
 
-    // if (form.checkValidity() === false) {
-    //   this.setState({ isFormInvalid: true });
-    //   e.stopPropagation();
-    // } else {
-    //   const domainHostingBackup = form.domainHostingBackup
-    //     ? form.domainHostingBackup.value
-    //     : null;
-    //   const description = form.description.value;
-    //   const os = form.os.value;
+  onSubmit(
+    values: IInputs,
+    { setSubmitting, setErrors, setFieldError }: FormikHelpers<IInputs>
+  ) {
+    let fakeProducts = [];
 
-    //   const payment_period = this.props.serviceData.payment_periods.find(
-    //     (payment_period) =>
-    //       payment_period.id === Number(form.payment_period.value)
-    //   );
-    //   const licenseFromData = this.props.serviceData.licenses.find(
-    //     (license) => license.id === Number(form.license.value)
-    //   );
-    //   const backupSpaceFromData = this.props.serviceData.backup_spaces.find(
-    //     (backupSpace) => backupSpace.id === Number(form.backupSpace.value)
-    //   );
+    const licensePlan = this.props.licenses.find(
+      (license) => license.id === Number(this.state.license)
+    );
 
-    //   this.props.addToCart([
-    //     {
-    //       ...this.props.serviceData,
-    //       description,
-    //       os,
-    //       payment_period,
-    //       productType: 'dedicated_server',
-    //     },
-    //     licenseFromData && {
-    //       ...licenseFromData,
-    //       productType: 'license',
-    //       currency: this.props.serviceData.currency,
-    //       payment_period,
-    //     },
-    //     backupSpaceFromData && {
-    //       ...backupSpaceFromData,
-    //       productType: 'backup_space',
-    //       domain: domainHostingBackup,
-    //       country: this.props.serviceData.datacenter.country,
-    //       currency: this.props.serviceData.currency,
-    //       payment_period,
-    //     },
-    //   ]);
-    // }
+    if (licensePlan) {
+      const fakeLicense = {
+        id: nanoid(),
+        price: licensePlan.price * Number(values.period),
+        discount: 0,
+        number: 1,
+        currency: this.props.plan.currency,
+        product: 'license',
+        plan: licensePlan,
+      };
+      fakeProducts = [...fakeProducts, fakeLicense];
+    }
+    const hostPlan = this.props.backups.find(
+      (host) => host.id === Number(this.state.backup)
+    );
 
-    // this.setState({ formValidated: true });
+    if (hostPlan) {
+      const fakeHost = {
+        id: nanoid(),
+        price: hostPlan.price * Number(values.period),
+        discount: 0,
+        number: 1,
+        currency: this.props.plan.currency,
+        product: 'host',
+        plan: {
+          ...hostPlan,
+          domain: this.state.domain,
+        },
+      };
+
+      fakeProducts = [...fakeProducts, fakeHost];
+    }
+
+    const fakeDedicatedServer = {
+      id: nanoid(),
+      price: this.props.plan.price * Number(values.period),
+      discount: 0,
+      number: 1,
+      currency: this.props.plan.currency,
+      product: 'server_dedicated',
+      plan: this.props.plan,
+    };
+
+    fakeProducts = [...fakeProducts, fakeDedicatedServer];
+
+    const properties = `&period=${values.period}&license=${this.state.license}&backup=${this.state.backup}&domain=${this.state.domain}&description=${values.description}&os=${this.state.os.id}`;
+    backend
+      .post(`/order/server/dedicated/${this.props.plan.id}?ajax=1${properties}`)
+      .then((res) => {
+        if (res.data.status) {
+          this.props.setCartItems(fakeProducts);
+          this.props.router.push('/order/cart/review');
+        } else {
+          res.data.error.map((error) => {
+            setErrors({ [error.input]: showErrorMsg(error.code) });
+          });
+          if (!res.data.error[0].code && this.state.domain === '') {
+            this.setState({ showDomainAlert: true });
+            setFieldError('domain', showErrorMsg('data_validation'));
+          }
+        }
+      })
+      .catch(() => {
+        NotificationManager.error(
+          'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
+          'خطا'
+        );
+      })
+      .finally(() => {
+        setSubmitting(false);
+      });
   }
 
   render() {
@@ -130,272 +178,317 @@ class OrderDedicatedServer extends React.Component<IProps, IState> {
                 <OrderSteps step="configuration" />
               </Col>
               <Col md={9}>
-                <Form
-                  onSubmit={this.onSubmitForm}
-                  noValidate
-                  validated={this.state.formValidated}
+                <Formik
+                  initialValues={{
+                    period: '1',
+                    license: '',
+                    backup: '',
+                    domain: '',
+                    description: '',
+                    os: '',
+                  }}
+                  onSubmit={(values, helpers) => this.onSubmit(values, helpers)}
                 >
-                  <div className={styles.service}>
-                    <h2 className={styles.title}>{this.props.plan.title}</h2>
-                    <div className={styles.info}>
-                      <p>
-                        سرویسی که انتخاب کردید دارای امکانات ساختاری زیر است :
-                      </p>
-                      {this.state.isFormInvalid && (
-                        <Alert
-                          variant="danger"
-                          onClose={() =>
-                            this.setState({ isFormInvalid: false })
-                          }
-                          className={styles.backupDangerAlert}
-                          dismissible
-                        >
-                          <Alert.Heading>
-                            <i className="fas fa-times-circle"></i>
-                            <span>خطا</span>
-                          </Alert.Heading>
+                  {(formik) => (
+                    <Form>
+                      <div className={styles.service}>
+                        <h2 className={styles.title}>
+                          {this.props.plan.title}
+                        </h2>
+                        <div className={styles.info}>
                           <p>
-                            لطفا برای ایجاد فضای بکاپ، آدرس دامنه خود را وارد
-                            نمایید.
+                            سرویسی که انتخاب کردید دارای امکانات ساختاری زیر است
+                            :
                           </p>
-                        </Alert>
-                      )}
+                          {this.state.showDomainAlert && (
+                            <Alert
+                              variant="danger"
+                              onClose={() =>
+                                this.setState({ showDomainAlert: false })
+                              }
+                              className={styles.backupDangerAlert}
+                              dismissible
+                            >
+                              <Alert.Heading>
+                                <i className="fas fa-times-circle"></i>
+                                <span>خطا</span>
+                              </Alert.Heading>
+                              <p>
+                                لطفا برای ایجاد فضای بکاپ، آدرس دامنه خود را
+                                وارد نمایید.
+                              </p>
+                            </Alert>
+                          )}
 
-                      <p>{this.props.plan.title}</p>
-                      <div>
-                        <div>
-                          هارد{' '}
-                          {formatHards(this.props.plan.hard).map((hard) => (
-                            <span key={hard}>{hard}</span>
-                          ))}
-                        </div>
-                        <div>
-                          {this.props.plan.bandwidth ? (
-                            formatSpace(this.props.plan.bandwidth, 'fa')
-                          ) : (
-                            <span>‌ترافیک بی نهایت</span>
-                          )}
-                        </div>
-                        <div>
-                          پردازشگر {this.props.plan.cpu.title}; :: cores :{' '}
-                          {this.props.plan.cpu.cores}, :: threads :{' '}
-                          {this.props.plan.cpu.threads}, :: Frequency :{' '}
-                          {this.props.plan.cpu.speed} GHz
-                        </div>
-                        <div>
-                          حافظه موقت{' '}
-                          <span className="ltr">
-                            {formatSpace(this.props.plan.ram, 'en')}
-                          </span>
-                        </div>
-                        <div>
-                          ماهیانه{' '}
-                          {formatPriceWithCurrency(
-                            this.props.currencies,
-                            this.props.plan.currency,
-                            this.props.plan.price
-                          )}
-                        </div>
-                        {this.props.plan.setup !== 0 && (
+                          <p>{this.props.plan.title}</p>
                           <div>
-                            هزینه ستاپ{' '}
-                            {formatPriceWithCurrency(
-                              this.props.currencies,
-                              this.props.plan.currency,
-                              this.props.plan.setup
-                            )}
-                          </div>
-                        )}
-
-                        <div>
-                          <span className={styles.location}>
-                            موقعیت {this.props.plan.datacenter.country.name}
-                          </span>
-                          <CountryFlagTooltip
-                            country={this.props.plan.datacenter.country}
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <Row className={styles.paymentPeriodRow}>
-                      <Col md={4}>دوره پرداخت:</Col>
-                      <Col md={8}>
-                        <Form.Control as="select" name="payment_period" custom>
-                          {Array(12)
-                            .fill('')
-                            .map((period, index) => (
-                              <option value={index + 1} key={index + 1}>
-                                برای {index + 1} ماه قیمت :{' '}
+                            <div>
+                              هارد{' '}
+                              {formatHards(this.props.plan.hard).map((hard) => (
+                                <span key={hard}>{hard}</span>
+                              ))}
+                            </div>
+                            <div>
+                              {this.props.plan.bandwidth ? (
+                                formatSpace(this.props.plan.bandwidth, 'fa')
+                              ) : (
+                                <span>‌ترافیک بی نهایت</span>
+                              )}
+                            </div>
+                            <div>
+                              پردازشگر {this.props.plan.cpu.title}; :: cores :{' '}
+                              {this.props.plan.cpu.cores}, :: threads :{' '}
+                              {this.props.plan.cpu.threads}, :: Frequency :{' '}
+                              {this.props.plan.cpu.speed} GHz
+                            </div>
+                            <div>
+                              حافظه موقت{' '}
+                              <span className="ltr">
+                                {formatSpace(this.props.plan.ram, 'en')}
+                              </span>
+                            </div>
+                            <div>
+                              ماهیانه{' '}
+                              {formatPriceWithCurrency(
+                                this.props.currencies,
+                                this.props.plan.currency,
+                                this.props.plan.price
+                              )}
+                            </div>
+                            {this.props.plan.setup !== 0 && (
+                              <div>
+                                هزینه ستاپ{' '}
                                 {formatPriceWithCurrency(
                                   this.props.currencies,
                                   this.props.plan.currency,
-                                  this.props.plan.price * (index + 1)
+                                  this.props.plan.setup
                                 )}
-                              </option>
-                            ))}
-                        </Form.Control>
-                      </Col>
-                    </Row>
-                    <Row className={styles.additionalFeatures}>
-                      <p>
-                        <strong>انتخاب های قابل پیکربندی</strong>
-                      </p>
-                      <p>
-                        این سرویس/محصول که انتخاب نموده اید دارای امکانات اضافه
-                        ای است که میتوانید برای سفارش خود انتخاب نمایید
-                      </p>
-                      <br />
-                      <div className={styles.rowsWrapper}>
-                        <div className={styles.rows}>
-                          {this.props.licenses && (
-                            <div className={styles.row}>
-                              <div>لایسنس</div>
-                              <div>
-                                <Form.Control
-                                  as="select"
-                                  onChange={this.onChangeLicense}
-                                  name="license"
-                                  custom
-                                >
-                                  <option value="-">لازم ندارم</option>
-                                  {this.props.licenses.map((license) => (
-                                    <option value={license.id} key={license.id}>
-                                      {license.title} قیمت :{' '}
-                                      {formatPriceWithCurrency(
-                                        this.props.currencies,
-                                        license.currency,
-                                        license.price
-                                      )}
-                                    </option>
-                                  ))}
-                                </Form.Control>
                               </div>
-                            </div>
-                          )}
-                          {this.props.backups && (
-                            <div className={styles.row}>
-                              <div>فضای بکاپ</div>
-                              <div>
-                                <Form.Control
-                                  as="select"
-                                  name="backupSpace"
-                                  onChange={this.onChangeBackupSpace}
-                                  custom
-                                >
-                                  <option value="-">لازم ندارم</option>
-                                  {this.props.backups.map((backupSpace) => (
-                                    <option
-                                      value={backupSpace.id}
-                                      key={backupSpace.id}
-                                    >
-                                      {formatSpace(
-                                        backupSpace.space,
-                                        'en',
-                                        true
-                                      )}{' '}
-                                      ، قیمت :‌{' '}
-                                      {formatPriceWithCurrency(
-                                        this.props.currencies,
-                                        backupSpace.currency,
-                                        backupSpace.price
-                                      )}
-                                    </option>
-                                  ))}
-                                </Form.Control>
-                              </div>
-                            </div>
-                          )}
+                            )}
 
-                          <div
-                            className={classNames(styles.row, {
-                              [styles.hidden]: this.state.backupSpace === '-',
-                            })}
-                          >
-                            <div>دامنه هاست بکاپ</div>
                             <div>
-                              {this.state.backupSpace !== '-' && (
-                                <>
-                                  <Form.Control
-                                    type="text"
-                                    required
-                                    name="domainHostingBackup"
-                                  />
-                                  <Form.Control.Feedback type="invalid">
-                                    لطفا دامنه هاست بکاپ خود را وارد کنید
-                                  </Form.Control.Feedback>
-                                </>
-                              )}
-                            </div>
-                          </div>
-
-                          <div className={styles.row}>
-                            <div>توضیحات</div>
-                            <div>
-                              <Form.Control
-                                as="textarea"
-                                name="description"
-                                placeholder="درصورتی که میخواید توضیح خاصی در مورد آماده سازی سرور به ما بدهید لطفا آن را در اینجا ذکر کنید"
+                              <span className={styles.location}>
+                                موقعیت {this.props.plan.datacenter.country.name}
+                              </span>
+                              <CountryFlagTooltip
+                                country={this.props.plan.datacenter.country}
                               />
                             </div>
                           </div>
                         </div>
-                      </div>
-                    </Row>
-                    <div className={styles.osRow}>
-                      <div>سیستم عامل</div>
-                      <div>
-                        <Form.Control
-                          as="select"
-                          name="os"
-                          onChange={this.onChangeOs}
-                          custom
+
+                        <Row className={styles.paymentPeriodRow}>
+                          <Col md={4}>دوره پرداخت:</Col>
+                          <Col md={8}>
+                            <Field
+                              className="form-control"
+                              as="select"
+                              name="period"
+                            >
+                              {Array(12)
+                                .fill('')
+                                .map((period, index) => (
+                                  <option value={index + 1} key={index + 1}>
+                                    برای {index + 1} ماه قیمت :{' '}
+                                    {formatPriceWithCurrency(
+                                      this.props.currencies,
+                                      this.props.plan.currency,
+                                      this.props.plan.price * (index + 1)
+                                    )}
+                                  </option>
+                                ))}
+                            </Field>
+                            <div className="form-err-msg">
+                              <ErrorMessage name="period" />
+                            </div>
+                          </Col>
+                        </Row>
+                        <Row className={styles.additionalFeatures}>
+                          <p>
+                            <strong>انتخاب های قابل پیکربندی</strong>
+                          </p>
+                          <p>
+                            این سرویس/محصول که انتخاب نموده اید دارای امکانات
+                            اضافه ای است که میتوانید برای سفارش خود انتخاب
+                            نمایید
+                          </p>
+                          <br />
+                          <div className={styles.rowsWrapper}>
+                            <div className={styles.rows}>
+                              <div className={styles.row}>
+                                <div>لایسنس</div>
+                                <div>
+                                  <Field
+                                    className="form-control"
+                                    as="select"
+                                    onChange={(e) => this.onChangeLicense(e)}
+                                    value={this.state.license}
+                                    name="license"
+                                  >
+                                    <option value="">لازم ندارم</option>
+                                    {this.props.licenses.map((license) => (
+                                      <option
+                                        value={license.id}
+                                        key={license.id}
+                                      >
+                                        {license.title} قیمت :{' '}
+                                        {formatPriceWithCurrency(
+                                          this.props.currencies,
+                                          license.currency,
+                                          license.price
+                                        )}
+                                      </option>
+                                    ))}
+                                  </Field>
+                                  <div className="form-err-msg">
+                                    <ErrorMessage name="license" />
+                                  </div>
+                                </div>
+                              </div>
+                              <div className={styles.row}>
+                                <div>فضای بکاپ</div>
+                                <div>
+                                  <Field
+                                    className="form-control"
+                                    as="select"
+                                    name="backup"
+                                    onChange={(e) =>
+                                      this.onChangeBackupSpace(e)
+                                    }
+                                    value={this.state.backup}
+                                  >
+                                    <option value="">لازم ندارم</option>
+                                    {this.props.backups.map((backupSpace) => (
+                                      <option
+                                        value={backupSpace.id}
+                                        key={backupSpace.id}
+                                      >
+                                        {formatSpace(
+                                          backupSpace.space,
+                                          'en',
+                                          true
+                                        )}{' '}
+                                        ، قیمت :‌{' '}
+                                        {formatPriceWithCurrency(
+                                          this.props.currencies,
+                                          backupSpace.currency,
+                                          backupSpace.price
+                                        )}
+                                      </option>
+                                    ))}
+                                  </Field>
+                                  <div className="form-err-msg">
+                                    <ErrorMessage name="backup" />
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div
+                                className={classNames(styles.row, {
+                                  [styles.hidden]:
+                                    this.state.backup.trim() === '',
+                                })}
+                              >
+                                <div>دامنه هاست بکاپ</div>
+                                <div>
+                                  {this.state.backup.trim() !== '' && (
+                                    <>
+                                      <Field
+                                        className="form-control"
+                                        type="text"
+                                        name="domain"
+                                        onChange={(e) => this.onChangeDomain(e)}
+                                        value={this.state.domain}
+                                      />
+                                      <div className="form-err-msg">
+                                        <ErrorMessage name="domain" />
+                                      </div>
+                                    </>
+                                  )}
+                                </div>
+                              </div>
+
+                              <div className={styles.row}>
+                                <div>توضیحات</div>
+                                <div>
+                                  <Field
+                                    className="form-control"
+                                    as="textarea"
+                                    name="description"
+                                    placeholder="درصورتی که میخواید توضیح خاصی در مورد آماده سازی سرور به ما بدهید لطفا آن را در اینجا ذکر کنید"
+                                  />
+                                  <div className="form-err-msg">
+                                    <ErrorMessage name="description" />
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </Row>
+                        <div className={styles.osRow}>
+                          <div>سیستم عامل</div>
+                          <div>
+                            <Field
+                              className="form-control"
+                              as="select"
+                              name="os"
+                              onChange={(e) => this.onChangeOs(e)}
+                              value={this.state.os.id}
+                              custom
+                            >
+                              <optgroup label="Windows">
+                                {this.props.oses
+                                  .filter((i) => i.base === 'windows')
+                                  .map((os) => (
+                                    <option value={os.id} key={os.id}>
+                                      {os.title}
+                                    </option>
+                                  ))}
+                              </optgroup>
+                              <optgroup label="linux">
+                                {this.props.oses
+                                  .filter((i) => i.base === 'linux')
+                                  .map((os) => (
+                                    <option value={os.id} key={os.id}>
+                                      {os.title}
+                                    </option>
+                                  ))}
+                              </optgroup>
+                            </Field>
+                            <div className="form-err-msg">
+                              <ErrorMessage name="os" />
+                            </div>
+                          </div>
+                        </div>
+                        <div
+                          className={classNames(styles.alert, {
+                            [styles.show]:
+                              this.state.os.base === 'windows' &&
+                              this.state.license !== '-',
+                          })}
                         >
-                          <optgroup label="Windows">
-                            {this.props.oses
-                              .filter((i) => i.base === 'windows')
-                              .map((os) => (
-                                <option value={os.id} key={os.id}>
-                                  {os.title}
-                                </option>
-                              ))}
-                          </optgroup>
-                          <optgroup label="linux">
-                            {this.props.oses
-                              .filter((i) => i.base === 'linux')
-                              .map((os) => (
-                                <option value={os.id} key={os.id}>
-                                  {os.title}
-                                </option>
-                              ))}
-                          </optgroup>
-                        </Form.Control>
+                          توجه داشته باشید که لایسنس ها مربوط به برنامه هایی
+                          هستند که فقط بر روی سیستم عامل های لینوکس نصب میشوند
+                        </div>
+                        <Row className="justify-content-center">
+                          <Col md={6}>
+                            <Button
+                              className={styles.nextStepBtn}
+                              disabled={formik.isSubmitting}
+                              type="submit"
+                            >
+                              {formik.isSubmitting ? (
+                                <i className="fas fa-spinner"></i>
+                              ) : (
+                                'ادامه'
+                              )}
+                            </Button>
+                          </Col>
+                        </Row>
                       </div>
-                    </div>
-                    <div
-                      className={classNames(styles.alert, {
-                        [styles.show]:
-                          this.state.os.base === 'windows' &&
-                          this.state.license !== '-',
-                      })}
-                    >
-                      توجه داشته باشید که لایسنس ها مربوط به برنامه هایی هستند
-                      که فقط بر روی سیستم عامل های لینوکس نصب میشوند
-                    </div>
-                    <Row className="justify-content-center">
-                      <Col md={6}>
-                        <Button className={styles.nextStepBtn} type="submit">
-                          {/* {this.props.cart.loading ? (
-                            <i className="fas fa-spinner"></i>
-                          ) : (
-                            'ادامه'
-                          )} */}
-                          ادامه
-                        </Button>
-                      </Col>
-                    </Row>
-                  </div>
-                </Form>
+                    </Form>
+                  )}
+                </Formik>
               </Col>
             </Row>
           </Container>
@@ -405,8 +498,13 @@ class OrderDedicatedServer extends React.Component<IProps, IState> {
   }
 }
 
-export default connect((state: RootState) => {
-  return {
-    currencies: state.currencies,
-  };
-})(OrderDedicatedServer);
+export default withRouter(
+  connect(
+    (state: RootState) => {
+      return {
+        currencies: state.currencies,
+      };
+    },
+    { setCartItems }
+  )(OrderDedicatedServer)
+);

@@ -50,8 +50,8 @@ class Review extends React.Component<IProps, ReviewState> {
         return <LicenseRow data={data} />;
       case 'host':
         return <BackupSpaceRow data={data} />;
-      // case 'dedicated_server':
-      //   return <DedicatedServerRow data={data} />;
+      case 'server_dedicated':
+        return <DedicatedServerRow data={data} />;
       // case 'vps_server':
       //   return <VpsRow data={data} />;
       // case 'domain':

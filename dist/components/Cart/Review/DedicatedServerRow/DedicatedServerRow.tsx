@@ -1,71 +1,92 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { deleteFromCart } from '../../../../redux/actions';
-import { cart } from '../../../../redux/reducers/cartReducer';
 import { Spinner } from 'react-bootstrap';
-import { formatPrice } from '../../../helper/formatPrice';
+import { AsyncThunkAction, RootState } from '../../../../store';
+import { deleteItem } from '../../../../store/Cart';
 import styles from '../productRow.module.scss';
+import IDedicatedProduct from '../../../../helper/types/cart/dedicated';
+import { formatPriceWithCurrency } from '../../../../store/Currencies';
+import { NotificationManager } from 'react-notifications';
 
-export interface DedicatedServerRowProps {
-  data: any;
-  deleteFromCart: (id: number) => void;
-  cart: cart;
+interface IProps {
+  data: IDedicatedProduct;
+  deleteItem: AsyncThunkAction<{ status: boolean }, string | number>;
+  currencies: RootState['currencies'];
 }
 
-export interface DedicatedServerRowState {}
+interface IState {
+  loading: boolean;
+}
 
-class DedicatedServerRow extends React.Component<
-  DedicatedServerRowProps,
-  DedicatedServerRowState
-> {
-  constructor(props: DedicatedServerRowProps) {
+class DedicatedServerRow extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
-    this.state = {};
+    this.state = {
+      loading: false,
+    };
+  }
+  async deleteItem() {
+    this.setState({ loading: true });
+
+    try {
+      await this.props.deleteItem(this.props.data.id).unwrap();
+    } catch (error) {
+      NotificationManager.error(
+        'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
+        'خطا'
+      );
+    } finally {
+      this.setState({ loading: false });
+    }
   }
 
   render() {
-    const { id, title, discout, price, currency, period } = this.props.data;
+    const product = this.props.data;
 
     return (
-      <>
+      <React.Fragment>
         <td>
-          سرور اختصاصی {title} <br />
+          سرور اختصاصی {product.plan.title} <br />
         </td>
         <td className={styles.noper}></td>
+        <td>برای {product.price / product.plan.price} ماه</td>
         <td>
-          برای {period.value} {period.type === 'monthly' ? 'ماه' : 'سال'}
+          {this.props.data.discount
+            ? `${formatPriceWithCurrency(
+                this.props.currencies,
+                this.props.data.currency,
+                this.props.data.discount
+              )}`
+            : `0 ${this.props.currencies.active.title}`}
         </td>
         <td>
-          {discout
-            ? `${formatPrice(discout)} ${currency.title}`
-            : `0 ${currency.title}`}
+          {this.props.data.discount
+            ? `${formatPriceWithCurrency(
+                this.props.currencies,
+                this.props.data.currency,
+                this.props.data.price
+              )}`
+            : `0 ${this.props.currencies.active.title}`}
         </td>
         <td>
-          {formatPrice(price)} {currency.title}
-        </td>
-        <td>
-          <button
-            className={styles.deleteBtn}
-            onClick={() => this.props.deleteFromCart(id)}
-          >
-            {this.props.cart.itemsInLoading.some(
-              (productId) => productId === id
-            ) ? (
+          <button className={styles.deleteBtn} onClick={this.deleteItem}>
+            {this.state.loading ? (
               <Spinner animation="border" size="sm" />
             ) : (
               'حذف'
             )}
           </button>
         </td>
-      </>
+      </React.Fragment>
     );
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    cart: state.cart,
-  };
-};
-
-export default connect(mapStateToProps, { deleteFromCart })(DedicatedServerRow);
+export default connect(
+  (state: RootState) => {
+    return {
+      currencies: state.currencies,
+    };
+  },
+  { deleteItem }
+)(DedicatedServerRow);

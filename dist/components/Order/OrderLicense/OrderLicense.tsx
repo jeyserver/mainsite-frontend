@@ -1,12 +1,5 @@
 import * as React from 'react';
-import {
-  ButtonToolbar,
-  Col,
-  Container,
-  Row,
-  Spinner,
-  Table,
-} from 'react-bootstrap';
+import { Col, Container, Row, Spinner, Table } from 'react-bootstrap';
 import OrderSteps from '../../Jobs/OrderSteps';
 import PagesHeader from '../../PagesHeader/PagesHeader';
 import styles from './OrderLicense.module.scss';
@@ -20,11 +13,14 @@ import { RootState } from '../../../store';
 import ILicense from '../../../helper/types/products/License/plan';
 import backend from '../../../axios-config';
 import showErrorMsg from '../../../helper/showErrorMsg';
+import { setItems as setCartItems } from '../../../store/Cart';
+import { nanoid } from '@reduxjs/toolkit';
 
 interface IProps {
   plan: ILicense;
   router: NextRouter;
   currencies: RootState['currencies'];
+  setCartItems: typeof setCartItems;
 }
 
 interface IInputs {
@@ -35,25 +31,28 @@ interface IInputs {
 }
 
 class OrderLicense extends React.Component<IProps> {
-  constructor(props: IProps) {
-    super(props);
-    this.state = {};
-    this.onSubmit = this.onSubmit.bind(this);
-  }
-
   onSubmit(
     values: IInputs,
-    { setSubmitting, setErrors, resetForm }: FormikHelpers<IInputs>
+    { setSubmitting, setErrors }: FormikHelpers<IInputs>
   ) {
     const os = this.props.plan.registrar === 1 && `&os=${values.os}`;
+    const fakeProduct = {
+      id: nanoid(),
+      price: 2.97,
+      discount: 0,
+      number: 1,
+      currency: this.props.plan.currency,
+      product: 'license',
+      plan: this.props.plan,
+    };
+
     backend
       .post(
-        `/order/licenses/11?ajax=1&period=${Number(values.period)}&hostname=${
-          values.hostname
-        }&ip=${values.ip}${os}`
+        `/order/licenses/${this.props.plan.id}?ajax=1&period=${values.period}&hostname=${values.hostname}&ip=${values.ip}${os}`
       )
       .then((res) => {
         if (res.data.status) {
+          this.props.setCartItems([fakeProduct]);
           this.props.router.push('/order/cart/review');
         } else {
           res.data.error.map((error) => {
@@ -292,6 +291,9 @@ class OrderLicense extends React.Component<IProps> {
   }
 }
 
-export default connect((state: RootState) => {
-  return { currencies: state.currencies };
-})(withRouter(OrderLicense));
+export default connect(
+  (state: RootState) => {
+    return { currencies: state.currencies };
+  },
+  { setCartItems }
+)(withRouter(OrderLicense));

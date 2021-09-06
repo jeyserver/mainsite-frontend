@@ -1,13 +1,7 @@
-import { ICurrency } from '../../../../pages/_app';
 import { IHostPlan } from '../../products/Host/plan';
+import IProduct from '../product';
 
-interface IHostProduct {
-  id: number;
-  price: number;
-  discount: number;
-  number: number;
-  currency: ICurrency | number;
-  product: string;
+interface IHostProduct extends IProduct {
   plan: IHostPlan;
 }
 

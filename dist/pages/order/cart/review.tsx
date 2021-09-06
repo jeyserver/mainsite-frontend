@@ -3,26 +3,11 @@ import Head from 'next/head';
 import Review from '../../../components/Cart/Review/Review';
 import Layout from '../../../components/Layout/Layout';
 import { connect } from 'react-redux';
-import { setCartItems } from '../../../redux/actions';
-import { pageProps } from './../../_app';
+import { IPageProps } from './../../_app';
 
-export interface IndexProps extends pageProps {
-  cartItems: any;
-  setCartItems: (cartItems) => void;
-}
+interface IProps extends IPageProps {}
 
-export interface IndexState {}
-
-class Index extends React.Component<IndexProps, IndexState> {
-  constructor(props: IndexProps) {
-    super(props);
-    this.state = {};
-  }
-
-  componentDidMount() {
-    this.props.setCartItems(this.props.cartItems);
-  }
-
+class Index extends React.Component<IProps> {
   render() {
     return (
       <div dir="rtl">
@@ -53,14 +38,14 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const cartItemsRes = await fetch(
-    `https://jsonblob.com/api/jsonBlob/91805bd8-e961-11eb-9e75-7fa330839e1c`
+  const respone = await fetch(
+    `${process.env.SCHEMA}://${process.env.DOMAIN}/${locale}/order/cart/review?ajax=1`
   );
-  const cartItems = await cartItemsRes.json();
+  const data = await respone.json();
 
   return {
-    props: { cartItems },
+    props: { ...data },
   };
 }
 
-export default connect(null, { setCartItems })(Index);
+export default connect(null)(Index);

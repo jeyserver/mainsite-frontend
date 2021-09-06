@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { formatPrice } from '../../helper/formatPrice';
 import PagesHeader from '../../PagesHeader/PagesHeader';
 import OrderSteps from '../OrderSteps/OrderSteps';
-import BackupSpaceRow from './BackupSpaceRow/BackupSpaceRow';
+import BackupSpaceRow from './HostRow/HostRow';
 import DedicatedServerRow from './DedicatedServerRow/DedicatedServerRow';
 import DomainRow from './DomainRow/DomainRow';
 import HostRow from './HostRow/HostRow';
@@ -13,36 +13,33 @@ import LicenseRow from './LicenseRow/LicenseRow';
 import styles from './Review.module.scss';
 import VpsRow from './VpsRow/VpsRow';
 import { setDiscount, clearCart } from '../../../redux/actions';
-import { cart } from '../../../redux/reducers/cartReducer';
 import { NextRouter, withRouter } from 'next/dist/client/router';
+import { RootState } from '../../../store';
 
-export interface ReviewProps {
-  cart: cart;
+interface IProps {
   setDiscount: (code: string) => void;
   clearCart: () => void;
   router: NextRouter;
+  cart: RootState['cart'];
+  currencies: RootState['currencies'];
 }
 
-export interface ReviewState {
+interface ReviewState {
   discountCode: string;
   isDiscountFormValidated: boolean;
 }
 
-class Review extends React.Component<ReviewProps, ReviewState> {
-  constructor(props: ReviewProps) {
+class Review extends React.Component<IProps, ReviewState> {
+  constructor(props: IProps) {
     super(props);
     this.state = {
       discountCode: '',
       isDiscountFormValidated: false,
     };
-    this.discountOnchange = this.discountOnchange.bind(this);
-    this.onSubmitDisountCode = this.onSubmitDisountCode.bind(this);
-    this.clearCart = this.clearCart.bind(this);
-    this.goToCompleteOrder = this.goToCompleteOrder.bind(this);
   }
 
   componentDidUpdate() {
-    if (this.props.cart.cartItems.length === 0) {
+    if (this.props.cart.items.length === 0) {
       this.props.router.push('/');
     }
   }
@@ -51,16 +48,16 @@ class Review extends React.Component<ReviewProps, ReviewState> {
     switch (row) {
       case 'license':
         return <LicenseRow data={data} />;
-      case 'backup_space':
-        return <BackupSpaceRow data={data} />;
-      case 'dedicated_server':
-        return <DedicatedServerRow data={data} />;
-      case 'vps_server':
-        return <VpsRow data={data} />;
-      case 'domain':
-        return <DomainRow data={data} />;
       case 'host':
-        return <HostRow data={data} />;
+        return <BackupSpaceRow data={data} />;
+      // case 'dedicated_server':
+      //   return <DedicatedServerRow data={data} />;
+      // case 'vps_server':
+      //   return <VpsRow data={data} />;
+      // case 'domain':
+      //   return <DomainRow data={data} />;
+      // case 'host':
+      //   return <HostRow data={data} />;
       default:
         return null;
     }
@@ -84,29 +81,25 @@ class Review extends React.Component<ReviewProps, ReviewState> {
     this.setState({ isDiscountFormValidated: true });
   }
 
-  clearCart() {
-    this.props.clearCart();
-  }
-
   goToCompleteOrder() {
     this.props.router.push('/order/cart/complete');
   }
 
   render() {
-    const totalCost = this.props.cart.cartItems.reduce(
+    const totalCost = this.props.cart.items.reduce(
       (accumulator, currentValue) => (accumulator += currentValue.price),
       0
     );
 
     const totalDiscount =
-      this.props.cart.cartItems.reduce((accumulator, currentValue) => {
-        if (currentValue.discount !== '-') {
+      this.props.cart.items.reduce((accumulator, currentValue) => {
+        if (currentValue.discount !== 0) {
           return (accumulator += currentValue.discount);
         } else {
           return (accumulator += 0);
         }
       }, 0) +
-      totalCost * (this.props.cart.discount.percentage / 100);
+      totalCost * 0;
 
     return (
       <section>
@@ -133,10 +126,10 @@ class Review extends React.Component<ReviewProps, ReviewState> {
                       </tr>
                     </thead>
                     <tbody className="text-align">
-                      {this.props.cart.cartItems.map((cartItem) => {
+                      {this.props.cart.items.map((cartItem) => {
                         return (
                           <tr key={cartItem.id}>
-                            {this.renderRow(cartItem.type, cartItem)}
+                            {this.renderRow(cartItem.product, cartItem)}
                           </tr>
                         );
                       })}
@@ -167,7 +160,7 @@ class Review extends React.Component<ReviewProps, ReviewState> {
                   <Col xs={12} className={styles.well}>
                     <Col md={8}>
                       <Form
-                        onSubmit={this.onSubmitDisountCode}
+                        onSubmit={(e) => this.onSubmitDisountCode(e)}
                         noValidate
                         validated={this.state.isDiscountFormValidated}
                         id="discount-form"
@@ -176,19 +169,19 @@ class Review extends React.Component<ReviewProps, ReviewState> {
                           <Form.Label>کد تخفیف</Form.Label>
                           <Form.Control
                             type="text"
-                            onChange={this.discountOnchange}
+                            onChange={(e) => this.discountOnchange(e)}
                             value={this.state.discountCode}
                             required
                           />
                           <Form.Control.Feedback type="invalid">
                             لطفا کد تخفیف خود را وارد کنید
                           </Form.Control.Feedback>
-                          {this.props.cart.discount.percentage !== 0 && (
+                          {/* {this.props.cart.discount.percentage !== 0 && (
                             <Form.Control.Feedback type="valid">
                               تخفیف {this.props.cart.discount.percentage} درصدی
                               کد {this.props.cart.discount.code} اعمال شد.
                             </Form.Control.Feedback>
-                          )}
+                          )} */}
                         </Form.Group>
                       </Form>
                     </Col>
@@ -206,26 +199,27 @@ class Review extends React.Component<ReviewProps, ReviewState> {
 
                       <button
                         className={styles.checkDiscountCode}
-                        disabled={this.props.cart.discount.loading}
                         type="submit"
                         form="discount-form"
                       >
-                        {this.props.cart.discount.loading ? (
+                        {/* {this.props.cart.discount.loading ? (
                           <Spinner animation="border" size="sm" />
                         ) : (
                           'بررسی کد تخفیف'
-                        )}
+                        )} */}
+                        بررسی کد تخفیف
                       </button>
 
                       <button
                         className={styles.restartOrder}
-                        onClick={this.clearCart}
+                        onClick={this.props.clearCart}
                       >
-                        {this.props.cart.loading ? (
+                        {/* {this.props.cart.loading ? (
                           <Spinner animation="border" size="sm" />
                         ) : (
                           'شروع دوباره'
-                        )}
+                        )} */}
+                        شروع دوباره
                       </button>
                     </div>
                   </Col>
@@ -239,12 +233,12 @@ class Review extends React.Component<ReviewProps, ReviewState> {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    cart: state.cart,
-  };
-};
-
-export default connect(mapStateToProps, { setDiscount, clearCart })(
-  withRouter(Review)
-);
+export default connect(
+  (state: RootState) => {
+    return {
+      cart: state.cart,
+      currencies: state.currencies,
+    };
+  },
+  { setDiscount, clearCart }
+)(withRouter(Review));

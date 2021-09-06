@@ -3,7 +3,6 @@ import { Container, Row, Col, Button } from 'react-bootstrap';
 import PagesHeader from '../../PagesHeader/PagesHeader';
 import OrderSteps from './OrderSteps/OrderSteps';
 import styles from './OrderVPS.module.scss';
-import { formatHards } from '../../helper/formatHards';
 import classNames from 'classnames';
 import { Alert } from 'react-bootstrap';
 import CountryFlagTooltip from '../../../helper/components/CountryFlagTooltip/CountryFlagTooltip';
@@ -15,11 +14,16 @@ import IOS from '../../../helper/types/products/VPS/os';
 import { Formik, FormikHelpers, Form, Field, ErrorMessage } from 'formik';
 import { formatSpace } from '../../../helper/formatSpace';
 import translateCountryNameToPersian from '../../../helper/translateCountryNameToPersian';
-import getPlanPP from '../../../helper/getPlanPP';
+import { NotificationManager } from 'react-notifications';
 import { formatPriceWithCurrency } from '../../../store/Currencies';
 import { connect } from 'react-redux';
 import { RootState } from '../../../store';
 import getHardType from '../../../helper/getHardType';
+import backend from '../../../axios-config';
+import showErrorMsg from '../../../helper/showErrorMsg';
+import { NextRouter, withRouter } from 'next/router';
+import { nanoid } from '@reduxjs/toolkit';
+import { setItems as setCartItems } from '../../../store/Cart';
 
 interface IProps {
   plan: IVPSPlan;
@@ -28,12 +32,16 @@ interface IProps {
   hosts: IHostPlan[];
   oses: IOS[];
   currencies: RootState['currencies'];
+  router: NextRouter;
+  setCartItems: typeof setCartItems;
 }
 
 interface OrderVPSState {
-  backupSpace: string;
+  backup: string;
   license: string;
   os: IOS;
+  domain: string;
+  showDomainAlert: boolean;
 }
 
 interface IInputs {
@@ -51,22 +59,16 @@ class OrderVPS extends React.Component<IProps, OrderVPSState> {
   constructor(props: IProps) {
     super(props);
     this.state = {
-      backupSpace: '-',
+      backup: '',
       os: this.props.oses.filter((i) => i.base === 'windows')[0],
-      license: '-',
+      license: '',
+      domain: '',
+      showDomainAlert: false,
     };
-    this.onChangeLicense = this.onChangeLicense.bind(this);
-    this.onChangeBackupSpace = this.onChangeBackupSpace.bind(this);
-    this.onChangeOs = this.onChangeOs.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
   }
 
-  onChangeLicense(e) {
-    this.setState({ license: e.target.value });
-  }
-
-  onChangeBackupSpace(e) {
-    this.setState({ backupSpace: e.target.value });
+  onChangeField(e, field: 'backup' | 'license' | 'domain') {
+    this.setState({ [field]: e.target.value });
   }
 
   onChangeOs(e) {
@@ -76,7 +78,102 @@ class OrderVPS extends React.Component<IProps, OrderVPSState> {
     this.setState({ os: selected });
   }
 
-  onSubmit(values: IInputs, { setSubmitting }: FormikHelpers<IInputs>) {}
+  onSubmit(
+    values: IInputs,
+    { setSubmitting, setErrors, setFieldError }: FormikHelpers<IInputs>
+  ) {
+    const properties = `&period=${values.period}&license=${
+      this.state.license
+    }&backup=${this.state.backup}${
+      this.state.domain && `&domain=${this.state.domain}`
+    }&ram=${values.ram}&ip=${values.ip}&hard=${values.hard}&os=${
+      this.state.os.id
+    }`;
+
+    let fakeProducts = [];
+
+    const licensePlan = this.props.licenses.find(
+      (license) => license.id === Number(this.state.license)
+    );
+
+    if (licensePlan) {
+      const fakeLicense = {
+        id: nanoid(),
+        price: licensePlan.price * Number(values.period),
+        discount: 0,
+        number: 1,
+        currency: this.props.plan.currency,
+        product: 'license',
+        plan: licensePlan,
+      };
+      fakeProducts = [...fakeProducts, fakeLicense];
+    }
+    const hostPlan = this.props.hosts.find(
+      (host) => host.id === Number(this.state.backup)
+    );
+
+    if (hostPlan) {
+      const fakeHost = {
+        id: nanoid(),
+        price: hostPlan.price * Number(values.period),
+        discount: 0,
+        number: 1,
+        currency: this.props.plan.currency,
+        product: 'host',
+        plan: {
+          ...hostPlan,
+          domain: this.state.domain,
+        },
+      };
+
+      fakeProducts = [...fakeProducts, fakeHost];
+    }
+
+    const fakeVps = {
+      id: nanoid(),
+      price: this.props.plan.price * Number(values.period),
+      discount: 0,
+      number: 1,
+      currency: this.props.plan.currency,
+      product: 'server_vps',
+      plan: {
+        ...this.props.plan,
+        addons: {
+          hard: this.props.addons.find((i) => i.id === Number(values.hard)),
+          ip: values.ip,
+        },
+      },
+    };
+
+    fakeProducts = [...fakeProducts, fakeVps];
+
+    backend
+      .post(`/order/server/vps/${this.props.plan.id}?ajax=1${properties}`)
+      .then((res) => {
+        if (res.data.status) {
+          this.props.setCartItems(fakeProducts);
+          console.log(fakeProducts);
+          this.props.router.push('/order/cart/review');
+        } else {
+          res.data.error.map((error) => {
+            setErrors({ [error.input]: showErrorMsg(error.code) });
+          });
+          if (!res.data.error[0].code && this.state.domain === '') {
+            this.setState({ showDomainAlert: true });
+            setFieldError('domain', showErrorMsg('data_validation'));
+          }
+        }
+      })
+      .catch(() => {
+        NotificationManager.error(
+          'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
+          'خطا'
+        );
+      })
+      .finally(() => {
+        setSubmitting(false);
+      });
+  }
 
   getRam(ram: string) {
     return parseInt(ram.replace(/^\D+/g, '').match(/\d+/)[0]);
@@ -97,7 +194,7 @@ class OrderVPS extends React.Component<IProps, OrderVPSState> {
               <Col md={9}>
                 <Formik
                   initialValues={{
-                    period: '',
+                    period: '1',
                     license: '',
                     backup: '',
                     domain: '',
@@ -115,11 +212,11 @@ class OrderVPS extends React.Component<IProps, OrderVPSState> {
                           {this.props.plan.title}
                         </h2>
                         <div className={styles.info}>
-                          {/* {this.state.isFormInvalid && (
+                          {this.state.showDomainAlert && (
                             <Alert
                               variant="danger"
                               onClose={() =>
-                                this.setState({ isFormInvalid: false })
+                                this.setState({ showDomainAlert: false })
                               }
                               className={styles.backupDangerAlert}
                               dismissible
@@ -133,7 +230,7 @@ class OrderVPS extends React.Component<IProps, OrderVPSState> {
                                 وارد نمایید.
                               </p>
                             </Alert>
-                          )} */}
+                          )}
 
                           <p>{this.props.plan.title}</p>
                           <div>
@@ -202,81 +299,90 @@ class OrderVPS extends React.Component<IProps, OrderVPSState> {
                           <br />
                           <div className={styles.rowsWrapper}>
                             <div className={styles.rows}>
-                              {this.props.licenses && (
-                                <div className={styles.row}>
-                                  <div>لایسنس</div>
-                                  <div>
-                                    <Field
-                                      as="select"
-                                      onChange={this.onChangeLicense}
-                                      value={this.state.license}
-                                      name="license"
-                                    >
-                                      <option value="-">لازم ندارم</option>
-                                      {this.props.licenses.map((license) => (
-                                        <option
-                                          value={license.id}
-                                          key={license.id}
-                                        >
-                                          {license.title} قیمت:{' '}
-                                          {formatPriceWithCurrency(
-                                            this.props.currencies,
-                                            license.currency,
-                                            license.price
-                                          )}
-                                        </option>
-                                      ))}
-                                    </Field>
+                              <div className={styles.row}>
+                                <div>لایسنس</div>
+                                <div>
+                                  <Field
+                                    as="select"
+                                    onChange={(e) =>
+                                      this.onChangeField(e, 'license')
+                                    }
+                                    value={this.state.license}
+                                    name="license"
+                                  >
+                                    <option value="">لازم ندارم</option>
+                                    {this.props.licenses.map((license) => (
+                                      <option
+                                        value={license.id}
+                                        key={license.id}
+                                      >
+                                        {license.title} قیمت:{' '}
+                                        {formatPriceWithCurrency(
+                                          this.props.currencies,
+                                          license.currency,
+                                          license.price
+                                        )}
+                                      </option>
+                                    ))}
+                                  </Field>
+                                  <div className="form-err-msg">
+                                    <ErrorMessage name="license" />
                                   </div>
                                 </div>
-                              )}
+                              </div>
 
-                              {this.props.hosts && (
-                                <div className={styles.row}>
-                                  <div>فضای بکاپ</div>
-                                  <div>
-                                    <Field
-                                      as="select"
-                                      name="backup"
-                                      onChange={this.onChangeBackupSpace}
-                                      value={this.state.backupSpace}
-                                      className="form-control"
-                                    >
-                                      <option value="-">لازم ندارم</option>
-                                      {this.props.hosts.map((host) => (
-                                        <option value={host.id} key={host.id}>
-                                          {formatSpace(host.space, 'en', true)}{' '}
-                                          ، قیمت :{' '}
-                                          {formatPriceWithCurrency(
-                                            this.props.currencies,
-                                            host.currency,
-                                            host.price
-                                          )}{' '}
-                                          ماهیانه
-                                        </option>
-                                      ))}
-                                    </Field>
-                                    <div className="form-err-msg">
-                                      <ErrorMessage name="backup" />
-                                    </div>
+                              <div className={styles.row}>
+                                <div>فضای بکاپ</div>
+                                <div>
+                                  <Field
+                                    as="select"
+                                    name="backup"
+                                    onChange={(e) =>
+                                      this.onChangeField(e, 'backup')
+                                    }
+                                    value={this.state.backup}
+                                    className="form-control"
+                                  >
+                                    <option value="-">لازم ندارم</option>
+                                    {this.props.hosts.map((host) => (
+                                      <option value={host.id} key={host.id}>
+                                        {formatSpace(host.space, 'en', true)} ،
+                                        قیمت :{' '}
+                                        {formatPriceWithCurrency(
+                                          this.props.currencies,
+                                          host.currency,
+                                          host.price
+                                        )}{' '}
+                                        ماهیانه
+                                      </option>
+                                    ))}
+                                  </Field>
+                                  <div className="form-err-msg">
+                                    <ErrorMessage name="backup" />
                                   </div>
                                 </div>
-                              )}
+                              </div>
 
                               <div
                                 className={classNames(styles.row, {
-                                  [styles.hidden]:
-                                    this.state.backupSpace === '-',
+                                  [styles.hidden]: this.state.backup === '',
                                 })}
                               >
                                 <div>دامنه هاست بکاپ</div>
                                 <div>
-                                  {this.state.backupSpace !== '-' && (
+                                  {this.state.backup !== '-' && (
                                     <>
                                       <Field
                                         type="text"
                                         name="domain"
                                         className="form-control"
+                                        onChange={(e) => {
+                                          this.onChangeField(e, 'domain');
+                                          this.setState({
+                                            showDomainAlert: false,
+                                          });
+                                        }}
+                                        value={this.state.domain}
                                       />
                                       <div className="form-err-msg">
                                         <ErrorMessage name="domain" />
@@ -286,116 +392,106 @@ class OrderVPS extends React.Component<IProps, OrderVPSState> {
                                 </div>
                               </div>
 
-                              {this.props.addons.some(
-                                (addon) => addon.addon.type === AddonType.Ram
-                              ) && (
-                                <div className={styles.row}>
-                                  <div>حافظه موقت</div>
-                                  <div>
-                                    <Field
-                                      as="select"
-                                      name="ram"
-                                      className="form-control"
-                                    >
-                                      <option value="-">
-                                        {formatSpace(this.props.plan.ram, 'fa')}
-                                      </option>
-                                      {this.props.addons
-                                        .filter(
-                                          (addon) =>
-                                            addon.addon.type === AddonType.Ram
-                                        )
-                                        .map((ram) => (
-                                          <option value={ram.id} key={ram.id}>
-                                            {formatSpace(
-                                              this.props.plan.ram +
-                                                this.getRam(ram.addon.title),
-                                              'fa',
-                                              false,
-                                              2
-                                            )}{' '}
-                                            قیمت{' '}
-                                            {formatPriceWithCurrency(
-                                              this.props.currencies,
-                                              ram.currency,
-                                              ram.price
-                                            )}{' '}
-                                            ماهیانه
-                                          </option>
-                                        ))}
-                                    </Field>
+                              <div className={styles.row}>
+                                <div>حافظه موقت</div>
+                                <div>
+                                  <Field
+                                    as="select"
+                                    name="ram"
+                                    className="form-control"
+                                  >
+                                    <option>
+                                      {formatSpace(this.props.plan.ram, 'fa')}
+                                    </option>
+                                    {this.props.addons
+                                      .filter(
+                                        (addon) =>
+                                          addon.addon.type === AddonType.Ram
+                                      )
+                                      .map((ram) => (
+                                        <option value={ram.id} key={ram.id}>
+                                          {formatSpace(
+                                            this.props.plan.ram +
+                                              this.getRam(ram.addon.title),
+                                            'fa',
+                                            false,
+                                            2
+                                          )}{' '}
+                                          قیمت{' '}
+                                          {formatPriceWithCurrency(
+                                            this.props.currencies,
+                                            ram.currency,
+                                            ram.price
+                                          )}{' '}
+                                          ماهیانه
+                                        </option>
+                                      ))}
+                                  </Field>
+                                </div>
+                              </div>
+
+                              <div className={styles.row}>
+                                <div>آي پي</div>
+                                <div>
+                                  <Field as="select" name="ip" custom>
+                                    <option value="">1 عدد</option>
+                                    {Array(3)
+                                      .fill('')
+                                      .map((ip, index) => (
+                                        <option
+                                          value={index + 1}
+                                          key={index + 1}
+                                        >
+                                          {index + 2} عدد یک ماه قیمت{' '}
+                                          {formatPriceWithCurrency(
+                                            this.props.currencies,
+                                            this.props.plan.currency,
+                                            this.props.plan.addonip *
+                                              (index + 1)
+                                          )}
+                                        </option>
+                                      ))}
+                                  </Field>
+                                  <div className="form-err-msg">
+                                    <ErrorMessage name="ip" />
                                   </div>
                                 </div>
-                              )}
+                              </div>
 
-                              {this.props.plan.addonip && (
-                                <div className={styles.row}>
-                                  <div>آي پي</div>
-                                  <div>
-                                    <Field as="select" name="ip" custom>
-                                      <option value="-">1 عدد</option>
-                                      {Array(3)
-                                        .fill('')
-                                        .map((ip, index) => (
-                                          <option
-                                            value={index + 1}
-                                            key={index + 1}
-                                          >
-                                            {index + 2} عدد یک ماه قیمت{' '}
-                                            {formatPriceWithCurrency(
-                                              this.props.currencies,
-                                              this.props.plan.currency,
-                                              this.props.plan.addonip *
-                                                (index + 1)
-                                            )}
-                                          </option>
-                                        ))}
-                                    </Field>
+                              <div className={styles.row}>
+                                <div>هارد</div>
+                                <div>
+                                  <Field
+                                    as="select"
+                                    name="hard"
+                                    className="form-control"
+                                  >
+                                    <option>
+                                      {formatSpace(this.props.plan.hard, 'fa')}{' '}
+                                      {getHardType(this.props.plan.hardtype)}
+                                    </option>
+
+                                    {this.props.addons
+                                      .filter(
+                                        (addon) =>
+                                          addon.addon.type === AddonType.Hard
+                                      )
+                                      .map((hard) => (
+                                        <option value={hard.id} key={hard.id}>
+                                          {hard.addon.title} اضافی یک ماه قیمت{' '}
+                                          {formatPriceWithCurrency(
+                                            this.props.currencies,
+                                            hard.currency,
+                                            hard.price
+                                          )}
+                                        </option>
+                                      ))}
+                                  </Field>
+                                  <div className="form-err-msg">
+                                    <ErrorMessage name="hard" />
                                   </div>
                                 </div>
-                              )}
-
-                              {this.props.addons.some(
-                                (addon) => addon.addon.type === AddonType.Hard
-                              ) && (
-                                <div className={styles.row}>
-                                  <div>هارد</div>
-                                  <div>
-                                    <Field
-                                      as="select"
-                                      name="hard"
-                                      className="form-control"
-                                    >
-                                      <option value="-">
-                                        {formatSpace(
-                                          this.props.plan.hard,
-                                          'fa'
-                                        )}{' '}
-                                        {getHardType(this.props.plan.hardtype)}
-                                      </option>
-
-                                      {this.props.addons
-                                        .filter(
-                                          (addon) =>
-                                            addon.addon.type === AddonType.Hard
-                                        )
-                                        .map((hard) => (
-                                          <option value={hard.id} key={hard.id}>
-                                            {hard.addon.title} اضافی یک ماه قیمت{' '}
-                                            {formatPriceWithCurrency(
-                                              this.props.currencies,
-                                              hard.currency,
-                                              hard.price
-                                            )}
-                                          </option>
-                                        ))}
-                                    </Field>
-                                    <div className="form-err-msg">
-                                      <ErrorMessage name="hard" />
-                                    </div>
-                                  </div>
-                                </div>
-                              )}
+                              </div>
                             </div>
                           </div>
                         </Row>
@@ -414,7 +510,7 @@ class OrderVPS extends React.Component<IProps, OrderVPSState> {
                               <Field
                                 as="select"
                                 name="os"
-                                onChange={this.onChangeOs}
+                                onChange={(e) => this.onChangeOs(e)}
                                 value={this.state.os.id}
                               >
                                 <optgroup label="Windows">
@@ -463,7 +559,6 @@ class OrderVPS extends React.Component<IProps, OrderVPSState> {
                               ) : (
                                 'ادامه'
                               )}
-                              ادامه
                             </Button>
                           </Col>
                         </Row>
@@ -480,6 +575,9 @@ class OrderVPS extends React.Component<IProps, OrderVPSState> {
   }
 }
 
-export default connect((state: RootState) => {
-  return { currencies: state.currencies };
-})(OrderVPS);
+export default connect(
+  (state: RootState) => {
+    return { currencies: state.currencies };
+  },
+  { setCartItems }
+)(withRouter(OrderVPS));

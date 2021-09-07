@@ -1,13 +1,16 @@
+import * as React from 'react';
 import classNames from 'classnames';
 import Link from 'next/link';
-import * as React from 'react';
 import { Accordion } from 'react-bootstrap';
+import { connect } from 'react-redux';
 import ICategory from '../../../../helper/types/blog/Category';
+import { RootState } from '../../../../store';
 import styles from './CategoryAccordion.module.scss';
 
 interface IProps {
   category: ICategory;
   categories: ICategory[];
+  theme: RootState['theme'];
 }
 
 interface IState {
@@ -24,7 +27,12 @@ class CategoryAccordion extends React.Component<IProps, IState> {
 
   render() {
     return (
-      <Accordion defaultActiveKey="1">
+      <Accordion
+        defaultActiveKey="1"
+        className={classNames({
+          [styles.dark]: this.props.theme.current === 'dark',
+        })}
+      >
         <Accordion.Toggle
           eventKey="0"
           className={classNames(styles.toggle, {
@@ -61,6 +69,7 @@ class CategoryAccordion extends React.Component<IProps, IState> {
                     category={c}
                     categories={this.props.categories}
                     key={c.id}
+                    theme={this.props.theme}
                   />
                 ))}
           </div>
@@ -70,4 +79,8 @@ class CategoryAccordion extends React.Component<IProps, IState> {
   }
 }
 
-export default CategoryAccordion;
+export default connect((state: RootState) => {
+  return {
+    theme: state.theme,
+  };
+})(CategoryAccordion);

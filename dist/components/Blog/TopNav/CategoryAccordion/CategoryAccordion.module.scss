@@ -12,6 +12,10 @@
   font-family: IRANSans;
   font-size: 12px;
 
+  &:focus {
+    outline: none;
+  }
+
   > a {
     &:only-child {
       display: flex;
@@ -32,11 +36,46 @@
 
     .toggle {
       color: #3d3d3d;
+      &:focus {
+        outline: none;
+      }
     }
 
     > div {
       .toggle {
         color: #5a5a5a;
+      }
+    }
+  }
+}
+
+/* ----------------------------- DARK -----------------------------*/
+
+.dark {
+  .toggle {
+    color: #f4f4f4;
+
+    &.open {
+      background-color: #272d3d;
+
+      a,
+      i {
+        color: #f4f4f4;
+      }
+    }
+  }
+
+  .collapse {
+    border-right: 1px solid #3dc4e4;
+    > div {
+      .toggle {
+        color: darken(#f4f4f4, 5);
+      }
+
+      > div {
+        .toggle {
+          color: darken(#f4f4f4, 10);
+        }
       }
     }
   }

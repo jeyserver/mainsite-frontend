@@ -27,11 +27,7 @@ class Index extends React.Component<IProps> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Layout
-          postsForFooter={this.props.postsForFooter}
-          domainsForNavbar={this.props.domainsForNavbar}
-          licensesForNavbar={this.props.licensesForNavbar}
-        >
+        <Layout header={this.props.header} footer={this.props.footer}>
           <BankAccounts bankAccounts={this.props.bankaccounts} />
         </Layout>
       </div>
@@ -48,16 +44,15 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const bankaccountsRes = await fetch(
-    `${process.env.SCHEMA}://${process.env.DOMAIN}/${locale}/bankaccounts?ajax=1`
+  const respone = await fetch(
+    `${process.env.SITE_URL}/${locale}/bankaccounts?ajax=1`
   );
-  const bankaccounts = await bankaccountsRes.json();
+  const data = await respone.json();
 
   return {
     props: {
-      bankaccounts: Object.entries(bankaccounts.accounts).map(
-        (value) => value[1]
-      ),
+      bankaccounts: Object.entries(data.accounts).map((value) => value[1]),
+      ...data,
     },
   };
 }

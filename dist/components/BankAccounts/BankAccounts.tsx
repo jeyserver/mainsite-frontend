@@ -28,7 +28,6 @@ class BankAccounts extends React.Component<IProps, IState> {
     this.state = {
       isFormSubmited: false,
     };
-    this.onSubmit = this.onSubmit.bind(this);
   }
 
   onSubmit(
@@ -55,7 +54,6 @@ class BankAccounts extends React.Component<IProps, IState> {
           res.data.error.map((error) => {
             setErrors({ [error.input]: showErrorMsg(error.code) });
           });
-          setSubmitting(false);
         }
       })
       .catch(() => {
@@ -63,6 +61,8 @@ class BankAccounts extends React.Component<IProps, IState> {
           'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
           'خطا'
         );
+      })
+      .finally(() => {
         setSubmitting(false);
       });
   }

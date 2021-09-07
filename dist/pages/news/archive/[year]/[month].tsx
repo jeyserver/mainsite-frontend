@@ -33,11 +33,7 @@ class Index extends React.Component<IProps> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Layout
-          postsForFooter={this.props.postsForFooter}
-          domainsForNavbar={this.props.domainsForNavbar}
-          licensesForNavbar={this.props.licensesForNavbar}
-        >
+        <Layout header={this.props.header} footer={this.props.footer}>
           <News
             headerTitle={`آرشیو اخبار ${date}`}
             items={this.props.items}
@@ -55,6 +51,10 @@ class Index extends React.Component<IProps> {
 
 export async function getServerSideProps(context) {
   const locale = context.locale;
+  const month = context.query.month;
+  const year = context.query.year;
+  const curPage = context.query.page ? context.query.page : 1;
+  const ipp = context.query.ipp ? context.query.ipp : 10;
 
   if (locale !== 'fa') {
     return {
@@ -62,11 +62,8 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const month = context.query.month;
-  const year = context.query.year;
-
   const respone = await fetch(
-    `${process.env.SCHEMA}://${process.env.DOMAIN}/${locale}/news/archive/${year}/${month}?ajax=1`
+    `${process.env.SITE_URL}/${locale}/news/archive/${year}/${month}?ajax=1&page=${curPage}&ipp=${ipp}`
   );
   const data = await respone.json();
 

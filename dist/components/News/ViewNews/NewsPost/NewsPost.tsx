@@ -9,14 +9,7 @@ interface IProps {
   post: IPost;
 }
 
-interface IState {}
-
-class NewsPost extends React.Component<IProps, IState> {
-  constructor(props: IProps) {
-    super(props);
-    this.state = {};
-  }
-
+class NewsPost extends React.Component<IProps> {
   render() {
     return (
       <React.Fragment>
@@ -39,13 +32,13 @@ class NewsPost extends React.Component<IProps, IState> {
               .locale('fa')
               .format('YYYY')}/${moment(this.props.post.date * 1000)
               .locale('fa')
-              .format('DD')}`}
+              .format('MM')}`}
           >
             <a className={styles.date}>
               <i className="far fa-calendar-alt"></i>{' '}
               {moment(this.props.post.date * 1000)
                 .locale('fa')
-                .format('dddd DD MMM YYYY')}
+                .format('dddd D MMM YYYY')}
             </a>
           </Link>
           <span className={styles.blueLine}>/</span>

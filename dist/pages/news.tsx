@@ -26,11 +26,7 @@ class Index extends React.Component<IndexProps> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Layout
-          postsForFooter={this.props.postsForFooter}
-          domainsForNavbar={this.props.domainsForNavbar}
-          licensesForNavbar={this.props.licensesForNavbar}
-        >
+        <Layout header={this.props.header} footer={this.props.footer}>
           <News
             headerTitle="اطلاعیه و اخبار"
             items={this.props.items}

@@ -19,7 +19,7 @@ interface IProps {
 }
 
 interface IState {
-  selectedCommentForReply: IComment;
+  selectedCommentForReply: IComment | null;
 }
 
 class ViewNews extends React.Component<IProps, IState> {
@@ -28,11 +28,9 @@ class ViewNews extends React.Component<IProps, IState> {
     this.state = {
       selectedCommentForReply: null,
     };
-    this.changeSelectedCommentForReply =
-      this.changeSelectedCommentForReply.bind(this);
   }
 
-  changeSelectedCommentForReply(comment: any) {
+  changeSelectedCommentForReply(comment: IComment) {
     this.setState({ selectedCommentForReply: comment });
     document.querySelector('#comment-form').scrollIntoView(false);
   }
@@ -64,8 +62,8 @@ class ViewNews extends React.Component<IProps, IState> {
                         key={comment.id}
                         comment={comment}
                         comments={this.props.comments}
-                        changeSelectedCommentForReply={
-                          this.changeSelectedCommentForReply
+                        changeSelectedCommentForReply={(comment) =>
+                          this.changeSelectedCommentForReply(comment)
                         }
                       />
                     ))}

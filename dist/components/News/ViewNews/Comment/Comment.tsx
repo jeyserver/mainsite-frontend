@@ -7,7 +7,7 @@ import IComment from '../../../../helper/types/news/Comment';
 interface IProps {
   comment: IComment;
   comments: IComment[];
-  changeSelectedCommentForReply: (comment: any) => void;
+  changeSelectedCommentForReply: (comment: IComment) => void;
 }
 
 class Comment extends React.Component<IProps> {

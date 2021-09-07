@@ -75,13 +75,13 @@ class News extends React.Component<IProps> {
                                     .locale('fa')
                                     .format('YYYY')}/${moment(post.date * 1000)
                                     .locale('fa')
-                                    .format('DD')}`}
+                                    .format('MM')}`}
                                 >
                                   <a>
                                     <i className="far fa-calendar-alt"></i>{' '}
                                     {moment(post.date * 1000)
                                       .locale('fa')
-                                      .format('dddd DD MMM YYYY')}
+                                      .format('dddd D MMM YYYY')}
                                   </a>
                                 </Link>
                               </li>
@@ -144,13 +144,13 @@ class News extends React.Component<IProps> {
                         </Link>
                       )}
                     </button>
-
                     <button className={styles.currentPage}>
                       <span>{this.props.currentPage}</span>
                     </button>
-
                     <button
-                      disabled={this.props.currentPage === lastPage}
+                      disabled={
+                        this.props.currentPage === lastPage || lastPage < 1
+                      }
                       className={styles.nextBtn}
                     >
                       {this.props.currentPage === lastPage ? (
@@ -169,8 +169,7 @@ class News extends React.Component<IProps> {
                         </Link>
                       )}
                     </button>
-
-                    {this.props.currentPage !== lastPage && (
+                    {this.props.currentPage !== lastPage && lastPage > 1 && (
                       <button className={styles.lastPage}>
                         <Link
                           href={{
@@ -187,7 +186,6 @@ class News extends React.Component<IProps> {
                     )}
                   </div>
                 </div>
-
                 <div className="d-none d-md-flex justify-content-md-end">
                   <div className="news-paginate">
                     <ReactPaginate
@@ -195,7 +193,7 @@ class News extends React.Component<IProps> {
                       nextLabel={'بعدی'}
                       breakLabel={'...'}
                       breakClassName={'break-me'}
-                      pageCount={lastPage}
+                      pageCount={lastPage > 1 ? lastPage : 1}
                       initialPage={this.props.currentPage - 1}
                       marginPagesDisplayed={2}
                       pageRangeDisplayed={5}

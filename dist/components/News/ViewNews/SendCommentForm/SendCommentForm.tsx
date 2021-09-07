@@ -9,7 +9,7 @@ import { NotificationManager } from 'react-notifications';
 import showErrorMsg from '../../../../helper/showErrorMsg';
 
 interface IProps {
-  selectedCommentForReply: IComment;
+  selectedCommentForReply: IComment | null;
   postId: number;
 }
 
@@ -20,18 +20,17 @@ interface IInputs {
 }
 
 class SendCommentForm extends React.Component<IProps> {
-  constructor(props: IProps) {
-    super(props);
-    this.onSubmit = this.onSubmit.bind(this);
-  }
-
   onSubmit(
     values: IInputs,
     { setSubmitting, setErrors, resetForm }: FormikHelpers<IInputs>
   ) {
+    const reply = this.props.selectedCommentForReply
+      ? `&reply=${this.props.selectedCommentForReply.id}`
+      : '';
+
     backend
       .post(
-        `/news/view/${this.props.postId}?ajax=1&name=${values.name}&email=${values.email}&text=${values.text}&reply=${this.props.selectedCommentForReply.id}`,
+        `/news/view/${this.props.postId}?ajax=1&name=${values.name}&email=${values.email}&text=${values.text}${reply}`,
         {
           // name: values.name,
           // email: values.email,
@@ -42,19 +41,14 @@ class SendCommentForm extends React.Component<IProps> {
       .then((res) => {
         if (res.data.status) {
           resetForm();
-
           NotificationManager.success(
             'نظر شما با موفقیت ثبت شد و پس از تایید به نمایش در خواهد آمد!',
             'موفق'
           );
-
-          setSubmitting(false);
         } else {
           res.data.error.map((error) => {
             setErrors({ [error.input]: showErrorMsg(error.code) });
           });
-
-          setSubmitting(false);
         }
       })
       .catch(() => {
@@ -62,7 +56,8 @@ class SendCommentForm extends React.Component<IProps> {
           'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
           'خطا'
         );
-
+      })
+      .finally(() => {
         setSubmitting(false);
       });
   }

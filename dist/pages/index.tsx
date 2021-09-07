@@ -10,13 +10,9 @@ import { IHostPlan } from '../helper/types/products/Host/plan';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-export interface ITablesData {
+interface IProps extends IPageProps {
   hosts: { linux: IHostPlan[]; windows: IHostPlan[] };
   servers: { vps: IVPSPlan[]; dedicated: IDedicatedPlan[] };
-}
-
-interface IProps extends IPageProps {
-  tablesData: ITablesData;
 }
 
 class Index extends React.Component<IProps> {
@@ -29,13 +25,14 @@ class Index extends React.Component<IProps> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Layout
-          postsForFooter={this.props.postsForFooter}
-          domainsForNavbar={this.props.domainsForNavbar}
-          licensesForNavbar={this.props.licensesForNavbar}
-        >
+        <Layout header={this.props.header} footer={this.props.footer}>
           <Header />
-          <MainPage tablesData={this.props.tablesData} />
+          <MainPage
+            tablesData={{
+              hosts: this.props.hosts,
+              servers: this.props.servers,
+            }}
+          />
         </Layout>
       </div>
     );
@@ -58,10 +55,7 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
-      tablesData: {
-        hosts: data.hosts,
-        servers: data.servers,
-      },
+      ...data,
     },
   };
 }

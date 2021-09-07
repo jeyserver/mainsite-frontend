@@ -1,42 +1,17 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '.';
+import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import backend from '../axios-config';
 import IDomainProduct from '../helper/types/cart/domain';
-import { ICurrency, ITld } from '../pages/_app';
 
-interface ICheckDomainArg {
-  domainoption: 'register' | 'owndomain' | 'transfer';
-  tld: number | string;
-  name: string;
-}
-
-interface ICheckDomainRes {
-  status: boolean;
-  ordered: {
-    name: string;
-    tld: ITld;
-    available: boolean;
-  };
-  recomendeds: {
-    name: string;
-    tld: ITld;
-    available: boolean;
-  };
-}
-
-export const checkDomain = createAsyncThunk(
-  'checkDomain',
-  async (arg: ICheckDomainArg, thunkApi) => {
-    const store = thunkApi.getState() as RootState;
-    return (await backend.post(
-      `/${store.language.locale}/order/domain?ajax=1&domainoption=${arg.domainoption}&tld=${arg.tld}&name=${arg.name}`
-    )) as ICheckDomainRes;
+export const deleteDomain = createAsyncThunk(
+  'deleteDomain',
+  async (arg: { id: string | number }) => {
+    return await backend.post(`/order/cart/delete/${arg.id}?ajax=1`);
   }
 );
 
 interface ISelected {
-  name: string;
-  tld: number;
+  name: string | null;
+  tld: number | null;
 }
 
 interface IState {
@@ -45,10 +20,7 @@ interface IState {
 }
 
 const initialState: IState = {
-  selected: {
-    name: 'jsjssjjaja',
-    tld: 4,
-  },
+  selected: null,
   forConfigure: [],
 };
 
@@ -65,18 +37,16 @@ const domainSlice = createSlice({
     ) => {
       state.forConfigure = action.payload;
     },
-    deleteFromForConfigure: (state, action: PayloadAction<string | number>) => {
-      state.forConfigure = state.forConfigure.filter(
-        (domain) => domain.id !== action.payload
-      );
-    },
   },
-  extraReducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(deleteDomain.fulfilled, (state, action) => {
+      state.forConfigure = state.forConfigure.filter(
+        (domain) => action.meta.arg.id !== domain.id
+      );
+    });
+  },
 });
 
-export const {
-  setSelectedDomain,
-  setDomainsForConfigure,
-  deleteFromForConfigure,
-} = domainSlice.actions;
+export const { setSelectedDomain, setDomainsForConfigure } =
+  domainSlice.actions;
 export default domainSlice.reducer;

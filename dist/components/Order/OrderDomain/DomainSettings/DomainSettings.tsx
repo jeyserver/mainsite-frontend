@@ -1,11 +1,11 @@
 import * as React from 'react';
-import axios from 'axios';
 import classNames from 'classnames';
 import { NextRouter, withRouter } from 'next/router';
 import { Form, Col, Row, Spinner } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { ITld } from '../../../../pages/_app';
 import { RootState } from '../../../../store';
+import { NotificationManager } from 'react-notifications';
 import CheckDomainForm from './CheckDomainForm/CheckDomainForm';
 import RecommendedDomains from './RecommendedDomains/RecommendedDomains';
 import styles from './DomainSettings.module.scss';
@@ -32,14 +32,11 @@ interface IDomain {
 
 interface IState {
   domainoption: 'register' | 'transfer' | 'owndomain';
-  // domainName: string;
-  // domainTld: string;
-
   recommendedDomains: IDomain[];
   ordered: IDomain;
   selectedDomains: IDomain[];
-
   recommendedDomainsLoading: boolean;
+  periods: { [domain: string]: string };
 }
 
 class DomainSettings extends React.Component<IProps, IState> {
@@ -47,38 +44,40 @@ class DomainSettings extends React.Component<IProps, IState> {
     super(props);
     this.state = {
       domainoption: 'register',
-      // domainName: !this.props.data.tldFromQuery ? '' : '',
-      // domainTld: this.props.data.tldFromQuery || '',
       recommendedDomains: [],
       ordered: null,
       selectedDomains: [],
       recommendedDomainsLoading: false,
+      periods: {},
     };
-    // this.onChangeDomainName = this.onChangeDomainName.bind(this);
-    // this.onChangeDomainTld = this.onChangeDomainTld.bind(this);
-    this.onChangeDomainOption = this.onChangeDomainOption.bind(this);
-    this.toggleSelectedDomains = this.toggleSelectedDomains.bind(this);
-
-    this.setRecommendedDomains = this.setRecommendedDomains.bind(this);
-    this.setSelectedDomains = this.setSelectedDomains.bind(this);
   }
 
-  onChangeDomainOption(e) {
-    this.setState({
-      domainoption: e.target.value,
-      recommendedDomains: [],
-      selectedDomains: [],
-      ordered: null,
+  onChangeDomainOption(e: React.ChangeEvent<HTMLInputElement>) {
+    if (
+      e.target.value === 'register' ||
+      e.target.value === 'transfer' ||
+      e.target.value === 'owndomain'
+    ) {
+      this.setState({
+        domainoption: e.target.value,
+        recommendedDomains: [],
+        selectedDomains: [],
+        ordered: null,
+        periods: {},
+      });
+    }
+  }
+
+  changePeriods(domainWithPeriod: { domain: string; period: string }) {
+    this.setState((prev) => {
+      return {
+        periods: {
+          ...prev.periods,
+          [domainWithPeriod.domain]: domainWithPeriod.period,
+        },
+      };
     });
   }
-
-  // onChangeDomainName(e) {
-  //   this.setState({ domainName: e.target.value });
-  // }
-
-  // onChangeDomainTld(e) {
-  //   this.setState({ domainTld: e.target.value });
-  // }
 
   setRecommendedDomains(domains: IDomain[]) {
     this.setState({ recommendedDomains: domains });
@@ -88,7 +87,7 @@ class DomainSettings extends React.Component<IProps, IState> {
     this.setState({ selectedDomains: domains });
   }
 
-  toggleSelectedDomains(newDomain) {
+  toggleSelectedDomains(newDomain: IDomain) {
     const domainIndex = this.state.selectedDomains.findIndex(
       (domain) => domain.tld.id === newDomain.tld.id
     );
@@ -111,7 +110,6 @@ class DomainSettings extends React.Component<IProps, IState> {
   }
 
   componentDidMount() {
-    console.log(this.props.domain.selected);
     if (this.props.domain.selected) {
       this.setState({ recommendedDomainsLoading: true });
 
@@ -132,7 +130,10 @@ class DomainSettings extends React.Component<IProps, IState> {
           }
         })
         .catch(() => {
-          console.log('err');
+          NotificationManager.error(
+            'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
+            'خطا'
+          );
         })
         .finally(() => {
           this.setState({ recommendedDomainsLoading: false });
@@ -193,7 +194,7 @@ class DomainSettings extends React.Component<IProps, IState> {
                     type="radio"
                     name="domainoption"
                     value="register"
-                    onChange={this.onChangeDomainOption}
+                    onChange={(e) => this.onChangeDomainOption(e)}
                     defaultChecked
                   />
                   میخواهم جی سرور برای من دامنه جدید ثبت کند.
@@ -207,7 +208,7 @@ class DomainSettings extends React.Component<IProps, IState> {
                       type="radio"
                       name="domainoption"
                       value="transfer"
-                      onChange={this.onChangeDomainOption}
+                      onChange={(e) => this.onChangeDomainOption(e)}
                     />
                     میخواهم دامنه ام را منتقل کنم به جی سرور
                   </label>
@@ -221,7 +222,7 @@ class DomainSettings extends React.Component<IProps, IState> {
                       type="radio"
                       name="domainoption"
                       value="owndomain"
-                      onChange={this.onChangeDomainOption}
+                      onChange={(e) => this.onChangeDomainOption(e)}
                     />
                     NameServer های شرکت را بر روی دامنه ام تنظیم می کنم.
                   </label>
@@ -254,8 +255,11 @@ class DomainSettings extends React.Component<IProps, IState> {
               tld: defaultTldId && defaultTldId.id,
             }}
             selectedDomains={this.state.selectedDomains}
-            setRecommendedDomains={this.setRecommendedDomains}
-            setSelectedDomains={this.setSelectedDomains}
+            setRecommendedDomains={(domains) =>
+              this.setRecommendedDomains(domains)
+            }
+            setSelectedDomains={(domains) => this.setSelectedDomains(domains)}
+            periods={this.state.periods}
           >
             {this.state.recommendedDomainsLoading && (
               <div className={styles.recommendedDomainsLoading}>
@@ -266,9 +270,14 @@ class DomainSettings extends React.Component<IProps, IState> {
 
             {this.state.recommendedDomains.length > 0 && (
               <RecommendedDomains
-                toggleSelectedDomains={this.toggleSelectedDomains}
+                toggleSelectedDomains={(newDomain) =>
+                  this.toggleSelectedDomains(newDomain)
+                }
                 selectedDomains={this.state.selectedDomains}
                 recomendeds={this.state.recommendedDomains}
+                changePeriods={(domainWithPeriod) =>
+                  this.changePeriods(domainWithPeriod)
+                }
               />
             )}
           </CheckDomainForm>

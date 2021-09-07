@@ -1,11 +1,8 @@
 import axios from 'axios';
 import NProgress from 'nprogress';
-import { store } from './store';
 
 const backend = axios.create({
-  baseURL: `${process.env.SCHEMA}://${process.env.DOMAIN}/${
-    store.getState().language.locale
-  }`,
+  baseURL: `${process.env.SITE_URL}/fa`,
 });
 
 backend.interceptors.request.use((config) => {

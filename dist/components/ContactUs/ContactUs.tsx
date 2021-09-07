@@ -29,7 +29,7 @@ interface IInputs {
   text: string;
 }
 
-class ContactUs extends React.Component<null, IState> {
+class ContactUs extends React.Component<{}, IState> {
   constructor(props) {
     super(props);
     this.state = {
@@ -62,8 +62,6 @@ class ContactUs extends React.Component<null, IState> {
           res.data.error.map((error) => {
             setErrors({ [error.input]: showErrorMsg(error.code) });
           });
-
-          setSubmitting(false);
         }
       })
       .catch(() => {
@@ -71,6 +69,8 @@ class ContactUs extends React.Component<null, IState> {
           'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
           'خطا'
         );
+      })
+      .finally(() => {
         setSubmitting(false);
       });
   }

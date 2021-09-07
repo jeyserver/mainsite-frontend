@@ -118,18 +118,7 @@ interface IProps {
   switchAppIsScrolling: () => void;
 }
 
-interface IState {
-  isNavFixed: boolean;
-}
-
-class VpsPricing extends React.Component<IProps, IState> {
-  constructor(props: IProps) {
-    super(props);
-    this.state = {
-      isNavFixed: false,
-    };
-    this.onScroll = this.onScroll.bind(this);
-  }
+class VpsPricing extends React.Component<IProps> {
   lastScrollTop = 0;
 
   onScroll() {
@@ -184,12 +173,12 @@ class VpsPricing extends React.Component<IProps, IState> {
   }
 
   componentDidMount() {
-    window.addEventListener('scroll', this.onScroll, false);
+    window.addEventListener('scroll', () => this.onScroll(), false);
     this.props.switchAppIsScrolling();
   }
 
   componentWillUnmount() {
-    window.removeEventListener('scroll', this.onScroll, false);
+    window.removeEventListener('scroll', () => this.onScroll(), false);
   }
 
   chunkedPlans(size: number, plans: IVPSPlan[]) {

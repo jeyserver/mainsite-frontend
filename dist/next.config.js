@@ -17,6 +17,7 @@ module.exports = {
   env: {
     DOMAIN: 'www.jeyserver.com',
     SCHEMA: 'https',
+    SITE_URL: 'https://www.jeyserver.com',
     BACKEND_UPSTREAM: 'https://www.jeyserver.com',
   },
 };

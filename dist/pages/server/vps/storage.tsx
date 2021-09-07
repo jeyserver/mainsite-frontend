@@ -20,21 +20,16 @@ class Index extends React.Component<IProps, IState> {
     this.state = {
       appIsScrolling: false,
     };
-    this.switchAppIsScrolling = this.switchAppIsScrolling.bind(this);
   }
 
   appIsScrollingTimeout = null;
 
   switchAppIsScrolling() {
     clearTimeout(this.appIsScrollingTimeout);
-    this.setState((prev) => {
-      return { appIsScrolling: true };
-    });
+    this.setState({ appIsScrolling: true });
 
     this.appIsScrollingTimeout = setTimeout(() => {
-      this.setState((prev) => {
-        return { appIsScrolling: false };
-      });
+      this.setState({ appIsScrolling: false });
     }, 1000);
   }
 
@@ -52,16 +47,15 @@ class Index extends React.Component<IProps, IState> {
         </Head>
 
         <Layout
-          postsForFooter={this.props.postsForFooter}
+          header={this.props.header}
+          footer={this.props.footer}
           appIsScrolling={this.state.appIsScrolling}
-          domainsForNavbar={this.props.domainsForNavbar}
-          licensesForNavbar={this.props.licensesForNavbar}
         >
           <VpsPricing
             type="storage"
             plans={this.props.plans}
             appIsScrolling={this.state.appIsScrolling}
-            switchAppIsScrolling={this.switchAppIsScrolling}
+            switchAppIsScrolling={() => this.switchAppIsScrolling()}
           />
         </Layout>
       </div>
@@ -79,7 +73,7 @@ export async function getServerSideProps(context) {
   }
 
   const respone = await fetch(
-    `${process.env.SCHEMA}://${process.env.DOMAIN}/${locale}/server/vps/storage?ajax=1`
+    `${process.env.SITE_URL}/${locale}/server/vps/storage?ajax=1`
   );
   const data = await respone.json();
 

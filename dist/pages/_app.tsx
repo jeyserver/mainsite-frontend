@@ -8,21 +8,8 @@ import { Provider } from 'react-redux';
 import { NotificationContainer } from 'react-notifications';
 import { store } from '../store/index';
 import NProgress from '../components/NProgress/NProgress';
-import { setCurrencies } from '../store/Currencies';
-import { setLanguage } from '../store/Language';
 
-export default function App({
-  Component,
-  pageProps,
-  domainsForNavbar,
-  licensesForNavbar,
-  postsForFooter,
-  currencies,
-  locale,
-}) {
-  store.dispatch(setCurrencies(currencies));
-  store.dispatch(setLanguage(locale));
-
+export default function App({ Component, pageProps }) {
   return (
     <Provider store={store}>
       <NotificationContainer />
@@ -32,12 +19,7 @@ export default function App({
         stopDelayMs={200}
         height={3}
       />
-      <Component
-        {...pageProps}
-        domainsForNavbar={domainsForNavbar}
-        licensesForNavbar={licensesForNavbar}
-        postsForFooter={postsForFooter}
-      />
+      <Component {...pageProps} />
     </Provider>
   );
 }
@@ -97,28 +79,19 @@ export interface IFooterPost {
   permalink: string;
 }
 
-export interface pageProps {
-  domainsForNavbar: ITld[];
-  licensesForNavbar: ILicense[];
-  postsForFooter: IFooterPost[];
-  currencies: ICurrency[];
-}
-
 export interface IPageProps {
-  domainsForNavbar: ITld[];
-  licensesForNavbar: ILicense[];
-  postsForFooter: IFooterPost[];
-  currencies: ICurrency[];
+  header: {
+    currencies: ICurrency[];
+    tlds: ITld[];
+    licenses: ILicense[];
+  };
+  footer: {
+    posts: IFooterPost[];
+  };
 }
 
 App.getInitialProps = async ({ Component, ctx }) => {
   const locale = ctx.locale;
-
-  const respone = await fetch(
-    `${process.env.SCHEMA}://${process.env.DOMAIN}/${locale}?ajax=1`
-  );
-  const data = await respone.json();
-
   let pageProps = {};
 
   if (Component.getInitialProps) {
@@ -127,10 +100,5 @@ App.getInitialProps = async ({ Component, ctx }) => {
 
   return {
     pageProps,
-    domainsForNavbar: data.tlds,
-    licensesForNavbar: data.licenses,
-    postsForFooter: data.posts,
-    currencies: data.currencies,
-    locale,
   };
 };

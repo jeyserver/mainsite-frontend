@@ -20,6 +20,7 @@ interface IProps extends IPageProps {
     posts: number;
   }[];
   tag: { id: number; title: string; permalink: string };
+  blog_newsletter_group_token: string;
 }
 
 class Index extends React.Component<IProps> {
@@ -32,11 +33,7 @@ class Index extends React.Component<IProps> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Layout
-          postsForFooter={this.props.postsForFooter}
-          domainsForNavbar={this.props.domainsForNavbar}
-          licensesForNavbar={this.props.licensesForNavbar}
-        >
+        <Layout header={this.props.header} footer={this.props.footer}>
           <Posts
             posts={this.props.items}
             categories={this.props.categories}
@@ -46,6 +43,7 @@ class Index extends React.Component<IProps> {
             itemsPerPage={this.props.items_per_page}
             topNavTitle={this.props.tag.title}
             param={{ tag: this.props.tag.title }}
+            newsletterToken={this.props.blog_newsletter_group_token}
           />
         </Layout>
       </div>
@@ -65,9 +63,7 @@ export async function getServerSideProps(context) {
     };
   }
   const respone = await fetch(
-    `${process.env.SCHEMA}://${
-      process.env.DOMAIN
-    }/${locale}/blog/tag/${encodeURI(tag)}?ajax=1`
+    `${process.env.SITE_URL}/${locale}/blog/tag/${tag}?ajax=1&page=${page}&ipp=${ipp}`
   );
   const data = await respone.json();
 

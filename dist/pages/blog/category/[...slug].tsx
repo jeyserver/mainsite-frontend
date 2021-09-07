@@ -20,27 +20,18 @@ interface IProps extends IPageProps {
     posts: number;
   }[];
   category: ICategory;
+  blog_newsletter_group_token: string;
+  categoryPath: string;
 }
 
 class Index extends React.Component<IProps> {
   render() {
-    const breedcrumb = [this.props.category];
-    const getBreedcrumb = (targetCategory) => {
-      const parentId = targetCategory.parent;
-
-      if (parentId) {
-        const parent = this.props.categories.find(
-          (category) => category.id === parentId
-        );
-        if (parent.parent) {
-          breedcrumb.push(parent);
-          getBreedcrumb(parent);
-        } else {
-          breedcrumb.push(parent);
-        }
-      }
-    };
-    getBreedcrumb(this.props.category);
+    const splitted = this.props.categoryPath.split('/');
+    const breedcrumb = splitted.slice(1, splitted.length).map((category) => {
+      return this.props.categories.find(
+        (c) => c.permalink.toLowerCase().search(category.toLowerCase()) > -1
+      );
+    });
 
     return (
       <div dir="rtl" id="blog-category">
@@ -50,11 +41,7 @@ class Index extends React.Component<IProps> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Layout
-          postsForFooter={this.props.postsForFooter}
-          domainsForNavbar={this.props.domainsForNavbar}
-          licensesForNavbar={this.props.licensesForNavbar}
-        >
+        <Layout header={this.props.header} footer={this.props.footer}>
           <Posts
             posts={this.props.items}
             categories={this.props.categories}
@@ -65,8 +52,9 @@ class Index extends React.Component<IProps> {
             topNavTitle={this.props.category.title}
             param={{
               category: this.props.category,
-              breedcrumb: breedcrumb.reverse(),
+              breedcrumb: breedcrumb,
             }}
+            newsletterToken={this.props.blog_newsletter_group_token}
           />
         </Layout>
       </div>
@@ -92,7 +80,7 @@ export async function getServerSideProps(context) {
   }, '');
 
   const respone = await fetch(
-    `${process.env.SCHEMA}://${process.env.DOMAIN}/${locale}/blog/category${categoryPath}?page=${page}&ipp=${ipp}&ajax=1`
+    `${process.env.SITE_URL}/${locale}/blog/category${categoryPath}?page=${page}&ipp=${ipp}&ajax=1`
   );
   const data = await respone.json();
 
@@ -106,6 +94,7 @@ export async function getServerSideProps(context) {
   return {
     props: {
       ...data,
+      categoryPath,
     },
   };
 }

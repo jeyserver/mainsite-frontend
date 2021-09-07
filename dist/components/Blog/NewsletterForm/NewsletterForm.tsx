@@ -1,62 +1,55 @@
-import axios from 'axios';
 import * as React from 'react';
-import { Form, InputGroup, FormControl, Button } from 'react-bootstrap';
+import { InputGroup, Button } from 'react-bootstrap';
 import Link from 'next/link';
 import { NotificationManager } from 'react-notifications';
 import styles from './NewsletterForm.module.scss';
 import { connect } from 'react-redux';
 import { RootState } from '../../../store';
 import classNames from 'classnames';
+import backend from '../../../axios-config';
+import { Formik, FormikHelpers, Form, ErrorMessage, Field } from 'formik';
+import * as Yup from 'yup';
+import { NextRouter, withRouter } from 'next/router';
+import showErrorMsg from '../../../helper/showErrorMsg';
 
 interface IProps {
   theme: RootState['theme'];
+  router: NextRouter;
+  token: string;
 }
 
-interface IState {
-  newslettersBtnLoading: boolean;
-  newslettersFormValidated: boolean;
+interface IInputs {
+  email: string;
 }
 
-class NewsletterForm extends React.Component<IProps, IState> {
-  constructor(props: IProps) {
-    super(props);
-    this.state = {
-      newslettersFormValidated: false,
-      newslettersBtnLoading: false,
-    };
-    this.submitNewslettersForm = this.submitNewslettersForm.bind(this);
-  }
-
-  submitNewslettersForm(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const form = e.currentTarget;
-
-    if (form.checkValidity() === false) {
-      e.stopPropagation();
-    } else {
-      this.setState({ newslettersBtnLoading: true });
-
-      axios(
-        'https://jsonblob.com/api/jsonBlob/d8eccd84-d821-11eb-9f33-07821a14b37b'
-      )
-        .then(() => {
-          form.email.value = '';
+class NewsletterForm extends React.Component<IProps> {
+  onSubmit(
+    values: IInputs,
+    { setSubmitting, setErrors, resetForm }: FormikHelpers<IInputs>
+  ) {
+    //
+    backend(
+      `${this.props.router.asPath}?ajax=1&blog_newsletter_group_token=${this.props.token}&email=${values.email}`
+    )
+      .then((res) => {
+        if (res.data.status) {
           NotificationManager.success('ایمیل شما با موفقیت ثبت شد', '');
-          this.setState({
-            newslettersBtnLoading: false,
-            newslettersFormValidated: false,
+          resetForm();
+        } else {
+          res.data.error.map((error) => {
+            setErrors({ [error.input]: showErrorMsg(error.code) });
           });
-        })
-        .catch(() => {
-          NotificationManager.error(
-            'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
-            'خطا'
-          );
-          this.setState({ newslettersBtnLoading: true });
-        });
-    }
-
-    this.setState({ newslettersFormValidated: true });
+        }
+      })
+      .catch(() => {
+        NotificationManager.error(
+          'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
+          'خطا'
+        );
+      })
+      .finally(() => {
+        setSubmitting(false);
+      });
   }
 
   render() {
@@ -69,37 +62,42 @@ class NewsletterForm extends React.Component<IProps, IState> {
         <div className={styles.info}>
           با عضویت در خبرنامه جی سرور، جدیدترین آموزش ها را دریافت کنید!
         </div>
-        <Form
-          className={styles.form}
-          onSubmit={(e) => this.submitNewslettersForm(e)}
-          validated={this.state.newslettersFormValidated}
-          data-validated={this.state.newslettersFormValidated}
-          noValidate
+        <Formik
+          initialValues={{ email: '' }}
+          validationSchema={Yup.object({
+            email: Yup.string()
+              .required('داده وارد شده معتبر نیست')
+              .email('داده وارد شده معتبر نیست'),
+          })}
+          onSubmit={(values, helpers) => this.onSubmit(values, helpers)}
         >
-          <InputGroup className={styles.inputGroup}>
-            <InputGroup.Prepend className={styles.inputGroupPrepend}>
-              <i className="far fa-envelope"></i>
-            </InputGroup.Prepend>
-            <FormControl
-              type="email"
-              name="email"
-              placeholder="ایمیل خود را وارد کنید"
-              required
-            />
-            <Form.Control.Feedback type="invalid" className={styles.feedback}>
-              لطفا ایمیل خود را وارد کنید.
-            </Form.Control.Feedback>
-          </InputGroup>
-          <Button
-            type="submit"
-            className={styles.btn}
-            disabled={this.state.newslettersBtnLoading}
-          >
-            {this.state.newslettersBtnLoading
-              ? 'لطفا صبر کنید'
-              : 'عضویت در خبرنامه'}
-          </Button>
-        </Form>
+          {(formik) => (
+            <Form className={styles.form}>
+              <InputGroup className={styles.inputGroup}>
+                <InputGroup.Prepend className={styles.inputGroupPrepend}>
+                  <i className="far fa-envelope"></i>
+                </InputGroup.Prepend>
+                <Field
+                  className="form-control"
+                  type="email"
+                  name="email"
+                  placeholder="ایمیل خود را وارد کنید"
+                />
+              </InputGroup>
+              <div className={styles.feedback}>
+                <ErrorMessage name="email" />
+              </div>
+              <Button
+                type="submit"
+                className={styles.btn}
+                disabled={formik.isSubmitting}
+              >
+                {formik.isSubmitting ? 'لطفا صبر کنید' : 'عضویت در خبرنامه'}
+              </Button>
+            </Form>
+          )}
+        </Formik>
+
         <div className={styles.linkWrapper}>
           <Link href="#">
             <a className={styles.link}>
@@ -121,4 +119,4 @@ export default connect((state: RootState) => {
   return {
     theme: state.theme,
   };
-})(NewsletterForm);
+})(withRouter(NewsletterForm));

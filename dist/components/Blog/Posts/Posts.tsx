@@ -29,11 +29,10 @@ interface IProps {
   currentPage: number;
   totalItems: number;
   itemsPerPage: number;
-
   theme: RootState['theme'];
-
   topNavTitle: string;
   param: param;
+  newsletterToken: string;
 }
 
 class BlogCategory extends React.Component<IProps> {
@@ -87,7 +86,7 @@ class BlogCategory extends React.Component<IProps> {
               />
             </Col>
             <Col md={12} lg={3} xl={3} className="d-none d-lg-block">
-              <NewsletterForm />
+              <NewsletterForm token={this.props.newsletterToken} />
             </Col>
           </Row>
         </Container>
@@ -95,7 +94,7 @@ class BlogCategory extends React.Component<IProps> {
         <MostViewedPosts posts={this.props.popularPosts} />
 
         <Col className={styles.newslettersFormOnMobile}>
-          <NewsletterForm />
+          <NewsletterForm token={this.props.newsletterToken} />
         </Col>
       </section>
     );

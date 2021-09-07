@@ -9,6 +9,7 @@ interface IPopularPost {
     lastname: string;
   };
   image: string;
+  description: string;
   view: number;
   comments_count: number;
 }

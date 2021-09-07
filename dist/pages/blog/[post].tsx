@@ -14,6 +14,7 @@ interface IProps extends IPageProps {
   comments: IComment[];
   categories: ICategory[];
   popular_posts: IPopularPost[];
+  blog_newsletter_group_token: string;
 }
 
 class Index extends React.Component<IProps> {
@@ -26,16 +27,13 @@ class Index extends React.Component<IProps> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Layout
-          postsForFooter={this.props.postsForFooter}
-          domainsForNavbar={this.props.domainsForNavbar}
-          licensesForNavbar={this.props.licensesForNavbar}
-        >
+        <Layout header={this.props.header} footer={this.props.footer}>
           <BlogPost
             post={this.props.post}
             popularPosts={this.props.popular_posts}
             categories={this.props.categories}
             comments={this.props.comments}
+            newsletterToken={this.props.blog_newsletter_group_token}
           />
         </Layout>
       </div>
@@ -54,14 +52,9 @@ export async function getServerSideProps(context) {
   }
 
   const respone = await fetch(
-    `${process.env.SCHEMA}://${process.env.DOMAIN}/${locale}/blog/${post}?ajax=1`
+    `${process.env.SITE_URL}/${locale}/blog/${post}?ajax=1`
   );
   const data = await respone.json();
-
-  const blogIndexRes = await fetch(
-    `${process.env.SCHEMA}://${process.env.DOMAIN}/${locale}/blog?ajax=1`
-  );
-  const blogIndexData = await blogIndexRes.json();
 
   // 404
   if (post === 'tag' || !data.status) {
@@ -73,8 +66,6 @@ export async function getServerSideProps(context) {
   return {
     props: {
       ...data,
-      categories: blogIndexData.categories,
-      popular_posts: blogIndexData.popular_posts,
     },
   };
 }

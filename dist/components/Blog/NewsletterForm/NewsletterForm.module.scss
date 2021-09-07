@@ -36,18 +36,11 @@
 
     border-bottom: 1px solid #dddddd;
 
-    &[data-validated='true'] {
-      .inputGroup {
-        input {
-          &:invalid {
-            border-color: #dddddd !important;
-          }
-        }
-        .feedback {
-          font-family: IRANSans;
-          font-size: 11px;
-        }
-      }
+    .feedback {
+      font-family: IRANSans;
+      font-size: 13px;
+      color: #dc3545;
+      margin-bottom: 10px;
     }
 
     .inputGroup {

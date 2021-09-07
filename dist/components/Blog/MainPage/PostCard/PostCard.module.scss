@@ -30,10 +30,12 @@
       bottom: 13px;
       right: 13px;
 
-      color: #ffffff;
+      color: #000000;
 
       opacity: 0;
       transition: opacity 0.4s ease-in-out;
+
+      font-weight: 900;
 
       @media screen and (max-width: 767px) {
         opacity: 1;

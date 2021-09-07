@@ -7,7 +7,7 @@ import IPost from '../../../../helper/types/blog/Post';
 import IPopularPost from '../../../../helper/types/blog/PopularPost';
 
 interface PostCardProps {
-  post: IPost;
+  post: IPost | IPopularPost;
 }
 
 class PostCard extends React.Component<PostCardProps> {
@@ -43,7 +43,9 @@ class PostCard extends React.Component<PostCardProps> {
               {this.props.post.description && (
                 <div
                   className={styles.summary}
-                  dangerouslySetInnerHTML={{ __html: this.props.post.content }}
+                  dangerouslySetInnerHTML={{
+                    __html: this.props.post.description,
+                  }}
                 ></div>
               )}
             </a>

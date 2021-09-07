@@ -7,11 +7,14 @@ import TopNav from '../TopNav/TopNav';
 import IPost from '../../../helper/types/blog/Post';
 import IPopularPost from '../../../helper/types/blog/PopularPost';
 import ICategory from '../../../helper/types/blog/Category';
+import { ISeriesPosts } from '../../../pages/blog';
 
 interface IProps {
   recentPosts: IPost[];
   popularPosts: IPopularPost[];
   categories: ICategory[];
+  seriesPosts: ISeriesPosts;
+  newsletterToken: string;
 }
 
 class MainPage extends React.Component<IProps> {
@@ -24,7 +27,7 @@ class MainPage extends React.Component<IProps> {
           title="آموزش ها و مقالات کاربردی برای وبمستران"
         />
 
-        {/* <div className={styles.mostViewedPosts}>
+        <div className={styles.mostViewedPosts}>
           <Container>
             <Row>
               <div className={styles.header}>
@@ -32,16 +35,16 @@ class MainPage extends React.Component<IProps> {
               </div>
             </Row>
             <Row>
-              {this.props.popularPosts.map((post, index) => (
+              {this.props.popularPosts.slice(0, 4).map((post, index) => (
                 <Col xs={12} sm={6} lg={3} key={post.id}>
                   <PostCard post={post} />
                 </Col>
               ))}
             </Row>
           </Container>
-        </div> */}
+        </div>
 
-        {/* <div className={styles.linuxPosts}>
+        <div className={styles.linuxPosts}>
           <Container>
             <Row>
               <Col xs={12} sm={6} lg={3} className="d-flex align-items-center">
@@ -60,18 +63,15 @@ class MainPage extends React.Component<IProps> {
                   </Link>
                 </div>
               </Col>
-              {this.props.posts.mostViewedPosts.map((post, index) => {
-                if (index < 3) {
-                  return (
-                    <Col xs={12} sm={6} lg={3} key={index}>
-                      <PostCard post={post} />
-                    </Col>
-                  );
-                }
-              })}
+              {this.props.seriesPosts.linux &&
+                this.props.seriesPosts.linux.slice(0, 3).map((post, index) => (
+                  <Col xs={12} sm={6} lg={3} key={post.id}>
+                    <PostCard post={post} />
+                  </Col>
+                ))}
             </Row>
           </Container>
-        </div> */}
+        </div>
 
         <div className={styles.newestPosts}>
           <Container>
@@ -90,7 +90,7 @@ class MainPage extends React.Component<IProps> {
           </Container>
         </div>
 
-        {/* <div className={styles.programmingLangsPosts}>
+        <div className={styles.programmingLangsPosts}>
           <Container>
             <Row>
               <Col xs={12} sm={6} lg={3} className="d-flex align-items-center">
@@ -111,18 +111,17 @@ class MainPage extends React.Component<IProps> {
                   </Link>
                 </div>
               </Col>
-              {this.props.posts.mostViewedPosts.map((post, index) => {
-                if (index < 3) {
-                  return (
-                    <Col xs={12} sm={6} lg={3} key={index}>
+              {this.props.seriesPosts.wordpress &&
+                this.props.seriesPosts.wordpress
+                  .slice(0, 3)
+                  .map((post, index) => (
+                    <Col xs={12} sm={6} lg={3} key={post.id}>
                       <PostCard post={post} />
                     </Col>
-                  );
-                }
-              })}
+                  ))}
             </Row>
           </Container>
-        </div> */}
+        </div>
       </section>
     );
   }

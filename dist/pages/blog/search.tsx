@@ -20,6 +20,7 @@ interface IProps extends IPageProps {
     posts: number;
   }[];
   word: string;
+  blog_newsletter_group_token: string;
 }
 
 class Index extends React.Component<IProps> {
@@ -32,11 +33,7 @@ class Index extends React.Component<IProps> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Layout
-          postsForFooter={this.props.postsForFooter}
-          domainsForNavbar={this.props.domainsForNavbar}
-          licensesForNavbar={this.props.licensesForNavbar}
-        >
+        <Layout header={this.props.header} footer={this.props.footer}>
           <Posts
             posts={this.props.items}
             categories={this.props.categories}
@@ -48,6 +45,7 @@ class Index extends React.Component<IProps> {
             param={{
               search: `نتایج جستجوی "${this.props.word}"`,
             }}
+            newsletterToken={this.props.blog_newsletter_group_token}
           />
         </Layout>
       </div>
@@ -69,7 +67,7 @@ export async function getServerSideProps(context) {
   }
 
   const respone = await fetch(
-    `${process.env.SCHEMA}://${process.env.DOMAIN}/${locale}/blog/search?word=${word}&page=${page}&ipp=${ipp}&ajax=1`
+    `${process.env.SITE_URL}/${locale}/blog/search?word=${word}&page=${page}&ipp=${ipp}&ajax=1`
   );
   const data = await respone.json();
 

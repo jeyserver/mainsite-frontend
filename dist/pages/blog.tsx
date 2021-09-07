@@ -7,6 +7,12 @@ import IPost from '../helper/types/blog/Post';
 import ICategory from '../helper/types/blog/Category';
 import IPopularPost from '../helper/types/blog/PopularPost';
 
+export interface ISeriesPosts {
+  linux: IPopularPost[];
+  control_panels: IPopularPost[];
+  wordpress: IPopularPost[];
+}
+
 interface IProps extends IPageProps {
   status: boolean;
   items: IPost[];
@@ -16,6 +22,8 @@ interface IProps extends IPageProps {
   categories: ICategory[];
   popular_posts: IPopularPost[];
   archives: { date: number; posts: number }[];
+  blog_newsletter_group_token: string;
+  series_posts: ISeriesPosts;
 }
 
 class Index extends React.Component<IProps> {
@@ -28,15 +36,13 @@ class Index extends React.Component<IProps> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Layout
-          postsForFooter={this.props.postsForFooter}
-          domainsForNavbar={this.props.domainsForNavbar}
-          licensesForNavbar={this.props.licensesForNavbar}
-        >
+        <Layout header={this.props.header} footer={this.props.footer}>
           <MainPage
             recentPosts={this.props.items}
             popularPosts={this.props.popular_posts}
             categories={this.props.categories}
+            seriesPosts={this.props.series_posts}
+            newsletterToken={this.props.blog_newsletter_group_token}
           />
         </Layout>
       </div>
@@ -53,9 +59,7 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const respone = await fetch(
-    `${process.env.SCHEMA}://${process.env.DOMAIN}/${locale}/blog?ajax=1`
-  );
+  const respone = await fetch(`${process.env.SITE_URL}/${locale}/blog?ajax=1`);
   const data = await respone.json();
 
   return {

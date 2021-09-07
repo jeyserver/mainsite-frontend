@@ -16,6 +16,7 @@ interface IProps {
   comments: IComment[];
   categories: ICategory[];
   popularPosts: IPopularPost[];
+  newsletterToken: string;
 }
 
 class BlogPost extends React.Component<IProps> {
@@ -25,7 +26,6 @@ class BlogPost extends React.Component<IProps> {
         <TopNav
           nightMode={true}
           categories={this.props.categories}
-          page="post"
           title="آموزش ها و مقالات کاربردی برای وبمستران"
         />
 
@@ -33,44 +33,10 @@ class BlogPost extends React.Component<IProps> {
           <Row>
             <Col xl={2} className="d-none d-xl-block"></Col>
             <Col md={12} lg={9} xl={7} className="px-0 px-md-5">
-              <Post
-                post={this.props.post}
-                comments={
-                  this.props.comments
-                  //   [
-                  //   {
-                  //     id: 1,
-                  //     avatar: 'https://randomuser.me/api/portraits/women/81.jpg',
-                  //     name: 'test1',
-                  //     text: 'body test 1',
-                  //     reply: null,
-                  //     date: moment() / 1000,
-                  //     site: null,
-                  //   },
-                  //   {
-                  //     id: 2,
-                  //     avatar: 'https://randomuser.me/api/portraits/women/29.jpg',
-                  //     name: 'test2',
-                  //     text: 'body test 2',
-                  //     reply: null,
-                  //     date: moment() / 1000,
-                  //     site: null,
-                  //   },
-                  //   {
-                  //     id: 3,
-                  //     avatar: 'https://randomuser.me/api/portraits/women/90.jpg',
-                  //     name: 'test3',
-                  //     text: 'body test 3',
-                  //     reply: 1,
-                  //     date: moment() / 1000,
-                  //     site: null,
-                  //   },
-                  // ]
-                }
-              />
+              <Post post={this.props.post} comments={this.props.comments} />
             </Col>
             <Col md={12} lg={3} xl={3} className="d-none d-lg-block">
-              <NewsletterForm />
+              <NewsletterForm token={this.props.newsletterToken} />
             </Col>
           </Row>
         </Container>
@@ -78,7 +44,7 @@ class BlogPost extends React.Component<IProps> {
         <MostViewedPosts posts={this.props.popularPosts} />
 
         <Col className={styles.newslettersFormOnMobile}>
-          <NewsletterForm />
+          <NewsletterForm token={this.props.newsletterToken} />
         </Col>
       </section>
     );

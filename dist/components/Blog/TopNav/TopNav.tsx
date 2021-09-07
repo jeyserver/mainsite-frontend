@@ -1,9 +1,8 @@
 import * as React from 'react';
-import { Container, Row, Dropdown, Accordion } from 'react-bootstrap';
+import { Container, Row, Dropdown } from 'react-bootstrap';
 import Link from 'next/link';
 import { connect } from 'react-redux';
 import { toggleTheme } from '../../../store/Theme';
-import { Button } from 'react-bootstrap';
 import { NextRouter, withRouter } from 'next/router';
 import classNames from 'classnames';
 import styles from './TopNav.module.scss';
@@ -22,11 +21,9 @@ interface IProps {
   title: string;
   param?: param;
   categories: ICategory[];
-
   nightMode: boolean;
   theme: RootState['theme'];
   toggleTheme: typeof toggleTheme;
-
   router: NextRouter;
 }
 
@@ -42,47 +39,25 @@ class TopNav extends React.Component<IProps, IState> {
       isPageLoading: false,
       showCategoriesDropDownOnMobile: false,
     };
-    this.hideDropdownOnMobile = this.hideDropdownOnMobile.bind(this);
+  }
+
+  checkScroll() {
+    const scroller = document.querySelector('#top-nav-links-and-dropdowns');
+    const dropDown = document.querySelectorAll('.mainMenu') as any;
+
+    for (let i = 0; i < dropDown.length; i++) {
+      dropDown[i].style.transform = `translateX(${-1 * scroller.scrollLeft}px)`;
+    }
   }
 
   componentDidMount() {
-    // For categories menu on desktop
     const scroller = document.querySelector('#top-nav-links-and-dropdowns');
-    const dropDown = document.querySelectorAll('.mainMenu') as any;
-    scroller.addEventListener('scroll', checkScroll);
-
-    function checkScroll() {
-      for (let i = 0; i < dropDown.length; i++) {
-        dropDown[i].style.transform = `translateX(${
-          -1 * scroller.scrollLeft
-        }px)`;
-      }
-    }
-
-    // watch page is loading
-    const handleStart = (url) =>
-      url !== this.props.router.asPath &&
-      this.setState({ isPageLoading: true });
-    const handleComplete = (url) =>
-      url === this.props.router.asPath &&
-      this.setState({ isPageLoading: false });
-
-    this.props.router.events.on('routeChangeStart', handleStart);
-    this.props.router.events.on('routeChangeComplete', handleComplete);
-    this.props.router.events.on('routeChangeError', handleComplete);
+    scroller.addEventListener('scroll', () => this.checkScroll());
   }
 
   componentWillUnmount() {
-    const handleStart = (url) =>
-      url !== this.props.router.asPath &&
-      this.setState({ isPageLoading: true });
-    const handleComplete = (url) =>
-      url === this.props.router.asPath &&
-      this.setState({ isPageLoading: false });
-
-    this.props.router.events.off('routeChangeStart', handleStart);
-    this.props.router.events.off('routeChangeComplete', handleComplete);
-    this.props.router.events.off('routeChangeError', handleComplete);
+    const scroller = document.querySelector('#top-nav-links-and-dropdowns');
+    scroller.removeEventListener('scroll', () => this.checkScroll());
   }
 
   submitSearchForm(e: React.FormEvent<HTMLFormElement>) {
@@ -95,15 +70,9 @@ class TopNav extends React.Component<IProps, IState> {
       });
   }
 
-  hideDropdownOnMobile() {
-    this.setState({
-      showCategoriesDropDownOnMobile: false,
-    });
-  }
-
   categoryMenu(category: ICategory) {
     return (
-      <div className={styles.menu}>
+      <span className={styles.menu}>
         {this.props.categories
           .filter((c) => c.parent === category.id)
           .map((subCategory) => (
@@ -120,7 +89,7 @@ class TopNav extends React.Component<IProps, IState> {
               </a>
             </Link>
           ))}
-      </div>
+      </span>
     );
   }
 
@@ -129,7 +98,6 @@ class TopNav extends React.Component<IProps, IState> {
     const menu = document.querySelector(`#${id}`) as HTMLDivElement;
 
     if (menu) {
-      // e.target.children[1].style.left = `${rect.left}px`;
       menu.style.top = `${rect.top + 38}px`;
     }
   }

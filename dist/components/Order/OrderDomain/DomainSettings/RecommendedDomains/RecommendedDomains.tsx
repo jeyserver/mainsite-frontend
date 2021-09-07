@@ -1,7 +1,11 @@
 import classNames from 'classnames';
+import { IProduceWithPatches } from 'immer/dist/internal';
 import * as React from 'react';
 import { Form, Row, Table } from 'react-bootstrap';
+import { connect } from 'react-redux';
 import { ITld } from '../../../../../pages/_app';
+import { RootState } from '../../../../../store';
+import { formatPriceWithCurrency } from '../../../../../store/Currencies';
 import styles from './RecommendedDomains.module.scss';
 
 interface IRecomendeds {
@@ -14,14 +18,31 @@ interface IProps {
   recomendeds: IRecomendeds[];
   toggleSelectedDomains: (domain: any) => void;
   selectedDomains: IRecomendeds[];
+  currencies: RootState['currencies'];
+  changePeriods: ({
+    domain,
+    period,
+  }: {
+    domain: string;
+    period: string;
+  }) => void;
 }
 
-interface IState {}
+interface IState {
+  period: string;
+}
 
 class RecommendedDomains extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
-    this.state = {};
+    this.state = {
+      period: '1',
+    };
+  }
+
+  onChangePeriod(e, domain: string) {
+    this.setState({ period: e.target.value });
+    this.props.changePeriods({ domain: domain, period: e.target.value });
   }
 
   render() {
@@ -73,13 +94,50 @@ class RecommendedDomains extends React.Component<IProps, IState> {
                 <td>
                   {recommended.available && (
                     <Form.Group>
-                      <Form.Control as="select" custom>
-                        <option value="">1 ساله قیمت 291,400 تومان</option>
-                        {/* {recommended.tariffs.map((tariff) => (
-                          <option value={tariff.id} key={tariff.id}>
-                            {tariff.value}
-                          </option>
-                        ))} */}
+                      <Form.Control
+                        as="select"
+                        custom
+                        onChange={(e) =>
+                          this.onChangePeriod(
+                            e,
+                            `${recommended.name}.${recommended.tld.tld}`
+                          )
+                        }
+                        // value={this.state.period}
+                      >
+                        {recommended.tld.tld === 'ir' ? (
+                          <React.Fragment>
+                            <option value="1">
+                              1 ساله قیمت{' '}
+                              {formatPriceWithCurrency(
+                                this.props.currencies,
+                                recommended.tld.currency,
+                                recommended.tld.new
+                              )}
+                            </option>
+                            <option value="5">
+                              5 ساله قیمت{' '}
+                              {formatPriceWithCurrency(
+                                this.props.currencies,
+                                recommended.tld.currency,
+                                recommended.tld.new * 5
+                              )}
+                            </option>
+                          </React.Fragment>
+                        ) : (
+                          Array(5)
+                            .fill('')
+                            .map((_, index) => (
+                              <option value={index + 1}>
+                                {index + 1} ساله قیمت{' '}
+                                {formatPriceWithCurrency(
+                                  this.props.currencies,
+                                  recommended.tld.currency,
+                                  recommended.tld.new * (index + 1)
+                                )}
+                              </option>
+                            ))
+                        )}
                       </Form.Control>
                     </Form.Group>
                   )}
@@ -93,4 +151,8 @@ class RecommendedDomains extends React.Component<IProps, IState> {
   }
 }
 
-export default RecommendedDomains;
+export default connect((state: RootState) => {
+  return {
+    currencies: state.currencies,
+  };
+})(RecommendedDomains);

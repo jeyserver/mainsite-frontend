@@ -11,6 +11,7 @@ import styles from './CheckDomainForm.module.scss';
 import { connect } from 'react-redux';
 import { setDomainsForConfigure } from '../../../../../store/Domain';
 import { nanoid } from '@reduxjs/toolkit';
+import { NextRouter, withRouter } from 'next/router';
 
 interface IDomain {
   available: boolean;
@@ -25,6 +26,8 @@ interface IProps {
   cheepBorder: number;
   default: { name: string; tld: number };
   selectedDomains: IDomain[];
+  periods: { [domain: string]: string };
+  router: NextRouter;
   setRecommendedDomains: (domains: IDomain[]) => void;
   setSelectedDomains: (domains: IDomain[]) => void;
   setDomainsForConfigure: typeof setDomainsForConfigure;
@@ -41,7 +44,6 @@ class CheckDomainForm extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.state = {};
-    this.onSubmit = this.onSubmit.bind(this);
   }
 
   onSubmit(
@@ -67,10 +69,11 @@ class CheckDomainForm extends React.Component<IProps, IState> {
         .post(
           `/order/domain?ajax=1&domains=${JSON.stringify(
             this.props.selectedDomains
-          )}`
+          )}&period=${JSON.stringify(this.props.periods)}`
         )
         .then((res) => {
           this.props.setDomainsForConfigure(domainsForConfigure);
+          this.props.router.push('/order/domain/configure');
         })
         .catch((err) => {
           NotificationManager.error(
@@ -119,7 +122,10 @@ class CheckDomainForm extends React.Component<IProps, IState> {
 
     return (
       <Formik
-        initialValues={{ name: '', tld: this.props.tlds[0].id }}
+        initialValues={{
+          name: this.props.default.name,
+          tld: Number(this.props.default.tld) || this.props.tlds[0].id,
+        }}
         onSubmit={(values, helpers) => this.onSubmit(values, helpers)}
       >
         {(formik) => (
@@ -271,4 +277,6 @@ class CheckDomainForm extends React.Component<IProps, IState> {
   }
 }
 
-export default connect(null, { setDomainsForConfigure })(CheckDomainForm);
+export default connect(null, { setDomainsForConfigure })(
+  withRouter(CheckDomainForm)
+);

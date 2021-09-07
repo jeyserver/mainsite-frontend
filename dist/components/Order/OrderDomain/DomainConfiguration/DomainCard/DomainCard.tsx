@@ -1,24 +1,49 @@
 import * as React from 'react';
 import classNames from 'classnames';
-import { ErrorMessage } from 'formik';
+import { ErrorMessage, Field } from 'formik';
 import { Row, Col, Button, Form } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import IDomainProduct from '../../../../../helper/types/cart/domain';
-import { RootState } from '../../../../../store';
-import { deleteFromForConfigure as deleteDomain } from '../../../../../store/Domain';
+import { AsyncThunkAction, RootState } from '../../../../../store';
+import { deleteDomain } from '../../../../../store/Domain';
+import { NotificationManager } from 'react-notifications';
 import styles from './DomainCard.module.scss';
 
 interface IProps {
   nationalDomain: boolean;
   domain: IDomainProduct;
   transfer: boolean;
-  deleteOrderedDomain: (targetTld) => void;
   storeDomain: RootState['domain'];
   auth: RootState['auth'];
-  deleteDomain: typeof deleteDomain;
+  deleteDomain: AsyncThunkAction<any, { id: string | number }>;
 }
 
-class DomainCard extends React.Component<IProps> {
+interface IState {
+  deleteBtnLoading: boolean;
+}
+
+class DomainCard extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
+    super(props);
+    this.state = {
+      deleteBtnLoading: false,
+    };
+  }
+
+  async deleteDomain() {
+    this.setState({ deleteBtnLoading: true });
+    try {
+      await this.props.deleteDomain({ id: this.props.domain.id }).unwrap();
+    } catch {
+      NotificationManager.error(
+        'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
+        'خطا'
+      );
+    } finally {
+      this.setState({ deleteBtnLoading: false });
+    }
+  }
+
   render() {
     const domain = this.props.domain;
 
@@ -35,16 +60,10 @@ class DomainCard extends React.Component<IProps> {
             <Button
               variant="danger"
               className={styles.deleteBtn}
-              // disabled={
-              //   this.props.store.orderedDomains.inPending.filter(
-              //     (i) => i === this.props.domain.tld.tld
-              //   ).length > 0
-              // }
-              onClick={() => this.props.deleteDomain(domain.id)}
+              disabled={this.state.deleteBtnLoading}
+              onClick={() => this.deleteDomain()}
             >
-              {/* {this.props.store.orderedDomains.inPending.filter(
-                (i) => i === this.props.domain.tld.tld
-              ).length > 0 ? (
+              {this.state.deleteBtnLoading ? (
                 <>
                   <i className="fas fa-spinner"></i>
                   حذف از سبد خرید
@@ -54,9 +73,7 @@ class DomainCard extends React.Component<IProps> {
                   <i className="fa fa-trash pull-right" />
                   حذف از سبد خرید
                 </>
-              )} */}
-              <i className="fa fa-trash pull-right" />
-              حذف از سبد خرید
+              )}
             </Button>
           </div>
         </div>
@@ -106,7 +123,8 @@ class DomainCard extends React.Component<IProps> {
                         <Col md={5}>
                           <Form.Group controlId="irnic">
                             <Form.Label>شناسه ی ایرنیک</Form.Label>
-                            <Form.Control
+                            <Field
+                              className="form-control"
                               type="text"
                               name={`products[${domain.id}][panel]`}
                             />
@@ -178,9 +196,10 @@ class DomainCard extends React.Component<IProps> {
                   <div className={styles.nameserver}>
                     <Form.Group>
                       <Form.Label>NameServer 1</Form.Label>
-                      <Form.Control
+                      <Field
+                        className="form-control"
                         type="text"
-                        defaultValue="ns1.jeyserver.com"
+                        // defaultValue="ns1.jeyserver.com"
                         name={`products[${domain.id}][dns][1]`}
                       />
                       <div className="form-err-msg">
@@ -191,9 +210,10 @@ class DomainCard extends React.Component<IProps> {
                   <div className={styles.nameserver}>
                     <Form.Group controlId="nameserver-2">
                       <Form.Label>NameServer 2</Form.Label>
-                      <Form.Control
+                      <Field
+                        className="form-control"
                         type="text"
-                        defaultValue="ns2.jeyserver.com"
+                        // defaultValue="ns2.jeyserver.com"
                         name={`products[${domain.id}][dns][2]`}
                       />
                       <div className="form-err-msg">
@@ -204,7 +224,8 @@ class DomainCard extends React.Component<IProps> {
                   <div className={styles.nameserver}>
                     <Form.Group controlId="nameserver-3">
                       <Form.Label>NameServer 3</Form.Label>
-                      <Form.Control
+                      <Field
+                        className="form-control"
                         type="text"
                         name={`products[${domain.id}][dns][3]`}
                       />
@@ -216,7 +237,8 @@ class DomainCard extends React.Component<IProps> {
                   <div className={styles.nameserver}>
                     <Form.Group controlId="nameserver-4">
                       <Form.Label>NameServer 4</Form.Label>
-                      <Form.Control
+                      <Field
+                        className="form-control"
                         type="text"
                         name={`products[${domain.id}][dns][4]`}
                       />

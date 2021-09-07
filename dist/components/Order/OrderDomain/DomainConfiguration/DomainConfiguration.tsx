@@ -1,13 +1,14 @@
 import axios from 'axios';
 import { withRouter, NextRouter } from 'next/router';
 import * as React from 'react';
-import { Form, Row, Col, Button, Spinner } from 'react-bootstrap';
+import { Row, Col, Button, Spinner } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import DomainCard from './DomainCard/DomainCard';
-import { NotificationManager } from 'react-notifications';
 import styles from './DomainConfiguration.module.scss';
 import { RootState } from '../../../../store';
-import { Formik } from 'formik';
+import { Formik, Form, FormikHelpers } from 'formik';
+import { NotificationManager } from 'react-notifications';
+import backend from '../../../../axios-config';
 
 interface IProps {
   data: any;
@@ -16,72 +17,61 @@ interface IProps {
   domain: RootState['domain'];
 }
 
-type error = 'data_validation' | 'data_duplicate';
-
-interface IState {
-  formValidated: boolean;
-  errors: {
-    type: string;
-    code: error;
-    input: string;
-    error: error;
-  }[];
-  btnLoading: boolean;
+interface IInputs {
+  products: {
+    [id: string]: {
+      panel: string;
+      dns: string[];
+    };
+  };
 }
 
-class DomainConfiguration extends React.Component<IProps, IState> {
-  constructor(props: IProps) {
-    super(props);
-    this.state = {
-      formValidated: false,
-      btnLoading: false,
-      errors: [],
-    };
-    this.submitForm = this.submitForm.bind(this);
-  }
-
-  submitForm(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const form = e.currentTarget;
-
-    if (form.checkValidity() === false) {
-      e.stopPropagation();
-    } else {
-      this.setState({ btnLoading: true });
-
-      axios(
-        'https://jsonblob.com/api/jsonBlob/d3196d4f-e2e1-11eb-b284-d50b7a049077'
-      )
-        .then((res) => {
-          // this.setState({ btnLoading: false });
-          this.props.router.push('/order/cart/review');
-
-          // if (res.data.status) {
-          // } else if (!res.data.status) {
-          //   res.data.error.forEach((errorItem) => {
-          //     if (errorItem.input === 'name') {
-          //       form.domainName.value = '';
-          //       this.setState({ errorCode: errorItem.code });
-          //     }
-          //   });
-          // }
-        })
-        .catch(() => {
-          this.setState({ btnLoading: false });
-          NotificationManager.error(
-            'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
-            'خطا'
-          );
-        });
-    }
-
-    this.setState({ formValidated: true });
-  }
-
+class DomainConfiguration extends React.Component<IProps> {
   componentDidUpdate() {
     if (this.props.domain.forConfigure.length === 0) {
       this.props.router.push('/order/domain');
     }
+  }
+
+  onSubmit(values: IInputs, { setSubmitting }: FormikHelpers<IInputs>) {
+    backend
+      .post(`/order/domain/configure?ajax=1&products=${values.products}`)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch(() => {
+        NotificationManager.error(
+          'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
+          'خطا'
+        );
+      })
+      .finally(() => {
+        setSubmitting(false);
+      });
+    console.log(values);
+  }
+
+  getInputs() {
+    let inputs = {};
+    this.props.domain.forConfigure.map((domain) => {
+      if (domain.tld.tld === 'ir') {
+        inputs = {
+          ...inputs,
+          [domain.id]: {
+            panel: '',
+            dns: ['', 'ns1.jeyserver.com', 'ns2.jeyserver.com', '', ''],
+          },
+        };
+      } else {
+        inputs = {
+          ...inputs,
+          [domain.id]: {
+            dns: ['', 'ns1.jeyserver.com', 'ns2.jeyserver.com', '', ''],
+          },
+        };
+      }
+    });
+    return inputs;
   }
 
   render() {
@@ -89,13 +79,12 @@ class DomainConfiguration extends React.Component<IProps, IState> {
       <div className={styles.domainConfiguration}>
         <h2 className={styles.title}>پیکره بندی دامنه</h2>
 
-        <Formik>
+        <Formik
+          initialValues={{ products: this.getInputs() }}
+          onSubmit={(values, helpers) => this.onSubmit(values, helpers)}
+        >
           {(formik) => (
-            <Form
-              onSubmit={(e) => this.submitForm(e)}
-              noValidate
-              validated={this.state.formValidated}
-            >
+            <Form>
               {this.props.domain.forConfigure.map((domain) => (
                 <DomainCard
                   nationalDomain={this.props.data.nationalDomainsList.some(
@@ -112,9 +101,9 @@ class DomainConfiguration extends React.Component<IProps, IState> {
                   <Button
                     type="submit"
                     className={styles.continueBtn}
-                    disabled={this.state.btnLoading}
+                    disabled={formik.isSubmitting}
                   >
-                    {this.state.btnLoading ? (
+                    {formik.isSubmitting ? (
                       <>
                         <Spinner animation="border" size="sm" />
                         <span>لطفا صبر کنید</span>

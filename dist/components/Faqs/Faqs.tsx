@@ -19,7 +19,6 @@ class Faqs extends React.Component<IProps, IState> {
     this.state = {
       isNavFixed: false,
     };
-    this.onScroll = this.onScroll.bind(this);
   }
   lastScrollTop = 0;
 
@@ -72,12 +71,12 @@ class Faqs extends React.Component<IProps, IState> {
   }
 
   componentDidMount() {
-    window.addEventListener('scroll', this.onScroll, false);
+    window.addEventListener('scroll', () => this.onScroll(), false);
     this.props.switchAppIsScrolling();
   }
 
   componentWillUnmount() {
-    window.removeEventListener('scroll', this.onScroll, false);
+    window.removeEventListener('scroll', () => this.onScroll(), false);
   }
 
   render() {

@@ -26,11 +26,6 @@ interface IProps {
   theme: RootState['theme'];
 }
 
-interface IState {
-  commentFormValidated: boolean;
-  commentSendBtnLoading: boolean;
-}
-
 interface IInputs {
   name: string;
   email: string;
@@ -38,21 +33,8 @@ interface IInputs {
   text: string;
 }
 
-class Post extends React.Component<IProps, IState> {
-  constructor(props: IProps) {
-    super(props);
-    this.state = {
-      commentFormValidated: false,
-      commentSendBtnLoading: false,
-    };
-    this.onSubmitCommentForm = this.onSubmitCommentForm.bind(this);
-  }
-
-  getPageLink() {
-    return `${process.env.SCHEMA}://${process.env.DOMAIN}/${this.props.language.locale}/blog/${this.props.post.permalink}`;
-  }
-
-  onSubmitCommentForm(
+class Post extends React.Component<IProps> {
+  onSubmit(
     values: IInputs,
     { setSubmitting, setErrors, resetForm }: FormikHelpers<IInputs>
   ) {
@@ -88,6 +70,10 @@ class Post extends React.Component<IProps, IState> {
       .finally(() => {
         setSubmitting(false);
       });
+  }
+
+  getPageLink() {
+    return `${process.env.SITE_URL}${this.props.router.asPath}`;
   }
 
   render() {
@@ -177,39 +163,39 @@ class Post extends React.Component<IProps, IState> {
           </a>
         </div>
 
-        <div className={styles.lables}>
-          <span> برچسب ها:</span>
-          <span className={styles.labelsWrapper}>
-            {this.props.post.tags.map((tag, index) => {
-              if (index === this.props.post.categories.length - 1) {
-                return (
-                  <Link href={`/blog/tag/${tag.permalink}`} key={tag.id}>
-                    <a>{tag.title}</a>
-                  </Link>
-                );
-              } else {
-                return (
-                  <Link href={`/blog/tag/${tag.permalink}`} key={tag.id}>
-                    <a>{tag.title}، </a>
-                  </Link>
-                );
-              }
-            })}
-          </span>
-        </div>
+        {this.props.post.tags.length > 0 && (
+          <div className={styles.lables}>
+            <span> برچسب ها:</span>
+            <span className={styles.labelsWrapper}>
+              {this.props.post.tags.map((tag, index) => {
+                if (index === this.props.post.categories.length - 1) {
+                  return (
+                    <Link href={`/blog/tag/${tag.permalink}`} key={tag.id}>
+                      <a>{tag.title}</a>
+                    </Link>
+                  );
+                } else {
+                  return (
+                    <Link href={`/blog/tag/${tag.permalink}`} key={tag.id}>
+                      <a>{tag.title}، </a>
+                    </Link>
+                  );
+                }
+              })}
+            </span>
+          </div>
+        )}
 
         <div className={styles.comments}>
           <h3>دیدگاه ها ({this.props.comments.length})</h3>
 
-          {this.props.comments
-            // .filter((i) => !i.reply)
-            .map((comment) => (
-              <Comment
-                key={comment.id}
-                comment={comment}
-                comments={this.props.comments}
-              />
-            ))}
+          {this.props.comments.map((comment) => (
+            <Comment
+              key={comment.id}
+              comment={comment}
+              comments={this.props.comments}
+            />
+          ))}
 
           <div className={styles.formWrapper}>
             <h3>افزودن دیدگاه</h3>
@@ -219,9 +205,7 @@ class Post extends React.Component<IProps, IState> {
             </h4>
 
             <Formik
-              onSubmit={(values, helpers) =>
-                this.onSubmitCommentForm(values, helpers)
-              }
+              onSubmit={(values, helpers) => this.onSubmit(values, helpers)}
               initialValues={{ name: '', email: '', text: '', site: '' }}
               validationSchema={Yup.object({
                 name: Yup.string().required('داده وارد شده معتبر نیست'),

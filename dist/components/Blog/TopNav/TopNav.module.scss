@@ -464,6 +464,14 @@
           color: #3d3d3d;
           min-width: 150px;
           display: none;
+          border: 1px solid #dddddd;
+
+          a {
+            border-bottom: 1px solid #dddddd;
+            &:last-child {
+              border-bottom: none;
+            }
+          }
         }
 
         &:hover .menu {

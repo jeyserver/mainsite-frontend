@@ -12,8 +12,12 @@ interface IProps extends IPageProps {
 }
 
 class Layout extends React.Component<IProps> {
-  render() {
+  constructor(props) {
+    super(props);
     this.props.setCurrencies(this.props.header.currencies);
+  }
+
+  render() {
     return (
       <React.Fragment>
         <Navbar

@@ -40,12 +40,11 @@
       font-family: IRANSans;
       font-size: 13px;
       color: #dc3545;
-      margin-bottom: 10px;
+      margin-top: 10px;
+      text-align: left;
     }
 
     .inputGroup {
-      margin-bottom: 25px;
-
       .inputGroupPrepend {
         background-color: transparent;
         height: 35px;
@@ -83,6 +82,7 @@
     }
 
     .btn {
+      margin-top: 25px;
       background-color: #198236;
       border: 1px solid #198236;
       color: #ffffff;

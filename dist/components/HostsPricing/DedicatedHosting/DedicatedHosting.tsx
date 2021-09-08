@@ -15,10 +15,28 @@ interface IProps {
   switchAppIsScrolling: () => void;
 }
 
-class DedicatedHosting extends React.Component<IProps> {
+interface IState {
+  sepratedPlansByCountry: IHostPlan[][];
+}
+
+class DedicatedHosting extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
-    this.state = {};
+    this.state = {
+      sepratedPlansByCountry: Object.values(
+        this.props.plans.reduce((accumulator, currentValue) => {
+          const co = currentValue.country.code;
+
+          if (accumulator && accumulator[co]) {
+            accumulator[co] = [...accumulator[co], currentValue];
+          } else {
+            accumulator[co] = [currentValue];
+          }
+
+          return accumulator;
+        }, {})
+      ),
+    };
     this.onScroll = this.onScroll.bind(this);
   }
 
@@ -89,20 +107,6 @@ class DedicatedHosting extends React.Component<IProps> {
   }
 
   render() {
-    const sepratedPlansByCountry = Object.values(
-      this.props.plans.reduce((accumulator, currentValue) => {
-        const co = currentValue.country.code;
-
-        if (accumulator && accumulator[co]) {
-          accumulator[co] = [...accumulator[co], currentValue];
-        } else {
-          accumulator[co] = [currentValue];
-        }
-
-        return accumulator;
-      }, {})
-    ) as IHostPlan[][];
-
     return (
       <section>
         <PagesHeader title="هاست میزبانی اختصاصی" />
@@ -229,7 +233,7 @@ class DedicatedHosting extends React.Component<IProps> {
         <Container>
           <Row>
             <Col>
-              {sepratedPlansByCountry.map((plans, index) => (
+              {this.state.sepratedPlansByCountry.map((plans, index) => (
                 <div key={index}>
                   <DedicatedHostingTable plans={plans} />
                   <div className={styles.tableBottomSpace}></div>

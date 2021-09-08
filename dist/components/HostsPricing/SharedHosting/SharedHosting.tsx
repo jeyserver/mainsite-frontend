@@ -21,21 +21,40 @@ interface IProps {
   switchAppIsScrolling: () => void;
 }
 
-class SharedHosting extends React.Component<IProps> {
+interface IState {
+  plans: IHostPlan[][];
+}
+
+class SharedHosting extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
-    this.state = {};
-    this.onScrollFixedNav = this.onScrollFixedNav.bind(this);
-    this.onScrollFindActive = this.onScrollFindActive.bind(this);
-    this.onScrollTopNav = this.onScrollTopNav.bind(this);
+    this.state = {
+      plans: Object.values(
+        this.props.sharedHosts.reduce((accumulator, currentValue) => {
+          const co = `${currentValue.country.code}-${currentValue.cp}`;
+
+          if (accumulator && accumulator[co]) {
+            accumulator[co] = [...accumulator[co], currentValue];
+          } else {
+            accumulator[co] = [currentValue];
+          }
+
+          return accumulator;
+        }, {})
+      ),
+    };
+    this.onScroll = this.onScroll.bind(this);
   }
 
   lastScrollTop = 0;
 
-  onScrollFixedNav() {
+  onScroll() {
     const nav = document.querySelector(
       `#${this.props.page}-nav`
     ) as HTMLDivElement;
+    const mainNavLinks = document.querySelectorAll(
+      `#${this.props.page}-nav li[data-main="true"] > a`
+    );
     const emptySpaceForNav = document.querySelector(
       '#emptySpaceForNav'
     ) as HTMLDivElement;
@@ -51,14 +70,6 @@ class SharedHosting extends React.Component<IProps> {
       nav.style.margin = '30px 0';
       emptySpaceForNav.style.display = 'none';
     }
-  }
-
-  onScrollFindActive() {
-    const mainNavLinks = document.querySelectorAll(
-      `#${this.props.page}-nav li[data-main="true"] > a`
-    );
-
-    let fromTop = window.scrollY;
 
     mainNavLinks.forEach((link: any) => {
       let section = document.querySelector(link.hash);
@@ -74,12 +85,6 @@ class SharedHosting extends React.Component<IProps> {
         return;
       }
     });
-  }
-
-  onScrollTopNav() {
-    const nav = document.querySelector(
-      `#${this.props.page}-nav`
-    ) as HTMLDivElement;
 
     var st = window.pageYOffset || document.documentElement.scrollTop;
     if (st > this.lastScrollTop) {
@@ -98,32 +103,15 @@ class SharedHosting extends React.Component<IProps> {
   }
 
   componentDidMount() {
-    window.addEventListener('scroll', this.onScrollFindActive, false);
-    window.addEventListener('scroll', this.onScrollFixedNav, false);
-    window.addEventListener('scroll', this.onScrollTopNav, false);
-
+    window.addEventListener('scroll', this.onScroll, false);
     this.props.switchAppIsScrolling();
   }
 
   componentWillUnmount() {
-    window.removeEventListener('scroll', this.onScrollFindActive, false);
-    window.removeEventListener('scroll', this.onScrollFixedNav, false);
-    window.removeEventListener('scroll', this.onScrollTopNav, false);
+    window.removeEventListener('scroll', this.onScroll, false);
   }
 
   render() {
-    const plans = this.props.sharedHosts.reduce((accumulator, currentValue) => {
-      const co = `${currentValue.country.code}-${currentValue.cp}`;
-
-      if (accumulator && accumulator[co]) {
-        accumulator[co] = [...accumulator[co], currentValue];
-      } else {
-        accumulator[co] = [currentValue];
-      }
-
-      return accumulator;
-    }, {});
-
     return (
       <section>
         <PagesHeader title={getPageForHeader(this.props.page)} />
@@ -171,7 +159,7 @@ class SharedHosting extends React.Component<IProps> {
 
           <Row>
             <Col>
-              {Object.values(plans).map((panels: IHostPlan[], index) => (
+              {this.state.plans.map((panels: IHostPlan[], index) => (
                 <div
                   key={index}
                   id={`${this.props.page}_${panels[0].country.code}${
@@ -195,8 +183,6 @@ class SharedHosting extends React.Component<IProps> {
                     data={panels}
                     homePageTable={false}
                   />
-
-                  <div className={styles.tableBottomSpace}></div>
                 </div>
               ))}
             </Col>

@@ -16,10 +16,28 @@ interface IProps {
   switchAppIsScrolling: () => void;
 }
 
-class VPSHosting extends React.Component<IProps> {
+interface IState {
+  sepratedPlans: IHostPlan[][];
+}
+
+class VPSHosting extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
-    this.state = {};
+    this.state = {
+      sepratedPlans: Object.values(
+        this.props.plans.reduce((accumulator, currentValue) => {
+          const co = currentValue.cp;
+
+          if (accumulator && accumulator[co]) {
+            accumulator[co] = [...accumulator[co], currentValue];
+          } else {
+            accumulator[co] = [currentValue];
+          }
+
+          return accumulator;
+        }, {})
+      ),
+    };
     this.onScroll = this.onScroll.bind(this);
   }
 
@@ -89,20 +107,6 @@ class VPSHosting extends React.Component<IProps> {
   }
 
   render() {
-    const sepratedPlans = Object.values(
-      this.props.plans.reduce((accumulator, currentValue) => {
-        const co = currentValue.cp;
-
-        if (accumulator && accumulator[co]) {
-          accumulator[co] = [...accumulator[co], currentValue];
-        } else {
-          accumulator[co] = [currentValue];
-        }
-
-        return accumulator;
-      }, {})
-    ) as IHostPlan[][];
-
     return (
       <section>
         <PagesHeader title="هاست میزبانی نیمه اختصاصی" />
@@ -236,7 +240,7 @@ class VPSHosting extends React.Component<IProps> {
         <Container>
           <Row>
             <Col>
-              {sepratedPlans.reverse().map((plans, index) => (
+              {this.state.sepratedPlans.reverse().map((plans, index) => (
                 <div key={index}>
                   <VPSHostingTable plans={plans} />
                   <div className={styles.tableBottomSpace}></div>

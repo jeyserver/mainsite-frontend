@@ -3,15 +3,7 @@ import { Col } from 'react-bootstrap';
 import Link from 'next/link';
 import styles from './HostFaq.module.scss';
 
-export interface HostFaqProps {}
-
-export interface HostFaqState {}
-
-class HostFaq extends React.Component<HostFaqProps, HostFaqState> {
-  constructor(props: HostFaqProps) {
-    super(props);
-    this.state = {};
-  }
+class HostFaq extends React.Component {
   render() {
     return (
       <Col>

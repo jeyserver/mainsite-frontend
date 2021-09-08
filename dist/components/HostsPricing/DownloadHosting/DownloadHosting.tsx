@@ -14,10 +14,28 @@ interface IProps {
   switchAppIsScrolling: () => void;
 }
 
-class DownloadHosting extends React.Component<IProps> {
+interface IState {
+  sepratedPlansByCountry: IHostPlan[][];
+}
+
+class DownloadHosting extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
-    this.state = {};
+    this.state = {
+      sepratedPlansByCountry: Object.values(
+        this.props.plans.reduce((accumulator, currentValue) => {
+          const co = currentValue.country.code;
+
+          if (accumulator && accumulator[co]) {
+            accumulator[co] = [...accumulator[co], currentValue];
+          } else {
+            accumulator[co] = [currentValue];
+          }
+
+          return accumulator;
+        }, {})
+      ),
+    };
     this.onScroll = this.onScroll.bind(this);
   }
 
@@ -40,6 +58,7 @@ class DownloadHosting extends React.Component<IProps> {
     } else {
       // upscroll code
       if (!this.props.appIsScrolling) {
+        console.log('file');
         nav.style.top = '80px';
       } else {
         nav.style.top = '0px';
@@ -88,20 +107,6 @@ class DownloadHosting extends React.Component<IProps> {
   }
 
   render() {
-    const sepratedPlansByCountry = Object.values(
-      this.props.plans.reduce((accumulator, currentValue) => {
-        const co = currentValue.country.code;
-
-        if (accumulator && accumulator[co]) {
-          accumulator[co] = [...accumulator[co], currentValue];
-        } else {
-          accumulator[co] = [currentValue];
-        }
-
-        return accumulator;
-      }, {})
-    ) as IHostPlan[][];
-
     return (
       <section>
         <PagesHeader title="هاست دانلود" />
@@ -230,7 +235,7 @@ class DownloadHosting extends React.Component<IProps> {
         <Container>
           <Row>
             <Col>
-              {sepratedPlansByCountry.map((plans, index) => (
+              {this.state.sepratedPlansByCountry.map((plans, index) => (
                 <div key={index}>
                   <DownloadHostingTable plans={plans} />
                   <div className={styles.tableBottomSpace}></div>

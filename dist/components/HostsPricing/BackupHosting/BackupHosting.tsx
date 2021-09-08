@@ -22,7 +22,19 @@ class BackupHosting extends React.Component<IProps, BackupHostingState> {
   constructor(props: IProps) {
     super(props);
     this.state = {
-      sepratedPlansByCountry: [],
+      sepratedPlansByCountry: Object.values(
+        this.props.plans.reduce((accumulator, currentValue) => {
+          const co = currentValue.country.code;
+
+          if (accumulator && accumulator[co]) {
+            accumulator[co] = [...accumulator[co], currentValue];
+          } else {
+            accumulator[co] = [currentValue];
+          }
+
+          return accumulator;
+        }, {})
+      ),
     };
     this.onScroll = this.onScroll.bind(this);
   }
@@ -46,6 +58,7 @@ class BackupHosting extends React.Component<IProps, BackupHostingState> {
     } else {
       // upscroll code
       if (!this.props.appIsScrolling) {
+        console.log('backup');
         nav.style.top = '80px';
       } else {
         nav.style.top = '0px';
@@ -104,20 +117,6 @@ class BackupHosting extends React.Component<IProps, BackupHostingState> {
   }
 
   render() {
-    const sepratedPlansByCountry = Object.values(
-      this.props.plans.reduce((accumulator, currentValue) => {
-        const co = currentValue.country.code;
-
-        if (accumulator && accumulator[co]) {
-          accumulator[co] = [...accumulator[co], currentValue];
-        } else {
-          accumulator[co] = [currentValue];
-        }
-
-        return accumulator;
-      }, {})
-    ) as IHostPlan[][];
-
     return (
       <section>
         <PagesHeader title="هاست بکاپ" />
@@ -244,8 +243,12 @@ class BackupHosting extends React.Component<IProps, BackupHostingState> {
           <Row>
             <Col>
               <Row className={styles.tableWrapper}>
-                {sepratedPlansByCountry.map((plans, index) => (
-                  <div id={plans[0].country.name} key={plans[0].country.name}>
+                {this.state.sepratedPlansByCountry.map((plans, index) => (
+                  <div
+                    id={plans[0].country.name}
+                    className={styles.tableWrapper}
+                    key={plans[0].country.name}
+                  >
                     {this.chunkedPlans(5, plans).map(
                       (chunkedPlans, chunkedIndex) => (
                         <BackupHostingTable

@@ -226,8 +226,6 @@ class ResellerHostingTable extends React.Component<IProps, IState> {
                     })}
                   >
                     گواهینامه رایگان SSL
-                    {/* <i className="far fa-check-square"></i> */}
-                    {/* <i className="fa fa-times fa-lg" /> */}
                   </td>
 
                   <td

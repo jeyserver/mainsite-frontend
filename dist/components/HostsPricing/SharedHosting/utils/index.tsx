@@ -374,7 +374,7 @@ export const renderTopNav = (
                 {hosts.standard_linux_shared_hosts.map((host) => (
                   <Link
                     key={host.link}
-                    href={`/hosting/linux/professional#${host.link}`}
+                    href={`/hosting/linux/standard#${host.link}`}
                   >
                     <a>هاست اشتراکی ساده {host.title}</a>
                   </Link>

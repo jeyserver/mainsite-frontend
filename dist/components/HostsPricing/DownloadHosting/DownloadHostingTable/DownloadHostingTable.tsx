@@ -34,7 +34,6 @@ class DownloadHostingTable extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.state = { isMoreInfoOpen: false };
-    this.toggleMoreInfo = this.toggleMoreInfo.bind(this);
   }
 
   toggleMoreInfo() {
@@ -206,7 +205,7 @@ class DownloadHostingTable extends React.Component<IProps, IState> {
                   <button
                     type="button"
                     className={styles.moreInfoBtn}
-                    onClick={this.toggleMoreInfo}
+                    onClick={() => this.toggleMoreInfo()}
                   >
                     اطلاعات بیشتر{' '}
                   </button>

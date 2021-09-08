@@ -15,12 +15,28 @@ interface IProps {
   switchAppIsScrolling: () => void;
 }
 
-interface IState {}
+interface IState {
+  sepratedPlansByLicence: IHostPlan[][];
+}
 
 class ResellerHosting extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
-    this.state = {};
+    this.state = {
+      sepratedPlansByLicence: Object.values(
+        this.props.plans.reduce((accumulator, currentValue) => {
+          const co = `${currentValue.cp}_${currentValue.country.code}`;
+
+          if (accumulator && accumulator[co]) {
+            accumulator[co] = [...accumulator[co], currentValue];
+          } else {
+            accumulator[co] = [currentValue];
+          }
+
+          return accumulator;
+        }, {})
+      ),
+    };
     this.onScroll = this.onScroll.bind(this);
   }
 
@@ -90,20 +106,6 @@ class ResellerHosting extends React.Component<IProps, IState> {
   }
 
   render() {
-    const sepratedPlansByLicence = Object.values(
-      this.props.plans.reduce((accumulator, currentValue) => {
-        const co = `${currentValue.cp}_${currentValue.country.code}`;
-
-        if (accumulator && accumulator[co]) {
-          accumulator[co] = [...accumulator[co], currentValue];
-        } else {
-          accumulator[co] = [currentValue];
-        }
-
-        return accumulator;
-      }, {})
-    ) as IHostPlan[][];
-
     return (
       <section>
         <PagesHeader title="نمایندگی هاست اشتراکی لینوکس" />
@@ -230,7 +232,7 @@ class ResellerHosting extends React.Component<IProps, IState> {
         <Container>
           <Row>
             <Col>
-              {sepratedPlansByLicence.map((plans, index) => (
+              {this.state.sepratedPlansByLicence.map((plans, index) => (
                 <div key={index}>
                   <ResellerHostingTable plans={plans} />
                   <div className={styles.tableBottomSpace}></div>

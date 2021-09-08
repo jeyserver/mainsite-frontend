@@ -42,11 +42,8 @@ interface IState {
 class DedicatedHostingTable extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
-    this.state = { isMoreInfoOpen: false, plans: [] };
-  }
-
-  componentDidMount() {
-    this.setState({
+    this.state = {
+      isMoreInfoOpen: false,
       plans: Object.values(
         this.props.plans.reduce((accumulator, currentValue) => {
           const co = currentValue.title
@@ -86,8 +83,44 @@ class DedicatedHostingTable extends React.Component<IProps, IState> {
 
           return accumulator;
         }, {})
-      ) as IHostPlanWithVariants[],
-    });
+      ),
+    };
+  }
+
+  getCpuModel(planId: number): string {
+    switch (planId) {
+      case 171:
+      case 181:
+        return 'Intel Core i7-4770 4c/8t';
+      case 175:
+      case 185:
+        return 'Intel Xeon E5-1650 6c/12t';
+      case 174:
+      case 184:
+        return 'Intel Core™ i7-8700 6c/12t';
+      case 172:
+      case 173:
+      case 182:
+      case 183:
+        return 'Intel Core™ i7-6700 4c/8t';
+      case 176:
+      case 186:
+        return 'Intel Xeon E3-1225v2 4c/4t';
+      case 177:
+      case 187:
+        return 'Intel I7-4790K 4c/8t';
+      case 178:
+      case 188:
+        return 'Intel Xeon E3-1245v2 4c/8t';
+      case 179:
+      case 189:
+        return 'Intel Xeon E5-1630v3 4c/8t';
+      case 180:
+      case 190:
+        return 'Intel Xeon-D 1540 8c/16t';
+      default:
+        return '';
+    }
   }
 
   render() {
@@ -394,7 +427,7 @@ class DedicatedHostingTable extends React.Component<IProps, IState> {
                       <BackupsCell backups={plan.backups} />
                     </td>
                     <td>
-                      <small>Intel I7-4790K 4c/8t</small>
+                      <small>{this.getCpuModel(plan.id)}</small>
                     </td>
                     {plan.ram ? (
                       <StarredCell

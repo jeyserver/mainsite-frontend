@@ -1,15 +1,7 @@
 import * as React from 'react';
-import {
-  Row,
-  Col,
-  Table,
-  OverlayTrigger,
-  Tooltip,
-  Button,
-} from 'react-bootstrap';
+import { Row, Col, Table, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import Link from 'next/link';
 import styles from './VPSHostingTable.module.scss';
-import ReactStars from 'react-rating-stars-component';
 import classNames from 'classnames';
 import CountryFlagTooltip from '../../../../helper/components/CountryFlagTooltip/CountryFlagTooltip';
 import { IHostPlan } from '../../../../helper/types/products/Host/plan';
@@ -43,11 +35,8 @@ interface IState {
 class SharedHostingTable extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
-    this.state = { isMoreInfoOpen: false, plans: [] };
-  }
-
-  componentDidMount() {
-    this.setState({
+    this.state = {
+      isMoreInfoOpen: false,
       plans: Object.values(
         this.props.plans.reduce((accumulator, currentValue) => {
           const co = currentValue.title;
@@ -79,8 +68,8 @@ class SharedHostingTable extends React.Component<IProps, IState> {
 
           return accumulator;
         }, {})
-      ) as IHostPlanWithCounties[],
-    });
+      ),
+    };
   }
 
   render() {

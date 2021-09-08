@@ -28,11 +28,11 @@ class HostingFaq extends React.Component {
   lastScrollTop = 0;
 
   componentDidMount() {
-    window.addEventListener('scroll', this.onScroll, false);
+    window.addEventListener('scroll', () => this.onScroll(), false);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('scroll', this.onScroll, false);
+    window.removeEventListener('scroll', () => this.onScroll(), false);
   }
 
   onScroll() {

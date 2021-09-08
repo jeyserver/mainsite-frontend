@@ -1,17 +1,8 @@
 import * as React from 'react';
 import { Row, Col } from 'react-bootstrap';
-import Link from 'next/link';
 import styles from './Facilities.module.scss';
 
-export interface FacilitiesProps {}
-
-export interface FacilitiesState {}
-
-class Facilities extends React.Component<FacilitiesProps, FacilitiesState> {
-  constructor(props: FacilitiesProps) {
-    super(props);
-    this.state = {};
-  }
+class Facilities extends React.Component {
   render() {
     return (
       <div>

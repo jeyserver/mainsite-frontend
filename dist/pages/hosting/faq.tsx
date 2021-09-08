@@ -14,11 +14,7 @@ class Index extends React.Component<IPageProps> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Layout
-          postsForFooter={this.props.postsForFooter}
-          domainsForNavbar={this.props.domainsForNavbar}
-          licensesForNavbar={this.props.licensesForNavbar}
-        >
+        <Layout header={this.props.header} footer={this.props.footer}>
           <HostingFaq />
         </Layout>
       </div>
@@ -35,8 +31,13 @@ export async function getServerSideProps(context) {
     };
   }
 
+  const respone = await fetch(
+    `${process.env.SITE_URL}/${locale}/hosting/faq?ajax=1`
+  );
+  const data = await respone.json();
+
   return {
-    props: {},
+    props: { ...data },
   };
 }
 

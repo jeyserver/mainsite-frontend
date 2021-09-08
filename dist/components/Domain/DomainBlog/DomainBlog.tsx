@@ -11,7 +11,7 @@ interface IProps {
 class DomainBlog extends React.Component<IProps> {
   render() {
     return (
-      <section id="about">
+      <section>
         <Container>
           <Row>
             {this.props.posts &&

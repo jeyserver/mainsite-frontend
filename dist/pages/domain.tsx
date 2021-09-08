@@ -21,6 +21,10 @@ export interface IPost {
   view: number;
   status: number;
   comments_count: number;
+  blog_relations_posts_categories: {
+    post: number;
+    category: number;
+  };
 }
 
 export interface IRoundDomain {
@@ -41,7 +45,7 @@ interface IProps extends IPageProps {
   round_domains: IRoundDomain[];
   total_domain_registered: number;
   options: IOptions;
-  posts: IPost[];
+  blog_posts: IPost[];
   commercialDomains: string[];
 }
 
@@ -55,17 +59,13 @@ class Index extends React.Component<IProps> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Layout
-          postsForFooter={this.props.postsForFooter}
-          domainsForNavbar={this.props.domainsForNavbar}
-          licensesForNavbar={this.props.licensesForNavbar}
-        >
+        <Layout header={this.props.header} footer={this.props.footer}>
           <Domain
             tlds={this.props.tlds}
             roundDomains={this.props.round_domains}
             totalDomainRegistered={this.props.total_domain_registered}
             options={this.props.options}
-            posts={this.props.posts}
+            posts={this.props.blog_posts}
             commercialDomains={this.props.commercialDomains}
           />
         </Layout>
@@ -84,14 +84,9 @@ export async function getServerSideProps(context) {
   }
 
   const respone = await fetch(
-    `${process.env.SCHEMA}://${process.env.DOMAIN}/${locale}/domain?ajax=1`
+    `${process.env.SITE_URL}/${locale}/domain?ajax=1`
   );
   const data = await respone.json();
-
-  const postsRes = await fetch(
-    `${process.env.SCHEMA}://${process.env.DOMAIN}/${locale}/blog/category/domain?ajax=1&ipp=3`
-  );
-  const posts = await postsRes.json();
 
   const commercialDomains = [
     'com',
@@ -111,7 +106,6 @@ export async function getServerSideProps(context) {
   return {
     props: {
       ...data,
-      posts: posts.items,
       commercialDomains,
     },
   };

@@ -28,7 +28,6 @@ class DomainOrderTable extends React.Component<IProps, IState> {
     this.state = {
       loading: false,
     };
-    this.order = this.order.bind(this);
   }
 
   order(domain: IRoundDomain) {

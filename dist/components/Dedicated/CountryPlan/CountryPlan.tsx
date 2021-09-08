@@ -5,13 +5,13 @@ import { countries } from '../lib/countries';
 import moment from 'jalali-moment';
 import styles from './CountryPlan.module.scss';
 import Link from 'next/link';
-import { IDedicatedPlan } from '../../../helper/types/products/Dedicated/plan';
-import { formatPriceWithCurrency } from '../../../store/Currencies';
 import { connect } from 'react-redux';
+import classNames from 'classnames';
 import { RootState } from '../../../store';
 import { formatSpace } from '../../../helper/formatSpace';
 import { formatHards } from '../../../helper/formatHards';
-import classNames from 'classnames';
+import { IDedicatedPlan } from '../../../helper/types/products/Dedicated/plan';
+import { formatPriceWithCurrency } from '../../../store/Currencies';
 import PagesHeader from '../../PagesHeader/PagesHeader';
 import getCpuLink from '../../../helper/getCpuLink';
 
@@ -96,7 +96,25 @@ class CountryPlan extends React.Component<IProps> {
                       <li>
                         <p className={styles.title}> آی پی </p>
                         <p className={styles.value}>
-                          1 عدد (هرعدد 60,600 تومان , حداکثر 16 عدد)
+                          {this.props.plan.on_sell_ips !== 0 &&
+                            `${this.props.plan.on_sell_ips} عدد `}
+                          {(this.props.plan.monthly_price_for_extra_ip !== 0 ||
+                            this.props.plan.max_extra_ip !== 0) &&
+                            `(
+                                ${
+                                  this.props.plan.monthly_price_for_extra_ip !==
+                                    0 &&
+                                  `هر عدد ${formatPriceWithCurrency(
+                                    this.props.currencies,
+                                    this.props.plan.currency,
+                                    this.props.plan.monthly_price_for_extra_ip
+                                  )}, `
+                                }
+                                ${
+                                  this.props.plan.max_extra_ip !== 0 &&
+                                  `حداکثر ${this.props.plan.max_extra_ip} عدد`
+                                }
+                                )`}
                         </p>
                       </li>
                       <li>
@@ -250,7 +268,7 @@ class CountryPlan extends React.Component<IProps> {
                             <p className={styles.title}> Storage </p>
                             <div className={styles.value}>
                               {formatHards(this.props.plan.hard).map((hard) => (
-                                <div>{hard}</div>
+                                <div key={hard}>{hard}</div>
                               ))}
                             </div>
                           </li>

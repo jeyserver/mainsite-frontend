@@ -49,7 +49,7 @@ class Plan extends React.Component<IProps> {
             <Col xs={4}>هارد:</Col>
             <Col xs={8} className="ltr">
               {formatHards(this.props.plan.hard).map((i) => (
-                <div>{i}</div>
+                <div key={i}>{i}</div>
               ))}
             </Col>
           </Row>

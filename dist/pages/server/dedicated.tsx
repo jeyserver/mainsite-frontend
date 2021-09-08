@@ -4,12 +4,12 @@ import ServerDedicated from '../../components/Dedicated/ServerDedicated';
 import Layout from '../../components/Layout/Layout';
 import { IPageProps } from './../_app';
 
-export interface IndexProps extends IPageProps {
+interface IProps extends IPageProps {
   status: boolean;
   countries: { code: string; name: string; is_recommended: boolean }[];
 }
 
-class Index extends React.Component<IndexProps> {
+class Index extends React.Component<IProps> {
   render() {
     return (
       <div dir="rtl">
@@ -19,11 +19,7 @@ class Index extends React.Component<IndexProps> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Layout
-          postsForFooter={this.props.postsForFooter}
-          domainsForNavbar={this.props.domainsForNavbar}
-          licensesForNavbar={this.props.licensesForNavbar}
-        >
+        <Layout header={this.props.header} footer={this.props.footer}>
           <ServerDedicated countries={this.props.countries} />
         </Layout>
       </div>
@@ -41,7 +37,7 @@ export async function getServerSideProps(context) {
   }
 
   const respone = await fetch(
-    `${process.env.SCHEMA}://${process.env.DOMAIN}/${locale}/server/dedicated?ajax=1`
+    `${process.env.SITE_URL}/${locale}/server/dedicated?ajax=1`
   );
   const data = await respone.json();
 

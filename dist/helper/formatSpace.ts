@@ -30,5 +30,5 @@ export const formatSpace = (size: number, lang: 'fa' | 'en', si = false) => {
 
   const i = Math.floor(Math.log(size) / Math.log(thresh));
 
-  return Math.round(size / Math.pow(thresh, i)) + ' ' + sizes[i];
+  return Math.round(size / Math.pow(thresh, i)) + sizes[i];
 };

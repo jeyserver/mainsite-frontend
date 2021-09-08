@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import CountryCard from './CountryCard/CountryCard';
 import Link from 'next/link';
+import CountryCard from './CountryCard/CountryCard';
 import styles from './ServerDedicated.module.scss';
 
 interface IProps {

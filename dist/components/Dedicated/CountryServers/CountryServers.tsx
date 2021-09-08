@@ -1,6 +1,15 @@
+import classNames from 'classnames';
 import moment from 'jalali-moment';
 import * as React from 'react';
-import { Container, Row, Col, Form, Image } from 'react-bootstrap';
+import {
+  Container,
+  Row,
+  Col,
+  Form,
+  Image,
+  FormControl,
+  FormControlProps,
+} from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { IDedicatedPlan } from '../../../helper/types/products/Dedicated/plan';
 import { RootState } from '../../../store';
@@ -27,9 +36,9 @@ interface IState {
 
   // Filter and search
   title: string;
-  sortName: '' | 'cpu' | 'ram' | 'bandwidth' | 'port' | 'price' | 'setup';
+  sortName: string;
   hardType: string;
-  sortAscOrDesc: 'asc' | 'desc';
+  sortAscOrDesc: string;
 }
 
 class CountryServer extends React.Component<IProps, IState> {
@@ -43,38 +52,28 @@ class CountryServer extends React.Component<IProps, IState> {
       hardType: '',
       sortAscOrDesc: 'asc',
     };
-    this.filterWithTitle = this.filterWithTitle.bind(this);
-    this.filterByHardType = this.filterByHardType.bind(this);
-    this.sorting = this.sorting.bind(this);
-    this.changeSortAscOrDesc = this.changeSortAscOrDesc.bind(this);
   }
 
-  filterWithTitle(e) {
+  filterWithTitle(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
       title: e.target.value,
     });
   }
 
-  filterByHardType(e) {
+  filterByHardType(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({
       hardType: e.target.value,
     });
   }
 
-  sorting(e) {
-    this.setState((prev) => {
-      return {
-        sortName: e.target.value,
-      };
+  sorting(e: React.ChangeEvent<HTMLSelectElement>) {
+    this.setState({
+      sortName: e.target.value,
     });
   }
 
-  changeSortAscOrDesc(e) {
-    this.setState((prev) => {
-      return {
-        sortAscOrDesc: e.target.value,
-      };
-    });
+  changeSortAscOrDesc(e: React.ChangeEvent<HTMLInputElement>) {
+    this.setState({ sortAscOrDesc: e.target.value });
   }
 
   render() {
@@ -192,11 +191,11 @@ class CountryServer extends React.Component<IProps, IState> {
               <Col lg={3} className={styles.sort}>
                 <Form.Group className={styles.formGroup}>
                   <Form.Label className={styles.controlLabel}>عنوان</Form.Label>
-                  <Form.Control
+                  <input
                     type="text"
                     name="title"
-                    className={styles.formControl}
-                    onChange={this.filterWithTitle}
+                    className={classNames('form-control', styles.formControl)}
+                    onChange={(e) => this.filterWithTitle(e)}
                     value={this.state.title}
                   />
                 </Form.Group>
@@ -204,10 +203,9 @@ class CountryServer extends React.Component<IProps, IState> {
                   <Form.Label className={styles.controlLabel}>
                     مرتب سازی بر اساس
                   </Form.Label>
-                  <Form.Control
-                    className={styles.formControl}
-                    onChange={this.sorting}
-                    as="select"
+                  <select
+                    className={classNames('form-control', styles.formControl)}
+                    onChange={(e) => this.sorting(e)}
                   >
                     <option value=""></option>
                     <option value="cpu">پردازشگر</option>
@@ -216,7 +214,7 @@ class CountryServer extends React.Component<IProps, IState> {
                     <option value="port">پورت</option>
                     <option value="price">قیمت</option>
                     <option value="setup">هزینه ستاپ</option>
-                  </Form.Control>
+                  </select>
                 </Form.Group>
                 <Form.Group className={styles.formGroup}>
                   <div
@@ -230,7 +228,7 @@ class CountryServer extends React.Component<IProps, IState> {
                         type="radio"
                         name="orderBy"
                         value="asc"
-                        onChange={this.changeSortAscOrDesc}
+                        onChange={(e) => this.changeSortAscOrDesc(e)}
                         defaultChecked={true}
                       />
                       <span>کوچک به بزرگ</span>
@@ -240,7 +238,7 @@ class CountryServer extends React.Component<IProps, IState> {
                         type="radio"
                         name="orderBy"
                         value="desc"
-                        onChange={this.changeSortAscOrDesc}
+                        onChange={(e) => this.changeSortAscOrDesc(e)}
                       />
                       <span>بزرگ به کوچک</span>
                     </label>
@@ -256,7 +254,7 @@ class CountryServer extends React.Component<IProps, IState> {
                       type="radio"
                       name="hard"
                       value=""
-                      onChange={this.filterByHardType}
+                      onChange={(e) => this.filterByHardType(e)}
                       defaultChecked={true}
                     />
                     <label htmlFor="all-hard">همه</label>
@@ -267,7 +265,7 @@ class CountryServer extends React.Component<IProps, IState> {
                       type="radio"
                       name="hard"
                       value="ssd"
-                      onChange={this.filterByHardType}
+                      onChange={(e) => this.filterByHardType(e)}
                     />
                     <label htmlFor="ssd-hard">SSD</label>
                   </div>
@@ -277,7 +275,7 @@ class CountryServer extends React.Component<IProps, IState> {
                       type="radio"
                       name="hard"
                       value="sata"
-                      onChange={this.filterByHardType}
+                      onChange={(e) => this.filterByHardType(e)}
                     />
                     <label htmlFor="sata-hard">SATA</label>
                   </div>
@@ -287,7 +285,7 @@ class CountryServer extends React.Component<IProps, IState> {
                       type="radio"
                       name="hard"
                       value="sas"
-                      onChange={this.filterByHardType}
+                      onChange={(e) => this.filterByHardType(e)}
                     />
                     <label htmlFor="sas-hard">SAS</label>
                   </div>
@@ -297,7 +295,7 @@ class CountryServer extends React.Component<IProps, IState> {
                       type="radio"
                       name="hard"
                       value="nvme"
-                      onChange={this.filterByHardType}
+                      onChange={(e) => this.filterByHardType(e)}
                     />
                     <label htmlFor="nvme-hard">NVMe</label>
                   </div>

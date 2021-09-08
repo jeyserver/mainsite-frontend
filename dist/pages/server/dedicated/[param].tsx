@@ -38,11 +38,7 @@ class Index extends React.Component<IProps> {
             <link rel="icon" href="/favicon.ico" />
           </Head>
 
-          <Layout
-            postsForFooter={this.props.postsForFooter}
-            domainsForNavbar={this.props.domainsForNavbar}
-            licensesForNavbar={this.props.licensesForNavbar}
-          >
+          <Layout header={this.props.header} footer={this.props.footer}>
             <CountryServer countryPlans={this.props.countryPlans} />
           </Layout>
         </div>
@@ -56,11 +52,7 @@ class Index extends React.Component<IProps> {
             <link rel="icon" href="/favicon.ico" />
           </Head>
 
-          <Layout
-            postsForFooter={this.props.postsForFooter}
-            domainsForNavbar={this.props.domainsForNavbar}
-            licensesForNavbar={this.props.licensesForNavbar}
-          >
+          <Layout header={this.props.header} footer={this.props.footer}>
             <CountryPlan plan={this.props.countryPlan.plan} />
           </Layout>
         </div>
@@ -84,7 +76,7 @@ export async function getServerSideProps(context) {
 
   if (Number(param)) {
     const countryPlanRes = await fetch(
-      `${process.env.SCHEMA}://${process.env.DOMAIN}/${locale}/server/dedicated/${param}?ajax=1`
+      `${process.env.SITE_URL}/${locale}/server/dedicated/${param}?ajax=1`
     );
     countryPlan = await countryPlanRes.json();
 
@@ -95,7 +87,7 @@ export async function getServerSideProps(context) {
     }
   } else {
     const countryPlansRes = await fetch(
-      `${process.env.SCHEMA}://${process.env.DOMAIN}/${locale}/server/dedicated/${param}?ajax=1`
+      `${process.env.SITE_URL}/${locale}/server/dedicated/${param}?ajax=1`
     );
     countryPlans = await countryPlansRes.json();
 
@@ -110,6 +102,8 @@ export async function getServerSideProps(context) {
     props: {
       countryPlans,
       countryPlan,
+      header: countryPlan ? countryPlan.header : countryPlans.header,
+      footer: countryPlan ? countryPlan.footer : countryPlans.footer,
     },
   };
 }

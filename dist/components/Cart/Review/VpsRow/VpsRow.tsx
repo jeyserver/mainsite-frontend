@@ -64,7 +64,7 @@ class VpsRow extends React.Component<iProps, VpsRowState> {
             <div>{product.plan.addons.hard.addon.title} هارد اضافه</div>
           )}
         </td>
-        <td>برای {product.price / product.plan.price} ماه</td>
+        <td>برای {Math.round(product.price / product.plan.price)} ماه</td>
         <td>
           {product.discount
             ? `${formatPriceWithCurrency(

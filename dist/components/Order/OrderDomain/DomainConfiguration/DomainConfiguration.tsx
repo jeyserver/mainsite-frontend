@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { withRouter, NextRouter } from 'next/router';
 import * as React from 'react';
 import { Row, Col, Button, Spinner } from 'react-bootstrap';
@@ -35,9 +34,13 @@ class DomainConfiguration extends React.Component<IProps> {
 
   onSubmit(values: IInputs, { setSubmitting }: FormikHelpers<IInputs>) {
     backend
-      .post(`/order/domain/configure?ajax=1&products=${values.products}`)
+      .post(
+        `/order/domain/configure?ajax=1&products=${JSON.stringify(
+          values.products
+        )}`
+      )
       .then((res) => {
-        console.log(res);
+        console.log(res.data);
       })
       .catch(() => {
         NotificationManager.error(
@@ -48,7 +51,6 @@ class DomainConfiguration extends React.Component<IProps> {
       .finally(() => {
         setSubmitting(false);
       });
-    console.log(values);
   }
 
   getInputs() {
@@ -59,14 +61,14 @@ class DomainConfiguration extends React.Component<IProps> {
           ...inputs,
           [domain.id]: {
             panel: '',
-            dns: ['', 'ns1.jeyserver.com', 'ns2.jeyserver.com', '', ''],
+            dns: ['ns1.jeyserver.com', 'ns2.jeyserver.com', '', ''],
           },
         };
       } else {
         inputs = {
           ...inputs,
           [domain.id]: {
-            dns: ['', 'ns1.jeyserver.com', 'ns2.jeyserver.com', '', ''],
+            dns: ['ns1.jeyserver.com', 'ns2.jeyserver.com', '', ''],
           },
         };
       }
@@ -87,9 +89,7 @@ class DomainConfiguration extends React.Component<IProps> {
             <Form>
               {this.props.domain.forConfigure.map((domain) => (
                 <DomainCard
-                  nationalDomain={this.props.data.nationalDomainsList.some(
-                    (tld) => tld === domain.tld.tld
-                  )}
+                  nationalDomain={domain.tld.tld === 'ir'}
                   transfer={domain.type === 'transfer'}
                   domain={domain}
                   key={domain.tld.id}

@@ -1,55 +1,91 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { deleteFromCart } from '../../../../redux/actions';
-import { cart } from '../../../../redux/reducers/cartReducer';
 import { Spinner } from 'react-bootstrap';
-import { formatPrice } from '../../../helper/formatPrice';
+import { AsyncThunkAction, RootState } from '../../../../store';
+import { deleteItem } from '../../../../store/Cart';
+import { NotificationManager } from 'react-notifications';
+import { formatPriceWithCurrency } from '../../../../store/Currencies';
+import IDomainProduct from '../../../../helper/types/cart/domain';
 import styles from '../productRow.module.scss';
 
-export interface DomainRowProps {
-  data: any;
-  deleteFromCart: (id: number) => void;
-  cart: cart;
+interface IProps {
+  data: IDomainProduct;
+  deleteItem: AsyncThunkAction<{ status: boolean }, number>;
+  currencies: RootState['currencies'];
 }
 
-export interface DomainRowState {}
+interface IState {
+  loading: boolean;
+}
 
-class DomainRow extends React.Component<DomainRowProps, DomainRowState> {
-  constructor(props: DomainRowProps) {
+class DomainRow extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
-    this.state = {};
+    this.state = {
+      loading: false,
+    };
+  }
+  async deleteItem() {
+    this.setState({ loading: true });
+
+    try {
+      await this.props.deleteItem(this.props.data.id).unwrap();
+    } catch (error) {
+      NotificationManager.error(
+        'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
+        'خطا'
+      );
+    } finally {
+      this.setState({ loading: false });
+    }
+  }
+
+  domainType(type) {
+    switch (type) {
+      case 'register':
+        return 'قبت دامنه';
+      case 'transfer':
+        return 'انتقال دامنه';
+      case 'owndomain':
+        return 'تمدید دامنه';
+    }
   }
 
   render() {
-    const { id, domain, period, discout, currency, price } = this.props.data;
+    const product = this.props.data;
 
     return (
       <>
         <td>
-          <strong>ثبت دامنه</strong>
+          <strong>{this.domainType(product.type)}</strong>
         </td>
         <td>
-          {domain.name}.{domain.tld}
+          {product.domain}.{product.tld.tld}
+        </td>
+        <td>برای {Math.round(product.price / product.tld.new)} ماه</td>
+        <td>
+          {product.price
+            ? `${formatPriceWithCurrency(
+                this.props.currencies,
+                product.currency,
+                product.discount
+              )}`
+            : `0 ${this.props.currencies.active.title}`}
         </td>
         <td>
-          برای {period.value} {period.type === 'monthly' ? 'ماه' : 'سال'}{' '}
-        </td>
-        <td>
-          {discout
-            ? `${formatPrice(discout)} ${currency.title}`
-            : `0 ${currency.title}`}
-        </td>
-        <td>
-          {formatPrice(price)} {currency.title}
+          {formatPriceWithCurrency(
+            this.props.currencies,
+            product.currency,
+            product.price
+          )}
         </td>
         <td>
           <button
             className={styles.deleteBtn}
-            onClick={() => this.props.deleteFromCart(id)}
+            disabled={this.state.loading}
+            onClick={() => this.deleteItem()}
           >
-            {this.props.cart.itemsInLoading.some(
-              (productId) => productId === id
-            ) ? (
+            {this.state.loading ? (
               <Spinner animation="border" size="sm" />
             ) : (
               'حذف'
@@ -61,10 +97,11 @@ class DomainRow extends React.Component<DomainRowProps, DomainRowState> {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    cart: state.cart,
-  };
-};
-
-export default connect(mapStateToProps, { deleteFromCart })(DomainRow);
+export default connect(
+  (state: RootState) => {
+    return {
+      currencies: state.currencies,
+    };
+  },
+  { deleteItem }
+)(DomainRow);

@@ -2,20 +2,15 @@ import * as React from 'react';
 import Head from 'next/head';
 import HostingConfigure from '../../../../components/Order/OrderDomain/HostingConfigure/HostingConfigure';
 import Layout from '../../../../components/Layout/Layout';
-import { pageProps } from '../../../_app';
+import { IPageProps } from '../../../_app';
+import IHostProduct from '../../../../helper/types/cart/host';
+import IDomainProduct from '../../../../helper/types/cart/domain';
 
-export interface IndexProps extends pageProps {
-  hostingCartItems: any;
+interface IProps extends IPageProps {
+  products: IHostProduct[] | IDomainProduct[];
 }
 
-export interface IndexState {}
-
-class Index extends React.Component<IndexProps, IndexState> {
-  constructor(props: IndexProps) {
-    super(props);
-    this.state = {};
-  }
-
+class Index extends React.Component<IProps> {
   render() {
     return (
       <div dir="rtl">
@@ -25,12 +20,11 @@ class Index extends React.Component<IndexProps, IndexState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Layout
-          postsForFooter={this.props.postsForFooter}
-          domainsForNavbar={this.props.domainsForNavbar}
-          licensesForNavbar={this.props.licensesForNavbar}
-        >
-          <HostingConfigure hostingCartItems={this.props.hostingCartItems} />
+        <Layout header={this.props.header} footer={this.props.footer}>
+          <HostingConfigure
+            domains={this.props.products.filter((i) => i.product === 'domain')}
+            hosts={this.props.products.filter((i) => i.product === 'host')}
+          />
         </Layout>
       </div>
     );
@@ -46,13 +40,13 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const hostingCartItemsRes = await fetch(
-    `https://jsonblob.com/api/jsonBlob/6b49c8d2-e7b0-11eb-971c-85fdd4ff3087`
+  const respone = await fetch(
+    `${process.env.SITE_URL}/${locale}/order/hosting/configure?ajax=1`
   );
-  const hostingCartItems = await hostingCartItemsRes.json();
+  const data = await respone.json();
 
   return {
-    props: { hostingCartItems },
+    props: { ...data },
   };
 }
 

@@ -8,28 +8,21 @@ import styles from './CompleteOrder.module.scss';
 import SigninForm from './SigninForm/SigninForm';
 import SignupForm from './SignupForm/SignupForm';
 
-export interface CompleteOrderProps {
-  countries: countriesType;
-  defaultCountrySelected: string;
-}
+interface IProps {}
 
-export interface CompleteOrderState {
+interface IState {
   loginMethod: 'signup' | 'signin';
 }
 
-class CompleteOrder extends React.Component<
-  CompleteOrderProps,
-  CompleteOrderState
-> {
-  constructor(props: CompleteOrderProps) {
+class CompleteOrder extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
     this.state = {
       loginMethod: 'signup',
     };
-    this.changeLoginMethod = this.changeLoginMethod.bind(this);
   }
 
-  changeLoginMethod(e) {
+  changeLoginMethod(e: React.ChangeEvent<HTMLInputElement>) {
     this.setState({ loginMethod: e.target.value });
   }
 
@@ -56,7 +49,7 @@ class CompleteOrder extends React.Component<
                             type="radio"
                             name="dologin"
                             defaultValue="signup"
-                            onChange={this.changeLoginMethod}
+                            onChange={(e) => this.changeLoginMethod(e)}
                             defaultChecked
                           />
                           مشتری جدید هستم | ثبت نام
@@ -68,7 +61,7 @@ class CompleteOrder extends React.Component<
                             type="radio"
                             name="dologin"
                             defaultValue="signin"
-                            onChange={this.changeLoginMethod}
+                            onChange={(e) => this.changeLoginMethod(e)}
                           />
                           قبلا ثبت نام کرده ام | ورود
                         </label>
@@ -87,12 +80,7 @@ class CompleteOrder extends React.Component<
                       )}
                     >
                       <Col md={8} className="d-flex justify-content-center">
-                        <SigninForm
-                          countries={this.props.countries}
-                          defaultCountrySelected={
-                            this.props.defaultCountrySelected
-                          }
-                        />
+                        <SigninForm />
                       </Col>
                     </Row>
                     <Row
@@ -103,12 +91,7 @@ class CompleteOrder extends React.Component<
                       })}
                     >
                       <Col md={12}>
-                        <SignupForm
-                          countries={this.props.countries}
-                          defaultCountrySelected={
-                            this.props.defaultCountrySelected
-                          }
-                        />
+                        <SignupForm />
                       </Col>
                     </Row>
                   </Row>

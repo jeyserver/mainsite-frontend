@@ -1,27 +1,68 @@
 import * as React from 'react';
-import { Button, ButtonGroup } from 'react-bootstrap';
-import { Table } from 'react-bootstrap';
-import { Container, Row, Col, Form } from 'react-bootstrap';
-import CountryFlagTooltip from '../../../helper/components/CountryFlagTooltip';
-import { formatPrice } from '../../../helper/formatPrice';
+import { Container, Row, Col, Button, Table, FormGroup } from 'react-bootstrap';
+import CountryFlagTooltip from '../../../../helper/components/CountryFlagTooltip/CountryFlagTooltip';
 import PagesHeader from '../../../PagesHeader/PagesHeader';
 import OrderSteps from '../OrderSteps';
-import router, { NextRouter, withRouter } from 'next/router';
+import { NextRouter, withRouter } from 'next/router';
 import styles from './HostingConfigure.module.scss';
+import { Formik, Form, Field, FormikHelpers } from 'formik';
+import { NotificationManager } from 'react-notifications';
+import {
+  configureHosting,
+  deleteAll,
+  IConfigureHosting,
+} from '../../../../store/Cart';
+import { AsyncThunkAction, RootState } from '../../../../store';
+import IDomainProduct from '../../../../helper/types/cart/domain';
+import IHostProduct from '../../../../helper/types/cart/host';
+import { formatPriceWithCurrency } from '../../../../store/Currencies';
+import { connect } from 'react-redux';
 
 interface IProps {
-  hostingCartItems: any;
+  hosts: IHostProduct[];
+  domains: IDomainProduct[];
   router: NextRouter;
+  configureHosting: AsyncThunkAction<any, IConfigureHosting>;
+  deleteAll: AsyncThunkAction<any, {}>;
+  currencies: RootState['currencies'];
+}
+
+interface IInputs {
+  period: string[];
+  primary_domain: string[];
 }
 
 class HostingConfigure extends React.Component<IProps> {
-  restart() {
-    router.push('/');
+  async onSubmit(values: IInputs, { setSubmitting }: FormikHelpers<IInputs>) {
+    try {
+      const res = this.props
+        .configureHosting({
+          period: values.period,
+          primary_domain: values.primary_domain,
+        })
+        .unwrap();
+    } catch (error) {
+      NotificationManager.error(
+        'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
+        'خطا'
+      );
+    } finally {
+      setSubmitting(false);
+    }
   }
 
-  goToNextStep() {
-    // push to next step
-    // router.push('/');
+  async clearCart() {
+    this.setState({ clearCartLoading: true });
+    try {
+      await this.props.deleteAll({});
+    } catch (error) {
+      NotificationManager.error(
+        'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
+        'خطا'
+      );
+    } finally {
+      this.setState({ clearCartLoading: false });
+    }
   }
 
   render() {
@@ -42,100 +83,107 @@ class HostingConfigure extends React.Component<IProps> {
                   <p className={styles.pageInfo}>
                     در کادر زیر شما باید دامنه متعلق به هاست را انتخاب کنید
                   </p>
-                  <Form autoComplete="off">
-                    <Row>
-                      <Col xs={12}>
-                        <Table responsive className={styles.table}>
-                          <thead>
-                            <tr>
-                              <th>هاست</th>
-                              <th />
-                              <th>دامنه ها</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {this.props.hostingCartItems.map((cartItem) => {
-                              return (
-                                <tr key={cartItem.title}>
-                                  <td>
-                                    <CountryFlagTooltip
-                                      name={cartItem.country}
-                                      flag={{
-                                        address: cartItem.flag,
-                                        width: 24,
-                                        height: 24,
-                                      }}
-                                    />
-                                    <span className={styles.cartItemTitle}>
-                                      {cartItem.title}
-                                    </span>
-                                  </td>
-                                  <td>
-                                    <Form.Group>
-                                      <Form.Control as="select" custom>
-                                        {cartItem.periods.map((period) => (
-                                          <option
-                                            value={period.id}
-                                            key={period.id}
-                                          >
-                                            برای{' '}
-                                            {period.month
-                                              ? period.month
-                                              : period.year}{' '}
-                                            {period.month ? 'ماه' : 'سال'}{' '}
-                                            قیمت:‌ {formatPrice(period.price)}{' '}
-                                            {cartItem.currency.title}
-                                          </option>
-                                        ))}
-                                      </Form.Control>
-                                    </Form.Group>{' '}
-                                  </td>
-                                  <td>
-                                    <Form.Group>
-                                      <Form.Control
-                                        as="select"
-                                        custom
-                                        className={styles.domainSelect}
-                                      >
-                                        {cartItem.domains.map((domain) => (
-                                          <option
-                                            value={domain.id}
-                                            key={domain.id}
-                                          >
-                                            {domain.name}.{domain.tld}
-                                          </option>
-                                        ))}
-                                      </Form.Control>
-                                    </Form.Group>{' '}
-                                  </td>
+                  <Formik
+                    initialValues={{ period: [], primary_domain: [] }}
+                    onSubmit={(values, helpers) =>
+                      this.onSubmit(values, helpers)
+                    }
+                  >
+                    {(formik) => (
+                      <Form autoComplete="off">
+                        <Row>
+                          <Col xs={12}>
+                            <Table responsive className={styles.table}>
+                              <thead>
+                                <tr>
+                                  <th>هاست</th>
+                                  <th />
+                                  <th>دامنه ها</th>
                                 </tr>
-                              );
-                            })}
-                          </tbody>
-                        </Table>
-                      </Col>
-                    </Row>
+                              </thead>
+                              <tbody>
+                                {this.props.hosts.map((product) => {
+                                  return (
+                                    <tr key={product.id}>
+                                      <td>
+                                        <CountryFlagTooltip
+                                          country={product.plan.country}
+                                        />
+                                        <span className={styles.productTitle}>
+                                          {product.plan.title}
+                                        </span>
+                                      </td>
+                                      <td>
+                                        <FormGroup>
+                                          <Field
+                                            as="select"
+                                            name={`period[${product.id}]`}
+                                            custom
+                                          >
+                                            <option value="1">
+                                              برای 1 ماه قیمت{' '}
+                                              {formatPriceWithCurrency(
+                                                this.props.currencies,
+                                                product.currency,
+                                                product.price
+                                              )}
+                                            </option>
+                                          </Field>
+                                        </FormGroup>{' '}
+                                      </td>
+                                      <td>
+                                        <FormGroup>
+                                          <Field
+                                            as="select"
+                                            custom
+                                            className={styles.domainSelect}
+                                            name={`primary_domain[${product.id}]`}
+                                          >
+                                            {this.props.domains.map(
+                                              (domain) => (
+                                                <option
+                                                  value={domain.id}
+                                                  key={domain.id}
+                                                >
+                                                  {domain.domain}.
+                                                  {domain.tld.tld}
+                                                </option>
+                                              )
+                                            )}
+                                          </Field>
+                                        </FormGroup>{' '}
+                                      </td>
+                                    </tr>
+                                  );
+                                })}
+                              </tbody>
+                            </Table>
+                          </Col>
+                        </Row>
 
-                    <Row className="justify-content-center">
-                      <Col md={6}>
-                        <div className={styles.btns}>
-                          <Button
-                            variant="success"
-                            className={styles.continueBtn}
-                            onClick={this.goToNextStep}
-                          >
-                            ادامه
-                          </Button>
-                          <Button
-                            className={styles.restartBtn}
-                            onClick={this.restart}
-                          >
-                            شروع دوباره
-                          </Button>
-                        </div>
-                      </Col>
-                    </Row>
-                  </Form>
+                        <Row className="justify-content-center">
+                          <Col md={6}>
+                            <div className={styles.btns}>
+                              <Button
+                                variant="success"
+                                type="submit"
+                                className={styles.continueBtn}
+                              >
+                                ادامه
+                              </Button>
+                              <Button
+                                type="button"
+                                className={styles.restartBtn}
+                                onClick={this.clearCart}
+                              >
+                                شروع دوباره
+                              </Button>
+                            </div>
+                          </Col>
+                        </Row>
+                      </Form>
+                    )}
+                  </Formik>
                 </div>
               </Col>
             </Row>
@@ -146,4 +194,11 @@ class HostingConfigure extends React.Component<IProps> {
   }
 }
 
-export default withRouter(HostingConfigure);
+export default connect(
+  (state: RootState) => {
+    return {
+      currencies: state.currencies,
+    };
+  },
+  { configureHosting, deleteAll }
+)(withRouter(HostingConfigure));

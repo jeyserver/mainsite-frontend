@@ -1,12 +1,10 @@
 import { IHostPlan } from '../../products/Host/plan';
+import IDomainProduct from '../domain';
 import IProduct from '../product';
 
-interface IPlan extends IHostPlan {
-  domain: string;
-}
-
 interface IHostProduct extends IProduct {
-  plan: IPlan;
+  plan: IHostPlan;
+  domain: IDomainProduct;
 }
 
 export default IHostProduct;

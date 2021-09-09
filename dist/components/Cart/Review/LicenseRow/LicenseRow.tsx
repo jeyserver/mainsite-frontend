@@ -1,26 +1,16 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { deleteFromCart } from '../../../../redux/actions';
 import { Spinner } from 'react-bootstrap';
 import styles from '../productRow.module.scss';
-import ILicense from '../../../../helper/types/products/License/plan';
-import { ICurrency } from '../../../../pages/_app';
 import { formatPriceWithCurrency } from '../../../../store/Currencies';
 import { AsyncThunkAction, RootState } from '../../../../store';
 import { deleteItem } from '../../../../store/Cart';
 import { NotificationManager } from 'react-notifications';
+import ILicenseProduct from '../../../../helper/types/cart/license';
 
 interface IProps {
-  data: {
-    id: string;
-    price: number;
-    discount: number;
-    number: number;
-    currency: ICurrency;
-    product: string;
-    plan: ILicense;
-  };
-  deleteItem: AsyncThunkAction<{ status: boolean }, string>;
+  data: ILicenseProduct;
+  deleteItem: AsyncThunkAction<{ status: boolean }, number>;
   currencies: RootState['currencies'];
 }
 
@@ -66,7 +56,7 @@ class LicenseRow extends React.Component<IProps, IState> {
               )
             : 'هزینه راه‌اندازی اولیه (اولین ماه)'}
         </td>
-        <td>برای {product.price / product.plan.price} ماه</td>
+        <td>برای {Math.round(product.price / product.plan.price)} ماه</td>
         <td>
           {product.price
             ? `${formatPriceWithCurrency(
@@ -79,8 +69,8 @@ class LicenseRow extends React.Component<IProps, IState> {
         <td>
           {formatPriceWithCurrency(
             this.props.currencies,
-            product.plan.currency,
-            product.plan.price
+            product.currency,
+            product.price
           )}
         </td>
         <td>

@@ -2,26 +2,19 @@ import * as React from 'react';
 import Head from 'next/head';
 import OrderDomain from '../../../../components/Order/OrderDomain';
 import { connect } from 'react-redux';
-import { setOrderedDomains } from '../../../../redux/actions';
 import Layout from '../../../../components/Layout/Layout';
-import { pageProps } from '../../../_app';
+import { IPageProps } from '../../../_app';
+import { getForConfigureDomains } from '../../../../store/Domain';
 
-export interface IndexProps extends pageProps {
+interface IProps extends IPageProps {
   domains: any;
   nationalDomainsList: any;
-  setOrderedDomains: (domains: any) => void;
+  getForConfigureDomains: typeof getForConfigureDomains;
 }
 
-export interface IndexState {}
-
-class Index extends React.Component<IndexProps, IndexState> {
-  constructor(props: IndexProps) {
-    super(props);
-    this.state = {};
-  }
-
+class Index extends React.Component<IProps> {
   componentDidMount() {
-    this.props.setOrderedDomains(this.props.domains);
+    this.props.getForConfigureDomains();
   }
 
   render() {
@@ -33,18 +26,8 @@ class Index extends React.Component<IndexProps, IndexState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Layout
-          postsForFooter={this.props.postsForFooter}
-          domainsForNavbar={this.props.domainsForNavbar}
-          licensesForNavbar={this.props.licensesForNavbar}
-        >
-          <OrderDomain
-            step="configuration"
-            data={{
-              domains: this.props.domains,
-              nationalDomainsList: this.props.nationalDomainsList,
-            }}
-          />
+        <Layout header={this.props.header} footer={this.props.footer}>
+          <OrderDomain step="configuration" />
         </Layout>
       </div>
     );
@@ -60,14 +43,14 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const domainsRes = await fetch(
-    `https://jsonblob.com/api/jsonBlob/1a0f9102-e279-11eb-a96b-3311b2affb1f`
+  const respone = await fetch(
+    `${process.env.SITE_URL}/${locale}/order/domain/configure?ajax=1`
   );
-  const domains = await domainsRes.json();
+  const data = await respone.json();
 
   return {
-    props: { domains, nationalDomainsList: ['ir'] },
+    props: { ...data },
   };
 }
 
-export default connect(null, { setOrderedDomains })(Index);
+export default connect(null, { getForConfigureDomains })(Index);

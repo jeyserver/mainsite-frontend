@@ -6,16 +6,6 @@ import 'select2/dist/js/select2.min.js';
 import { Form } from 'react-bootstrap';
 import classNames from 'classnames';
 
-type error = 'data_validation' | 'data_duplicate';
-
-const showError = (errorMsg: error) => {
-  if (errorMsg === 'data_duplicate') {
-    return 'داده وارد شده تکراری است';
-  } else if (errorMsg === 'data_validation') {
-    return 'داده وارد شده معتبر نیست';
-  }
-};
-
 interface country {
   code: string;
   name: string;
@@ -42,7 +32,7 @@ interface Props {
     placeholder: string;
     icon: string;
   };
-  errorCode?: error;
+  errorCode?: any;
 }
 
 const useStyles = createUseStyles((props) => ({
@@ -111,7 +101,7 @@ export const ReactPhonenumber: React.FC<Props> = ({
   isSelectHide,
   selectName,
   floatPlaceHolder,
-  errorCode = 'data_validation',
+  errorCode,
 }) => {
   const [isFocusedOnInput, setIsFocusedOnInput] =
     React.useState<boolean>(false);
@@ -298,7 +288,7 @@ export const ReactPhonenumber: React.FC<Props> = ({
           disabled={options?.disabled}
         />
         <Form.Control.Feedback type="invalid">
-          {showError(errorCode)}
+          {errorCode}
         </Form.Control.Feedback>
         {floatPlaceHolder && floatPlaceHolder.placeholder && (
           <div

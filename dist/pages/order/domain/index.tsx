@@ -35,11 +35,7 @@ class Index extends React.Component<IProps> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Layout
-          postsForFooter={this.props.postsForFooter}
-          domainsForNavbar={this.props.tlds}
-          licensesForNavbar={this.props.licensesForNavbar}
-        >
+        <Layout header={this.props.header} footer={this.props.footer}>
           <OrderDomain
             step="settings"
             data={{
@@ -65,7 +61,7 @@ export async function getServerSideProps(context) {
   }
 
   const respone = await fetch(
-    `${process.env.SCHEMA}://${process.env.DOMAIN}/${locale}/order/domain?ajax=1`
+    `${process.env.SITE_URL}/${locale}/order/domain?ajax=1`
   );
   const data = await respone.json();
 

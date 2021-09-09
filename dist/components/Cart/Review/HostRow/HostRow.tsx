@@ -52,9 +52,11 @@ class HostRow extends React.Component<IProps, IState> {
           <span className={styles.title}>{product.plan.title}</span>
         </td>
         <td>
-          {product.plan.domain} - {formatSpace(product.plan.space, 'en', true)}
+          {product.domain && `${product.domain}.${product.domain.tld.tld}`} -{' '}
+          {product.domain.type !== 'register' &&
+            formatSpace(product.plan.space, 'en', true)}
         </td>
-        <td>برای {product.price / product.plan.price} ماه</td>
+        <td>برای {Math.round(product.price / product.plan.price)} ماه</td>
         <td>
           {product.discount
             ? `${formatPriceWithCurrency(

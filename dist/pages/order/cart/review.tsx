@@ -4,10 +4,24 @@ import Review from '../../../components/Cart/Review/Review';
 import Layout from '../../../components/Layout/Layout';
 import { connect } from 'react-redux';
 import { IPageProps } from './../../_app';
+import { setItems as setCartItems } from '../../../store/Cart';
+import { RootState } from '../../../store';
+import backend from '../../../axios-config';
 
-interface IProps extends IPageProps {}
+interface IProps extends IPageProps {
+  setCartItems: typeof setCartItems;
+  cart: RootState['cart'];
+}
 
 class Index extends React.Component<IProps> {
+  componentDidMount() {
+    backend(`/order/cart/review?ajax=1&cart=${this.props.cart.id}`).then(
+      (res) => {
+        this.props.setCartItems(res.data.products);
+      }
+    );
+  }
+
   render() {
     return (
       <div dir="rtl">
@@ -17,11 +31,7 @@ class Index extends React.Component<IProps> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Layout
-          postsForFooter={this.props.postsForFooter}
-          domainsForNavbar={this.props.domainsForNavbar}
-          licensesForNavbar={this.props.licensesForNavbar}
-        >
+        <Layout header={this.props.header} footer={this.props.footer}>
           <Review />
         </Layout>
       </div>
@@ -38,9 +48,7 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const respone = await fetch(
-    `${process.env.SCHEMA}://${process.env.DOMAIN}/${locale}/order/cart/review?ajax=1`
-  );
+  const respone = await fetch(`${process.env.SITE_URL}/${locale}?ajax=1`);
   const data = await respone.json();
 
   return {
@@ -48,4 +56,11 @@ export async function getServerSideProps(context) {
   };
 }
 
-export default connect(null)(Index);
+export default connect(
+  (state: RootState) => {
+    return {
+      cart: state.cart,
+    };
+  },
+  { setCartItems }
+)(Index);

@@ -9,7 +9,7 @@ import cart from './Cart';
 
 export const store = configureStore({
   reducer: persistReducer(
-    { key: 'root', version: 1, storage },
+    { key: 'root', version: 1, storage, blacklist: ['domain'] },
     combineReducers({
       currencies,
       auth,

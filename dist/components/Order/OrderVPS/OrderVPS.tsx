@@ -17,13 +17,15 @@ import translateCountryNameToPersian from '../../../helper/translateCountryNameT
 import { NotificationManager } from 'react-notifications';
 import { formatPriceWithCurrency } from '../../../store/Currencies';
 import { connect } from 'react-redux';
-import { RootState } from '../../../store';
+import { AsyncThunkAction, RootState } from '../../../store';
 import getHardType from '../../../helper/getHardType';
-import backend from '../../../axios-config';
 import showErrorMsg from '../../../helper/showErrorMsg';
 import { NextRouter, withRouter } from 'next/router';
-import { nanoid } from '@reduxjs/toolkit';
-import { setItems as setCartItems } from '../../../store/Cart';
+import {
+  addVPS as addVPSToCart,
+  IAddVPS,
+  setItems as setCartItems,
+} from '../../../store/Cart';
 
 interface IProps {
   plan: IVPSPlan;
@@ -34,6 +36,7 @@ interface IProps {
   currencies: RootState['currencies'];
   router: NextRouter;
   setCartItems: typeof setCartItems;
+  addVPSToCart: AsyncThunkAction<any, IAddVPS>;
 }
 
 interface OrderVPSState {
@@ -81,101 +84,43 @@ class OrderVPS extends React.Component<IProps, OrderVPSState> {
     this.setState({ os: selected });
   }
 
-  onSubmit(
+  async onSubmit(
     values: IInputs,
     { setSubmitting, setErrors, setFieldError }: FormikHelpers<IInputs>
   ) {
-    const properties = `&period=${values.period}&license=${
-      this.state.license
-    }&backup=${this.state.backup}${
-      this.state.domain && `&domain=${this.state.domain}`
-    }&ram=${values.ram}&ip=${values.ip}&hard=${values.hard}&os=${
-      this.state.os.id
-    }`;
-
-    let fakeProducts = [];
-
-    const licensePlan = this.props.licenses.find(
-      (license) => license.id === Number(this.state.license)
-    );
-
-    if (licensePlan) {
-      const fakeLicense = {
-        id: nanoid(),
-        price: licensePlan.price * Number(values.period),
-        discount: 0,
-        number: 1,
-        currency: this.props.plan.currency,
-        product: 'license',
-        plan: licensePlan,
-      };
-      fakeProducts = [...fakeProducts, fakeLicense];
-    }
-    const hostPlan = this.props.hosts.find(
-      (host) => host.id === Number(this.state.backup)
-    );
-
-    if (hostPlan) {
-      const fakeHost = {
-        id: nanoid(),
-        price: hostPlan.price * Number(values.period),
-        discount: 0,
-        number: 1,
-        currency: this.props.plan.currency,
-        product: 'host',
-        plan: {
-          ...hostPlan,
+    try {
+      const res = await this.props
+        .addVPSToCart({
+          id: this.props.plan.id,
+          period: values.period,
+          license: this.state.license,
+          backup: this.state.backup,
           domain: this.state.domain,
-        },
-      };
-
-      fakeProducts = [...fakeProducts, fakeHost];
-    }
-
-    const fakeVps = {
-      id: nanoid(),
-      price: this.props.plan.price * Number(values.period),
-      discount: 0,
-      number: 1,
-      currency: this.props.plan.currency,
-      product: 'server_vps',
-      plan: {
-        ...this.props.plan,
-        addons: {
-          hard: this.props.addons.find((i) => i.id === Number(values.hard)),
+          ram: values.ram,
           ip: values.ip,
-          ram: this.props.addons.find((i) => i.id === Number(values.ram)),
-        },
-      },
-    };
-
-    fakeProducts = [...fakeProducts, fakeVps];
-
-    backend
-      .post(`/order/server/vps/${this.props.plan.id}?ajax=1${properties}`)
-      .then((res) => {
-        if (res.data.status) {
-          this.props.setCartItems(fakeProducts);
-          this.props.router.push('/order/cart/review');
-        } else {
-          res.data.error.map((error) => {
-            setErrors({ [error.input]: showErrorMsg(error.code) });
-          });
-          if (!res.data.error[0].code && this.state.domain === '') {
-            this.setState({ showDomainAlert: true });
-            setFieldError('domain', showErrorMsg('data_validation'));
-          }
+          hard: values.hard,
+          os: this.state.os.id.toString(),
+        })
+        .unwrap();
+      if (res.data.status) {
+        this.props.router.push('/order/cart/review');
+      } else {
+        res.data.error.map((error) => {
+          setErrors({ [error.input]: showErrorMsg(error.code) });
+        });
+        if (!res.data.error[0].code && this.state.domain === '') {
+          this.setState({ showDomainAlert: true });
+          setFieldError('domain', showErrorMsg('data_validation'));
         }
-      })
-      .catch(() => {
-        NotificationManager.error(
-          'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
-          'خطا'
-        );
-      })
-      .finally(() => {
-        setSubmitting(false);
-      });
+      }
+    } catch (error) {
+      NotificationManager.error(
+        'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
+        'خطا'
+      );
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   getRam(ram: string) {
@@ -582,5 +527,5 @@ export default connect(
   (state: RootState) => {
     return { currencies: state.currencies };
   },
-  { setCartItems }
+  { setCartItems, addVPSToCart }
 )(withRouter(OrderVPS));

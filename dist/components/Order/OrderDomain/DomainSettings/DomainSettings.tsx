@@ -18,7 +18,7 @@ interface IProps {
     cheepBorder: number;
     commercialDomains: string[];
     tldFromQuery?: string;
-    orderHost?: boolean;
+    hostPlan?: string;
   };
   router: NextRouter;
   domain: RootState['domain'];
@@ -66,6 +66,10 @@ class DomainSettings extends React.Component<IProps, IState> {
         periods: {},
       });
     }
+  }
+
+  setPeriods(periods: { [domain: string]: string }) {
+    this.setState({ periods });
   }
 
   changePeriods(domainWithPeriod: { domain: string; period: string }) {
@@ -141,36 +145,35 @@ class DomainSettings extends React.Component<IProps, IState> {
     }
   }
 
-  // componentDidUpdate(prevProps) {
-  //   if (
-  //     prevProps.domain.selected.name !== this.props.domain.selected.name ||
-  //     prevProps.domain.selected.tld !== this.props.domain.selected.tld
-  //   ) {
-  //     this.setState({
-  //       recommendedDomainsLoading: true,
-  //       domainName: this.props.domain.selected.name,
-  //       domainTld: this.props.domain.selected.tld,
-  //     });
-
-  //     axios
-  //       .get(
-  //         'https://jsonblob.com/api/jsonBlob/ea5bc877-e265-11eb-a96b-95a5a070a2d6'
-  //       )
-  //       .then((res) => {
-  //         this.setState({
-  //           recommendedDomains: res.data.recomendeds,
-  //           ordered: res.data.ordered,
-  //           selectedDomains: [res.data.ordered],
-  //           recommendedDomainsLoading: false,
-  //         });
-  //       })
-  //       .catch(() => {
-  //         this.setState({
-  //           recommendedDomainsLoading: false,
-  //         });
-  //       });
-  //   }
-  // }
+  componentDidUpdate(prevProps: IProps, prevState: IState) {
+    //   if (
+    //     prevProps.domain.selected.name !== this.props.domain.selected.name ||
+    //     prevProps.domain.selected.tld !== this.props.domain.selected.tld
+    //   ) {
+    //     this.setState({
+    //       recommendedDomainsLoading: true,
+    //       domainName: this.props.domain.selected.name,
+    //       domainTld: this.props.domain.selected.tld,
+    //     });
+    //     axios
+    //       .get(
+    //         'https://jsonblob.com/api/jsonBlob/ea5bc877-e265-11eb-a96b-95a5a070a2d6'
+    //       )
+    //       .then((res) => {
+    //         this.setState({
+    //           recommendedDomains: res.data.recomendeds,
+    //           ordered: res.data.ordered,
+    //           selectedDomains: [res.data.ordered],
+    //           recommendedDomainsLoading: false,
+    //         });
+    //       })
+    //       .catch(() => {
+    //         this.setState({
+    //           recommendedDomainsLoading: false,
+    //         });
+    //       });
+    //   }
+  }
 
   render() {
     const defaultTldId = this.props.data.tlds.find(
@@ -215,7 +218,7 @@ class DomainSettings extends React.Component<IProps, IState> {
                 </div>
               )}
 
-              {this.props.data.orderHost && (
+              {this.props.data.hostPlan && (
                 <div className={styles.domainOptions}>
                   <label>
                     <input
@@ -254,11 +257,13 @@ class DomainSettings extends React.Component<IProps, IState> {
               name: '',
               tld: defaultTldId && defaultTldId.id,
             }}
+            hostPlan={this.props.data.hostPlan}
             selectedDomains={this.state.selectedDomains}
             setRecommendedDomains={(domains) =>
               this.setRecommendedDomains(domains)
             }
             setSelectedDomains={(domains) => this.setSelectedDomains(domains)}
+            setPeriods={(periods) => this.setPeriods(periods)}
             periods={this.state.periods}
           >
             {this.state.recommendedDomainsLoading && (

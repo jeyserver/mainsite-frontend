@@ -3,38 +3,40 @@ import { Form, Spinner, Table } from 'react-bootstrap';
 import { Container, Row, Col } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { formatPrice } from '../../helper/formatPrice';
+import Link from 'next/link';
 import PagesHeader from '../../PagesHeader/PagesHeader';
 import OrderSteps from '../OrderSteps/OrderSteps';
-import BackupSpaceRow from './HostRow/HostRow';
+import HostRow from './HostRow/HostRow';
 import DedicatedServerRow from './DedicatedServerRow/DedicatedServerRow';
 import DomainRow from './DomainRow/DomainRow';
-import HostRow from './HostRow/HostRow';
 import LicenseRow from './LicenseRow/LicenseRow';
 import styles from './Review.module.scss';
 import VpsRow from './VpsRow/VpsRow';
-import { setDiscount, clearCart } from '../../../redux/actions';
 import { NextRouter, withRouter } from 'next/dist/client/router';
-import { RootState } from '../../../store';
+import { AsyncThunkAction, RootState } from '../../../store';
+import { deleteAll, setDiscount } from '../../../store/Cart';
+import { NotificationManager } from 'react-notifications';
+import { ErrorMessage, Field, Formik, FormikHelpers } from 'formik';
 
 interface IProps {
-  setDiscount: (code: string) => void;
-  clearCart: () => void;
+  deleteAll: AsyncThunkAction<any, any>;
+  setDiscount: AsyncThunkAction<any, string>;
   router: NextRouter;
   cart: RootState['cart'];
   currencies: RootState['currencies'];
 }
 
 interface ReviewState {
-  discountCode: string;
-  isDiscountFormValidated: boolean;
+  setDiscountLoading: boolean;
+  clearCartLoading: boolean;
 }
 
 class Review extends React.Component<IProps, ReviewState> {
   constructor(props: IProps) {
     super(props);
     this.state = {
-      discountCode: '',
-      isDiscountFormValidated: false,
+      setDiscountLoading: false,
+      clearCartLoading: false,
     };
   }
 
@@ -44,43 +46,52 @@ class Review extends React.Component<IProps, ReviewState> {
     }
   }
 
+  async onSubmitDisountCode(
+    values: { code: string },
+    { setSubmitting }: FormikHelpers<{ code: string }>
+  ) {
+    this.setState({ setDiscountLoading: true });
+    try {
+      await this.props.setDiscount(values.code);
+    } catch (error) {
+      NotificationManager.error(
+        'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
+        'خطا'
+      );
+    } finally {
+      this.setState({ setDiscountLoading: false });
+    }
+  }
+
+  async clearCart() {
+    this.setState({ clearCartLoading: true });
+    try {
+      await this.props.deleteAll({}).unwrap();
+    } catch (error) {
+      NotificationManager.error(
+        'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
+        'خطا'
+      );
+    } finally {
+      this.setState({ clearCartLoading: false });
+    }
+  }
+
   renderRow(row, data) {
     switch (row) {
       case 'license':
         return <LicenseRow data={data} />;
       case 'host':
-        return <BackupSpaceRow data={data} />;
+        return <HostRow data={data} />;
       case 'server_dedicated':
         return <DedicatedServerRow data={data} />;
       case 'server_vps':
         return <VpsRow data={data} />;
-      // case 'domain':
-      //   return <DomainRow data={data} />;
+      case 'domain':
+        return <DomainRow data={data} />;
       default:
         return null;
     }
-  }
-
-  discountOnchange(e) {
-    this.setState({ discountCode: e.target.value });
-  }
-
-  onSubmitDisountCode(e: React.ChangeEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const form = e.currentTarget;
-
-    if (form.checkValidity() === false) {
-      e.stopPropagation();
-    } else {
-      // go
-      this.props.setDiscount(this.state.discountCode);
-    }
-
-    this.setState({ isDiscountFormValidated: true });
-  }
-
-  goToCompleteOrder() {
-    this.props.router.push('/order/cart/complete');
   }
 
   render() {
@@ -157,67 +168,65 @@ class Review extends React.Component<IProps, ReviewState> {
                 <Row>
                   <Col xs={12} className={styles.well}>
                     <Col md={8}>
-                      <Form
-                        onSubmit={(e) => this.onSubmitDisountCode(e)}
-                        noValidate
-                        validated={this.state.isDiscountFormValidated}
-                        id="discount-form"
+                      <Formik
+                        initialValues={{ code: '' }}
+                        onSubmit={(values, helpers) =>
+                          this.onSubmitDisountCode(values, helpers)
+                        }
                       >
-                        <Form.Group>
-                          <Form.Label>کد تخفیف</Form.Label>
-                          <Form.Control
-                            type="text"
-                            onChange={(e) => this.discountOnchange(e)}
-                            value={this.state.discountCode}
-                            required
-                          />
-                          <Form.Control.Feedback type="invalid">
-                            لطفا کد تخفیف خود را وارد کنید
-                          </Form.Control.Feedback>
-                          {/* {this.props.cart.discount.percentage !== 0 && (
+                        {(formik) => (
+                          <Form id="discount-form">
+                            <Form.Group>
+                              <Form.Label>کد تخفیف</Form.Label>
+                              <Field
+                                type="text"
+                                name="code"
+                                className="form-control"
+                              />
+                              <div className="form-err-msg">
+                                <ErrorMessage name="code" />
+                              </div>
+                              {/* {this.props.cart.discount.percentage !== 0 && (
                             <Form.Control.Feedback type="valid">
                               تخفیف {this.props.cart.discount.percentage} درصدی
                               کد {this.props.cart.discount.code} اعمال شد.
                             </Form.Control.Feedback>
                           )} */}
-                        </Form.Group>
-                      </Form>
+                            </Form.Group>
+                          </Form>
+                        )}
+                      </Formik>
                     </Col>
                   </Col>
                 </Row>
                 <Row className="justify-content-center">
                   <Col md={6}>
                     <div className={styles.btnGroup}>
-                      <button
-                        className={styles.completeOrder}
-                        onClick={this.goToCompleteOrder}
-                      >
-                        تکمیل سفارش
-                      </button>
+                      <Link href="'/order/cart/complete'">
+                        <a className={styles.completeOrder}>تکمیل سفارش</a>
+                      </Link>
 
                       <button
                         className={styles.checkDiscountCode}
                         type="submit"
                         form="discount-form"
                       >
-                        {/* {this.props.cart.discount.loading ? (
+                        {this.state.setDiscountLoading ? (
                           <Spinner animation="border" size="sm" />
                         ) : (
                           'بررسی کد تخفیف'
-                        )} */}
-                        بررسی کد تخفیف
+                        )}
                       </button>
 
                       <button
                         className={styles.restartOrder}
-                        onClick={this.props.clearCart}
+                        onClick={() => this.clearCart()}
                       >
-                        {/* {this.props.cart.loading ? (
+                        {this.state.clearCartLoading ? (
                           <Spinner animation="border" size="sm" />
                         ) : (
                           'شروع دوباره'
-                        )} */}
-                        شروع دوباره
+                        )}
                       </button>
                     </div>
                   </Col>
@@ -238,5 +247,5 @@ export default connect(
       currencies: state.currencies,
     };
   },
-  { setDiscount, clearCart }
+  { deleteAll, setDiscount }
 )(withRouter(Review));

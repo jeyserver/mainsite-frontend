@@ -14,14 +14,12 @@ import { IHostPlan } from '../../../helper/types/products/Host/plan';
 import IOS from '../../../helper/types/products/VPS/os';
 import { formatSpace } from '../../../helper/formatSpace';
 import { formatPriceWithCurrency } from '../../../store/Currencies';
-import { RootState } from '../../../store';
+import { AsyncThunkAction, RootState } from '../../../store';
 import { ErrorMessage, Field, Form, Formik, FormikHelpers } from 'formik';
 import { NotificationManager } from 'react-notifications';
-import backend from '../../../axios-config';
-import { setItems as setCartItems } from '../../../store/Cart';
+import { addDedicatedToCart, IAddDedicated } from '../../../store/Cart';
 import { NextRouter, withRouter } from 'next/router';
 import showErrorMsg from '../../../helper/showErrorMsg';
-import { nanoid } from '@reduxjs/toolkit';
 
 interface IProps {
   plan: IDedicatedPlan;
@@ -30,7 +28,7 @@ interface IProps {
   oses: IOS[];
 
   currencies: RootState['currencies'];
-  setCartItems: typeof setCartItems;
+  addDedicatedToCart: AsyncThunkAction<any, IAddDedicated>;
   router: NextRouter;
 }
 
@@ -83,87 +81,39 @@ class OrderDedicatedServer extends React.Component<IProps, IState> {
     }
   }
 
-  onSubmit(
+  async onSubmit(
     values: IInputs,
     { setSubmitting, setErrors, setFieldError }: FormikHelpers<IInputs>
   ) {
-    let fakeProducts = [];
-
-    const licensePlan = this.props.licenses.find(
-      (license) => license.id === Number(this.state.license)
-    );
-
-    if (licensePlan) {
-      const fakeLicense = {
-        id: nanoid(),
-        price: licensePlan.price * Number(values.period),
-        discount: 0,
-        number: 1,
-        currency: this.props.plan.currency,
-        product: 'license',
-        plan: licensePlan,
-      };
-      fakeProducts = [...fakeProducts, fakeLicense];
-    }
-    const hostPlan = this.props.backups.find(
-      (host) => host.id === Number(this.state.backup)
-    );
-
-    if (hostPlan) {
-      const fakeHost = {
-        id: nanoid(),
-        price: hostPlan.price * Number(values.period),
-        discount: 0,
-        number: 1,
-        currency: this.props.plan.currency,
-        product: 'host',
-        plan: {
-          ...hostPlan,
-          domain: this.state.domain,
-        },
-      };
-
-      fakeProducts = [...fakeProducts, fakeHost];
-    }
-
-    const fakeDedicatedServer = {
-      id: nanoid(),
-      price: this.props.plan.price * Number(values.period),
-      discount: 0,
-      number: 1,
-      currency: this.props.plan.currency,
-      product: 'server_dedicated',
-      plan: this.props.plan,
-    };
-
-    fakeProducts = [...fakeProducts, fakeDedicatedServer];
-
-    const properties = `&period=${values.period}&license=${this.state.license}&backup=${this.state.backup}&domain=${this.state.domain}&description=${values.description}&os=${this.state.os.id}`;
-    backend
-      .post(`/order/server/dedicated/${this.props.plan.id}?ajax=1${properties}`)
-      .then((res) => {
-        if (res.data.status) {
-          this.props.setCartItems(fakeProducts);
-          this.props.router.push('/order/cart/review');
-        } else {
-          res.data.error.map((error) => {
-            setErrors({ [error.input]: showErrorMsg(error.code) });
-          });
-          if (!res.data.error[0].code && this.state.domain === '') {
-            this.setState({ showDomainAlert: true });
-            setFieldError('domain', showErrorMsg('data_validation'));
-          }
-        }
-      })
-      .catch(() => {
-        NotificationManager.error(
-          'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
-          'خطا'
-        );
-      })
-      .finally(() => {
-        setSubmitting(false);
+    try {
+      const res = await this.props.addDedicatedToCart({
+        period: values.period,
+        license: this.state.license,
+        backup: this.state.backup,
+        domain: this.state.domain,
+        description: values.description,
+        os: this.state.os.id.toString(),
+        id: this.props.plan.id,
       });
+      if (res.data.status) {
+        this.props.router.push('/order/cart/review');
+      } else {
+        res.data.error.map((error) => {
+          setErrors({ [error.input]: showErrorMsg(error.code) });
+        });
+        if (!res.data.error[0].code && this.state.domain === '') {
+          this.setState({ showDomainAlert: true });
+          setFieldError('domain', showErrorMsg('data_validation'));
+        }
+      }
+    } catch (error) {
+      NotificationManager.error(
+        'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
+        'خطا'
+      );
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   render() {
@@ -505,6 +455,6 @@ export default withRouter(
         currencies: state.currencies,
       };
     },
-    { setCartItems }
+    { addDedicatedToCart }
   )(OrderDedicatedServer)
 );

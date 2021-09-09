@@ -9,18 +9,20 @@ import { connect } from 'react-redux';
 import { Formik, FormikHelpers, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import { formatPriceWithCurrency } from '../../../store/Currencies';
-import { RootState } from '../../../store';
+import { AsyncThunkAction, RootState } from '../../../store';
 import ILicense from '../../../helper/types/products/License/plan';
-import backend from '../../../axios-config';
 import showErrorMsg from '../../../helper/showErrorMsg';
-import { setItems as setCartItems } from '../../../store/Cart';
-import { nanoid } from '@reduxjs/toolkit';
+import {
+  addLicence as addLicenceToCart,
+  setItems as setCartItems,
+} from '../../../store/Cart';
 
 interface IProps {
   plan: ILicense;
   router: NextRouter;
   currencies: RootState['currencies'];
   setCartItems: typeof setCartItems;
+  addLicenceToCart: AsyncThunkAction<any, any>;
 }
 
 interface IInputs {
@@ -31,44 +33,35 @@ interface IInputs {
 }
 
 class OrderLicense extends React.Component<IProps> {
-  onSubmit(
+  async onSubmit(
     values: IInputs,
     { setSubmitting, setErrors }: FormikHelpers<IInputs>
   ) {
-    const os = this.props.plan.registrar === 1 && `&os=${values.os}`;
-    const fakeProduct = {
-      id: nanoid(),
-      price: 2.97,
-      discount: 0,
-      number: 1,
-      currency: this.props.plan.currency,
-      product: 'license',
-      plan: this.props.plan,
-    };
-
-    backend
-      .post(
-        `/order/licenses/${this.props.plan.id}?ajax=1&period=${values.period}&hostname=${values.hostname}&ip=${values.ip}${os}`
-      )
-      .then((res) => {
-        if (res.data.status) {
-          this.props.setCartItems([fakeProduct]);
-          this.props.router.push('/order/cart/review');
-        } else {
-          res.data.error.map((error) => {
-            setErrors({ [error.input]: showErrorMsg(error.code) });
-          });
-        }
-      })
-      .catch((err) => {
-        NotificationManager.error(
-          'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
-          'خطا'
-        );
-      })
-      .finally(() => {
-        setSubmitting(false);
-      });
+    try {
+      const res = await this.props
+        .addLicenceToCart({
+          id: this.props.plan.id,
+          period: values.period,
+          hostname: values.hostname,
+          ip: values.ip,
+          os: values.os,
+        })
+        .unwrap();
+      if (res.data.status) {
+        this.props.router.push('/order/cart/review');
+      } else {
+        res.data.error.map((error) => {
+          setErrors({ [error.input]: showErrorMsg(error.code) });
+        });
+      }
+    } catch (err) {
+      NotificationManager.error(
+        'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
+        'خطا'
+      );
+    } finally {
+      setSubmitting(false);
+    }
   }
 
   render() {
@@ -295,5 +288,5 @@ export default connect(
   (state: RootState) => {
     return { currencies: state.currencies };
   },
-  { setCartItems }
+  { setCartItems, addLicenceToCart }
 )(withRouter(OrderLicense));

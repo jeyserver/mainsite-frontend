@@ -20,7 +20,7 @@ interface IProps {
     cheepBorder: number;
     commercialDomains: string[];
     tldFromQuery?: string;
-    orderHost?: boolean;
+    hostPlan?: string;
   };
 }
 

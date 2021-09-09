@@ -8,6 +8,7 @@ interface IProps extends IPageProps {
   status: boolean;
   tlds: ITld[];
   currencies: ICurrency[];
+  hostPlan: string;
 }
 
 const commercialDomains = [
@@ -35,16 +36,12 @@ class Index extends React.Component<IProps> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Layout
-          postsForFooter={this.props.postsForFooter}
-          domainsForNavbar={this.props.domainsForNavbar}
-          licensesForNavbar={this.props.licensesForNavbar}
-        >
+        <Layout header={this.props.header} footer={this.props.footer}>
           <OrderDomain
             step="settings"
             data={{
               tlds: this.props.tlds,
-              orderHost: true,
+              hostPlan: this.props.hostPlan,
               transferOption: false,
               cheepBorder: 200000,
               commercialDomains,
@@ -67,13 +64,14 @@ export async function getServerSideProps(context) {
   }
 
   const respone = await fetch(
-    `${process.env.SCHEMA}://${process.env.DOMAIN}/${locale}/order/hosting/linux/${id}?ajax=1`
+    `${process.env.SITE_URL}/${locale}/order/hosting/linux/${id}?ajax=1`
   );
   const data = await respone.json();
 
   return {
     props: {
       ...data,
+      hostPlan: id,
     },
   };
 }

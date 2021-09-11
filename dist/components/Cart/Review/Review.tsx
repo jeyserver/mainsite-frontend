@@ -60,8 +60,8 @@ class Review extends React.Component<IProps, ReviewState> {
   ) {
     this.setState({ setDiscountLoading: true });
     try {
-      const res = await this.props.setDiscount(values.code);
-      if (!res.status && res.error[0].input === 'code') {
+      const res = await this.props.setDiscount(values.code).unwrap();
+      if (!res.data.status && res.data.error[0].input === 'code') {
         NotificationManager.error('متاسفانه کد وارد شده صحیح نمی‌باشد', 'خطا');
       }
     } catch (error) {

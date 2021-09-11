@@ -168,6 +168,16 @@ html:not([data-scroll]) {
   margin-top: 5px;
 }
 
+.form-control.is-valid,
+.was-validated .form-control:valid {
+  padding: 0.375rem 0.75rem;
+}
+
+.form-control.is-invalid,
+.was-validated .form-control:invalid {
+  padding: 0.375rem 0.75rem;
+}
+
 .nav-item-dropdown {
   position: static;
   &:first-child {

@@ -42,11 +42,14 @@ interface IProps {
 
 interface IState {
   unAvailableDomainException: boolean;
+  domainName: string;
+  tld: string | number;
 }
 
 interface IInputs {
   name: string;
   tld: number | string;
+  postfix: string;
 }
 
 class CheckDomainForm extends React.Component<IProps, IState> {
@@ -54,7 +57,22 @@ class CheckDomainForm extends React.Component<IProps, IState> {
     super(props);
     this.state = {
       unAvailableDomainException: false,
+      domainName: this.props.default.name,
+      tld: this.props.default.tld,
     };
+  }
+
+  componentDidUpdate(prevProps: IProps, prevState: IState) {
+    if (
+      (prevProps.default &&
+        this.props.default.name !== prevProps.default.name) ||
+      (prevProps.default && this.props.default.tld !== prevProps.default.tld)
+    ) {
+      this.setState({
+        domainName: this.props.default.name,
+        tld: this.props.default.tld,
+      });
+    }
   }
 
   async onSubmit(
@@ -73,8 +91,11 @@ class CheckDomainForm extends React.Component<IProps, IState> {
             domains: this.props.selectedDomains.map(
               (i) => `${i.name}.${i.tld.tld}`
             ),
-            name: values.name,
-            tld: values.tld,
+            name: this.state.domainName,
+            tld:
+              this.props.domainoption === 'owndomain'
+                ? values.postfix
+                : this.state.tld,
             period: this.props.periods,
             hostPlan: this.props.hostPlan,
           })
@@ -95,8 +116,11 @@ class CheckDomainForm extends React.Component<IProps, IState> {
         const res = await this.props
           .addDomainToCart({
             domainoption: this.props.domainoption,
-            tld: values.tld,
-            name: values.name,
+            tld:
+              this.props.domainoption === 'owndomain'
+                ? values.postfix
+                : this.state.tld,
+            name: this.state.domainName,
             hostPlan: this.props.hostPlan,
             domains: '',
             period: '',
@@ -110,8 +134,10 @@ class CheckDomainForm extends React.Component<IProps, IState> {
             if (res.data.ordered.available) {
               this.props.setSelectedDomains([res.data.ordered]);
             }
+            // recomendeds
             const recomendeds = [res.data.ordered, ...res.data.recomendeds];
             this.props.setRecommendedDomains(recomendeds);
+            // periods
             const periods = recomendeds.reduce((prev, cur) => {
               return { ...prev, [`${cur.name}.${cur.tld.tld}`]: 1 };
             }, {});
@@ -136,6 +162,14 @@ class CheckDomainForm extends React.Component<IProps, IState> {
     }
   }
 
+  onChangeDomainName(e) {
+    this.setState({ domainName: e.target.value });
+  }
+
+  onChangeTld(e) {
+    this.setState({ tld: e.target.value });
+  }
+
   render() {
     const formBtnText =
       this.props.selectedDomains.length === 0 ? 'بررسی دامنه' : 'پیکر بندی';
@@ -143,11 +177,9 @@ class CheckDomainForm extends React.Component<IProps, IState> {
     return (
       <Formik
         initialValues={{
-          name: this.props.default.name,
-          tld:
-            !this.props.hostPlan && this.props.default.tld
-              ? Number(this.props.default.tld)
-              : this.props.tlds[0].id,
+          name: this.state.domainName,
+          tld: this.state.tld,
+          postfix: '',
         }}
         onSubmit={(values, helpers) => this.onSubmit(values, helpers)}
       >
@@ -167,9 +199,8 @@ class CheckDomainForm extends React.Component<IProps, IState> {
                       <Field
                         type="text"
                         placeholder="پسوند"
-                        name="tld"
+                        name="postfix"
                         className={classNames('form-control', styles.tldInput)}
-                        // defaultValue={this.props.default.name}
                       />
                       <div className={styles.hint}>
                         <div className={styles.text}>بدون نقطه وارد کنید</div>
@@ -181,9 +212,9 @@ class CheckDomainForm extends React.Component<IProps, IState> {
                     <Field
                       as="select"
                       name="tld"
-                      // value={this.state.domainTldSelectValue}
-                      // onChange={this.onChangeDomainTld}
                       className="form-control"
+                      value={this.state.tld}
+                      onChange={(e) => this.onChangeTld(e)}
                     >
                       <optgroup label="دامنه های ارزان قیمت">
                         {getDomainsByCategory(
@@ -252,8 +283,9 @@ class CheckDomainForm extends React.Component<IProps, IState> {
                     placeholder="Your Domain"
                     name="name"
                     className="form-control"
-                    // onChange={this.onChangeDomainName}
-                    // value={this.state.domainNameInputValue}
+                    defaultValue={this.props.default.name}
+                    onChange={(e) => this.onChangeDomainName(e)}
+                    value={this.state.domainName}
                   />
                   <InputGroup.Prepend className={styles.prefix}>
                     www.

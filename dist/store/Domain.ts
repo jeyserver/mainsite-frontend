@@ -52,7 +52,10 @@ interface IState {
 }
 
 const initialState: IState = {
-  selected: null,
+  selected: {
+    name: null,
+    tld: null,
+  },
   forConfigure: [],
 };
 

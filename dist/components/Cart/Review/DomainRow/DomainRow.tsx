@@ -55,11 +55,11 @@ class DomainRow extends React.Component<IProps, IState> {
     const domain = this.props.data;
     switch (domain.type) {
       case 'register':
-        return Math.round(domain.price / domain.tld.new);
+        return Math.floor(domain.price / domain.tld.new);
       case 'transfer':
-        return Math.round(domain.price / domain.tld.transfer);
+        return Math.floor(domain.price / domain.tld.transfer);
       case 'owndomain':
-        return Math.round(domain.price / domain.tld.renew);
+        return Math.floor(domain.price / domain.tld.renew);
       default:
         return '';
     }

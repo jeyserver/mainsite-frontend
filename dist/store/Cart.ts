@@ -41,11 +41,11 @@ export const addDomain = createAsyncThunk(
   }
 );
 
-interface IAddLicence {
+export interface IAddLicence {
   id: number;
-  period: number;
+  period: string;
   hostname: string;
-  os: number;
+  os: string;
   ip: string;
 }
 
@@ -76,7 +76,7 @@ export const addVPS = createAsyncThunk(
   async (arg: IAddVPS, thunkApi) => {
     const store = thunkApi.getState() as RootState;
     return await backend.post(
-      `/order/server/vps/${arg.id}?cart=${store.cart.id}period=${arg.period}&license=${arg.license}&backup=${arg.backup}&domain=${arg.domain}&ram=${arg.ram}&os=${arg.os}&hard=${arg.hard}&ip=${arg.ip}&ajax=1`
+      `/order/server/vps/${arg.id}?cart=${store.cart.id}&period=${arg.period}&license=${arg.license}&backup=${arg.backup}&domain=${arg.domain}&ram=${arg.ram}&os=${arg.os}&hard=${arg.hard}&ip=${arg.ip}&ajax=1`
     );
   }
 );
@@ -96,7 +96,7 @@ export const addDedicated = createAsyncThunk(
   async (arg: IAddDedicated, thunkApi) => {
     const store = thunkApi.getState() as RootState;
     return await backend.post(
-      `/order/server/dedicated/${arg.id}?cart=${store.cart.id}&description=${arg.description}period=${arg.period}&license=${arg.license}&backup=${arg.backup}&domain=${arg.domain}&ajax=1`
+      `/order/server/dedicated/${arg.id}?cart=${store.cart.id}&description=${arg.description}&period=${arg.period}&license=${arg.license}&backup=${arg.backup}&domain=${arg.domain}&os=${arg.os}&ajax=1`
     );
   }
 );
@@ -106,7 +106,7 @@ export const setDiscount = createAsyncThunk(
   async (code: string, thunkApi) => {
     const store = thunkApi.getState() as RootState;
     return await backend.post(
-      `/order/cart/use-discount-code?cart=${store.cart.id}?code=${code}&ajax=1`
+      `/order/cart/use-discount-code?cart=${store.cart.id}&code=${code}&ajax=1`
     );
   }
 );
@@ -156,16 +156,16 @@ export const completeWithLogin = createAsyncThunk(
   async (arg: ICompleteLogin, thunkApi) => {
     const store = thunkApi.getState() as RootState;
     return await backend.post(
-      `/order/cart/complete?cart=${
+      `/order/cart/complete/login?cart=${
         store.cart.id
-      }&dologin=login&credential=${JSON.stringify(arg.credential)}&password=${
+      }&credential=${JSON.stringify(arg.credential)}&password=${
         arg.password
       }&ajax=1`
     );
   }
 );
 
-interface ICompleteRegister {
+export interface ICompleteRegister {
   name: string;
   lastname: string;
   email: string;
@@ -178,14 +178,10 @@ export const completeWithRegister = createAsyncThunk(
   'completeWithRegister',
   async (arg: ICompleteRegister, thunkApi) => {
     const store = thunkApi.getState() as RootState;
-    const per = `&dologin=register&name=${arg.name}&lastname=${
-      arg.lastname
-    }&email=${arg.email}&cellphone=${JSON.stringify(arg.cellphone)}&password=${
-      arg.password
-    }&password2=${arg.password2}`;
+    const per = `&name=${arg.name}&lastname=${arg.lastname}&email=${arg.email}&cellphone[number]=${arg.cellphone.number}&cellphone[code]=${arg.cellphone.code}&password=${arg.password}&password2=${arg.password2}&tos=1`;
 
     return await backend.post(
-      `/order/cart/complete?cart=${store.cart.id}${per}&ajax=1`
+      `/order/cart/complete/register?cart=${store.cart.id}${per}&ajax=1`
     );
   }
 );

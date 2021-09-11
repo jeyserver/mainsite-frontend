@@ -5,14 +5,16 @@ import { ReactPhonenumber } from '../../../ReactPhonenumber/ReactPhonenumber';
 import { NotificationManager } from 'react-notifications';
 import styles from './SigninForm.module.scss';
 import { connect } from 'react-redux';
-import { ErrorMessage, Formik, Form, FormikHelpers, Field } from 'formik';
+import { ErrorMessage, Formik, FormikHelpers, Field, Form } from 'formik';
 import { completeWithLogin, ICompleteLogin } from '../../../../store/Cart';
 import { AsyncThunkAction } from '../../../../store';
 import showErrorMsg from '../../../../helper/showErrorMsg';
 import { countries, defaultCode } from '../../../../lib/countriesForCellphone';
+import { NextRouter, withRouter } from 'next/router';
 
 interface IProps {
   completeWithLogin: AsyncThunkAction<any, ICompleteLogin>;
+  router: NextRouter;
 }
 
 interface IState {
@@ -52,6 +54,9 @@ class SigninForm extends React.Component<IProps, IState> {
         })
         .unwrap();
       if (res.data.status) {
+        if (res.data.redirect) {
+          this.props.router.push(res.data.redirect);
+        }
       } else {
         res.data.error.map((error) => {
           setErrors({ [error.input]: showErrorMsg(error.code) });
@@ -174,4 +179,4 @@ class SigninForm extends React.Component<IProps, IState> {
   }
 }
 
-export default connect(null, { completeWithLogin })(SigninForm);
+export default connect(null, { completeWithLogin })(withRouter(SigninForm));

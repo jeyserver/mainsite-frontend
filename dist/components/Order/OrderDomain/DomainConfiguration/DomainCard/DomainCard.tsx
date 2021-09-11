@@ -130,6 +130,7 @@ class DomainCard extends React.Component<IProps, IState> {
                   name={`products[${domain.id}][transfer_code]`}
                   className="form-control ltr"
                   type="text"
+                  required
                 />
                 <FormErrorMessage
                   input={`products[${domain.id}][transfer_code]`}

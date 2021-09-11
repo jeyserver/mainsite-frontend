@@ -56,7 +56,7 @@ class LicenseRow extends React.Component<IProps, IState> {
               )
             : 'هزینه راه‌اندازی اولیه (اولین ماه)'}
         </td>
-        <td>برای {Math.round(product.price / product.plan.price)} ماه</td>
+        <td>برای {Math.floor(product.price / product.plan.price)} ماه</td>
         <td>
           {product.price
             ? `${formatPriceWithCurrency(

@@ -14,15 +14,14 @@ import ILicense from '../../../helper/types/products/License/plan';
 import showErrorMsg from '../../../helper/showErrorMsg';
 import {
   addLicence as addLicenceToCart,
-  setItems as setCartItems,
+  IAddLicence,
 } from '../../../store/Cart';
 
 interface IProps {
   plan: ILicense;
   router: NextRouter;
   currencies: RootState['currencies'];
-  setCartItems: typeof setCartItems;
-  addLicenceToCart: AsyncThunkAction<any, any>;
+  addLicenceToCart: AsyncThunkAction<any, IAddLicence>;
 }
 
 interface IInputs {
@@ -288,5 +287,5 @@ export default connect(
   (state: RootState) => {
     return { currencies: state.currencies };
   },
-  { setCartItems, addLicenceToCart }
+  { addLicenceToCart }
 )(withRouter(OrderLicense));

@@ -17,7 +17,10 @@ import { formatPriceWithCurrency } from '../../../store/Currencies';
 import { AsyncThunkAction, RootState } from '../../../store';
 import { ErrorMessage, Field, Form, Formik, FormikHelpers } from 'formik';
 import { NotificationManager } from 'react-notifications';
-import { addDedicatedToCart, IAddDedicated } from '../../../store/Cart';
+import {
+  addDedicated as addDedicatedToCart,
+  IAddDedicated,
+} from '../../../store/Cart';
 import { NextRouter, withRouter } from 'next/router';
 import showErrorMsg from '../../../helper/showErrorMsg';
 
@@ -26,10 +29,9 @@ interface IProps {
   licenses: ILicense[];
   backups: IHostPlan[];
   oses: IOS[];
-
   currencies: RootState['currencies'];
-  addDedicatedToCart: AsyncThunkAction<any, IAddDedicated>;
   router: NextRouter;
+  addDedicatedToCart: AsyncThunkAction<any, IAddDedicated>;
 }
 
 interface IState {
@@ -86,15 +88,17 @@ class OrderDedicatedServer extends React.Component<IProps, IState> {
     { setSubmitting, setErrors, setFieldError }: FormikHelpers<IInputs>
   ) {
     try {
-      const res = await this.props.addDedicatedToCart({
-        period: values.period,
-        license: this.state.license,
-        backup: this.state.backup,
-        domain: this.state.domain,
-        description: values.description,
-        os: this.state.os.id.toString(),
-        id: this.props.plan.id,
-      });
+      const res = await this.props
+        .addDedicatedToCart({
+          period: values.period,
+          license: this.state.license,
+          backup: this.state.backup,
+          domain: this.state.domain,
+          description: values.description,
+          os: this.state.os.id.toString(),
+          id: this.props.plan.id,
+        })
+        .unwrap();
       if (res.data.status) {
         this.props.router.push('/order/cart/review');
       } else {

@@ -49,7 +49,7 @@ class DedicatedServerRow extends React.Component<IProps, IState> {
           سرور اختصاصی {product.plan.title} <br />
         </td>
         <td className={styles.noper}></td>
-        <td>برای {Math.round(product.price / product.plan.price)} ماه</td>
+        <td>برای {Math.floor(product.price / product.plan.price)} ماه</td>
         <td>
           {product.discount
             ? `${formatPriceWithCurrency(

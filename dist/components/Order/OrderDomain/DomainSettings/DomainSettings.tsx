@@ -146,41 +146,55 @@ class DomainSettings extends React.Component<IProps, IState> {
   }
 
   componentDidUpdate(prevProps: IProps, prevState: IState) {
-    //   if (
-    //     prevProps.domain.selected.name !== this.props.domain.selected.name ||
-    //     prevProps.domain.selected.tld !== this.props.domain.selected.tld
-    //   ) {
-    //     this.setState({
-    //       recommendedDomainsLoading: true,
-    //       domainName: this.props.domain.selected.name,
-    //       domainTld: this.props.domain.selected.tld,
-    //     });
-    //     axios
-    //       .get(
-    //         'https://jsonblob.com/api/jsonBlob/ea5bc877-e265-11eb-a96b-95a5a070a2d6'
-    //       )
-    //       .then((res) => {
-    //         this.setState({
-    //           recommendedDomains: res.data.recomendeds,
-    //           ordered: res.data.ordered,
-    //           selectedDomains: [res.data.ordered],
-    //           recommendedDomainsLoading: false,
-    //         });
-    //       })
-    //       .catch(() => {
-    //         this.setState({
-    //           recommendedDomainsLoading: false,
-    //         });
-    //       });
-    //   }
+    if (
+      prevProps.domain.selected.name !== this.props.domain.selected.name ||
+      prevProps.domain.selected.tld !== this.props.domain.selected.tld
+    ) {
+      this.setState({ recommendedDomainsLoading: true });
+
+      const { name, tld } = this.props.domain.selected;
+
+      backend
+        .post(
+          `/order/domain?ajax=1&domainoption=${this.state.domainoption}&tld=${tld}&name=${name}`
+        )
+        .then((res) => {
+          if (res.data.status) {
+            if (res.data.ordered.available) {
+              this.setState({ selectedDomains: [res.data.ordered] });
+            }
+            this.setState({
+              recommendedDomains: [res.data.ordered, ...res.data.recomendeds],
+            });
+          }
+        })
+        .catch(() => {
+          NotificationManager.error(
+            'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
+            'خطا'
+          );
+        })
+        .finally(() => {
+          this.setState({ recommendedDomainsLoading: false });
+        });
+    }
+  }
+
+  getDefaultTld() {
+    const tldFromQuery = this.props.data.tlds.find(
+      (i) => i.tld === this.props.data.tldFromQuery
+    );
+
+    if (this.props.domain.selected && this.props.domain.selected.tld) {
+      return this.props.domain.selected.tld;
+    } else if (tldFromQuery && tldFromQuery.id) {
+      return tldFromQuery.id;
+    } else {
+      return this.props.data.tlds[0].id;
+    }
   }
 
   render() {
-    const defaultTldId = this.props.data.tlds.find(
-      (i) => i.tld === this.props.data.tldFromQuery
-    );
-    console.log(this.props.data.tldFromQuery);
-
     return (
       <div className={styles.domainSettings}>
         <h2 className={styles.title}>خرید دامنه</h2>
@@ -255,8 +269,9 @@ class DomainSettings extends React.Component<IProps, IState> {
             commercialDomains={this.props.data.commercialDomains}
             cheepBorder={this.props.data.cheepBorder}
             default={{
-              name: '',
-              tld: defaultTldId && defaultTldId.id,
+              name:
+                this.props.domain.selected && this.props.domain.selected.name,
+              tld: this.getDefaultTld(),
             }}
             hostPlan={this.props.data.hostPlan}
             selectedDomains={this.state.selectedDomains}

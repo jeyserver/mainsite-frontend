@@ -34,6 +34,7 @@ interface IProps {
 }
 
 interface IState {
+  tld: string;
   selectedDomain: string | null;
   selectedDomains: any;
 }
@@ -47,6 +48,7 @@ class Domain extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.state = {
+      tld: this.props.tlds[0].tld,
       selectedDomain: null,
       selectedDomains: [],
     };
@@ -73,6 +75,8 @@ class Domain extends React.Component<IProps, IState> {
       this.props.tlds
         .slice(0, 10)
         .find((domain) => domain.tld === e.target.value);
+
+    this.setState({ tld: e.target.value });
 
     this.setState(
       (prev) => {
@@ -111,9 +115,8 @@ class Domain extends React.Component<IProps, IState> {
     values: IInputs,
     { setSubmitting, setErrors }: FormikHelpers<IInputs>
   ) {
-    const tld = this.props.tlds.find(
-      (tld) => tld.tld === this.state.selectedDomain || this.props.tlds[0].tld
-    );
+    const tld = this.props.tlds.find((tld) => tld.tld === this.state.tld);
+
     backend
       .post(
         `/order/domain?ajax=1&domainoption=register&tld=${tld.id}&name=${values.name}`
@@ -122,8 +125,9 @@ class Domain extends React.Component<IProps, IState> {
         if (res.data.status) {
           this.props.setSelectedDomain({
             name: values.name,
-            tld: tld.id,
+            tld: tld.id ? tld.id : this.props.tlds[0].id,
           });
+          this.props.router.push('/order/domain');
         } else {
           res.data.error.map((error) => {
             setErrors({ [error.input]: showErrorMsg(error.code) });
@@ -264,7 +268,7 @@ class Domain extends React.Component<IProps, IState> {
                             dir="ltr"
                             name="tld"
                             onChange={(e) => this.changeSelectedDomain(e)}
-                            // value={this.state.selectedDomain}
+                            value={this.state.tld}
                           >
                             {this.props.tlds.map((domain) => (
                               <option key={domain.id} value={domain.tld}>

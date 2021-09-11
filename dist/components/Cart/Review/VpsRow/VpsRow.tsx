@@ -51,20 +51,20 @@ class VpsRow extends React.Component<iProps, VpsRowState> {
           <span className={styles.title}>سرور مجازی {product.plan.title}</span>
         </td>
         <td>
-          {product.plan.addons.ip && (
+          {product.plan.addons && product.plan.addons.ip && (
             <div>{product.plan.addons.ip} عدد آی پی اضافه</div>
           )}
-          {product.plan.addons.ram && (
+          {product.plan.addons && product.plan.addons.ram && (
             <div>
               {product.plan.addons.ram.addon.title}
               رم اضافه
             </div>
           )}
-          {product.plan.addons.hard && (
+          {product.plan.addons && product.plan.addons.hard && (
             <div>{product.plan.addons.hard.addon.title} هارد اضافه</div>
           )}
         </td>
-        <td>برای {Math.round(product.price / product.plan.price)} ماه</td>
+        <td>برای {Math.floor(product.price / product.plan.price)} ماه</td>
         <td>
           {product.discount
             ? `${formatPriceWithCurrency(

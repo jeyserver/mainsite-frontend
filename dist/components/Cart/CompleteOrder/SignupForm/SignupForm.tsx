@@ -12,19 +12,25 @@ import { ReactPhonenumber } from '../../../ReactPhonenumber/ReactPhonenumber';
 import { NotificationManager } from 'react-notifications';
 import styles from './SignupForm.module.scss';
 import { connect } from 'react-redux';
-import { completeWithRegister } from '../../../../store/Cart';
+import {
+  completeWithRegister,
+  ICompleteRegister,
+} from '../../../../store/Cart';
 import { AsyncThunkAction } from '../../../../store';
-import { Formik, FormikHelpers, Form, ErrorMessage, Field } from 'formik';
+import { Formik, FormikHelpers, ErrorMessage, Field, Form } from 'formik';
 import * as Yup from 'yup';
 import showErrorMsg from '../../../../helper/showErrorMsg';
 import { countries, defaultCode } from '../../../../lib/countriesForCellphone';
+import { NextRouter, withRouter } from 'next/router';
 
 interface IProps {
-  completeWithRegister: AsyncThunkAction<any, any>;
+  completeWithRegister: AsyncThunkAction<any, ICompleteRegister>;
+  router: NextRouter;
 }
 
 interface IState {
   cellphone: { code: string; number: string };
+  showCellPhoneError: boolean;
 }
 
 interface IInputs {
@@ -42,6 +48,7 @@ class SignupForm extends React.Component<IProps, IState> {
     super(props);
     this.state = {
       cellphone: { code: '', number: '' },
+      showCellPhoneError: false,
     };
   }
 
@@ -52,6 +59,7 @@ class SignupForm extends React.Component<IProps, IState> {
   ) {
     this.setState({
       cellphone: { code: selected.code, number: phoneNumberInputValue },
+      showCellPhoneError: false,
     });
   }
 
@@ -59,7 +67,6 @@ class SignupForm extends React.Component<IProps, IState> {
     values: IInputs,
     { setSubmitting, setErrors }: FormikHelpers<IInputs>
   ) {
-    console.log('felan');
     try {
       const res = await this.props
         .completeWithRegister({
@@ -72,9 +79,15 @@ class SignupForm extends React.Component<IProps, IState> {
         })
         .unwrap();
       if (res.data.status) {
+        if (res.data.redirect) {
+          this.props.router.push(res.data.redirect);
+        }
       } else {
         res.data.error.map((error) => {
           setErrors({ [error.input]: showErrorMsg(error.code) });
+          if (error.input === 'cellphone') {
+            this.setState({ showCellPhoneError: true });
+          }
         });
       }
     } catch (error) {
@@ -94,20 +107,22 @@ class SignupForm extends React.Component<IProps, IState> {
           name: '',
           lastname: '',
           email: '',
-          cellphone: '',
+          cellphone: '-',
           password: '',
           password2: '',
           acceptedTerms: false,
         }}
         validationSchema={Yup.object({
           name: Yup.string().required('داده وارد شده معتبر نیست'),
-          lastName: Yup.string().required('داده وارد شده معتبر نیست'),
+          lastname: Yup.string().required('داده وارد شده معتبر نیست'),
           email: Yup.string()
             .email('داده وارد شده معتبر نیست')
             .required('داده وارد شده معتبر نیست'),
           cellphone: Yup.string().required('داده وارد شده معتبر نیست'),
           password: Yup.string().required('داده وارد شده معتبر نیست'),
-          password2: Yup.string().required('داده وارد شده معتبر نیست'),
+          password2: Yup.string()
+            .required('داده وارد شده معتبر نیست')
+            .oneOf([Yup.ref('password')], 'گذرواژه با تکرار آن یکسان نیست'),
           acceptedTerms: Yup.boolean()
             .required('داده وارد شده معتبر نیست')
             .oneOf([true], 'داده وارد شده معتبر نیست'),
@@ -185,9 +200,13 @@ class SignupForm extends React.Component<IProps, IState> {
                       className="phoneNumberEmail"
                       selectName="signUpForm"
                       options={{ dir: 'rtl' }}
-                      errorCode={<ErrorMessage name="cellphone" />}
                     />
                   </div>
+                  {this.state.showCellPhoneError && (
+                    <div>
+                      <ErrorMessage name="cellphone" />
+                    </div>
+                  )}
                 </FormGroup>
               </Col>
             </Row>
@@ -223,13 +242,13 @@ class SignupForm extends React.Component<IProps, IState> {
               <Col xs={12}>
                 <FormGroup>
                   <label className={styles.termsCheckBox}>
-                    <Field type="checkbox" name="tos" defaultValue={1} />
+                    <Field type="checkbox" name="acceptedTerms" />
                     <a target="_blank" href="/terms">
                       شرایط سرویس
                     </a>
                     را خواندم و موافق هستم.
                     <div className="form-err-msg">
-                      <ErrorMessage name="tos" />
+                      <ErrorMessage name="acceptedTerms" />
                     </div>
                   </label>
                 </FormGroup>
@@ -238,8 +257,8 @@ class SignupForm extends React.Component<IProps, IState> {
             <Row>
               <Col xs={12}>
                 <Button
-                  className={styles.submitBtn}
                   type="submit"
+                  className={styles.submitBtn}
                   disabled={formik.isSubmitting}
                 >
                   {formik.isSubmitting ? (
@@ -260,4 +279,4 @@ class SignupForm extends React.Component<IProps, IState> {
   }
 }
 
-export default connect(null, { completeWithRegister })(SignupForm);
+export default connect(null, { completeWithRegister })(withRouter(SignupForm));

@@ -1,7 +1,6 @@
 import * as React from 'react';
 import classNames from 'classnames';
 import { InputGroup, Row, Col, Spinner } from 'react-bootstrap';
-import { countriesType } from '../../../../pages/order/cart/complete';
 import { ReactPhonenumber } from '../../../ReactPhonenumber/ReactPhonenumber';
 import { NotificationManager } from 'react-notifications';
 import styles from './SigninForm.module.scss';
@@ -136,7 +135,7 @@ class SigninForm extends React.Component<IProps, IState> {
                 name="password"
                 className="form-control"
                 onChange={(e) => this.changePassword(e)}
-                valie={this.state.password}
+                value={this.state.password}
               />
               <span
                 className={classNames(styles.floatPlaceHolder, {

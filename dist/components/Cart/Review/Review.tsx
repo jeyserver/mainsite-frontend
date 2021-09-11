@@ -1,6 +1,13 @@
 import * as React from 'react';
-import { Form, Spinner, Table } from 'react-bootstrap';
-import { Container, Row, Col } from 'react-bootstrap';
+import {
+  Container,
+  Row,
+  Col,
+  FormGroup,
+  FormLabel,
+  Spinner,
+  Table,
+} from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { formatPrice } from '../../helper/formatPrice';
 import Link from 'next/link';
@@ -16,7 +23,8 @@ import { NextRouter, withRouter } from 'next/dist/client/router';
 import { AsyncThunkAction, RootState } from '../../../store';
 import { deleteAll, setDiscount } from '../../../store/Cart';
 import { NotificationManager } from 'react-notifications';
-import { ErrorMessage, Field, Formik, FormikHelpers } from 'formik';
+import { ErrorMessage, Field, Formik, FormikHelpers, Form } from 'formik';
+import { priceInActiveCurrency } from '../../../store/Currencies';
 
 interface IProps {
   deleteAll: AsyncThunkAction<any, any>;
@@ -52,7 +60,10 @@ class Review extends React.Component<IProps, ReviewState> {
   ) {
     this.setState({ setDiscountLoading: true });
     try {
-      await this.props.setDiscount(values.code);
+      const res = await this.props.setDiscount(values.code);
+      if (!res.status && res.error[0].input === 'code') {
+        NotificationManager.error('متاسفانه کد وارد شده صحیح نمی‌باشد', 'خطا');
+      }
     } catch (error) {
       NotificationManager.error(
         'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
@@ -67,6 +78,7 @@ class Review extends React.Component<IProps, ReviewState> {
     this.setState({ clearCartLoading: true });
     try {
       await this.props.deleteAll({}).unwrap();
+      this.props.router.push('/');
     } catch (error) {
       NotificationManager.error(
         'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
@@ -96,7 +108,12 @@ class Review extends React.Component<IProps, ReviewState> {
 
   render() {
     const totalCost = this.props.cart.items.reduce(
-      (accumulator, currentValue) => (accumulator += currentValue.price),
+      (accumulator, currentValue) =>
+        (accumulator += priceInActiveCurrency(
+          this.props.currencies,
+          currentValue.currency,
+          currentValue.price
+        )),
       0
     );
 
@@ -176,12 +193,15 @@ class Review extends React.Component<IProps, ReviewState> {
                       >
                         {(formik) => (
                           <Form id="discount-form">
-                            <Form.Group>
-                              <Form.Label>کد تخفیف</Form.Label>
+                            <FormGroup>
+                              <FormLabel>کد تخفیف</FormLabel>
                               <Field
                                 type="text"
                                 name="code"
                                 className="form-control"
+                                disabled={
+                                  !this.props.cart.has_active_discount_code
+                                }
                               />
                               <div className="form-err-msg">
                                 <ErrorMessage name="code" />
@@ -192,7 +212,7 @@ class Review extends React.Component<IProps, ReviewState> {
                               کد {this.props.cart.discount.code} اعمال شد.
                             </Form.Control.Feedback>
                           )} */}
-                            </Form.Group>
+                            </FormGroup>
                           </Form>
                         )}
                       </Formik>
@@ -202,7 +222,7 @@ class Review extends React.Component<IProps, ReviewState> {
                 <Row className="justify-content-center">
                   <Col md={6}>
                     <div className={styles.btnGroup}>
-                      <Link href="'/order/cart/complete'">
+                      <Link href="/order/cart/complete">
                         <a className={styles.completeOrder}>تکمیل سفارش</a>
                       </Link>
 
@@ -210,6 +230,7 @@ class Review extends React.Component<IProps, ReviewState> {
                         className={styles.checkDiscountCode}
                         type="submit"
                         form="discount-form"
+                        disabled={!this.props.cart.has_active_discount_code}
                       >
                         {this.state.setDiscountLoading ? (
                           <Spinner animation="border" size="sm" />

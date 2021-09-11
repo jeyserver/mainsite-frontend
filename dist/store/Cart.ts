@@ -106,14 +106,14 @@ export const setDiscount = createAsyncThunk(
   async (code: string, thunkApi) => {
     const store = thunkApi.getState() as RootState;
     return await backend.post(
-      `/order/cart?cart=${store.cart.id}?code=${code}&ajax=1`
+      `/order/cart/use-discount-code?cart=${store.cart.id}?code=${code}&ajax=1`
     );
   }
 );
 
 export const deleteAll = createAsyncThunk('deleteAll', async (_, thunkApi) => {
   const store = thunkApi.getState() as RootState;
-  return await backend.post(`/order/cart/delete?cart=${store.cart.id}&ajax=1&`);
+  return await backend(`/order/cart/delete?cart=${store.cart.id}&ajax=1`);
 });
 
 export const deleteItem = createAsyncThunk(
@@ -121,9 +121,7 @@ export const deleteItem = createAsyncThunk(
   async (id: number, thunkApi) => {
     const store = thunkApi.getState() as RootState;
     return (
-      await backend.post(
-        `/order/cart/deleteProduct/${id}?cart=${store.cart.id}&ajax=1`
-      )
+      await backend(`/order/cart/delete/${id}?cart=${store.cart.id}&ajax=1`)
     ).data as {
       status: boolean;
     };
@@ -131,16 +129,19 @@ export const deleteItem = createAsyncThunk(
 );
 
 export interface IConfigureHosting {
-  period: string[];
-  primary_domain: string[];
+  [inputName: string]: string;
 }
 
 export const configureHosting = createAsyncThunk(
   'configureHosting',
-  async (arg: IConfigureHosting, thunkApi) => {
+  async (values: IConfigureHosting, thunkApi) => {
     const store = thunkApi.getState() as RootState;
+    const per = Object.entries(values).reduce((prev, cur) => {
+      return `${prev}&${cur[0]}=${cur[1]}`;
+    }, '');
+
     return await backend.post(
-      `/order/hosting/configure?cart=${store.cart.id}&period=${arg.period}&primary_domain=${arg.primary_domain}&ajax=1`
+      `/order/hosting/configure?cart=${store.cart.id}${per}&ajax=1`
     );
   }
 );
@@ -155,9 +156,11 @@ export const completeWithLogin = createAsyncThunk(
   async (arg: ICompleteLogin, thunkApi) => {
     const store = thunkApi.getState() as RootState;
     return await backend.post(
-      `/order/cart/complete?cart=${store.cart.id}?credential=${JSON.stringify(
-        arg.credential
-      )}?password=${arg.password}&ajax=1`
+      `/order/cart/complete?cart=${
+        store.cart.id
+      }&dologin=login&credential=${JSON.stringify(arg.credential)}&password=${
+        arg.password
+      }&ajax=1`
     );
   }
 );
@@ -201,20 +204,29 @@ interface IState {
   id: string;
   items: ICartItem[];
   discount: number | null;
+  has_active_discount_code: boolean;
 }
 
 const initialState: IState = {
   id: null,
   items: [],
   discount: null,
+  has_active_discount_code: false,
 };
 
 const cartSlice = createSlice({
   name: 'cart',
   initialState,
   reducers: {
-    setItems: (state, action: PayloadAction<ICartItem[]>) => {
-      state.items = action.payload;
+    setCart: (
+      state,
+      action: PayloadAction<{
+        items: ICartItem[];
+        has_active_discount_code: boolean;
+      }>
+    ) => {
+      state.items = action.payload.items;
+      state.has_active_discount_code = action.payload.has_active_discount_code;
     },
   },
   extraReducers: (builder) => {
@@ -235,7 +247,7 @@ const cartSlice = createSlice({
     });
 
     builder.addCase(setDiscount.fulfilled, (state, action) => {
-      state.discount = action.payload;
+      // state.discount = action.payload;
     });
 
     builder.addCase(completeWithLogin.fulfilled, (state, action) => {
@@ -247,5 +259,5 @@ const cartSlice = createSlice({
   },
 });
 
-export const { setItems } = cartSlice.actions;
+export const { setCart } = cartSlice.actions;
 export default cartSlice.reducer;

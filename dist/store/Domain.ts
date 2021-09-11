@@ -17,8 +17,26 @@ export const deleteDomain = createAsyncThunk(
   'deleteDomain',
   async (arg: { id: string | number }, thunkApi) => {
     const store = thunkApi.getState() as RootState;
+    return await backend(
+      `/order/cart/delete/${arg.id}?cart=${store.cart.id}&ajax=1`
+    );
+  }
+);
+
+export interface IConfigDomain {
+  [product: string]: string;
+}
+
+export const configureDomains = createAsyncThunk(
+  'configureDomains',
+  async (products: IConfigDomain, thunkApi) => {
+    const store = thunkApi.getState() as RootState;
+    const per = Object.entries(products).reduce((prev, cur) => {
+      return `${prev}&${cur[0]}=${cur[1]}`;
+    }, '');
+
     return await backend.post(
-      `/order/cart/deleteProduct/${arg.id}?cart=${store.cart.id}&ajax=1`
+      `/order/domain/configure?cart=${store.cart.id}&ajax=1${per}`
     );
   }
 );

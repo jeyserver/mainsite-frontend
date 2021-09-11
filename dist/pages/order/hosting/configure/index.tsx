@@ -5,12 +5,35 @@ import Layout from '../../../../components/Layout/Layout';
 import { IPageProps } from '../../../_app';
 import IHostProduct from '../../../../helper/types/cart/host';
 import IDomainProduct from '../../../../helper/types/cart/domain';
+import backend from '../../../../axios-config';
+import { connect } from 'react-redux';
+import { RootState } from '../../../../store';
 
 interface IProps extends IPageProps {
   products: IHostProduct[] | IDomainProduct[];
+  cart: RootState['cart'];
 }
 
-class Index extends React.Component<IProps> {
+interface IState {
+  products: any;
+}
+
+class Index extends React.Component<IProps, IState> {
+  constructor(props) {
+    super(props);
+    this.state = {
+      products: [],
+    };
+  }
+
+  componentDidMount() {
+    backend(`/order/hosting/configure?cart=${this.props.cart.id}&ajax=1`)
+      .then((res) => {
+        this.setState({ products: res.data.products });
+      })
+      .catch(() => {});
+  }
+
   render() {
     return (
       <div dir="rtl">
@@ -22,8 +45,8 @@ class Index extends React.Component<IProps> {
 
         <Layout header={this.props.header} footer={this.props.footer}>
           <HostingConfigure
-            domains={this.props.products.filter((i) => i.product === 'domain')}
-            hosts={this.props.products.filter((i) => i.product === 'host')}
+            domains={this.state.products.filter((i) => i.product === 'domain')}
+            hosts={this.state.products.filter((i) => i.product === 'host')}
           />
         </Layout>
       </div>
@@ -40,9 +63,7 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const respone = await fetch(
-    `${process.env.SITE_URL}/${locale}/order/hosting/configure?ajax=1`
-  );
+  const respone = await fetch(`${process.env.SITE_URL}/${locale}?ajax=1`);
   const data = await respone.json();
 
   return {
@@ -50,4 +71,6 @@ export async function getServerSideProps(context) {
   };
 }
 
-export default Index;
+export default connect((state: RootState) => {
+  return { cart: state.cart };
+})(Index);

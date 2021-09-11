@@ -1,7 +1,6 @@
 import classNames from 'classnames';
 import * as React from 'react';
 import { Container, Col, Row, Form, Button } from 'react-bootstrap';
-import { countriesType } from '../../../pages/order/cart/complete';
 import OrderSteps from '../../Order/OrderDedicatedServer/OrderSteps/OrderSteps';
 import PagesHeader from '../../PagesHeader/PagesHeader';
 import styles from './CompleteOrder.module.scss';
@@ -11,19 +10,19 @@ import SignupForm from './SignupForm/SignupForm';
 interface IProps {}
 
 interface IState {
-  loginMethod: 'signup' | 'signin';
+  authMethod: 'signup' | 'signin';
 }
 
 class CompleteOrder extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.state = {
-      loginMethod: 'signup',
+      authMethod: 'signup',
     };
   }
 
-  changeLoginMethod(e: React.ChangeEvent<HTMLInputElement>) {
-    this.setState({ loginMethod: e.target.value });
+  changeAuthMethod(e: React.ChangeEvent<HTMLInputElement>) {
+    this.setState({ authMethod: e.target.value });
   }
 
   render() {
@@ -49,7 +48,7 @@ class CompleteOrder extends React.Component<IProps, IState> {
                             type="radio"
                             name="dologin"
                             defaultValue="signup"
-                            onChange={(e) => this.changeLoginMethod(e)}
+                            onChange={(e) => this.changeAuthMethod(e)}
                             defaultChecked
                           />
                           مشتری جدید هستم | ثبت نام
@@ -61,7 +60,7 @@ class CompleteOrder extends React.Component<IProps, IState> {
                             type="radio"
                             name="dologin"
                             defaultValue="signin"
-                            onChange={(e) => this.changeLoginMethod(e)}
+                            onChange={(e) => this.changeAuthMethod(e)}
                           />
                           قبلا ثبت نام کرده ام | ورود
                         </label>
@@ -72,8 +71,8 @@ class CompleteOrder extends React.Component<IProps, IState> {
                     <Row
                       className={classNames(
                         {
-                          [styles.show]: this.state.loginMethod === 'signin',
-                          [styles.hidden]: this.state.loginMethod === 'signup',
+                          [styles.show]: this.state.authMethod === 'signin',
+                          [styles.hidden]: this.state.authMethod === 'signup',
                           [styles.signin]: true,
                         },
                         'justify-content-center'
@@ -85,8 +84,8 @@ class CompleteOrder extends React.Component<IProps, IState> {
                     </Row>
                     <Row
                       className={classNames({
-                        [styles.show]: this.state.loginMethod === 'signup',
-                        [styles.hidden]: this.state.loginMethod === 'signin',
+                        [styles.show]: this.state.authMethod === 'signup',
+                        [styles.hidden]: this.state.authMethod === 'signin',
                         [styles.signup]: true,
                       })}
                     >

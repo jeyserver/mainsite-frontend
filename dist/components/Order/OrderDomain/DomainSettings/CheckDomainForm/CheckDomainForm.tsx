@@ -144,9 +144,10 @@ class CheckDomainForm extends React.Component<IProps, IState> {
       <Formik
         initialValues={{
           name: this.props.default.name,
-          tld: !this.props.hostPlan
-            ? Number(this.props.default.tld) || this.props.tlds[0].id
-            : '',
+          tld:
+            !this.props.hostPlan && this.props.default.tld
+              ? Number(this.props.default.tld)
+              : this.props.tlds[0].id,
         }}
         onSubmit={(values, helpers) => this.onSubmit(values, helpers)}
       >
@@ -182,7 +183,6 @@ class CheckDomainForm extends React.Component<IProps, IState> {
                       name="tld"
                       // value={this.state.domainTldSelectValue}
                       // onChange={this.onChangeDomainTld}
-                      value={this.props.default.tld}
                       className="form-control"
                     >
                       <optgroup label="دامنه های ارزان قیمت">

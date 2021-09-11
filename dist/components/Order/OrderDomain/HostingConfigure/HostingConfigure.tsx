@@ -1,11 +1,18 @@
 import * as React from 'react';
-import { Container, Row, Col, Button, Table, FormGroup } from 'react-bootstrap';
+import {
+  Container,
+  Row,
+  Col,
+  Button,
+  Table,
+  Form,
+  Spinner,
+} from 'react-bootstrap';
 import CountryFlagTooltip from '../../../../helper/components/CountryFlagTooltip/CountryFlagTooltip';
 import PagesHeader from '../../../PagesHeader/PagesHeader';
 import OrderSteps from '../OrderSteps';
 import { NextRouter, withRouter } from 'next/router';
 import styles from './HostingConfigure.module.scss';
-import { Formik, Form, Field, FormikHelpers } from 'formik';
 import { NotificationManager } from 'react-notifications';
 import {
   configureHosting,
@@ -17,6 +24,9 @@ import IDomainProduct from '../../../../helper/types/cart/domain';
 import IHostProduct from '../../../../helper/types/cart/host';
 import { formatPriceWithCurrency } from '../../../../store/Currencies';
 import { connect } from 'react-redux';
+import IError from '../../../../helper/types/base/error';
+import showErrorMsg from '../../../../helper/showErrorMsg';
+import FormErrorMessage from '../../../../helper/components/FormErrorMessage';
 
 interface IProps {
   hosts: IHostProduct[];
@@ -27,28 +37,22 @@ interface IProps {
   currencies: RootState['currencies'];
 }
 
-interface IInputs {
-  period: string[];
-  primary_domain: string[];
+interface IState {
+  formIsValidated: boolean;
+  formIsSubmitting: boolean;
+  clearCartLoading: boolean;
+  errors: IError[];
 }
 
-class HostingConfigure extends React.Component<IProps> {
-  async onSubmit(values: IInputs, { setSubmitting }: FormikHelpers<IInputs>) {
-    try {
-      const res = this.props
-        .configureHosting({
-          period: values.period,
-          primary_domain: values.primary_domain,
-        })
-        .unwrap();
-    } catch (error) {
-      NotificationManager.error(
-        'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
-        'خطا'
-      );
-    } finally {
-      setSubmitting(false);
-    }
+class HostingConfigure extends React.Component<IProps, IState> {
+  constructor(props) {
+    super(props);
+    this.state = {
+      formIsValidated: false,
+      formIsSubmitting: false,
+      clearCartLoading: false,
+      errors: [],
+    };
   }
 
   async clearCart() {
@@ -63,6 +67,53 @@ class HostingConfigure extends React.Component<IProps> {
     } finally {
       this.setState({ clearCartLoading: false });
     }
+  }
+
+  async onSubmitForm(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const form = e.currentTarget;
+    this.setState({ formIsSubmitting: true });
+
+    if (form.checkValidity() === false) {
+      event.preventDefault();
+      event.stopPropagation();
+    } else {
+      try {
+        const inputs = Array.from(form.elements) as HTMLInputElement[];
+        const values = inputs.reduce((prev, cur) => {
+          if (cur.nodeName !== 'BUTTON') {
+            return {
+              ...prev,
+              [cur.name]: cur.value,
+            };
+          }
+          return prev;
+        }, {});
+
+        const res = await this.props.configureHosting(values).unwrap();
+        if (res.data.status) {
+          if (res.data.redirect) {
+            this.props.router.push(res.data.redirect);
+          }
+        } else {
+          if (res.data.error) {
+            this.setState({ errors: res.data.error });
+            res.data.error.map((error) => {
+              form[error.input].value = '';
+            });
+          }
+
+          this.setState({ formIsValidated: false });
+        }
+      } catch (error) {
+        NotificationManager.error(
+          'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
+          'خطا'
+        );
+      }
+    }
+
+    this.setState({ formIsValidated: true, formIsSubmitting: false });
   }
 
   render() {
@@ -83,107 +134,120 @@ class HostingConfigure extends React.Component<IProps> {
                   <p className={styles.pageInfo}>
                     در کادر زیر شما باید دامنه متعلق به هاست را انتخاب کنید
                   </p>
-                  <Formik
-                    initialValues={{ period: [], primary_domain: [] }}
-                    onSubmit={(values, helpers) =>
-                      this.onSubmit(values, helpers)
-                    }
+                  <Form
+                    autoComplete="off"
+                    onSubmit={(e) => this.onSubmitForm(e)}
+                    validated={this.state.formIsValidated}
+                    noValidate
                   >
-                    {(formik) => (
-                      <Form autoComplete="off">
-                        <Row>
-                          <Col xs={12}>
-                            <Table responsive className={styles.table}>
-                              <thead>
-                                <tr>
-                                  <th>هاست</th>
-                                  <th />
-                                  <th>دامنه ها</th>
+                    <Row>
+                      <Col xs={12}>
+                        <Table responsive className={styles.table}>
+                          <thead>
+                            <tr>
+                              <th>هاست</th>
+                              <th />
+                              <th>دامنه ها</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {this.props.hosts.map((product) => {
+                              return (
+                                <tr key={product.id}>
+                                  <td>
+                                    <CountryFlagTooltip
+                                      country={product.plan.country}
+                                    />
+                                    <span className={styles.productTitle}>
+                                      {product.plan.title}
+                                    </span>
+                                  </td>
+                                  <td>
+                                    <Form.Group>
+                                      <Form.Control
+                                        as="select"
+                                        name={`period[${product.id}]`}
+                                        required
+                                        custom
+                                      >
+                                        <option value="1">
+                                          برای 1 ماه قیمت{' '}
+                                          {formatPriceWithCurrency(
+                                            this.props.currencies,
+                                            product.currency,
+                                            product.price
+                                          )}
+                                        </option>
+                                      </Form.Control>
+                                      <FormErrorMessage
+                                        input={`period[${product.id}]`}
+                                        errors={this.state.errors}
+                                      />
+                                    </Form.Group>{' '}
+                                  </td>
+                                  <td>
+                                    <Form.Group>
+                                      <Form.Control
+                                        as="select"
+                                        custom
+                                        className={styles.domainSelect}
+                                        name={`primary_domain[${product.id}]`}
+                                        required
+                                      >
+                                        {this.props.domains.map((domain) => (
+                                          <option
+                                            value={domain.id}
+                                            key={domain.id}
+                                          >
+                                            {domain.domain}.{domain.tld.tld}
+                                          </option>
+                                        ))}
+                                      </Form.Control>
+                                    </Form.Group>{' '}
+                                    <FormErrorMessage
+                                      input={`primary_domain[${product.id}]`}
+                                      errors={this.state.errors}
+                                    />
+                                  </td>
                                 </tr>
-                              </thead>
-                              <tbody>
-                                {this.props.hosts.map((product) => {
-                                  return (
-                                    <tr key={product.id}>
-                                      <td>
-                                        <CountryFlagTooltip
-                                          country={product.plan.country}
-                                        />
-                                        <span className={styles.productTitle}>
-                                          {product.plan.title}
-                                        </span>
-                                      </td>
-                                      <td>
-                                        <FormGroup>
-                                          <Field
-                                            as="select"
-                                            name={`period[${product.id}]`}
-                                            custom
-                                          >
-                                            <option value="1">
-                                              برای 1 ماه قیمت{' '}
-                                              {formatPriceWithCurrency(
-                                                this.props.currencies,
-                                                product.currency,
-                                                product.price
-                                              )}
-                                            </option>
-                                          </Field>
-                                        </FormGroup>{' '}
-                                      </td>
-                                      <td>
-                                        <FormGroup>
-                                          <Field
-                                            as="select"
-                                            custom
-                                            className={styles.domainSelect}
-                                            name={`primary_domain[${product.id}]`}
-                                          >
-                                            {this.props.domains.map(
-                                              (domain) => (
-                                                <option
-                                                  value={domain.id}
-                                                  key={domain.id}
-                                                >
-                                                  {domain.domain}.
-                                                  {domain.tld.tld}
-                                                </option>
-                                              )
-                                            )}
-                                          </Field>
-                                        </FormGroup>{' '}
-                                      </td>
-                                    </tr>
-                                  );
-                                })}
-                              </tbody>
-                            </Table>
-                          </Col>
-                        </Row>
+                              );
+                            })}
+                          </tbody>
+                        </Table>
+                      </Col>
+                    </Row>
 
-                        <Row className="justify-content-center">
-                          <Col md={6}>
-                            <div className={styles.btns}>
-                              <Button
-                                variant="success"
-                                type="submit"
-                                className={styles.continueBtn}
-                              >
-                                ادامه
-                              </Button>
-                              <Button
-                                type="button"
-                                className={styles.restartBtn}
-                                onClick={this.clearCart}
-                              >
-                                شروع دوباره
-                              </Button>
-                            </div>
-                          </Col>
-                        </Row>
-                      </Form>
-                    )}
-                  </Formik>
+                    <Row className="justify-content-center">
+                      <Col md={6}>
+                        <div className={styles.btns}>
+                          <Button
+                            variant="success"
+                            type="submit"
+                            className={styles.continueBtn}
+                            disabled={this.state.formIsSubmitting}
+                          >
+                            {this.state.formIsSubmitting ? (
+                              <Spinner size="sm" animation="border" />
+                            ) : (
+                              'ادامه'
+                            )}
+                          </Button>
+                          <Button
+                            type="button"
+                            className={styles.restartBtn}
+                            onClick={this.clearCart}
+                            disabled={this.state.clearCartLoading}
+                          >
+                            {this.state.clearCartLoading ? (
+                              <Spinner size="sm" animation="border" />
+                            ) : (
+                              'شروع دوباره'
+                            )}
+                          </Button>
+                        </div>
+                      </Col>
+                    </Row>
+                  </Form>
                 </div>
               </Col>
             </Row>

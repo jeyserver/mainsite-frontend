@@ -8,6 +8,8 @@ import { AsyncThunkAction, RootState } from '../../../../../store';
 import { deleteDomain } from '../../../../../store/Domain';
 import { NotificationManager } from 'react-notifications';
 import styles from './DomainCard.module.scss';
+import FormErrorMessage from '../../../../../helper/components/FormErrorMessage';
+import IError from '../../../../../helper/types/base/error';
 
 interface IProps {
   nationalDomain: boolean;
@@ -16,6 +18,7 @@ interface IProps {
   storeDomain: RootState['domain'];
   auth: RootState['auth'];
   deleteDomain: AsyncThunkAction<any, { id: string | number }>;
+  errors: IError[];
 }
 
 interface IState {
@@ -44,6 +47,43 @@ class DomainCard extends React.Component<IProps, IState> {
     }
   }
 
+  ppToPersian(number) {
+    switch (number) {
+      case 1:
+        return 'یک';
+      case 2:
+        return 'دو';
+      case 3:
+        return 'سه';
+      case 4:
+        return 'چهار';
+      case 5:
+        return 'پنج';
+      default:
+        return '';
+    }
+  }
+
+  getPP() {
+    const domain = this.props.domain;
+    switch (domain.type) {
+      case 'register':
+        return `${this.ppToPersian(
+          Math.round(domain.price / domain.tld.new)
+        )} ساله`;
+      case 'transfer':
+        return `${this.ppToPersian(
+          Math.round(domain.price / domain.tld.transfer)
+        )} ساله`;
+      case 'owndomain':
+        return `${this.ppToPersian(
+          Math.round(domain.price / domain.tld.renew)
+        )} ساله`;
+      default:
+        return '';
+    }
+  }
+
   render() {
     const domain = this.props.domain;
 
@@ -54,7 +94,7 @@ class DomainCard extends React.Component<IProps, IState> {
             <strong>
               {domain.domain}.{domain.tld.tld}
             </strong>
-            <span>یک ساله</span>
+            <span>{this.getPP()}</span>
           </div>
           <div>
             <Button
@@ -86,17 +126,15 @@ class DomainCard extends React.Component<IProps, IState> {
             <Row className="justify-content-center">
               <Col md={6}>
                 <Form.Control
-                  type="text"
-                  required
-                  name={`products[${domain.id}][transfer_code]`}
                   placeholder=" این کد را باید از شرکت ثبت کننده فعلی دامنه درخواست کنید"
+                  name={`products[${domain.id}][transfer_code]`}
+                  className="form-control ltr"
+                  type="text"
                 />
-                <div className="form-err-msg">
-                  <ErrorMessage
-                    name={`products[${domain.id}][transfer_code]`}
-                  />
-                </div>
-                {/* لطفا این قسمت را پر کنید */}
+                <FormErrorMessage
+                  input={`products[${domain.id}][transfer_code]`}
+                  errors={this.props.errors}
+                />
               </Col>
             </Row>
           </div>
@@ -123,17 +161,16 @@ class DomainCard extends React.Component<IProps, IState> {
                         <Col md={5}>
                           <Form.Group controlId="irnic">
                             <Form.Label>شناسه ی ایرنیک</Form.Label>
-                            <Field
-                              className="form-control"
+                            <Form.Control
                               type="text"
                               name={`products[${domain.id}][panel]`}
+                              className="ltr"
+                              required
                             />
-                            <div className="form-err-msg">
-                              <ErrorMessage
-                                name={`products[${domain.id}][panel]`}
-                              />
-                            </div>
-                            {/* لطفا این قسمت را پر کنید */}
+                            <FormErrorMessage
+                              input={`products[${domain.id}][panel]`}
+                              errors={this.props.errors}
+                            />
                           </Form.Group>
                         </Col>
                         <Col
@@ -196,55 +233,61 @@ class DomainCard extends React.Component<IProps, IState> {
                   <div className={styles.nameserver}>
                     <Form.Group>
                       <Form.Label>NameServer 1</Form.Label>
-                      <Field
+                      <Form.Control
+                        name={`products[${domain.id}][dns][1]`}
+                        defaultValue="ns1.jeyserver.com"
                         className="form-control"
                         type="text"
-                        // defaultValue="ns1.jeyserver.com"
-                        name={`products[${domain.id}][dns][1]`}
+                        required
                       />
-                      <div className="form-err-msg">
-                        <ErrorMessage name={`products[${domain.id}][dns][1]`} />
-                      </div>
+                      <FormErrorMessage
+                        input={`products[${domain.id}][dns][1]`}
+                        errors={this.props.errors}
+                      />
                     </Form.Group>
                   </div>
                   <div className={styles.nameserver}>
                     <Form.Group controlId="nameserver-2">
                       <Form.Label>NameServer 2</Form.Label>
-                      <Field
+                      <Form.Control
+                        name={`products[${domain.id}][dns][2]`}
+                        defaultValue="ns2.jeyserver.com"
                         className="form-control"
                         type="text"
-                        // defaultValue="ns2.jeyserver.com"
-                        name={`products[${domain.id}][dns][2]`}
+                        required
                       />
-                      <div className="form-err-msg">
-                        <ErrorMessage name={`products[${domain.id}][dns][2]`} />
-                      </div>
+                      <FormErrorMessage
+                        input={`products[${domain.id}][dns][2]`}
+                        errors={this.props.errors}
+                      />
                     </Form.Group>
                   </div>
                   <div className={styles.nameserver}>
                     <Form.Group controlId="nameserver-3">
                       <Form.Label>NameServer 3</Form.Label>
-                      <Field
+                      <Form.Control
+                        name={`products[${domain.id}][dns][3]`}
                         className="form-control"
                         type="text"
-                        name={`products[${domain.id}][dns][3]`}
                       />
-                      <div className="form-err-msg">
-                        <ErrorMessage name={`products[${domain.id}][dns][3]`} />
-                      </div>
+                      <FormErrorMessage
+                        input={`products[${domain.id}][dns][3]`}
+                        errors={this.props.errors}
+                      />
                     </Form.Group>
                   </div>
                   <div className={styles.nameserver}>
                     <Form.Group controlId="nameserver-4">
                       <Form.Label>NameServer 4</Form.Label>
-                      <Field
+                      <Form.Control
+                        name={`products[${domain.id}][dns][4]`}
                         className="form-control"
                         type="text"
-                        name={`products[${domain.id}][dns][4]`}
                       />
-                      <div className="form-err-msg">
-                        <ErrorMessage name={`products[${domain.id}][dns][4]`} />
-                      </div>
+                      <FormErrorMessage
+                        input={`products[${domain.id}][dns][4]`}
+                        errors={this.props.errors}
+                      />
                     </Form.Group>
                   </div>
                 </div>

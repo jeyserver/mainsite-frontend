@@ -32,9 +32,7 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const respone = await fetch(
-    `${process.env.SITE_URL}/${locale}/order/cart/complete?ajax=1`
-  );
+  const respone = await fetch(`${process.env.SITE_URL}/${locale}?ajax=1`);
   const data = await respone.json();
 
   return {

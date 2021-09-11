@@ -59,6 +59,7 @@ class SignupForm extends React.Component<IProps, IState> {
     values: IInputs,
     { setSubmitting, setErrors }: FormikHelpers<IInputs>
   ) {
+    console.log('felan');
     try {
       const res = await this.props
         .completeWithRegister({

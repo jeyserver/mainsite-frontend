@@ -4,12 +4,12 @@ import Review from '../../../components/Cart/Review/Review';
 import Layout from '../../../components/Layout/Layout';
 import { connect } from 'react-redux';
 import { IPageProps } from './../../_app';
-import { setItems as setCartItems } from '../../../store/Cart';
+import { setCart as setCart } from '../../../store/Cart';
 import { RootState } from '../../../store';
 import backend from '../../../axios-config';
 
 interface IProps extends IPageProps {
-  setCartItems: typeof setCartItems;
+  setCart: typeof setCart;
   cart: RootState['cart'];
 }
 
@@ -17,7 +17,10 @@ class Index extends React.Component<IProps> {
   componentDidMount() {
     backend(`/order/cart/review?ajax=1&cart=${this.props.cart.id}`).then(
       (res) => {
-        this.props.setCartItems(res.data.products);
+        this.props.setCart({
+          items: res.data.products,
+          has_active_discount_code: res.data.has_active_discount_code,
+        });
       }
     );
   }
@@ -62,5 +65,5 @@ export default connect(
       cart: state.cart,
     };
   },
-  { setCartItems }
+  { setCart }
 )(Index);

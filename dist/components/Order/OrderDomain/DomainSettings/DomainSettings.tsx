@@ -179,6 +179,7 @@ class DomainSettings extends React.Component<IProps, IState> {
     const defaultTldId = this.props.data.tlds.find(
       (i) => i.tld === this.props.data.tldFromQuery
     );
+    console.log(this.props.data.tldFromQuery);
 
     return (
       <div className={styles.domainSettings}>

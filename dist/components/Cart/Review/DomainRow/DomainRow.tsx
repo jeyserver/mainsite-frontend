@@ -43,11 +43,25 @@ class DomainRow extends React.Component<IProps, IState> {
   domainType(type) {
     switch (type) {
       case 'register':
-        return 'قبت دامنه';
+        return 'ثبت دامنه';
       case 'transfer':
         return 'انتقال دامنه';
       case 'owndomain':
         return 'تمدید دامنه';
+    }
+  }
+
+  getPP() {
+    const domain = this.props.data;
+    switch (domain.type) {
+      case 'register':
+        return Math.round(domain.price / domain.tld.new);
+      case 'transfer':
+        return Math.round(domain.price / domain.tld.transfer);
+      case 'owndomain':
+        return Math.round(domain.price / domain.tld.renew);
+      default:
+        return '';
     }
   }
 
@@ -62,7 +76,7 @@ class DomainRow extends React.Component<IProps, IState> {
         <td>
           {product.domain}.{product.tld.tld}
         </td>
-        <td>برای {Math.round(product.price / product.tld.new)} ماه</td>
+        <td>برای {this.getPP()} سال</td>
         <td>
           {product.price
             ? `${formatPriceWithCurrency(

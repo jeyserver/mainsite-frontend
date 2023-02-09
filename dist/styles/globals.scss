@@ -163,6 +163,11 @@ html:not([data-scroll]) {
   }
 }
 
+.form-err-msg {
+  color: #dc3545;
+  margin-top: 5px;
+}
+
 .nav-item-dropdown {
   position: static;
   &:first-child {

@@ -2,7 +2,7 @@ import axios from 'axios';
 import NProgress from 'nprogress';
 
 const backend = axios.create({
-  baseURL: `${process.env.SCHEMA}://${process.env.DOMAIN}`,
+  baseURL: `${process.env.SITE_URL}/fa`,
 });
 
 backend.interceptors.request.use((config) => {

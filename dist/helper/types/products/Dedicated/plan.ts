@@ -1,3 +1,5 @@
+import { ICurrency } from '../../../../pages/_app';
+
 export interface IDedicatedPlan {
   id: number;
   title: string;
@@ -27,7 +29,10 @@ export interface IDedicatedPlan {
   ram: number;
   raid: number | null;
   setup: number;
-  currency: number;
+  currency: number | ICurrency;
   sold_out: boolean;
   status: number;
+  on_sell_ips: number;
+  monthly_price_for_extra_ip: number;
+  max_extra_ip: number;
 }

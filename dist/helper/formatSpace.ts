@@ -22,7 +22,12 @@ export const formatSpaceInPersian = (size, decimals = 2) => {
   return parseFloat((size / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 };
 
-export const formatSpace = (size: number, lang: 'fa' | 'en', si = false) => {
+export const formatSpace = (
+  size: number,
+  lang: 'fa' | 'en',
+  si = false,
+  fix = 0
+) => {
   if (size === 0) return '0';
   const thresh = si ? 1000 : 1024;
   const sizes =
@@ -30,5 +35,5 @@ export const formatSpace = (size: number, lang: 'fa' | 'en', si = false) => {
 
   const i = Math.floor(Math.log(size) / Math.log(thresh));
 
-  return Math.round(size / Math.pow(thresh, i)) + sizes[i];
+  return parseFloat((size / Math.pow(thresh, i)).toFixed(fix)) + sizes[i];
 };

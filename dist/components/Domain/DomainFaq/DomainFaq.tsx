@@ -3,15 +3,7 @@ import * as React from 'react';
 import { Container, Accordion, Card, Button } from 'react-bootstrap';
 import styles from './DomainFaq.module.scss';
 
-export interface DomainFaqProps {}
-
-export interface DomainFaqState {}
-
-class DomainFaq extends React.Component<DomainFaqProps, DomainFaqState> {
-  constructor(props: DomainFaqProps) {
-    super(props);
-    this.state = {};
-  }
+class DomainFaq extends React.Component {
   render() {
     return (
       <section className={styles.faq}>

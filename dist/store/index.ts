@@ -5,6 +5,7 @@ import currencies from './Currencies';
 import auth from './Auth';
 import language from './Language';
 import theme from './Theme';
+import domain from './Domain';
 
 export const store = configureStore({
   reducer: persistReducer(
@@ -14,6 +15,7 @@ export const store = configureStore({
       auth,
       language,
       theme,
+      domain,
     })
   ),
 });
@@ -22,3 +24,8 @@ export const persistor = persistStore(store);
 
 export type AppDispatch = typeof store.dispatch;
 export type RootState = ReturnType<typeof store.getState>;
+export type AsyncThunkAction<Returned, ThunkArg> = (
+  arg: ThunkArg
+) => Promise<any> & {
+  unwrap: () => Promise<Returned>;
+};

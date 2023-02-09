@@ -30,9 +30,8 @@ class Index extends React.Component<IProps> {
         </Head>
 
         <Layout
-          postsForFooter={this.props.postsForFooter}
-          domainsForNavbar={this.props.domainsForNavbar}
-          licensesForNavbar={this.props.licensesForNavbar}
+          header={this.props.header}
+          footer={this.props.footer}
         >
           <Header />
           <MainPage tablesData={this.props.tablesData} />
@@ -58,6 +57,8 @@ export async function getServerSideProps(context) {
 
   return {
     props: {
+      header: data.header,
+      footer: data.footer,
       tablesData: {
         hosts: data.hosts,
         servers: data.servers,

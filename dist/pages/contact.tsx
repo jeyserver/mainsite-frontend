@@ -32,7 +32,7 @@ export async function getServerSideProps(context) {
   }
 
   const respone = await fetch(
-    `${process.env.SITE_URL}/${locale}/contact?ajax=1`
+    `${process.env.SITE_URL}/${locale}?ajax=1`
   );
   const data = await respone.json();
 

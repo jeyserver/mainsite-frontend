@@ -43,13 +43,13 @@ class ContactUs extends React.Component<{}, IState> {
   ) {
     backend
       .post(
-        `/contact?ajax=1&name=${values.name}&subject=${values.subject}&email=${values.email}&text=${values.text}`
-        // {
-        //   name: values.name,
-        //   subject: values.subject,
-        //   email: values.email,
-        //   text: values.text,
-        // }
+        `/contact?ajax=1`,
+        {
+          name: values.name,
+          subject: values.subject,
+          email: values.email,
+          text: values.text,
+        }
       )
       .then((res) => {
         if (res.data.status) {

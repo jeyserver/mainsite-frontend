@@ -2,40 +2,33 @@ import * as React from 'react';
 import Head from 'next/head';
 import Faqs from '../components/Faqs/Faqs';
 import Layout from '../components/Layout/Layout';
-import { pageProps } from './_app';
+import { IPageProps } from './_app';
 
-export interface IndexProps extends pageProps {}
-
-export interface IndexState {
+interface IState {
   appIsScrolling: boolean;
 }
 
-let appIsScrollingTimeout;
-
-class Index extends React.Component<IndexProps, IndexState> {
-  constructor(props: IndexProps) {
+class Index extends React.Component<IPageProps, IState> {
+  constructor(props: IPageProps) {
     super(props);
     this.state = {
       appIsScrolling: false,
     };
-    this.switchAppIsScrolling = this.switchAppIsScrolling.bind(this);
   }
 
-  switchAppIsScrolling() {
-    clearTimeout(appIsScrollingTimeout);
-    this.setState((prev) => {
-      return { appIsScrolling: true };
-    });
+  appIsScrollingTimeout = null;
 
-    appIsScrollingTimeout = setTimeout(() => {
-      this.setState((prev) => {
-        return { appIsScrolling: false };
-      });
+  switchAppIsScrolling() {
+    clearTimeout(this.appIsScrollingTimeout);
+    this.setState({ appIsScrolling: true });
+
+    this.appIsScrollingTimeout = setTimeout(() => {
+      this.setState({ appIsScrolling: false });
     }, 1000);
   }
 
   componentWillUnmount() {
-    clearTimeout(appIsScrollingTimeout);
+    clearTimeout(this.appIsScrollingTimeout);
   }
 
   render() {
@@ -48,14 +41,13 @@ class Index extends React.Component<IndexProps, IndexState> {
         </Head>
 
         <Layout
-          postsForFooter={this.props.postsForFooter}
+          header={this.props.header}
+          footer={this.props.footer}
           appIsScrolling={this.state.appIsScrolling}
-          domainsForNavbar={this.props.domainsForNavbar}
-          licensesForNavbar={this.props.licensesForNavbar}
         >
           <Faqs
             appIsScrolling={this.state.appIsScrolling}
-            switchAppIsScrolling={this.switchAppIsScrolling}
+            switchAppIsScrolling={() => this.switchAppIsScrolling()}
           />
         </Layout>
       </div>
@@ -72,8 +64,11 @@ export async function getServerSideProps(context) {
     };
   }
 
+  const respone = await fetch(`${process.env.SITE_URL}/${locale}/faqs?ajax=1`);
+  const data = await respone.json();
+
   return {
-    props: {},
+    props: { ...data },
   };
 }
 

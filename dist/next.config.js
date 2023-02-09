@@ -7,5 +7,6 @@ module.exports = {
   env: {
     DOMAIN: 'www.jeyserver.com',
     SCHEMA: 'https',
+    SITE_URL: 'https://www.jeyserver.com',
   },
 };

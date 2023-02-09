@@ -14,7 +14,7 @@ import styles from './Domain.module.scss';
 import { withRouter, NextRouter } from 'next/router';
 import classNames from 'classnames';
 import { ITld } from '../../../../pages/_app';
-import formatPriceWithCurrency from '../../../../helper/formatPriceWithCurrency';
+import { formatPriceWithCurrency } from '../../../../store/Currencies';
 import { setDomainForShop } from '../../../../redux/actions';
 import { connect } from 'react-redux';
 import axios from 'axios';
@@ -214,7 +214,7 @@ class Domain extends React.Component<IProps, IState> {
                               >
                                 {this.props.currencies.items.length > 0 &&
                                   formatPriceWithCurrency(
-                                    this.props.currencies.items,
+                                    this.props.currencies,
                                     domain.currency,
                                     domain.new
                                   )}

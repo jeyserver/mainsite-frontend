@@ -6,20 +6,23 @@ import '../styles/rtl-bootstrap.scss';
 import '../styles/globals.scss';
 import { Provider } from 'react-redux';
 import { NotificationContainer } from 'react-notifications';
-import { store } from '../store/index';
+import { persistor, store } from '../store/index';
 import NProgress from '../components/NProgress/NProgress';
+import { PersistGate } from 'redux-persist/integration/react';
 
 export default function App({ Component, pageProps }) {
   return (
     <Provider store={store}>
-      <NotificationContainer />
-      <NProgress
-        color="#3dc4e4"
-        startPosition={0.2}
-        stopDelayMs={200}
-        height={3}
-      />
-      <Component {...pageProps} />
+      <PersistGate loading={null} persistor={persistor}>
+        <NotificationContainer />
+        <NProgress
+          color="#3dc4e4"
+          startPosition={0.2}
+          stopDelayMs={200}
+          height={3}
+        />
+        <Component {...pageProps} />
+      </PersistGate>
     </Provider>
   );
 }

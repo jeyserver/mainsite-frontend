@@ -1,30 +1,29 @@
 import * as React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
 import PostCard from './PostCard/PostCard';
-import styles from './BlogPosts.module.scss';
+import styles from './MainPage.module.scss';
 import Link from 'next/link';
 import TopNav from '../TopNav/TopNav';
+import IPost from '../../../helper/types/blog/Post';
+import IPopularPost from '../../../helper/types/blog/PopularPost';
+import ICategory from '../../../helper/types/blog/Category';
+import { ISeriesPosts } from '../../../pages/blog';
 
-export interface BlogPostsProps {
-  posts: any;
-  categories: any;
+interface IProps {
+  recentPosts: IPost[];
+  popularPosts: IPopularPost[];
+  categories: ICategory[];
+  seriesPosts: ISeriesPosts;
+  newsletterToken: string;
 }
 
-export interface BlogPostsState {}
-
-class BlogPosts extends React.Component<BlogPostsProps, BlogPostsState> {
-  constructor(props: BlogPostsProps) {
-    super(props);
-    this.state = {};
-  }
-
+class MainPage extends React.Component<IProps> {
   render() {
     return (
       <section>
         <TopNav
           categories={this.props.categories}
           nightMode={false}
-          page="blog"
           title="آموزش ها و مقالات کاربردی برای وبمستران"
         />
 
@@ -36,8 +35,8 @@ class BlogPosts extends React.Component<BlogPostsProps, BlogPostsState> {
               </div>
             </Row>
             <Row>
-              {this.props.posts.mostViewedPosts.map((post, index) => (
-                <Col xs={12} sm={6} lg={3} key={index}>
+              {this.props.popularPosts.slice(0, 4).map((post, index) => (
+                <Col xs={12} sm={6} lg={3} key={post.id}>
                   <PostCard post={post} />
                 </Col>
               ))}
@@ -64,15 +63,12 @@ class BlogPosts extends React.Component<BlogPostsProps, BlogPostsState> {
                   </Link>
                 </div>
               </Col>
-              {this.props.posts.mostViewedPosts.map((post, index) => {
-                if (index < 3) {
-                  return (
-                    <Col xs={12} sm={6} lg={3} key={index}>
-                      <PostCard post={post} />
-                    </Col>
-                  );
-                }
-              })}
+              {this.props.seriesPosts.linux &&
+                this.props.seriesPosts.linux.slice(0, 3).map((post, index) => (
+                  <Col xs={12} sm={6} lg={3} key={post.id}>
+                    <PostCard post={post} />
+                  </Col>
+                ))}
             </Row>
           </Container>
         </div>
@@ -85,8 +81,8 @@ class BlogPosts extends React.Component<BlogPostsProps, BlogPostsState> {
               </div>
             </Row>
             <Row>
-              {this.props.posts.mostViewedPosts.map((post, index) => (
-                <Col xs={12} sm={6} lg={3} key={index}>
+              {this.props.recentPosts.slice(0, 4).map((post, index) => (
+                <Col xs={12} sm={6} lg={3} key={post.id}>
                   <PostCard post={post} />
                 </Col>
               ))}
@@ -115,15 +111,14 @@ class BlogPosts extends React.Component<BlogPostsProps, BlogPostsState> {
                   </Link>
                 </div>
               </Col>
-              {this.props.posts.mostViewedPosts.map((post, index) => {
-                if (index < 3) {
-                  return (
-                    <Col xs={12} sm={6} lg={3} key={index}>
+              {this.props.seriesPosts.wordpress &&
+                this.props.seriesPosts.wordpress
+                  .slice(0, 3)
+                  .map((post, index) => (
+                    <Col xs={12} sm={6} lg={3} key={post.id}>
                       <PostCard post={post} />
                     </Col>
-                  );
-                }
-              })}
+                  ))}
             </Row>
           </Container>
         </div>
@@ -132,4 +127,4 @@ class BlogPosts extends React.Component<BlogPostsProps, BlogPostsState> {
   }
 }
 
-export default BlogPosts;
+export default MainPage;

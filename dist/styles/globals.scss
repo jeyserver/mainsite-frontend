@@ -1,12 +1,13 @@
 @import './fonts';
-@import './Blog/Index';
+@import './Navbar/index';
+@import './Footer/index';
 
 html,
 body {
   padding: 0;
   margin: 0;
   font-size: 14px;
-  overflow-x: hidden;
+  height: 100%;
 }
 
 a {

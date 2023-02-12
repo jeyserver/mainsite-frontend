@@ -103,6 +103,6 @@ export const renderPageInfo = (license: licenses) => {
         </p>
       );
     default:
-      break;
+      return <p></p>;
   }
 };

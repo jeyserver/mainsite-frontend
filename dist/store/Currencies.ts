@@ -11,8 +11,10 @@ const currenciesSlice = createSlice({
   },
   reducers: {
     setCurrencies: (state, action) => {
-      state.items = action.payload;
-      state.active = action.payload.find((currency) => currency.active);
+      if (action.payload) {
+        state.items = action.payload;
+        state.active = action.payload.find((currency) => currency.active);
+      }
     },
   },
   extraReducers: {},

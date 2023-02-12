@@ -1,21 +1,25 @@
 import * as React from 'react';
 import Head from 'next/head';
-import OrderVPS from '../../../../components/OrderVPS/OrderVPS';
+import OrderVPS from '../../../../components/Order/OrderVPS/OrderVPS';
 import Layout from '../../../../components/Layout/Layout';
-import { pageProps } from '../../../_app';
+import { ICurrency, IPageProps } from '../../../_app';
+import { IVPSPlan } from '../../../../helper/types/products/VPS/plan';
+import IAddon from '../../../../helper/types/products/VPS/addon';
+import ILicense from '../../../../helper/types/products/License/plan';
+import { IHostPlan } from '../../../../helper/types/products/Host/plan';
+import IOS from '../../../../helper/types/products/VPS/os';
 
-export interface IndexProps extends pageProps {
-  serviceData: any;
+interface IProps extends IPageProps {
+  status: boolean;
+  plan: IVPSPlan;
+  addons: IAddon[];
+  licenses: ILicense[];
+  hosts: IHostPlan[];
+  oses: IOS[];
+  currencies: ICurrency[];
 }
 
-export interface IndexState {}
-
-class Index extends React.Component<IndexProps, IndexState> {
-  constructor(props: IndexProps) {
-    super(props);
-    this.state = {};
-  }
-
+class Index extends React.Component<IProps> {
   render() {
     return (
       <div dir="rtl">
@@ -25,12 +29,14 @@ class Index extends React.Component<IndexProps, IndexState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Layout
-          postsForFooter={this.props.postsForFooter}
-          domainsForNavbar={this.props.domainsForNavbar}
-          licensesForNavbar={this.props.licensesForNavbar}
-        >
-          <OrderVPS serviceData={this.props.serviceData} />
+        <Layout header={this.props.header} footer={this.props.footer}>
+          <OrderVPS
+            plan={this.props.plan}
+            addons={this.props.addons}
+            licenses={this.props.licenses}
+            hosts={this.props.hosts}
+            oses={this.props.oses}
+          />
         </Layout>
       </div>
     );
@@ -39,6 +45,7 @@ class Index extends React.Component<IndexProps, IndexState> {
 
 export async function getServerSideProps(context) {
   const locale = context.locale;
+  const id = context.query.id;
 
   if (locale !== 'fa') {
     return {
@@ -46,13 +53,19 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const serviceDataRes = await fetch(
-    'https://jsonblob.com/api/jsonBlob/30d662c9-e3ee-11eb-956c-7bedcca98f27'
+  const respone = await fetch(
+    `${process.env.SITE_URL}/${locale}/order/server/vps/${id}?ajax=1`
   );
-  const serviceData = await serviceDataRes.json();
+  const data = await respone.json();
+
+  if (!data.status) {
+    return {
+      notFound: true,
+    };
+  }
 
   return {
-    props: { serviceData },
+    props: { ...data },
   };
 }
 

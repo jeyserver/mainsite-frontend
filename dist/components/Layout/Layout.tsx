@@ -4,6 +4,7 @@ import Footer from '../Footer/Footer';
 import { IPageProps } from '../../pages/_app';
 import { connect } from 'react-redux';
 import { setCurrencies } from '../../store/Currencies';
+import { createCart } from '../../store/Cart';
 import { RootState } from '../../store';
 
 interface IProps extends IPageProps {
@@ -11,12 +12,17 @@ interface IProps extends IPageProps {
   appIsScrolling?: boolean;
   setCurrencies: typeof setCurrencies;
   theme: RootState['theme'];
+  cart: RootState['cart'];
+  createCart: typeof createCart;
 }
 
 class Layout extends React.Component<IProps> {
   constructor(props) {
     super(props);
     this.props.setCurrencies(this.props.header.currencies);
+    if (!this.props.cart.id) {
+      this.props.createCart();
+    }
   }
 
   componentDidMount() {
@@ -46,7 +52,8 @@ export default connect(
   (state: RootState) => {
     return {
       theme: state.theme,
+      cart: state.cart,
     };
   },
-  { setCurrencies }
+  { setCurrencies, createCart }
 )(Layout);

@@ -31,9 +31,9 @@ export const formatHards = (hardsData) => {
 
   return hards.map((hard) => {
     if (hard.number === 1) {
-      return `${formatSpace(hard.space * 1000, 'en', true)} ${hard.type}`;
+      return `${formatSpace(hard.space * 1024, 'en')} ${hard.type}`;
     } else {
-      return `${hard.number}x${formatSpace(hard.space * 1000, 'en', true)} ${
+      return `${hard.number}x${formatSpace(hard.space * 1024, 'en')} ${
         hard.type
       }`;
     }

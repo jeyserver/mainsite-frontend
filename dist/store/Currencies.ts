@@ -49,7 +49,7 @@ const round = (
   }
 };
 
-export const formatPriceWithCurrency = (
+export const priceInActiveCurrency = (
   currencies: RootState['currencies'],
   base: number | ICurrency,
   price: number
@@ -67,14 +67,24 @@ export const formatPriceWithCurrency = (
     (rate) => rate.changeTo === currencies.active.id
   );
 
-  const formatedPrice = formatPrice(
-    Number(
-      round(
-        price * rate.price,
-        activeCurrency.rounding_behaviour,
-        activeCurrency.rounding_precision
-      )
+  return Number(
+    round(
+      price * rate.price,
+      activeCurrency.rounding_behaviour,
+      activeCurrency.rounding_precision
     )
+  );
+};
+
+export const formatPriceWithCurrency = (
+  currencies: RootState['currencies'],
+  base: number | ICurrency,
+  price: number
+) => {
+  const activeCurrency = currencies.active;
+
+  const formatedPrice = formatPrice(
+    priceInActiveCurrency(currencies, base, price)
   );
 
   const prefix = activeCurrency.prefix || '';

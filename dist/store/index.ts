@@ -4,18 +4,18 @@ import storage from 'redux-persist/lib/storage';
 import currencies from './Currencies';
 import auth from './Auth';
 import language from './Language';
-import theme from './Theme';
 import domain from './Domain';
+import cart from './Cart';
 
 export const store = configureStore({
   reducer: persistReducer(
-    { key: 'root', version: 1, storage },
+    { key: 'root', version: 1, storage, blacklist: ['domain'] },
     combineReducers({
       currencies,
       auth,
       language,
-      theme,
       domain,
+      cart,
     })
   ),
 });

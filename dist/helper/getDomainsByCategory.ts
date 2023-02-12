@@ -1,3 +1,5 @@
+import { ITld } from '../pages/_app';
+
 type categories =
   | 'commercial-domains'
   | 'cheap-domains'
@@ -10,7 +12,7 @@ export const getDomainsByCategory = (
   domainList,
   famousAndTrendyDomains?,
   cheapDomainBreakPrice?: number
-) => {
+): ITld[] => {
   switch (category) {
     case 'commercial-domains':
       return domainList.filter((domain) =>

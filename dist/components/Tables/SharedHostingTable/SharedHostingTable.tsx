@@ -427,8 +427,10 @@ class SharedHostingTable extends React.Component<IProps, IState> {
                   </div>
                 </td>
                 <td>
-                  {this.props.homePageTable && plan.is_available && (
-                    <Link href={`/order/hosting/linux/${plan.id}`}>
+                  {this.props.homePageTable && panel.is_available && (
+                    <Link
+                      href={`/order/hosting/${this.props.type}/${panel.id}?location=${panel.country.code}`}
+                    >
                       <a className={styles.orderLink}>
                         <CountryFlagTooltip country={plan.country} />
                         <span>سفارش</span>{' '}
@@ -437,8 +439,10 @@ class SharedHostingTable extends React.Component<IProps, IState> {
                   )}
 
                   {!this.props.homePageTable &&
-                    (plan.is_available ? (
-                      <Link href={`/order/hosting/linux/${plan.id}`}>
+                    (panel.is_available ? (
+                      <Link
+                        href={`/order/hosting/${this.props.type}/${panel.id}?location=${panel.country.code}`}
+                      >
                         <a className={styles.orderLink}>
                           <CountryFlagTooltip country={plan.country} />
                           <span>سفارش</span>{' '}

@@ -267,7 +267,7 @@ html:not([data-scroll]) {
 }
 
 [dir='rtl'] .slick-prev {
-  left: 13px !important;
+  left: 0 !important;
   right: unset !important;
   z-index: 1 !important;
   &::before {
@@ -276,7 +276,7 @@ html:not([data-scroll]) {
 }
 
 [dir='rtl'] .slick-next {
-  right: 13px !important ;
+  right: 0 !important ;
   left: unset !important;
   z-index: 1 !important;
   &::before {

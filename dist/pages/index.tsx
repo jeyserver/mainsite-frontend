@@ -10,13 +10,9 @@ import { IHostPlan } from '../helper/types/products/Host/plan';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-export interface ITablesData {
+interface IProps extends IPageProps {
   hosts: { linux: IHostPlan[]; windows: IHostPlan[] };
   servers: { vps: IVPSPlan[]; dedicated: IDedicatedPlan[] };
-}
-
-interface IProps extends IPageProps {
-  tablesData: ITablesData;
 }
 
 class Index extends React.Component<IProps> {
@@ -29,12 +25,14 @@ class Index extends React.Component<IProps> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Layout
-          header={this.props.header}
-          footer={this.props.footer}
-        >
+        <Layout header={this.props.header} footer={this.props.footer}>
           <Header />
-          <MainPage tablesData={this.props.tablesData} />
+          <MainPage
+            tablesData={{
+              hosts: this.props.hosts,
+              servers: this.props.servers,
+            }}
+          />
         </Layout>
       </div>
     );
@@ -50,19 +48,12 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const respone = await fetch(
-    `${process.env.SCHEMA}://${process.env.DOMAIN}/${locale}?ajax=1`
-  );
+  const respone = await fetch(`${process.env.SITE_URL}/${locale}?ajax=1`);
   const data = await respone.json();
 
   return {
     props: {
-      header: data.header,
-      footer: data.footer,
-      tablesData: {
-        hosts: data.hosts,
-        servers: data.servers,
-      },
+      ...data,
     },
   };
 }

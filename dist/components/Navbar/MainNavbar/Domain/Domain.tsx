@@ -1,12 +1,13 @@
 import React from 'react';
-import { Form, OverlayTrigger, Spinner, Tooltip } from 'react-bootstrap';
 import {
+  OverlayTrigger,
+  Spinner,
+  Tooltip,
   Col,
   Image,
   Dropdown,
   Row,
   Container,
-  FormControl,
   InputGroup,
   Button,
 } from 'react-bootstrap';
@@ -15,47 +16,41 @@ import { withRouter, NextRouter } from 'next/router';
 import classNames from 'classnames';
 import { ITld } from '../../../../pages/_app';
 import { formatPriceWithCurrency } from '../../../../store/Currencies';
-import { setDomainForShop } from '../../../../redux/actions';
 import { connect } from 'react-redux';
-import axios from 'axios';
+import { NotificationManager } from 'react-notifications';
 import { RootState } from '../../../../store';
 import Link from 'next/link';
-
-type error = 'data_validation' | 'data_duplicate';
-
-const showError = (errorMsg: error) => {
-  if (errorMsg === 'data_duplicate') {
-    return 'داده وارد شده تکراری است';
-  } else if (errorMsg === 'data_validation') {
-    return 'داده وارد شده معتبر نیست';
-  }
-};
+import backend from '../../../../axios-config';
+import { ErrorMessage, Field, Form, Formik, FormikHelpers } from 'formik';
+import showErrorMsg from '../../../../helper/showErrorMsg';
+import { setSelectedDomain } from '../../../../store/Domain';
 
 interface IProps {
   changeShowDropDown: () => void;
   router: NextRouter;
   tlds: ITld[];
+  setSelectedDomain: typeof setSelectedDomain;
   currencies: RootState['currencies'];
-  setDomainForShop: (domain: { tld: string; name: string }) => void;
 }
 
 interface IState {
+  tld: string;
   selectedDomain: string | null;
-  loading: boolean;
-  isFormValidated: boolean;
-  errorCode: error;
   selectedDomains: any;
+}
+
+interface IInputs {
+  name: string;
+  tld: string;
 }
 
 class Domain extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.state = {
+      tld: this.props.tlds[0].tld,
       selectedDomain: null,
       selectedDomains: [],
-      loading: false,
-      isFormValidated: false,
-      errorCode: 'data_validation',
     };
     this.checkDomain = this.checkDomain.bind(this);
   }
@@ -79,6 +74,8 @@ class Domain extends React.Component<IProps, IState> {
       this.props.tlds
         .slice(0, 10)
         .find((domain) => domain.tld === e.target.value);
+
+    this.setState({ tld: e.target.value });
 
     this.setState(
       (prev) => {
@@ -109,41 +106,42 @@ class Domain extends React.Component<IProps, IState> {
     );
   }
 
-  checkDomain(e: React.ChangeEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const form = e.currentTarget;
+  moreBtn() {
+    this.props.router.push('/domain');
+  }
 
-    if (form.checkValidity() === false) {
-      e.stopPropagation();
-    } else {
-      this.setState({ loading: true });
+  checkDomain(
+    values: IInputs,
+    { setSubmitting, setErrors }: FormikHelpers<IInputs>
+  ) {
+    const tld = this.props.tlds.find((tld) => tld.tld === this.state.tld);
 
-      axios(
-        'https://jsonblob.com/api/jsonBlob/d3196d4f-e2e1-11eb-b284-d50b7a049077'
+    backend
+      .post(
+        `/order/domain?ajax=1&domainoption=register&tld=${tld.id}&name=${values.name}`
       )
-        .then((res) => {
-          this.props.setDomainForShop({
-            tld: form.tld.value,
-            name: form.domainName.value,
+      .then((res) => {
+        if (res.data.status) {
+          this.props.setSelectedDomain({
+            name: values.name,
+            tld: tld.id ? tld.id : this.props.tlds[0].id,
           });
-          this.setState({ loading: false });
-
-          // if (res.data.status) {
-          // } else if (!res.data.status) {
-          //   res.data.error.forEach((errorItem) => {
-          //     if (errorItem.input === 'name') {
-          //       form.domainName.value = '';
-          //       this.setState({ errorCode: errorItem.code });
-          //     }
-          //   });
-          // }
-        })
-        .catch(() => {
-          this.setState({ loading: false });
-        });
-    }
-
-    this.setState({ isFormValidated: true });
+          this.props.router.push('/order/domain');
+        } else {
+          res.data.error.map((error) => {
+            setErrors({ [error.input]: showErrorMsg(error.code) });
+          });
+        }
+      })
+      .catch((err) => {
+        NotificationManager.error(
+          'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
+          'خطا'
+        );
+      })
+      .finally(() => {
+        setSubmitting(false);
+      });
   }
 
   render() {
@@ -237,7 +235,7 @@ class Domain extends React.Component<IProps, IState> {
                               >
                                 {this.props.currencies.items.length > 0 &&
                                   formatPriceWithCurrency(
-                                    this.props.currencies.items,
+                                    this.props.currencies,
                                     domain.currency,
                                     domain.new
                                   )}
@@ -253,65 +251,65 @@ class Domain extends React.Component<IProps, IState> {
               <Col xs={12} md={4} className={styles.centerCol}>
                 <div className={styles.domainCheck}>
                   <h4>نقطه شروع همه چیز اینجاست!</h4>
-                  <Form
-                    className="mt-5"
-                    onSubmit={this.checkDomain}
-                    validated={this.state.isFormValidated}
-                    noValidate
+                  <Formik
+                    initialValues={{ name: '', tld: 'com' }}
+                    onSubmit={(values, helpers) =>
+                      this.checkDomain(values, helpers)
+                    }
                   >
-                    <InputGroup className={styles.formInputGroup}>
-                      <FormControl
-                        as="select"
-                        className="mr-sm-2"
-                        dir="ltr"
-                        name="tld"
-                        onChange={(e) => this.changeSelectedDomain(e)}
-                        required
-                        custom
-                      >
-                        {this.props.tlds.map((domain) => (
-                          <option key={domain.id} value={domain.tld}>
-                            .{domain.tld}
-                          </option>
-                        ))}
-                        {this.state.selectedDomains.map((domain) => (
-                          <option key={domain.id} value={domain.tld}>
-                            .{domain.tld}
-                          </option>
-                        ))}
-                      </FormControl>
-                      <FormControl
-                        type="text"
-                        placeholder="Your Domain"
-                        name="domainName"
-                        required
-                      />
-                      <InputGroup.Prepend>
-                        <InputGroup.Text dir="ltr">www.</InputGroup.Text>
-                      </InputGroup.Prepend>
-                      <Form.Control.Feedback
-                        type="invalid"
-                        className={styles.errorMsg}
-                      >
-                        {showError(this.state.errorCode)}
-                      </Form.Control.Feedback>
-                    </InputGroup>
-                    <Button
-                      type="submit"
-                      variant="success"
-                      className={styles.searchDomainBtn}
-                      disabled={this.state.loading}
-                    >
-                      {this.state.loading ? (
-                        <Spinner size="sm" animation="border" />
-                      ) : (
-                        <>
-                          <i className="fas fa-search"></i>
-                          <span>بررسی کن</span>
-                        </>
-                      )}
-                    </Button>
-                  </Form>
+                    {(formik) => (
+                      <Form className="mt-5">
+                        <InputGroup className={styles.formInputGroup}>
+                          <Field
+                            as="select"
+                            className="mr-sm-2 form-control"
+                            dir="ltr"
+                            name="tld"
+                            onChange={(e) => this.changeSelectedDomain(e)}
+                            value={this.state.tld}
+                          >
+                            {this.props.tlds.map((domain) => (
+                              <option key={domain.id} value={domain.tld}>
+                                .{domain.tld}
+                              </option>
+                            ))}
+                            {this.state.selectedDomains.map((domain) => (
+                              <option key={domain.id} value={domain.tld}>
+                                .{domain.tld}
+                              </option>
+                            ))}
+                          </Field>
+                          <Field
+                            type="text"
+                            placeholder="Your Domain"
+                            name="name"
+                            className="form-control"
+                          />
+                          <InputGroup.Prepend>
+                            <InputGroup.Text dir="ltr">www.</InputGroup.Text>
+                          </InputGroup.Prepend>
+                        </InputGroup>
+                        <div className={styles.errorMsg}>
+                          <ErrorMessage name="name" />
+                        </div>
+                        <Button
+                          type="submit"
+                          variant="success"
+                          className={styles.searchDomainBtn}
+                          disabled={formik.isSubmitting}
+                        >
+                          {formik.isSubmitting ? (
+                            <Spinner size="sm" animation="border" />
+                          ) : (
+                            <>
+                              <i className="fas fa-search"></i>
+                              <span>بررسی کن</span>
+                            </>
+                          )}
+                        </Button>
+                      </Form>
+                    )}
+                  </Formik>
                 </div>
               </Col>
               <Col xs={12} md={4} className={styles.infoCol}>
@@ -345,5 +343,5 @@ export default connect(
       currencies: state.currencies,
     };
   },
-  { setDomainForShop }
+  { setSelectedDomain }
 )(withRouter(Domain));

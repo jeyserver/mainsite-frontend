@@ -1,21 +1,16 @@
 import * as React from 'react';
 import Head from 'next/head';
 import Layout from '../../../components/Layout/Layout';
-import { pageProps } from '../../_app';
-import OrderLicense from '../../../components/OrderLicense/OrderLicense';
+import { IPageProps } from '../../_app';
+import OrderLicense from '../../../components/Order/OrderLicense/OrderLicense';
+import ILicense from '../../../helper/types/products/License/plan';
 
-export interface IndexProps extends pageProps {
-  license: any;
+interface IProps extends IPageProps {
+  status: boolean;
+  plan: ILicense;
 }
 
-export interface IndexState {}
-
-class Index extends React.Component<IndexProps, IndexState> {
-  constructor(props: IndexProps) {
-    super(props);
-    this.state = {};
-  }
-
+class Index extends React.Component<IProps> {
   render() {
     return (
       <div dir="rtl">
@@ -25,12 +20,8 @@ class Index extends React.Component<IndexProps, IndexState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Layout
-          postsForFooter={this.props.postsForFooter}
-          domainsForNavbar={this.props.domainsForNavbar}
-          licensesForNavbar={this.props.licensesForNavbar}
-        >
-          <OrderLicense license={this.props.license} />
+        <Layout header={this.props.header} footer={this.props.footer}>
+          <OrderLicense plan={this.props.plan} />
         </Layout>
       </div>
     );
@@ -39,6 +30,7 @@ class Index extends React.Component<IndexProps, IndexState> {
 
 export async function getServerSideProps(context) {
   const locale = context.locale;
+  const id = context.query.id;
 
   if (locale !== 'fa') {
     return {
@@ -46,14 +38,19 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const licenseRes = await fetch(
-    'https://jsonblob.com/api/jsonBlob/57cf67c8-eb0b-11eb-8813-cda002dae790'
+  const respone = await fetch(
+    `${process.env.SITE_URL}/${locale}/order/licenses/${id}?ajax=1`
   );
+  const data = await respone.json();
 
-  const license = await licenseRes.json();
+  if (!data.status) {
+    return {
+      notFound: true,
+    };
+  }
 
   return {
-    props: { license },
+    props: { ...data },
   };
 }
 

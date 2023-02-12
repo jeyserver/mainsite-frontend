@@ -7,52 +7,46 @@ import DomainFaq from './DomainFaq/DomainFaq';
 import DomainBlog from './DomainBlog/DomainBlog';
 import { Container, Row } from 'react-bootstrap';
 import styles from './Domain.module.scss';
+import { IOptions, IPost, IRoundDomain } from '../../pages/domain';
+import { ITld } from '../../pages/_app';
 
-export interface DomainProps {
-  domainsData: {
-    status: boolean;
-    items: {
-      id: number;
-      tld: string;
-      new: number;
-      renew: number;
-      transfer: number;
-    }[];
-  };
-  famousAndTrendyDomains: string[];
-  roundDomains: any;
-  domainPosts: any;
-  service: any;
+interface IProps {
+  tlds: ITld[];
+  roundDomains: IRoundDomain[];
+  totalDomainRegistered: number;
+  options: IOptions;
+  posts: IPost[];
+  commercialDomains: string[];
 }
 
-export interface DomainState {}
-
-class Domain extends React.Component<DomainProps, DomainState> {
-  constructor(props: DomainProps) {
-    super(props);
-    this.state = {};
-  }
+class Domain extends React.Component<IProps> {
   render() {
     return (
       <React.Fragment>
-        <DomainHeader domainsData={this.props.domainsData} />
+        <DomainHeader tlds={this.props.tlds} />
+
         <section className={styles.domainsSection}>
           <Container className="mt-5" fluid="md">
             <Row>
               <DomainTypes
-                domainsData={this.props.domainsData}
-                famousAndTrendyDomains={this.props.famousAndTrendyDomains}
+                tlds={this.props.tlds}
+                commercialDomains={this.props.commercialDomains}
+                options={this.props.options}
               />
               <DomainOrderTable roundDomains={this.props.roundDomains} />
             </Row>
           </Container>
         </section>
+
         <DomainService
-          domainsData={this.props.domainsData}
-          service={this.props.service}
+          totalDomainRegistered={this.props.totalDomainRegistered}
+          supportedTlds={this.props.tlds.length}
+          options={this.props.options}
         />
+
         <DomainFaq />
-        <DomainBlog domainPosts={this.props.domainPosts} />
+
+        <DomainBlog posts={this.props.posts} />
       </React.Fragment>
     );
   }

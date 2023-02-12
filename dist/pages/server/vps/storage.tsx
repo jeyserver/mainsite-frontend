@@ -2,43 +2,39 @@ import * as React from 'react';
 import Head from 'next/head';
 import VpsPricing from '../../../components/VpsPricing/VpsPricing';
 import Layout from '../../../components/Layout/Layout';
-import { pageProps } from '../../_app';
+import { IPageProps } from '../../_app';
+import { IVPSPlan } from '../../../helper/types/products/VPS/plan';
 
-export interface IndexProps extends pageProps {
-  vpsData: any;
-  topNav: any;
+interface IProps extends IPageProps {
+  status: boolean;
+  plans: IVPSPlan[];
 }
 
-export interface IndexState {
+interface IState {
   appIsScrolling: boolean;
 }
 
-let appIsScrollingTimeout;
-
-class Index extends React.Component<IndexProps, IndexState> {
-  constructor(props: IndexProps) {
+class Index extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
     this.state = {
       appIsScrolling: false,
     };
-    this.switchAppIsScrolling = this.switchAppIsScrolling.bind(this);
   }
 
-  switchAppIsScrolling() {
-    clearTimeout(appIsScrollingTimeout);
-    this.setState((prev) => {
-      return { appIsScrolling: true };
-    });
+  appIsScrollingTimeout = null;
 
-    appIsScrollingTimeout = setTimeout(() => {
-      this.setState((prev) => {
-        return { appIsScrolling: false };
-      });
+  switchAppIsScrolling() {
+    clearTimeout(this.appIsScrollingTimeout);
+    this.setState({ appIsScrolling: true });
+
+    this.appIsScrollingTimeout = setTimeout(() => {
+      this.setState({ appIsScrolling: false });
     }, 1000);
   }
 
   componentWillUnmount() {
-    clearTimeout(appIsScrollingTimeout);
+    clearTimeout(this.appIsScrollingTimeout);
   }
 
   render() {
@@ -51,17 +47,15 @@ class Index extends React.Component<IndexProps, IndexState> {
         </Head>
 
         <Layout
-          postsForFooter={this.props.postsForFooter}
+          header={this.props.header}
+          footer={this.props.footer}
           appIsScrolling={this.state.appIsScrolling}
-          domainsForNavbar={this.props.domainsForNavbar}
-          licensesForNavbar={this.props.licensesForNavbar}
         >
           <VpsPricing
-            vpsData={this.props.vpsData}
-            topNav={this.props.topNav}
             type="storage"
+            plans={this.props.plans}
             appIsScrolling={this.state.appIsScrolling}
-            switchAppIsScrolling={this.switchAppIsScrolling}
+            switchAppIsScrolling={() => this.switchAppIsScrolling()}
           />
         </Layout>
       </div>
@@ -78,24 +72,20 @@ export async function getServerSideProps(context) {
     };
   }
 
-  // const data = await fetch(
-  //   `${process.env.SCHEMA}://${process.env.DOMAIN}`
-  // );
-
-  const vpsDataRes = await fetch(
-    'https://jsonblob.com/api/jsonBlob/e73bdcba-df5b-11eb-b7ed-4151096c95c6'
+  const respone = await fetch(
+    `${process.env.SITE_URL}/${locale}/server/vps/storage?ajax=1`
   );
-  const vpsData = await vpsDataRes.json();
+  const data = await respone.json();
 
-  const topNavRes = await fetch(
-    'https://jsonblob.com/api/jsonBlob/3156ddcb-df56-11eb-b7ed-bd16078826a6'
-  );
-  const topNav = await topNavRes.json();
+  if (!data.status) {
+    return {
+      notFound: true,
+    };
+  }
 
   return {
     props: {
-      vpsData: vpsData.filter((i) => i.country === 'فرانسه'),
-      topNav,
+      ...data,
     },
   };
 }

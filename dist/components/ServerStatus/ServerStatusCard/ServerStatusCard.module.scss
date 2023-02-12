@@ -106,7 +106,7 @@
     }
   }
   .upTimeMonthly {
-    width: 372px;
+    width: 349px;
     margin-top: 27px;
     margin-left: 5px;
     @media screen and (max-width: 767px) {
@@ -136,6 +136,14 @@
       @media screen and (max-width: 767px) {
         display: flex;
         justify-content: space-between;
+      }
+      .notInfo {
+        line-height: 35px;
+        font-family: IRANSans;
+        font-size: 12px;
+        text-align: center;
+        color: #828282;
+        width: 100%;
       }
       .statusBtn {
         height: 35px;

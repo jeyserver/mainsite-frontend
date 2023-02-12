@@ -2,32 +2,54 @@ import * as React from 'react';
 import Head from 'next/head';
 import Domain from '../components/Domain/Domain';
 import Layout from '../components/Layout/Layout';
-import { pageProps } from './_app';
+import { IPageProps, ITld, ICurrency } from './_app';
 
-export interface IndexProps extends pageProps {
-  domainsData: {
-    status: boolean;
-    items: {
-      id: number;
-      tld: string;
-      new: number;
-      renew: number;
-      transfer: number;
-    }[];
+export interface IPost {
+  id: number;
+  permalink: string;
+  title: string;
+  date: number;
+  description: string;
+  author: {
+    id: number;
+    name: string;
+    lastname: string;
+    avatar: string;
   };
-  famousAndTrendyDomains: string[];
-  roundDomains: any;
-  domainPosts: any;
-  service: any;
+  content: string;
+  image: string;
+  view: number;
+  status: number;
+  comments_count: number;
+  blog_relations_posts_categories: {
+    post: number;
+    category: number;
+  };
 }
 
-export interface IndexState {}
+export interface IRoundDomain {
+  domain: string;
+  tld: ITld;
+}
 
-class Index extends React.Component<IndexProps, IndexState> {
-  constructor(props: IndexProps) {
-    super(props);
-    this.state = {};
-  }
+export interface IOptions {
+  cheep_border: number;
+  start_time: number;
+  blog_category: string;
+}
+
+interface IProps extends IPageProps {
+  status: boolean;
+  tlds: ITld[];
+  currencies: ICurrency[];
+  round_domains: IRoundDomain[];
+  total_domain_registered: number;
+  options: IOptions;
+  blog_posts: IPost[];
+  commercialDomains: string[];
+}
+
+class Index extends React.Component<IProps> {
   render() {
     return (
       <div dir="rtl">
@@ -37,17 +59,14 @@ class Index extends React.Component<IndexProps, IndexState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Layout
-          postsForFooter={this.props.postsForFooter}
-          domainsForNavbar={this.props.domainsData}
-          licensesForNavbar={this.props.licensesForNavbar}
-        >
+        <Layout header={this.props.header} footer={this.props.footer}>
           <Domain
-            domainsData={this.props.domainsData}
-            famousAndTrendyDomains={this.props.famousAndTrendyDomains}
-            roundDomains={this.props.roundDomains}
-            domainPosts={this.props.domainPosts}
-            service={this.props.service}
+            tlds={this.props.tlds}
+            roundDomains={this.props.round_domains}
+            totalDomainRegistered={this.props.total_domain_registered}
+            options={this.props.options}
+            posts={this.props.blog_posts}
+            commercialDomains={this.props.commercialDomains}
           />
         </Layout>
       </div>
@@ -64,23 +83,30 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const domainsDataRes = await fetch(
-    `https://jsonblob.com/api/jsonBlob/57cdd139-eaad-11eb-8813-950ac49ad40b`
+  const respone = await fetch(
+    `${process.env.SITE_URL}/${locale}/domain?ajax=1`
   );
-  const domainsData = await domainsDataRes.json();
+  const data = await respone.json();
 
-  const dataRes = await fetch(
-    `https://jsonblob.com/api/jsonBlob/b1b7c2db-dcba-11eb-aa80-1129b44167b7`
-  );
-  const data = await dataRes.json();
+  const commercialDomains = [
+    'com',
+    'net',
+    'org',
+    'biz',
+    'work',
+    'agency',
+    'bid',
+    'company',
+    'holdings',
+    'institute',
+    'limited',
+    'money',
+  ];
 
   return {
     props: {
-      domainsData,
-      famousAndTrendyDomains: data.famousAndTrendyDomains,
-      roundDomains: data.roundDomains,
-      domainPosts: data.domainPosts,
-      service: data.service,
+      ...data,
+      commercialDomains,
     },
   };
 }

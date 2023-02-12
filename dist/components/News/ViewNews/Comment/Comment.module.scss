@@ -1,4 +1,12 @@
-.commentBox {
+.wrapper {
+  .reply {
+    margin-right: 80px;
+    @media screen and (max-width: 767px) {
+      margin-right: 10px;
+    }
+  }
+}
+.box {
   display: grid;
   grid-template-columns: 120px 1fr;
   font-family: IRANSans;
@@ -8,13 +16,6 @@
   @media screen and (max-width: 767px) {
     grid-template-columns: 70px 1fr;
     margin-right: 0;
-  }
-
-  &.answer {
-    margin-right: 80px;
-    @media screen and (max-width: 767px) {
-      margin-right: 10px;
-    }
   }
 
   .commentBoxRightSide {

@@ -2,28 +2,10 @@ import * as React from 'react';
 import Head from 'next/head';
 import CompleteOrder from '../../../components/Cart/CompleteOrder/CompleteOrder';
 import Layout from '../../../components/Layout/Layout';
-import { pageProps } from './../../_app';
+import { IPageProps } from './../../_app';
 import 'flag-icon-css/css/flag-icon.min.css';
 
-export type countriesType = {
-  code: string;
-  name: string;
-  dialingCode: string;
-}[];
-
-export interface IndexProps extends pageProps {
-  countries: countriesType;
-  defaultCountrySelected: string;
-}
-
-export interface IndexState {}
-
-class Index extends React.Component<IndexProps, IndexState> {
-  constructor(props: IndexProps) {
-    super(props);
-    this.state = {};
-  }
-
+class Index extends React.Component<IPageProps> {
   render() {
     return (
       <div dir="rtl">
@@ -33,15 +15,8 @@ class Index extends React.Component<IndexProps, IndexState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Layout
-          postsForFooter={this.props.postsForFooter}
-          domainsForNavbar={this.props.domainsForNavbar}
-          licensesForNavbar={this.props.licensesForNavbar}
-        >
-          <CompleteOrder
-            countries={this.props.countries}
-            defaultCountrySelected={this.props.defaultCountrySelected}
-          />
+        <Layout header={this.props.header} footer={this.props.footer}>
+          <CompleteOrder />
         </Layout>
       </div>
     );
@@ -57,13 +32,11 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const countriesRes = await fetch(
-    `https://jsonblob.com/api/jsonBlob/fc7171e6-ea48-11eb-bba7-d913deac8b8f`
-  );
-  const countries = await countriesRes.json();
+  const respone = await fetch(`${process.env.SITE_URL}/${locale}?ajax=1`);
+  const data = await respone.json();
 
   return {
-    props: { countries, defaultCountrySelected: 'IR' },
+    props: { ...data },
   };
 }
 

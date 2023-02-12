@@ -2,104 +2,20 @@ import * as React from 'react';
 import { Row, Col, Tooltip, OverlayTrigger, Button } from 'react-bootstrap';
 import Link from 'next/link';
 import styles from './Recommended.module.scss';
+import { formatSpace } from '../../../../helper/formatSpace';
+import { formatHards } from '../../../../helper/formatHards';
+import { IDedicatedPlan } from '../../../../helper/types/products/Dedicated/plan';
+import { connect } from 'react-redux';
+import { RootState } from '../../../../store';
+import { formatPriceWithCurrency } from '../../../../store/Currencies';
+import getCpuLink from '../../../../helper/getCpuLink';
 
-export interface RecommendedProps {
-  recommended: any;
+interface IProps {
+  recommended: IDedicatedPlan[];
+  currencies: RootState['currencies'];
 }
 
-export interface RecommendedState {}
-
-class Recommended extends React.Component<RecommendedProps, RecommendedState> {
-  constructor(props: RecommendedProps) {
-    super(props);
-    this.state = {};
-  }
-
-  formatSizeInPersian(size, decimals = 2) {
-    if (size === 0) return '';
-
-    const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ['مگابایت', 'گیگابایت', 'ترابایت'];
-
-    const i = Math.floor(Math.log(size) / Math.log(k));
-
-    return parseFloat((size / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-  }
-
-  formatSizeInEnglish(size, decimals = 2) {
-    if (size == 0) return '';
-
-    var k = 1000,
-      dm = decimals || 2,
-      sizes = ['MB', 'GB', 'TB'],
-      i = Math.floor(Math.log(size * 1000) / Math.log(k));
-    return (
-      parseFloat(((size * 1000) / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i]
-    );
-  }
-
-  getHards(recommended) {
-    let allHards = [];
-
-    recommended.hard.forEach((hardPack) => {
-      allHards = allHards.concat(hardPack);
-    });
-
-    let onSells = [];
-
-    allHards.forEach((hard) => {
-      if (hard.onsell === true) {
-        onSells = [...onSells, hard];
-      }
-    });
-
-    let hards = [];
-
-    onSells.forEach((hard) => {
-      if (hard) {
-        const hardIndex = hards.findIndex((i) => i.type === hard.type);
-        if (hardIndex > -1) {
-          hards[hardIndex] = {
-            ...hards[hardIndex],
-            number: hards[hardIndex].number + 1,
-          };
-        } else {
-          hards = [...hards, { ...hard, number: 1 }];
-        }
-      }
-    });
-
-    return hards;
-  }
-
-  addCommas(num: number) {
-    let str = num.toString().split('.');
-    if (str[0].length >= 5) {
-      str[0] = str[0].replace(/(\d)(?=(\d{3})+$)/g, '$1,');
-    }
-    if (str[1] && str[1].length >= 5) {
-      str[1] = str[1].replace(/(\d{3})/g, '$1 ');
-    }
-    return str.join('.');
-  }
-
-  getCpuLink(cpu: {
-    title: string;
-    cores: number;
-    threads: number;
-    speed: number;
-    num: number;
-  }) {
-    if (cpu.title.toLowerCase().lastIndexOf("intel") === 0) {
-      return `https://ark.intel.com/search/?_charset_=UTF-8&q=${encodeURI(cpu.title)}`;
-    }
-    if (cpu.title.toLowerCase().lastIndexOf("amd") === 0) {
-      return `https://www.amd.com/en/search?keyword=${encodeURI(cpu.title)}`;
-    }
-    return null;
-  }
-
+class Recommended extends React.Component<IProps> {
   render() {
     return (
       <Row>
@@ -130,10 +46,10 @@ class Recommended extends React.Component<RecommendedProps, RecommendedState> {
                 <tr key={recommended.id}>
                   <td className="ltr">{recommended.title}</td>
                   <td className="ltr">
-                    {this.getCpuLink(recommended.cpu) ? (
+                    {getCpuLink(recommended.cpu.title) ? (
                       <a
                         target="_blank"
-                        href={this.getCpuLink(recommended.cpu)}
+                        href={getCpuLink(recommended.cpu.title)}
                       >
                         {recommended.cpu.title}
                       </a>
@@ -145,29 +61,11 @@ class Recommended extends React.Component<RecommendedProps, RecommendedState> {
                     {recommended.cpu.threads} <br />
                     Frequency : {recommended.cpu.speed} GHz
                   </td>
-                  <td>{this.formatSizeInPersian(recommended.ram)}</td>
-                  <td className="ltr">
-                    {this.getHards(recommended).length > 0 &&
-                      this.getHards(recommended).map((hard) => {
-                        if (hard.number === 1) {
-                          return (
-                            <span key={hard.type} style={{ margin: '0' }}>
-                              {this.formatSizeInEnglish(hard.space)} {hard.type}
-                            </span>
-                          );
-                        } else {
-                          return (
-                            <span key={hard.type} style={{ margin: '0' }}>
-                              {hard.number} x{' '}
-                              {this.formatSizeInEnglish(hard.space)} {hard.type}
-                            </span>
-                          );
-                        }
-                      })}
-                  </td>
+                  <td>{formatSpace(recommended.ram, 'fa')}</td>
+                  <td className="ltr">{formatHards(recommended.hard)}</td>
                   <td>
                     {recommended.bandwidth ? (
-                      this.formatSizeInPersian(recommended.bandwidth)
+                      formatSpace(recommended.bandwidth, 'fa')
                     ) : (
                       <span className={styles.jUnlimited}>بدون محدودیت</span>
                     )}
@@ -180,18 +78,29 @@ class Recommended extends React.Component<RecommendedProps, RecommendedState> {
                   </td>
                   <td>18 ساعت</td>
                   <td style={{ height: '67px' }}>
-                    {recommended.setup
-                      ? `${this.addCommas(recommended.setup)} ${
-                          recommended.currency.title
-                        }`
+                    {recommended.setup &&
+                    typeof recommended.currency !== 'number'
+                      ? formatPriceWithCurrency(
+                          this.props.currencies,
+                          recommended.currency,
+                          recommended.setup
+                        )
                       : '-'}
                   </td>
                   <td>
-                    {this.addCommas(recommended.price)}{' '}
-                    {recommended.currency.title}
+                    {typeof recommended.currency !== 'number' &&
+                      formatPriceWithCurrency(
+                        this.props.currencies,
+                        recommended.currency,
+                        recommended.price
+                      )}
                     <span> ماهیانه</span> <br />
-                    {this.addCommas(recommended.price * 12)}{' '}
-                    {recommended.currency.title}
+                    {typeof recommended.currency !== 'number' &&
+                      formatPriceWithCurrency(
+                        this.props.currencies,
+                        recommended.currency,
+                        recommended.price * 12
+                      )}
                     <span> سالیانه</span>
                   </td>
                   <td>
@@ -201,7 +110,7 @@ class Recommended extends React.Component<RecommendedProps, RecommendedState> {
                       </Link>
                     </div>
                     <div>
-                      {recommended.sold_out === 0 ? (
+                      {!recommended.sold_out ? (
                         <Link
                           href={`/order/server/dedicated/${recommended.id}`}
                         >
@@ -241,4 +150,8 @@ class Recommended extends React.Component<RecommendedProps, RecommendedState> {
   }
 }
 
-export default Recommended;
+export default connect((state: RootState) => {
+  return {
+    currencies: state.currencies,
+  };
+})(Recommended);

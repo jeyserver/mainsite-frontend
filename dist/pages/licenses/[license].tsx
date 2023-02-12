@@ -1,23 +1,17 @@
 import * as React from 'react';
 import Head from 'next/head';
 import Layout from '../../components/Layout/Layout';
-import { pageProps } from '../_app';
+import { IPageProps } from '../_app';
 import License from '../../components/License/License';
 import { renderPageTitle } from '../../components/License/helper/renderPageTitle';
+import ILicense from '../../helper/types/products/License/plan';
 
-export interface IndexProps extends pageProps {
-  plans: any;
+interface IProps extends IPageProps {
+  plans: ILicense[];
   license: 'cloudlinux' | 'cpanel' | 'directadmin' | 'litespeed' | 'whmcs';
 }
 
-export interface IndexState {}
-
-class Index extends React.Component<IndexProps, IndexState> {
-  constructor(props: IndexProps) {
-    super(props);
-    this.state = {};
-  }
-
+class Index extends React.Component<IProps> {
   render() {
     return (
       <div dir="rtl">
@@ -27,11 +21,7 @@ class Index extends React.Component<IndexProps, IndexState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Layout
-          postsForFooter={this.props.postsForFooter}
-          domainsForNavbar={this.props.domainsForNavbar}
-          licensesForNavbar={this.props.licensesForNavbar}
-        >
+        <Layout header={this.props.header} footer={this.props.footer}>
           <License license={this.props.license} plans={this.props.plans} />
         </Layout>
       </div>
@@ -49,13 +39,19 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const plansRes = await fetch(
-    'https://jsonblob.com/api/jsonBlob/1c005f45-eaf7-11eb-8813-eb4dfe50e7ca'
+  const respone = await fetch(
+    `${process.env.SITE_URL}/${locale}/licenses/${license}?ajax=1`
   );
-  const plans = await plansRes.json();
+  const data = await respone.json();
+
+  if (!data.status) {
+    return {
+      notFound: true,
+    };
+  }
 
   return {
-    props: { plans, license },
+    props: { ...data, license },
   };
 }
 

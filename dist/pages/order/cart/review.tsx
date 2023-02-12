@@ -3,24 +3,26 @@ import Head from 'next/head';
 import Review from '../../../components/Cart/Review/Review';
 import Layout from '../../../components/Layout/Layout';
 import { connect } from 'react-redux';
-import { setCartItems } from '../../../redux/actions';
-import { pageProps } from './../../_app';
+import { IPageProps } from './../../_app';
+import { setCart as setCart } from '../../../store/Cart';
+import { RootState } from '../../../store';
+import backend from '../../../axios-config';
 
-export interface IndexProps extends pageProps {
-  cartItems: any;
-  setCartItems: (cartItems) => void;
+interface IProps extends IPageProps {
+  setCart: typeof setCart;
+  cart: RootState['cart'];
 }
 
-export interface IndexState {}
-
-class Index extends React.Component<IndexProps, IndexState> {
-  constructor(props: IndexProps) {
-    super(props);
-    this.state = {};
-  }
-
+class Index extends React.Component<IProps> {
   componentDidMount() {
-    this.props.setCartItems(this.props.cartItems);
+    backend(`/order/cart/review?ajax=1&cart=${this.props.cart.id}`).then(
+      (res) => {
+        this.props.setCart({
+          items: res.data.products,
+          has_active_discount_code: res.data.has_active_discount_code,
+        });
+      }
+    );
   }
 
   render() {
@@ -32,11 +34,7 @@ class Index extends React.Component<IndexProps, IndexState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Layout
-          postsForFooter={this.props.postsForFooter}
-          domainsForNavbar={this.props.domainsForNavbar}
-          licensesForNavbar={this.props.licensesForNavbar}
-        >
+        <Layout header={this.props.header} footer={this.props.footer}>
           <Review />
         </Layout>
       </div>
@@ -53,14 +51,19 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const cartItemsRes = await fetch(
-    `https://jsonblob.com/api/jsonBlob/91805bd8-e961-11eb-9e75-7fa330839e1c`
-  );
-  const cartItems = await cartItemsRes.json();
+  const respone = await fetch(`${process.env.SITE_URL}/${locale}?ajax=1`);
+  const data = await respone.json();
 
   return {
-    props: { cartItems },
+    props: { ...data },
   };
 }
 
-export default connect(null, { setCartItems })(Index);
+export default connect(
+  (state: RootState) => {
+    return {
+      cart: state.cart,
+    };
+  },
+  { setCart }
+)(Index);

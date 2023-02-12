@@ -3,24 +3,17 @@ import Link from 'next/link';
 import styles from './CountryCard.module.scss';
 import { countries } from '../lib/countries';
 
-export interface CountryCardProps {
-  country: { code: string; name: string };
+interface IProps {
+  country: { code: string; name: string; is_recommended: boolean };
 }
 
-export interface CountryCardState {}
-
-class CountryCard extends React.Component<CountryCardProps, CountryCardState> {
-  constructor(props: CountryCardProps) {
-    super(props);
-    this.state = {};
-  }
-
+class CountryCard extends React.Component<IProps> {
   render() {
     return (
       <div className={styles.pricingTable}>
         <div className={styles.pricingPrice}>
           <div className={styles.pricingTxt}>{this.props.country.name}</div>
-          {countries[this.props.country.code].recommended && (
+          {this.props.country.is_recommended && (
             <div className={styles.recommended}>
               <i className="fa fa-star"></i>
               <i className="fa fa-star"></i>

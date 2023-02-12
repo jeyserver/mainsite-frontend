@@ -9,27 +9,31 @@ import {
 } from 'react-bootstrap';
 import Link from 'next/link';
 import styles from './DownloadHostingTable.module.scss';
-import ReactStars from 'react-rating-stars-component';
 import classNames from 'classnames';
-import { formatPrice } from '../../../helper/formatPrice';
-import CountryFlagTooltip from '../../../helper/components/CountryFlagTooltip';
+import CountryFlagTooltip from '../../../../helper/components/CountryFlagTooltip/CountryFlagTooltip';
+import { IHostPlan } from '../../../../helper/types/products/Host/plan';
+import translateCountryNameToPersian from '../../../../helper/translateCountryNameToPersian';
+import { formatSpace } from '../../../../helper/formatSpace';
+import translateHostPanel from '../../../../helper/translators/translateHostPanel';
+import { connect } from 'react-redux';
+import { RootState } from '../../../../store';
+import { formatPriceWithCurrency } from '../../../../store/Currencies';
+import StarredCell from '../../TablesUtils/StarredCell';
+import BackupsCell from '../../TablesUtils/BackupsCell';
 
-export interface DownloadHostingTableProps {
-  data: any;
+interface IProps {
+  plans: IHostPlan[];
+  currencies: RootState['currencies'];
 }
 
-export interface DownloadHostingTableState {
+interface IState {
   isMoreInfoOpen: boolean;
 }
 
-class DownloadHostingTable extends React.Component<
-  DownloadHostingTableProps,
-  DownloadHostingTableState
-> {
-  constructor(props: DownloadHostingTableProps) {
+class DownloadHostingTable extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
     this.state = { isMoreInfoOpen: false };
-    this.toggleMoreInfo = this.toggleMoreInfo.bind(this);
   }
 
   toggleMoreInfo() {
@@ -39,36 +43,28 @@ class DownloadHostingTable extends React.Component<
   }
 
   render() {
+    const maximumCpu = Math.max(...this.props.plans.map((host) => host.cpu));
+    const maximumRam = Math.max(...this.props.plans.map((host) => host.ram));
+    const maximumIO = Math.max(...this.props.plans.map((host) => host.IO));
+    const maximumEntryProcess = Math.max(
+      ...this.props.plans.map((host) => host.entryprocess)
+    );
+
     return (
       <Row
-        id={`${this.props.data.country_name_en}`}
+        id={`${this.props.plans[0].country.code}`}
         className={styles.tableWrapper}
       >
         <Col xs={12}>
           <div className={styles.tittleLine}>
             <h5>
               میزبانی فایل و هاست دانلود <br />
-              <CountryFlagTooltip
-                name={this.props.data.country_name_en}
-                flag={{
-                  address: this.props.data.flag,
-                  width: 24,
-                  height: 24,
-                }}
-              />
-              {this.props.data.country_name_fa}
+              <CountryFlagTooltip country={this.props.plans[0].country} />
+              {translateCountryNameToPersian(this.props.plans[0].country.code)}
             </h5>
             <div className={styles.divider}>
               <div />
             </div>
-            {this.props.data.info && (
-              <div
-                className={styles.content}
-                dangerouslySetInnerHTML={{
-                  __html: this.props.data.info,
-                }}
-              ></div>
-            )}
           </div>
           <Table className={styles.table}>
             <thead>
@@ -139,7 +135,13 @@ class DownloadHostingTable extends React.Component<
                   className={classNames({
                     [styles.jHidden]: this.state.isMoreInfoOpen,
                   })}
-                  style={{ lineHeight: '75px' }}
+                  style={{
+                    lineHeight: this.props.plans.some(
+                      (i) => i.backups.length > 0
+                    )
+                      ? '75px'
+                      : '',
+                  }}
                 >
                   دوره های بکاپ گیری
                 </th>
@@ -147,7 +149,7 @@ class DownloadHostingTable extends React.Component<
                   placement="top"
                   overlay={
                     <Tooltip
-                      id={`${this.props.data.country_name_en}-tooltip`}
+                      id={`${this.props.plans[0].country.code}-cpu`}
                       className={styles.tooltip}
                     >
                       درصد استفاده از پردازشگر
@@ -160,7 +162,7 @@ class DownloadHostingTable extends React.Component<
                   placement="top"
                   overlay={
                     <Tooltip
-                      id={`${this.props.data.country_name_en}-tooltip`}
+                      id={`${this.props.plans[0].country.code}-ram`}
                       className={styles.tooltip}
                     >
                       حافظه موقت
@@ -173,7 +175,7 @@ class DownloadHostingTable extends React.Component<
                   placement="top"
                   overlay={
                     <Tooltip
-                      id={`${this.props.data.country_name_en}-tooltip`}
+                      id={`${this.props.plans[0].country.code}-io`}
                       className={styles.tooltip}
                     >
                       سرعت خواندن و نوشتن اطلاعات
@@ -186,7 +188,7 @@ class DownloadHostingTable extends React.Component<
                   placement="top"
                   overlay={
                     <Tooltip
-                      id={`${this.props.data.country_name_en}-tooltip`}
+                      id={`${this.props.plans[0].country.code}-entry-process`}
                       className={styles.tooltip}
                     >
                       تعداد پردازش های همزمان
@@ -203,7 +205,7 @@ class DownloadHostingTable extends React.Component<
                   <button
                     type="button"
                     className={styles.moreInfoBtn}
-                    onClick={this.toggleMoreInfo}
+                    onClick={() => this.toggleMoreInfo()}
                   >
                     اطلاعات بیشتر{' '}
                   </button>
@@ -211,28 +213,25 @@ class DownloadHostingTable extends React.Component<
               </tr>
             </thead>
             <tbody>
-              {this.props.data.panels.map((panel) => (
-                <tr key={panel.id}>
-                  <td>{panel.title}</td>
-                  <td>{panel.space}</td>
+              {this.props.plans.map((plan) => (
+                <tr key={plan.id}>
+                  <td>{plan.title}</td>
+                  <td>{formatSpace(plan.space, 'fa', true)}</td>
                   <td>
-                    {panel.bandwidth === '-' ? (
+                    {!plan.bandwidth ? (
                       <span className={styles.jUnlimited}>بدون محدودیت</span>
                     ) : (
-                      panel.bandwidth
+                      formatSpace(plan.bandwidth, 'fa', true)
                     )}
                   </td>
-                  <td>{panel.host_panel}</td>
+                  <td>{translateHostPanel(plan.cp)}</td>
                   <td
                     className={classNames({
-                      [styles.check]: panel.ssl,
+                      [styles.check]: true,
                     })}
                   >
-                    {panel.ssl ? (
-                      <i className="far fa-check-square"></i>
-                    ) : (
-                      <i className="fa fa-times fa-lg" />
-                    )}
+                    <i className="far fa-check-square"></i>
+                    {/* <i className="fa fa-times fa-lg" /> */}
                   </td>
 
                   <td
@@ -240,30 +239,17 @@ class DownloadHostingTable extends React.Component<
                       [styles.open]: this.state.isMoreInfoOpen,
                     })}
                   >
-                    {panel.park_domains === '-' ? (
+                    {!plan.parkdomain ? (
                       <span className={styles.jUnlimited}>بدون محدودیت</span>
                     ) : (
-                      `${panel.park_domains} عدد`
+                      `${plan.parkdomain} عدد`
                     )}
                   </td>
-
                   <td>
-                    {panel.additional_sites === '-' ? (
+                    {!plan.addondomain ? (
                       <span className={styles.jUnlimited}>بدون محدودیت</span>
                     ) : (
-                      `${panel.additional_sites} عدد`
-                    )}
-                  </td>
-
-                  <td
-                    className={classNames(styles.jHidden, {
-                      [styles.open]: this.state.isMoreInfoOpen,
-                    })}
-                  >
-                    {panel.subdomains === '-' ? (
-                      <span className={styles.jUnlimited}>بدون محدودیت</span>
-                    ) : (
-                      panel.subdomains
+                      `${plan.addondomain} عدد`
                     )}
                   </td>
                   <td
@@ -271,10 +257,10 @@ class DownloadHostingTable extends React.Component<
                       [styles.open]: this.state.isMoreInfoOpen,
                     })}
                   >
-                    {panel.emails === '-' ? (
+                    {!plan.subdomain ? (
                       <span className={styles.jUnlimited}>بدون محدودیت</span>
                     ) : (
-                      panel.emails
+                      `${plan.subdomain} عدد`
                     )}
                   </td>
                   <td
@@ -282,10 +268,10 @@ class DownloadHostingTable extends React.Component<
                       [styles.open]: this.state.isMoreInfoOpen,
                     })}
                   >
-                    {panel.ftp === '-' ? (
+                    {!plan.email ? (
                       <span className={styles.jUnlimited}>بدون محدودیت</span>
                     ) : (
-                      panel.ftp
+                      `${plan.email} عدد`
                     )}
                   </td>
                   <td
@@ -293,10 +279,10 @@ class DownloadHostingTable extends React.Component<
                       [styles.open]: this.state.isMoreInfoOpen,
                     })}
                   >
-                    {panel.database === '-' ? (
+                    {!plan.ftp ? (
                       <span className={styles.jUnlimited}>بدون محدودیت</span>
                     ) : (
-                      panel.database
+                      `${plan.ftp} عدد`
                     )}
                   </td>
                   <td
@@ -304,7 +290,18 @@ class DownloadHostingTable extends React.Component<
                       [styles.open]: this.state.isMoreInfoOpen,
                     })}
                   >
-                    {panel.daily_backup ? (
+                    {!plan.dbs ? (
+                      <span className={styles.jUnlimited}>بدون محدودیت</span>
+                    ) : (
+                      plan.dbs
+                    )}
+                  </td>
+                  <td
+                    className={classNames(styles.jHidden, {
+                      [styles.open]: this.state.isMoreInfoOpen,
+                    })}
+                  >
+                    {plan.backups[2] ? (
                       <i
                         className={classNames(
                           'far fa-check-square',
@@ -320,7 +317,7 @@ class DownloadHostingTable extends React.Component<
                       [styles.open]: this.state.isMoreInfoOpen,
                     })}
                   >
-                    {panel.monthly_backup ? (
+                    {plan.backups[1] ? (
                       <i
                         className={classNames(
                           'far fa-check-square',
@@ -336,7 +333,7 @@ class DownloadHostingTable extends React.Component<
                       [styles.open]: this.state.isMoreInfoOpen,
                     })}
                   >
-                    {panel.annual_backup ? (
+                    {plan.backups[0] ? (
                       <i
                         className={classNames(
                           'far fa-check-square',
@@ -351,159 +348,66 @@ class DownloadHostingTable extends React.Component<
                     className={classNames({
                       [styles.jHidden]: this.state.isMoreInfoOpen,
                     })}
+                    style={{
+                      height:
+                        this.props.plans.some((i) => i.backups.length > 0) &&
+                        !this.state.isMoreInfoOpen &&
+                        '92px',
+                    }}
                   >
-                    {panel.daily_backup && (
-                      <div>
-                        <i
-                          className={classNames(
-                            'far fa-check-square',
-                            styles.check
-                          )}
-                        ></i>{' '}
-                        روزانه
-                      </div>
-                    )}
-                    {panel.monthly_backup && (
-                      <div>
-                        <i
-                          className={classNames(
-                            'far fa-check-square',
-                            styles.check
-                          )}
-                        ></i>{' '}
-                        ماهانه
-                      </div>
-                    )}
-                    {panel.annual_backup && (
-                      <div>
-                        <i
-                          className={classNames(
-                            'far fa-check-square',
-                            styles.check
-                          )}
-                        ></i>{' '}
-                        سالیانه
-                      </div>
-                    )}
+                    <BackupsCell backups={plan.backups} />
+                  </td>
+                  {plan.cpu ? (
+                    <StarredCell
+                      text={
+                        plan.cpu < 100
+                          ? `% ${plan.cpu} یک هسته`
+                          : `${plan.cpu / 100} هسته`
+                      }
+                      star={(plan.cpu / maximumCpu) * 5}
+                    />
+                  ) : (
+                    <StarredCell text={null} star={5} />
+                  )}
+                  {plan.ram ? (
+                    <StarredCell
+                      text={formatSpace(plan.ram, 'fa')}
+                      star={(plan.ram / maximumRam) * 5}
+                    />
+                  ) : (
+                    <StarredCell text={null} star={5} />
+                  )}
+                  {plan.IO ? (
+                    <StarredCell
+                      text={`${plan.IO} مگابایت بر ثانیه`}
+                      star={(plan.IO / maximumIO) * 5}
+                    />
+                  ) : (
+                    <StarredCell text={null} star={5} />
+                  )}
+                  {plan.entryprocess ? (
+                    <StarredCell
+                      text={`${plan.entryprocess} عدد`}
+                      star={(plan.entryprocess / maximumEntryProcess) * 5}
+                    />
+                  ) : (
+                    <StarredCell text={null} star={5} />
+                  )}
+                  <td>OpenLightSpeed</td>
+                  <td>SSD</td>
+                  <td>
+                    {formatPriceWithCurrency(
+                      this.props.currencies,
+                      plan.currency,
+                      plan.price
+                    )}{' '}
+                    ماهیانه
                   </td>
                   <td>
-                    {panel.cpu.value === '-' ? (
-                      <span className={styles.jUnlimited}>بدون محدودیت</span>
-                    ) : (
-                      panel.cpu.value
-                    )}
-                    <br />
-                    <div className={styles.scoreWrapper}>
-                      <ReactStars
-                        size={50}
-                        count={5}
-                        value={panel.cpu.score}
-                        edit={false}
-                        emptyIcon={
-                          <i
-                            className={classNames(
-                              'far fa-star',
-                              styles.emptyIcon
-                            )}
-                          />
-                        }
-                        filledIcon={<i className="fa fa-star" />}
-                      />
-                    </div>
-                  </td>
-                  <td>
-                    {panel.ram.value === '-' ? (
-                      <span className={styles.jUnlimited}>بدون محدودیت</span>
-                    ) : (
-                      panel.ram.value
-                    )}
-                    <br />
-                    <div className={styles.scoreWrapper}>
-                      <ReactStars
-                        size={50}
-                        count={5}
-                        value={panel.ram.score}
-                        edit={false}
-                        emptyIcon={
-                          <i
-                            className={classNames(
-                              'far fa-star',
-                              styles.emptyIcon
-                            )}
-                          />
-                        }
-                        filledIcon={<i className="fa fa-star" />}
-                      />
-                    </div>
-                  </td>
-                  <td>
-                    {panel.io.value === '-' ? (
-                      <span className={styles.jUnlimited}>بدون محدودیت</span>
-                    ) : (
-                      panel.io.value
-                    )}
-                    <br />
-                    <div className={styles.scoreWrapper}>
-                      <ReactStars
-                        size={50}
-                        count={5}
-                        value={panel.io.score}
-                        edit={false}
-                        emptyIcon={
-                          <i
-                            className={classNames(
-                              'far fa-star',
-                              styles.emptyIcon
-                            )}
-                          />
-                        }
-                        filledIcon={<i className="fa fa-star" />}
-                      />
-                    </div>
-                  </td>
-                  <td>
-                    {panel.entry_process.value === '-' ? (
-                      <span className={styles.jUnlimited}>بدون محدودیت</span>
-                    ) : (
-                      panel.entry_process.value
-                    )}
-
-                    <br />
-                    <div className={styles.scoreWrapper}>
-                      <ReactStars
-                        size={50}
-                        count={5}
-                        value={panel.entry_process.score}
-                        edit={false}
-                        emptyIcon={
-                          <i
-                            className={classNames(
-                              'far fa-star',
-                              styles.emptyIcon
-                            )}
-                          />
-                        }
-                        filledIcon={<i className="fa fa-star" />}
-                      />
-                    </div>
-                  </td>
-                  <td>{panel.web_server}</td>
-                  <td>{panel.hard_server}</td>
-                  <td>
-                    {formatPrice(panel.price)} {panel.currency.title} ماهیانه
-                  </td>
-                  <td>
-                    {panel.active ? (
-                      <Link href={`/order/server/vps/${panel.id}`}>
+                    {plan.is_available ? (
+                      <Link href={`/order/hosting/linux/${plan.id}`}>
                         <a className={styles.orderLink}>
-                          <CountryFlagTooltip
-                            name={this.props.data.country_name_en}
-                            flag={{
-                              address: this.props.data.flag,
-                              width: 24,
-                              height: 24,
-                            }}
-                          />
+                          <CountryFlagTooltip country={plan.country} />
                           <span>سفارش</span>{' '}
                         </a>
                       </Link>
@@ -521,8 +425,8 @@ class DownloadHostingTable extends React.Component<
                         <span className={styles.tooltipWrapper}>
                           <Button className={styles.orderLink} disabled>
                             <img
-                              src={this.props.data.flag}
-                              alt={this.props.data.country_name_en}
+                              src={`/images/flags/${plan.country.code.toLocaleLowerCase()}.svg`}
+                              alt={plan.country.name}
                             />
                             سفارش{' '}
                           </Button>
@@ -534,13 +438,14 @@ class DownloadHostingTable extends React.Component<
               ))}
             </tbody>
           </Table>
-          {this.props.data.table_ps && (
-            <div>*** {this.props.data.table_ps}</div>
-          )}
         </Col>
       </Row>
     );
   }
 }
 
-export default DownloadHostingTable;
+export default connect((state: RootState) => {
+  return {
+    currencies: state.currencies,
+  };
+})(DownloadHostingTable);

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Container, Row, Col, Image } from 'react-bootstrap';
-import SharedHostingTable from './SharedHostingTable/SharedHostingTable';
+import SharedHostingTable from '../../Tables/SharedHostingTable/SharedHostingTable';
 import PagesHeader from '../../PagesHeader/PagesHeader';
 import Facilities from '../Facilities/Facilities';
 import HostFaq from '../HostFaq/HostFaq';
@@ -12,38 +12,51 @@ import {
   getScrollTopForFixNav,
 } from './utils';
 import styles from '../PageInfoStyles.module.scss';
+import { IHostPlan } from '../../../helper/types/products/Host/plan';
 
-export interface SharedHostingProps {
-  sharedHosts: any;
-  navData: any;
+interface IProps {
+  sharedHosts: IHostPlan[];
   page: page;
   appIsScrolling: boolean;
   switchAppIsScrolling: () => void;
 }
 
-export interface SharedHostingState {
-  isNavFixed: boolean;
+interface IState {
+  plans: IHostPlan[][];
 }
 
-var lastScrollTop = 0;
-
-class SharedHosting extends React.Component<
-  SharedHostingProps,
-  SharedHostingState
-> {
-  constructor(props: SharedHostingProps) {
+class SharedHosting extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
     this.state = {
-      isNavFixed: false,
+      plans: Object.values(
+        this.props.sharedHosts.reduce((accumulator, currentValue) => {
+          const co = `${currentValue.country.code}-${currentValue.cp}`;
+
+          if (accumulator && accumulator[co]) {
+            accumulator[co] = [...accumulator[co], currentValue];
+          } else {
+            accumulator[co] = [currentValue];
+          }
+
+          return accumulator;
+        }, {})
+      ),
     };
-    this.onScrollFixedNav = this.onScrollFixedNav.bind(this);
-    this.onScrollFindActive = this.onScrollFindActive.bind(this);
-    this.onScrollTopNav = this.onScrollTopNav.bind(this);
+    this.onScroll = this.onScroll.bind(this);
   }
 
-  onScrollFixedNav() {
+  lastScrollTop = 0;
+
+  onScroll() {
     const nav = document.querySelector(
       `#${this.props.page}-nav`
+    ) as HTMLDivElement;
+    const mainNavLinks = document.querySelectorAll(
+      `#${this.props.page}-nav li[data-main="true"] > a`
+    );
+    const emptySpaceForNav = document.querySelector(
+      '#emptySpaceForNav'
     ) as HTMLDivElement;
 
     let fromTop = window.scrollY;
@@ -51,25 +64,18 @@ class SharedHosting extends React.Component<
     if (fromTop > getScrollTopForFixNav(this.props.page)) {
       nav.style.position = 'fixed';
       nav.style.margin = '0';
-      this.setState({ isNavFixed: true });
+      emptySpaceForNav.style.display = 'block';
     } else {
       nav.style.position = 'static';
       nav.style.margin = '30px 0';
-      this.setState({ isNavFixed: false });
+      emptySpaceForNav.style.display = 'none';
     }
-  }
-
-  onScrollFindActive() {
-    const mainNavLinks = document.querySelectorAll(
-      `#${this.props.page}-nav li[data-main="true"] > a`
-    );
-
-    let fromTop = window.scrollY;
 
     mainNavLinks.forEach((link: any) => {
       let section = document.querySelector(link.hash);
 
       if (
+        section &&
         section.offsetTop - 20 <= fromTop &&
         section.offsetTop + section.offsetHeight > fromTop
       ) {
@@ -80,15 +86,9 @@ class SharedHosting extends React.Component<
         return;
       }
     });
-  }
-
-  onScrollTopNav() {
-    const nav = document.querySelector(
-      `#${this.props.page}-nav`
-    ) as HTMLDivElement;
 
     var st = window.pageYOffset || document.documentElement.scrollTop;
-    if (st > lastScrollTop) {
+    if (st > this.lastScrollTop) {
       // downscroll code
       nav.style.top = '0px';
     } else {
@@ -100,21 +100,16 @@ class SharedHosting extends React.Component<
       }
     }
 
-    lastScrollTop = st <= 0 ? 0 : st;
+    this.lastScrollTop = st <= 0 ? 0 : st;
   }
 
   componentDidMount() {
-    window.addEventListener('scroll', this.onScrollFindActive, false);
-    window.addEventListener('scroll', this.onScrollFixedNav, false);
-    window.addEventListener('scroll', this.onScrollTopNav, false);
-
+    window.addEventListener('scroll', this.onScroll, false);
     this.props.switchAppIsScrolling();
   }
 
   componentWillUnmount() {
-    window.removeEventListener('scroll', this.onScrollFindActive, false);
-    window.removeEventListener('scroll', this.onScrollFixedNav, false);
-    window.removeEventListener('scroll', this.onScrollTopNav, false);
+    window.removeEventListener('scroll', this.onScroll, false);
   }
 
   render() {
@@ -129,29 +124,22 @@ class SharedHosting extends React.Component<
             </div>
           </div>
 
-          {this.state.isNavFixed && (
-            <div
-              style={{
-                height: document.querySelector<HTMLDivElement>(
-                  `#${this.props.page}-nav`
-                ).clientHeight,
-              }}
-              className={styles.emptySpaceForNav}
-            ></div>
-          )}
+          <div
+            style={{
+              height: '80px',
+            }}
+            id="emptySpaceForNav"
+            className={styles.emptySpaceForNav}
+          ></div>
 
           <Row className={styles.stickyNav} id={`${this.props.page}-nav`}>
             <Col xs={12} className={styles.mnavigation}>
-              {renderTopNav(
-                this.props.page,
-                this.props.navData,
-                this.props.switchAppIsScrolling
-              )}
+              {renderTopNav(this.props.page, this.props.switchAppIsScrolling)}
             </Col>
           </Row>
 
           {this.props.page === 'linux_standard' ||
-          this.props.page === 'linux_professional' ? (
+            this.props.page === 'linux_professional' ? (
             <Row className={styles.properties}>
               <Col md={2}>
                 <Image src="/images/transfer_100x100.png" />
@@ -172,17 +160,36 @@ class SharedHosting extends React.Component<
 
           <Row>
             <Col>
-              {this.props.sharedHosts.map((panels, index) => (
-                <div key={index}>
-                  <SharedHostingTable page={this.props.page} data={panels} />
-                  <div className={styles.tableBottomSpace}></div>
+              {this.state.plans.map((panels: IHostPlan[], index) => (
+                <div
+                  key={index}
+                  id={`${this.props.page}_${panels[0].country.code}${this.props.page.search('linux') > -1
+                      ? `_${panels[0].cp}`
+                      : ''
+                    }`}
+                  className={styles.tableWrapper}
+                >
+                  <SharedHostingTable
+                    type={
+                      this.props.page.search('windows') > -1
+                        ? 'windows'
+                        : 'linux'
+                    }
+                    subType={
+                      this.props.page.search('professional') > -1
+                        ? 'professional'
+                        : 'standard'
+                    }
+                    data={panels}
+                    homePageTable={false}
+                  />
                 </div>
               ))}
             </Col>
           </Row>
           <Row>
             {this.props.page === 'linux_professional' ||
-            this.props.page === 'linux_standard' ? (
+              this.props.page === 'linux_standard' ? (
               <>
                 <Facilities />
                 <HostFaq />

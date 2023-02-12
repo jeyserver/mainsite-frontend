@@ -5,31 +5,41 @@ import PagesHeader from '../../PagesHeader/PagesHeader';
 import Facilities from '../Facilities/Facilities';
 import BackupHostingTable from './BackupHostingTable/BackupHostingTable';
 import styles from '../PageInfoStyles.module.scss';
+import { IHostPlan } from '../../../helper/types/products/Host/plan';
+import hosts from '../../../lib/products/host';
 
-export interface BackupHostingProps {
-  backupHosts: any;
-  navData: any;
+interface IProps {
+  plans: IHostPlan[];
   appIsScrolling: boolean;
   switchAppIsScrolling: () => void;
 }
 
-export interface BackupHostingState {
-  isNavFixed: boolean;
+interface BackupHostingState {
+  sepratedPlansByCountry: IHostPlan[][];
 }
 
-let lastScrollTop = 0;
-
-class BackupHosting extends React.Component<
-  BackupHostingProps,
-  BackupHostingState
-> {
-  constructor(props: BackupHostingProps) {
+class BackupHosting extends React.Component<IProps, BackupHostingState> {
+  constructor(props: IProps) {
     super(props);
     this.state = {
-      isNavFixed: false,
+      sepratedPlansByCountry: Object.values(
+        this.props.plans.reduce((accumulator, currentValue) => {
+          const co = currentValue.country.code;
+
+          if (accumulator && accumulator[co]) {
+            accumulator[co] = [...accumulator[co], currentValue];
+          } else {
+            accumulator[co] = [currentValue];
+          }
+
+          return accumulator;
+        }, {})
+      ),
     };
     this.onScroll = this.onScroll.bind(this);
   }
+
+  lastScrollTop = 0;
 
   onScroll() {
     const nav = document.querySelector('#backup-nav') as HTMLDivElement;
@@ -37,14 +47,18 @@ class BackupHosting extends React.Component<
     const mainNavLinks = document.querySelectorAll(
       '#backup-nav li[data-main="true"] a'
     );
+    const emptySpaceForNav = document.querySelector(
+      '#emptySpaceForNav'
+    ) as HTMLDivElement;
 
     var st = window.pageYOffset || document.documentElement.scrollTop;
-    if (st > lastScrollTop) {
+    if (st > this.lastScrollTop) {
       // downscroll code
       nav.style.top = '0px';
     } else {
       // upscroll code
       if (!this.props.appIsScrolling) {
+        console.log('backup');
         nav.style.top = '80px';
       } else {
         nav.style.top = '0px';
@@ -56,11 +70,11 @@ class BackupHosting extends React.Component<
     if (fromTop > 660) {
       nav.style.position = 'fixed';
       nav.style.margin = '0';
-      this.setState({ isNavFixed: true });
+      emptySpaceForNav.style.display = 'block';
     } else {
       nav.style.position = 'static';
       nav.style.margin = '30px 0';
-      this.setState({ isNavFixed: false });
+      emptySpaceForNav.style.display = 'none';
     }
 
     mainNavLinks.forEach((link: any) => {
@@ -82,17 +96,24 @@ class BackupHosting extends React.Component<
       }
     });
 
-    lastScrollTop = st <= 0 ? 0 : st;
+    this.lastScrollTop = st <= 0 ? 0 : st;
   }
 
   componentDidMount() {
     window.addEventListener('scroll', this.onScroll, false);
-
     this.props.switchAppIsScrolling();
   }
 
   componentWillUnmount() {
     window.removeEventListener('scroll', this.onScroll, false);
+  }
+
+  chunkedPlans(size: number, plans: IHostPlan[]) {
+    let chunked = [];
+    for (let i = 0; i < plans.length; i += size) {
+      chunked.push(plans.slice(i, i + size));
+    }
+    return chunked;
   }
 
   render() {
@@ -167,33 +188,30 @@ class BackupHosting extends React.Component<
           </div>
         </Container>
         <Container>
-          {this.state.isNavFixed && (
-            <div
-              style={{
-                height:
-                  document.querySelector<HTMLDivElement>('#backup-nav')
-                    .clientHeight,
-              }}
-              className={styles.emptySpaceForNav}
-            ></div>
-          )}
+          <div
+            style={{
+              height: '55px',
+            }}
+            id="emptySpaceForNav"
+            className={styles.emptySpaceForNav}
+          ></div>
 
           <Row className={styles.stickyNav} id="backup-nav">
             <Col xs={12} className={styles.mnavigation}>
               <ul className={styles.nav}>
-                {this.props.backupHosts.map((panels, index) => (
-                  <li key={panels.country_name_en} data-main="true">
+                {hosts.backup_hosts.map((host, index) => (
+                  <li key={host.link} data-main="true">
                     <a
-                      href={`#${panels.country_name_en}`}
+                      href={`#${host.link}`}
                       onClick={() => {
                         this.props.switchAppIsScrolling();
                       }}
                     >
-                      هاست پشتیبان {panels.country_name_fa}
+                      هاست پشتیبان {host.title}
                     </a>
                   </li>
                 ))}
-                {this.props.navData.download_hosts.map((host) => (
+                {hosts.download_hosts.map((host) => (
                   <li key={host.title}>
                     <Link href={`/hosting/file#${host.link}`}>
                       <a>هاست دانلود {host.title}</a>
@@ -224,18 +242,24 @@ class BackupHosting extends React.Component<
         <Container>
           <Row>
             <Col>
-              <Row
-                id={`${this.props.backupHosts[0].country_name_en}`}
-                className={styles.tableWrapper}
-              >
-                <BackupHostingTable
-                  data={this.props.backupHosts[0]}
-                  hideTopInfo={false}
-                />
-                <BackupHostingTable
-                  data={this.props.backupHosts[0]}
-                  hideTopInfo={true}
-                />
+              <Row className={styles.tableWrapper}>
+                {this.state.sepratedPlansByCountry.map((plans, index) => (
+                  <div
+                    id={plans[0].country.name}
+                    className={styles.tableWrapper}
+                    key={plans[0].country.name}
+                  >
+                    {this.chunkedPlans(5, plans).map(
+                      (chunkedPlans, chunkedIndex) => (
+                        <BackupHostingTable
+                          plans={chunkedPlans}
+                          key={`${plans[0].country.name}-${chunkedIndex}`}
+                          hideTopInfo={chunkedIndex > 0}
+                        />
+                      )
+                    )}
+                  </div>
+                ))}
               </Row>
             </Col>
           </Row>

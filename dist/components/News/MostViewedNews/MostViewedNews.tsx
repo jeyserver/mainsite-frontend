@@ -3,22 +3,13 @@ import { Image } from 'react-bootstrap';
 import Link from 'next/link';
 import moment from 'jalali-moment';
 import styles from './MostViewedNews.module.scss';
+import IPopularPost from '../../../helper/types/news/PopularPost';
 
-export interface MostViewedNewsProps {
-  mostViewedNews: any;
+interface IProps {
+  popularPosts: IPopularPost[];
 }
 
-export interface MostViewedNewsState {}
-
-class MostViewedNews extends React.Component<
-  MostViewedNewsProps,
-  MostViewedNewsState
-> {
-  constructor(props: MostViewedNewsProps) {
-    super(props);
-    this.state = {};
-  }
-
+class MostViewedNews extends React.Component<IProps> {
   render() {
     return (
       <div>
@@ -30,19 +21,12 @@ class MostViewedNews extends React.Component<
         </div>
         <div className={styles.mostViewedPosts}>
           <ul>
-            {this.props.mostViewedNews.map((news) => (
+            {this.props.popularPosts.map((news) => (
               <li key={news.id}>
                 <div>
                   <Link href={`/news/view/${news.id}`}>
                     <a className={styles.blogImg}>
-                      <Image
-                        src={
-                          news.image
-                            ? `${process.env.SCHEMA}://${process.env.DOMAIN}/packages/news/${news.image}`
-                            : '/images/defaultimage.jpg'
-                        }
-                        alt={news.title}
-                      />
+                      <Image src={news.image} alt={news.title} />
                       <div>
                         <div>
                           {moment(news.date * 1000)
@@ -55,7 +39,7 @@ class MostViewedNews extends React.Component<
 
                   <div className={styles.blogWrapper}>
                     <h5>
-                      <Link href={`/news/view/13`}>
+                      <Link href={`/news/view/${news.id}`}>
                         <a>{news.title}</a>
                       </Link>
                     </h5>

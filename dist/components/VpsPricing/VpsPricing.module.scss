@@ -182,6 +182,12 @@
   }
 }
 
+.tables {
+  > div {
+    padding-top: 60px;
+  }
+}
+
 .emptySpaceForNav {
   @media screen and (max-width: 767px) {
     display: none !important;

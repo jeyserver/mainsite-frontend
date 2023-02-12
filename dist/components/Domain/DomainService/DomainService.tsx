@@ -2,32 +2,16 @@ import classNames from 'classnames';
 import moment from 'jalali-moment';
 import * as React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
+import { IOptions } from '../../../pages/domain';
 import styles from './DomainService.module.scss';
 
-export interface DomainServiceProps {
-  domainsData: {
-    status: boolean;
-    items: {
-      id: number;
-      tld: string;
-      new: number;
-      renew: number;
-      transfer: number;
-    }[];
-  };
-  service: any;
+interface IProps {
+  totalDomainRegistered: number;
+  supportedTlds: number;
+  options: IOptions;
 }
 
-export interface DomainServiceState {}
-
-class DomainService extends React.Component<
-  DomainServiceProps,
-  DomainServiceState
-> {
-  constructor(props: DomainServiceProps) {
-    super(props);
-    this.state = {};
-  }
+class DomainService extends React.Component<IProps> {
   render() {
     return (
       <section className={classNames(styles.bgService, 'mt-4')}>
@@ -39,7 +23,7 @@ class DomainService extends React.Component<
                 <div className={styles.cardBody}>
                   <h5 className={styles.cardTitle}>دامنه های ثبت شده</h5>
                   <h4 className={styles.servicePropertiesNumber}>
-                    +{this.props.service.registeredDomains}
+                    +{this.props.totalDomainRegistered}
                   </h4>
                 </div>
               </div>
@@ -50,7 +34,7 @@ class DomainService extends React.Component<
                 <div className={styles.cardBody}>
                   <h5 className={styles.cardTitle}>پسوند های پشتیبانی شده</h5>
                   <h4 className={styles.servicePropertiesNumber}>
-                    +{this.props.domainsData.items.length}
+                    +{this.props.supportedTlds}
                   </h4>
                 </div>
               </div>
@@ -63,7 +47,7 @@ class DomainService extends React.Component<
                   <h4 className={styles.servicePropertiesNumber}>
                     بیش از{' '}
                     {moment().diff(
-                      moment(this.props.service.domainRegistrationHistory),
+                      moment(this.props.options.start_time * 1000),
                       'years'
                     )}{' '}
                     سال

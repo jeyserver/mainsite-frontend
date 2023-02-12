@@ -1,9 +1,11 @@
+import { ICurrency } from '../../../../pages/_app';
+
 export interface IHostPlan {
   id: number;
   title: string;
   price: number;
   setup: number;
-  currency: number;
+  currency: number | ICurrency;
   country: {
     code: string;
     name: string;

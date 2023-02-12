@@ -47,7 +47,7 @@ class Footer extends React.Component<IProps, IState> {
 
   render() {
     return (
-      <footer className={styles.footer}>
+      <footer id="footer" className={styles.footer}>
         <Container className={styles.topFooter} fluid="lg">
           <Row>
             <Col xs={12} md={3}>
@@ -158,7 +158,10 @@ class Footer extends React.Component<IProps, IState> {
                   <div className={styles.info}>
                     ما را در شبکه های اجتماعی دنبال کنید:
                   </div>
-                  <div className={styles.socialNetworksLinks}>
+                  <div
+                    className={styles.socialNetworksLinks}
+                    id="footer-social-networks"
+                  >
                     <div>
                       <a href="https://www.instagram.com/jeyservercom">
                         <i className="fab fa-instagram"></i>
@@ -209,7 +212,7 @@ class Footer extends React.Component<IProps, IState> {
                 md={6}
                 className="d-flex justify-content-center justify-content-md-end"
               >
-                <ul className={styles.bottomLinksList}>
+                <ul className={styles.bottomLinksList} id="footer-page-links">
                   <li>
                     <Link href="/blog">
                       <a>

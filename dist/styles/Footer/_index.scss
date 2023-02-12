@@ -1,0 +1,43 @@
+html[data-theme='dark'] {
+  #blog-category,
+  #blog-post,
+  #blog-tag {
+    #footer {
+      background-color: #343b4d;
+      background-image: none;
+      i {
+        color: #ffffff;
+      }
+      h3 {
+        color: #ffffff;
+      }
+      p,
+      li,
+      span,
+      div,
+      button {
+        color: #fffcfc;
+      }
+      #footer-social-networks {
+        > div {
+          a {
+            i {
+              color: #070b67;
+            }
+            &:hover {
+              i {
+                color: #ffffff;
+              }
+            }
+          }
+        }
+      }
+
+      #footer-page-links {
+        i {
+          color: #f49c15;
+        }
+      }
+    }
+  }
+}

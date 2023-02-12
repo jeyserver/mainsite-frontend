@@ -1,71 +1,54 @@
 import * as React from 'react';
-import {
-  Row,
-  Col,
-  Table,
-  OverlayTrigger,
-  Tooltip,
-  Button,
-} from 'react-bootstrap';
+import { Col, Table, OverlayTrigger, Tooltip, Button } from 'react-bootstrap';
 import Link from 'next/link';
 import styles from './BackupHostingTable.module.scss';
-import ReactStars from 'react-rating-stars-component';
 import classNames from 'classnames';
-import { formatPrice } from '../../../helper/formatPrice';
-import CountryFlagTooltip from '../../../helper/components/CountryFlagTooltip';
+import CountryFlagTooltip from '../../../../helper/components/CountryFlagTooltip/CountryFlagTooltip';
+import { IHostPlan } from '../../../../helper/types/products/Host/plan';
+import translateCountryNameToPersian from '../../../../helper/translateCountryNameToPersian';
+import { formatSpace } from '../../../../helper/formatSpace';
+import translateHostPanel from '../../../../helper/translators/translateHostPanel';
+import StarredCell from '../../TablesUtils/StarredCell';
+import { connect } from 'react-redux';
+import { RootState } from '../../../../store';
+import { formatPriceWithCurrency } from '../../../../store/Currencies';
+import BackupsCell from '../../TablesUtils/BackupsCell';
 
-export interface BackupHostingTableProps {
-  data: any;
+interface IProps {
+  plans: IHostPlan[];
   hideTopInfo: boolean;
+  currencies: RootState['currencies'];
 }
 
-export interface BackupHostingTableState {
+interface IState {
   isMoreInfoOpen: boolean;
 }
 
-class BackupHostingTable extends React.Component<
-  BackupHostingTableProps,
-  BackupHostingTableState
-> {
-  constructor(props: BackupHostingTableProps) {
+class BackupHostingTable extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
     this.state = { isMoreInfoOpen: false };
-    this.toggleMoreInfo = this.toggleMoreInfo.bind(this);
-  }
-
-  toggleMoreInfo() {
-    this.setState((prev) => {
-      return { isMoreInfoOpen: !prev.isMoreInfoOpen };
-    });
   }
 
   render() {
+    const maximumCpu = Math.max(...this.props.plans.map((host) => host.cpu));
+    const maximumRam = Math.max(...this.props.plans.map((host) => host.ram));
+    const maximumIO = Math.max(...this.props.plans.map((host) => host.IO));
+    const maximumEntryProcess = Math.max(
+      ...this.props.plans.map((host) => host.entryprocess)
+    );
+
     return (
       <Col xs={12}>
         <div className={styles.tittleLine} hidden={this.props.hideTopInfo}>
           <h5>
             میزبانی هاست بک آپ <br />
-            <CountryFlagTooltip
-              name={this.props.data.country_name_en}
-              flag={{
-                address: this.props.data.flag,
-                width: 24,
-                height: 24,
-              }}
-            />
-            {this.props.data.country_name_fa}
+            <CountryFlagTooltip country={this.props.plans[0].country} />
+            {translateCountryNameToPersian(this.props.plans[0].country.code)}
           </h5>
           <div className={styles.divider}>
             <div />
           </div>
-          {this.props.data.info && (
-            <div
-              className={styles.content}
-              dangerouslySetInnerHTML={{
-                __html: this.props.data.info,
-              }}
-            ></div>
-          )}
         </div>
         <Table className={styles.table}>
           <thead>
@@ -136,17 +119,18 @@ class BackupHostingTable extends React.Component<
                 className={classNames({
                   [styles.jHidden]: this.state.isMoreInfoOpen,
                 })}
-                style={{ lineHeight: '75px' }}
+                style={{
+                  lineHeight:
+                    this.props.plans.some((i) => i.backups.length > 0) &&
+                    '75px',
+                }}
               >
                 دوره های بکاپ گیری
               </th>
               <OverlayTrigger
                 placement="top"
                 overlay={
-                  <Tooltip
-                    id={`${this.props.data.country_name_en}-tooltip`}
-                    className={styles.tooltip}
-                  >
+                  <Tooltip id="cpu-tooltip" className={styles.tooltip}>
                     درصد استفاده از پردازشگر
                   </Tooltip>
                 }
@@ -156,10 +140,7 @@ class BackupHostingTable extends React.Component<
               <OverlayTrigger
                 placement="top"
                 overlay={
-                  <Tooltip
-                    id={`${this.props.data.country_name_en}-tooltip`}
-                    className={styles.tooltip}
-                  >
+                  <Tooltip id="ram-tooltip" className={styles.tooltip}>
                     حافظه موقت
                   </Tooltip>
                 }
@@ -169,10 +150,7 @@ class BackupHostingTable extends React.Component<
               <OverlayTrigger
                 placement="top"
                 overlay={
-                  <Tooltip
-                    id={`${this.props.data.country_name_en}-tooltip`}
-                    className={styles.tooltip}
-                  >
+                  <Tooltip id="io-tooltip" className={styles.tooltip}>
                     سرعت خواندن و نوشتن اطلاعات
                   </Tooltip>
                 }
@@ -183,7 +161,7 @@ class BackupHostingTable extends React.Component<
                 placement="top"
                 overlay={
                   <Tooltip
-                    id={`${this.props.data.country_name_en}-tooltip`}
+                    id="entry-process-tooltip"
                     className={styles.tooltip}
                   >
                     تعداد پردازش های همزمان
@@ -200,7 +178,11 @@ class BackupHostingTable extends React.Component<
                 <button
                   type="button"
                   className={styles.moreInfoBtn}
-                  onClick={this.toggleMoreInfo}
+                  onClick={() => {
+                    this.setState((prev) => {
+                      return { isMoreInfoOpen: !prev.isMoreInfoOpen };
+                    });
+                  }}
                 >
                   اطلاعات بیشتر{' '}
                 </button>
@@ -208,28 +190,25 @@ class BackupHostingTable extends React.Component<
             </tr>
           </thead>
           <tbody>
-            {this.props.data.panels.map((panel) => (
-              <tr key={panel.id}>
-                <td>{panel.title}</td>
-                <td>{panel.space}</td>
+            {this.props.plans.map((plan) => (
+              <tr key={plan.id}>
+                <td>{plan.title}</td>
+                <td>{formatSpace(plan.space, 'fa', true)}</td>
                 <td>
-                  {panel.bandwidth === '-' ? (
+                  {!plan.bandwidth ? (
                     <span className={styles.jUnlimited}>بدون محدودیت</span>
                   ) : (
-                    panel.bandwidth
+                    plan.bandwidth
                   )}
                 </td>
-                <td>{panel.host_panel}</td>
+                <td>{translateHostPanel(plan.cp)}</td>
                 <td
                   className={classNames({
-                    [styles.check]: panel.ssl,
+                    [styles.check]: true,
                   })}
                 >
-                  {panel.ssl ? (
-                    <i className="far fa-check-square"></i>
-                  ) : (
-                    <i className="fa fa-times fa-lg" />
-                  )}
+                  <i className="far fa-check-square"></i>
+                  {/* <i className="fa fa-times fa-lg" /> */}
                 </td>
 
                 <td
@@ -237,18 +216,18 @@ class BackupHostingTable extends React.Component<
                     [styles.open]: this.state.isMoreInfoOpen,
                   })}
                 >
-                  {panel.park_domains === '-' ? (
+                  {!plan.parkdomain ? (
                     <span className={styles.jUnlimited}>بدون محدودیت</span>
                   ) : (
-                    `${panel.park_domains} عدد`
+                    `${plan.parkdomain} عدد`
                   )}
                 </td>
 
                 <td>
-                  {panel.additional_sites === '-' ? (
+                  {!plan.addondomain ? (
                     <span className={styles.jUnlimited}>بدون محدودیت</span>
                   ) : (
-                    `${panel.additional_sites} عدد`
+                    `${plan.addondomain} عدد`
                   )}
                 </td>
 
@@ -257,10 +236,10 @@ class BackupHostingTable extends React.Component<
                     [styles.open]: this.state.isMoreInfoOpen,
                   })}
                 >
-                  {panel.subdomains === '-' ? (
+                  {!plan.subdomain ? (
                     <span className={styles.jUnlimited}>بدون محدودیت</span>
                   ) : (
-                    panel.subdomains
+                    `${plan.subdomain} عدد`
                   )}
                 </td>
                 <td
@@ -268,10 +247,10 @@ class BackupHostingTable extends React.Component<
                     [styles.open]: this.state.isMoreInfoOpen,
                   })}
                 >
-                  {panel.emails === '-' ? (
+                  {!plan.email ? (
                     <span className={styles.jUnlimited}>بدون محدودیت</span>
                   ) : (
-                    panel.emails
+                    `${plan.email} عدد`
                   )}
                 </td>
                 <td
@@ -279,10 +258,10 @@ class BackupHostingTable extends React.Component<
                     [styles.open]: this.state.isMoreInfoOpen,
                   })}
                 >
-                  {panel.ftp === '-' ? (
+                  {!plan.ftp ? (
                     <span className={styles.jUnlimited}>بدون محدودیت</span>
                   ) : (
-                    panel.ftp
+                    `${plan.ftp} عدد`
                   )}
                 </td>
                 <td
@@ -290,10 +269,10 @@ class BackupHostingTable extends React.Component<
                     [styles.open]: this.state.isMoreInfoOpen,
                   })}
                 >
-                  {panel.database === '-' ? (
+                  {!plan.dbs ? (
                     <span className={styles.jUnlimited}>بدون محدودیت</span>
                   ) : (
-                    panel.database
+                    `${plan.dbs} عدد`
                   )}
                 </td>
                 <td
@@ -301,7 +280,7 @@ class BackupHostingTable extends React.Component<
                     [styles.open]: this.state.isMoreInfoOpen,
                   })}
                 >
-                  {panel.daily_backup ? (
+                  {plan.backups[2] ? (
                     <i
                       className={classNames(
                         'far fa-check-square',
@@ -317,7 +296,7 @@ class BackupHostingTable extends React.Component<
                     [styles.open]: this.state.isMoreInfoOpen,
                   })}
                 >
-                  {panel.monthly_backup ? (
+                  {plan.backups[1] ? (
                     <i
                       className={classNames(
                         'far fa-check-square',
@@ -333,7 +312,7 @@ class BackupHostingTable extends React.Component<
                     [styles.open]: this.state.isMoreInfoOpen,
                   })}
                 >
-                  {panel.annual_backup ? (
+                  {plan.backups[0] ? (
                     <i
                       className={classNames(
                         'far fa-check-square',
@@ -348,159 +327,73 @@ class BackupHostingTable extends React.Component<
                   className={classNames({
                     [styles.jHidden]: this.state.isMoreInfoOpen,
                   })}
+                  style={{
+                    height:
+                      this.props.plans.some((i) => i.backups.length > 0) &&
+                      !this.state.isMoreInfoOpen &&
+                      '92px',
+                  }}
                 >
-                  {panel.daily_backup && (
-                    <div>
-                      <i
-                        className={classNames(
-                          'far fa-check-square',
-                          styles.check
-                        )}
-                      ></i>{' '}
-                      روزانه
-                    </div>
-                  )}
-                  {panel.monthly_backup && (
-                    <div>
-                      <i
-                        className={classNames(
-                          'far fa-check-square',
-                          styles.check
-                        )}
-                      ></i>{' '}
-                      ماهانه
-                    </div>
-                  )}
-                  {panel.annual_backup && (
-                    <div>
-                      <i
-                        className={classNames(
-                          'far fa-check-square',
-                          styles.check
-                        )}
-                      ></i>{' '}
-                      سالیانه
-                    </div>
-                  )}
+                  <BackupsCell backups={plan.backups} />
                 </td>
+                {plan.cpu ? (
+                  <StarredCell
+                    text={
+                      plan.cpu < 100
+                        ? `% ${plan.cpu} یک هسته`
+                        : `${plan.cpu / 100} هسته`
+                    }
+                    star={(plan.cpu / maximumCpu) * 5}
+                  />
+                ) : (
+                  <StarredCell text={null} star={5} />
+                )}
+                {plan.ram ? (
+                  <StarredCell
+                    text={formatSpace(plan.ram, 'fa')}
+                    star={(plan.ram / maximumRam) * 5}
+                  />
+                ) : (
+                  <StarredCell text={null} star={5} />
+                )}
+                {plan.IO ? (
+                  <StarredCell
+                    text={`${plan.IO} مگابایت بر ثانیه`}
+                    star={(plan.IO / maximumIO) * 5}
+                  />
+                ) : (
+                  <StarredCell text={null} star={5} />
+                )}
+                {plan.entryprocess ? (
+                  <StarredCell
+                    text={`${plan.entryprocess} عدد`}
+                    star={(plan.entryprocess / maximumEntryProcess) * 5}
+                  />
+                ) : (
+                  <StarredCell text={null} star={5} />
+                )}
+                <td>OpenLightSpeed</td>
+                <td>SSD</td>
                 <td>
-                  {panel.cpu.value === '-' ? (
-                    <span className={styles.jUnlimited}>بدون محدودیت</span>
-                  ) : (
-                    panel.cpu.value
-                  )}
+                  {formatPriceWithCurrency(
+                    this.props.currencies,
+                    plan.currency,
+                    plan.price
+                  )}{' '}
+                  ماهیانه
                   <br />
-                  <div className={styles.scoreWrapper}>
-                    <ReactStars
-                      size={50}
-                      count={5}
-                      value={panel.cpu.score}
-                      edit={false}
-                      emptyIcon={
-                        <i
-                          className={classNames(
-                            'far fa-star',
-                            styles.emptyIcon
-                          )}
-                        />
-                      }
-                      filledIcon={<i className="fa fa-star" />}
-                    />
-                  </div>
+                  {this.props.hideTopInfo &&
+                    `${formatPriceWithCurrency(
+                      this.props.currencies,
+                      plan.currency,
+                      plan.price * 12
+                    )} سالیانه`}
                 </td>
                 <td>
-                  {panel.ram.value === '-' ? (
-                    <span className={styles.jUnlimited}>بدون محدودیت</span>
-                  ) : (
-                    panel.ram.value
-                  )}
-                  <br />
-                  <div className={styles.scoreWrapper}>
-                    <ReactStars
-                      size={50}
-                      count={5}
-                      value={panel.ram.score}
-                      edit={false}
-                      emptyIcon={
-                        <i
-                          className={classNames(
-                            'far fa-star',
-                            styles.emptyIcon
-                          )}
-                        />
-                      }
-                      filledIcon={<i className="fa fa-star" />}
-                    />
-                  </div>
-                </td>
-                <td>
-                  {panel.io.value === '-' ? (
-                    <span className={styles.jUnlimited}>بدون محدودیت</span>
-                  ) : (
-                    panel.io.value
-                  )}
-                  <br />
-                  <div className={styles.scoreWrapper}>
-                    <ReactStars
-                      size={50}
-                      count={5}
-                      value={panel.io.score}
-                      edit={false}
-                      emptyIcon={
-                        <i
-                          className={classNames(
-                            'far fa-star',
-                            styles.emptyIcon
-                          )}
-                        />
-                      }
-                      filledIcon={<i className="fa fa-star" />}
-                    />
-                  </div>
-                </td>
-                <td>
-                  {panel.entry_process.value === '-' ? (
-                    <span className={styles.jUnlimited}>بدون محدودیت</span>
-                  ) : (
-                    panel.entry_process.value
-                  )}
-
-                  <br />
-                  <div className={styles.scoreWrapper}>
-                    <ReactStars
-                      size={50}
-                      count={5}
-                      value={panel.entry_process.score}
-                      edit={false}
-                      emptyIcon={
-                        <i
-                          className={classNames(
-                            'far fa-star',
-                            styles.emptyIcon
-                          )}
-                        />
-                      }
-                      filledIcon={<i className="fa fa-star" />}
-                    />
-                  </div>
-                </td>
-                <td>{panel.web_server}</td>
-                <td>{panel.hard_server}</td>
-                <td>
-                  {formatPrice(panel.price)} {panel.currency.title} ماهیانه
-                </td>
-                <td>
-                  {panel.active ? (
-                    <Link href={`/order/server/vps/${panel.id}`}>
+                  {plan.is_available ? (
+                    <Link href={`/order/hosting/linux/${plan.id}`}>
                       <a className={styles.orderLink}>
-                        <CountryFlagTooltip
-                          name={this.props.data.country_name_en}
-                          flag={{
-                            address: this.props.data.flag,
-                            width: 24,
-                            height: 24,
-                          }}
-                        />
+                        <CountryFlagTooltip country={plan.country} />
                         <span>سفارش</span>{' '}
                       </a>
                     </Link>
@@ -518,8 +411,8 @@ class BackupHostingTable extends React.Component<
                       <span className={styles.tooltipWrapper}>
                         <Button className={styles.orderLink} disabled>
                           <img
-                            src={this.props.data.flag}
-                            alt={this.props.data.country_name_en}
+                            src={`/images/flags/${plan.country.code.toLocaleLowerCase()}.svg`}
+                            alt={plan.country.name}
                           />
                           سفارش{' '}
                         </Button>
@@ -531,10 +424,13 @@ class BackupHostingTable extends React.Component<
             ))}
           </tbody>
         </Table>
-        {this.props.data.table_ps && <div>*** {this.props.data.table_ps}</div>}
       </Col>
     );
   }
 }
 
-export default BackupHostingTable;
+export default connect((state: RootState) => {
+  return {
+    currencies: state.currencies,
+  };
+})(BackupHostingTable);

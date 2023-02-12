@@ -2,20 +2,9 @@ import * as React from 'react';
 import Head from 'next/head';
 import HostingFaq from '../../components/HostsPricing/HostingFaq/HostingFaq';
 import Layout from '../../components/Layout/Layout';
-import { pageProps } from '../_app';
+import { IPageProps } from '../_app';
 
-export interface IndexProps extends pageProps {
-  navData: any;
-}
-
-export interface IndexState {}
-
-class Index extends React.Component<IndexProps, IndexState> {
-  constructor(props: IndexProps) {
-    super(props);
-    this.state = {};
-  }
-
+class Index extends React.Component<IPageProps> {
   render() {
     return (
       <div dir="rtl">
@@ -25,12 +14,8 @@ class Index extends React.Component<IndexProps, IndexState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Layout
-          postsForFooter={this.props.postsForFooter}
-          domainsForNavbar={this.props.domainsForNavbar}
-          licensesForNavbar={this.props.licensesForNavbar}
-        >
-          <HostingFaq navData={this.props.navData} />
+        <Layout header={this.props.header} footer={this.props.footer}>
+          <HostingFaq />
         </Layout>
       </div>
     );
@@ -46,13 +31,13 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const navDataRes = await fetch(
-    'https://jsonblob.com/api/jsonBlob/14b7037a-e155-11eb-9c37-51d866f9d6a7'
+  const respone = await fetch(
+    `${process.env.SITE_URL}/${locale}/hosting/faq?ajax=1`
   );
-  const navData = await navDataRes.json();
+  const data = await respone.json();
 
   return {
-    props: { navData },
+    props: { ...data },
   };
 }
 

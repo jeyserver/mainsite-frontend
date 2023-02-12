@@ -7,39 +7,53 @@ import HostFaq from '../HostFaq/HostFaq';
 import styles from '../PageInfoStyles.module.scss';
 import Link from 'next/link';
 import { Dropdown } from 'react-bootstrap';
+import { IHostPlan } from '../../../helper/types/products/Host/plan';
+import hosts from '../../../lib/products/host';
 
-export interface VPSHostingProps {
-  VPSHosts: any;
-  navData: any;
+interface IProps {
+  plans: IHostPlan[];
   appIsScrolling: boolean;
   switchAppIsScrolling: () => void;
 }
 
-export interface VPSHostingState {
-  isNavFixed: boolean;
+interface IState {
+  sepratedPlans: IHostPlan[][];
 }
 
-let lastScrollTop = 0;
-
-class VPSHosting extends React.Component<VPSHostingProps, VPSHostingState> {
-  constructor(props: VPSHostingProps) {
+class VPSHosting extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
     this.state = {
-      isNavFixed: false,
+      sepratedPlans: Object.values(
+        this.props.plans.reduce((accumulator, currentValue) => {
+          const co = currentValue.cp;
+
+          if (accumulator && accumulator[co]) {
+            accumulator[co] = [...accumulator[co], currentValue];
+          } else {
+            accumulator[co] = [currentValue];
+          }
+
+          return accumulator;
+        }, {})
+      ),
     };
     this.onScroll = this.onScroll.bind(this);
   }
 
+  lastScrollTop = 0;
+
   onScroll() {
     const nav = document.querySelector('#vps-nav') as HTMLDivElement;
-
     const mainNavLinks = document.querySelectorAll(
       '#vps-nav li[data-main="true"] a'
     );
-
+    const emptySpaceForNav = document.querySelector(
+      '#emptySpaceForNav'
+    ) as HTMLDivElement;
     let st = window.pageYOffset || document.documentElement.scrollTop;
 
-    if (st > lastScrollTop) {
+    if (st > this.lastScrollTop) {
       // downscroll code
       nav.style.top = '0px';
     } else {
@@ -56,11 +70,11 @@ class VPSHosting extends React.Component<VPSHostingProps, VPSHostingState> {
     if (fromTop > 600) {
       nav.style.position = 'fixed';
       nav.style.margin = '0';
-      this.setState({ isNavFixed: true });
+      emptySpaceForNav.style.display = 'block';
     } else {
       nav.style.position = 'static';
       nav.style.margin = '30px 0';
-      this.setState({ isNavFixed: false });
+      emptySpaceForNav.style.display = 'none';
     }
 
     mainNavLinks.forEach((link: any) => {
@@ -80,12 +94,11 @@ class VPSHosting extends React.Component<VPSHostingProps, VPSHostingState> {
       }
     });
 
-    lastScrollTop = st <= 0 ? 0 : st;
+    this.lastScrollTop = st <= 0 ? 0 : st;
   }
 
   componentDidMount() {
     window.addEventListener('scroll', this.onScroll, false);
-
     this.props.switchAppIsScrolling();
   }
 
@@ -162,29 +175,26 @@ class VPSHosting extends React.Component<VPSHostingProps, VPSHostingState> {
           </div>
         </Container>
         <Container>
-          {this.state.isNavFixed && (
-            <div
-              style={{
-                height:
-                  document.querySelector<HTMLDivElement>('#vps-nav')
-                    .clientHeight,
-              }}
-              className={styles.emptySpaceForNav}
-            ></div>
-          )}
+          <div
+            style={{
+              height: '55px',
+            }}
+            id="emptySpaceForNav"
+            className={styles.emptySpaceForNav}
+          ></div>
 
           <Row className={styles.stickyNav} id="vps-nav">
             <Col xs={12} className={styles.mnavigation}>
               <ul className={styles.nav}>
-                {this.props.VPSHosts.map((panels, index) => (
-                  <li key={panels.license_en} data-main="true">
+                {hosts.linux_vps_hosts.map((panels, index) => (
+                  <li key={panels.link} data-main="true">
                     <a
-                      href={`#server_vps_${panels.license_en}`}
+                      href={`#${panels.link}`}
                       onClick={() => {
                         this.props.switchAppIsScrolling();
                       }}
                     >
-                      هاستینگ نیمه اختصاصی {panels.license_fa}
+                      هاستینگ نیمه اختصاصی {panels.title}
                     </a>
                   </li>
                 ))}
@@ -198,16 +208,14 @@ class VPSHosting extends React.Component<VPSHostingProps, VPSHostingState> {
                     هاست اشتراکی لینوکس حرفه ای
                   </Dropdown.Toggle>
                   <Dropdown.Menu className={styles.dropdownMenu} align="right">
-                    {this.props.navData.professional_linux_shared_hosts.map(
-                      (host) => (
-                        <Link
-                          key={host.link}
-                          href={`/hosting/linux/professional#${host.link}`}
-                        >
-                          <a>هاست اشتراکی حرفه ای {host.title}</a>
-                        </Link>
-                      )
-                    )}
+                    {hosts.professional_linux_shared_hosts.map((host) => (
+                      <Link
+                        key={host.link}
+                        href={`/hosting/linux/professional#${host.link}`}
+                      >
+                        <a>هاست اشتراکی حرفه ای {host.title}</a>
+                      </Link>
+                    ))}
                   </Dropdown.Menu>
                 </Dropdown>
                 <Dropdown className={styles.dropdown}>
@@ -215,16 +223,14 @@ class VPSHosting extends React.Component<VPSHostingProps, VPSHostingState> {
                     هاست اشتراکی لینوکس ساده
                   </Dropdown.Toggle>
                   <Dropdown.Menu className={styles.dropdownMenu} align="right">
-                    {this.props.navData.standard_linux_shared_hosts.map(
-                      (host) => (
-                        <Link
-                          key={host.link}
-                          href={`/hosting/linux/professional#${host.link}`}
-                        >
-                          <a>هاست اشتراکی ساده {host.title}</a>
-                        </Link>
-                      )
-                    )}
+                    {hosts.standard_linux_shared_hosts.map((host) => (
+                      <Link
+                        key={host.link}
+                        href={`/hosting/linux/professional#${host.link}`}
+                      >
+                        <a>هاست اشتراکی ساده {host.title}</a>
+                      </Link>
+                    ))}
                   </Dropdown.Menu>
                 </Dropdown>
               </ul>
@@ -234,9 +240,9 @@ class VPSHosting extends React.Component<VPSHostingProps, VPSHostingState> {
         <Container>
           <Row>
             <Col>
-              {this.props.VPSHosts.map((panels, index) => (
+              {this.state.sepratedPlans.reverse().map((plans, index) => (
                 <div key={index}>
-                  <VPSHostingTable data={panels} />
+                  <VPSHostingTable plans={plans} />
                   <div className={styles.tableBottomSpace}></div>
                 </div>
               ))}

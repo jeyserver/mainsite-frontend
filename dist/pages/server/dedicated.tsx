@@ -2,23 +2,14 @@ import * as React from 'react';
 import Head from 'next/head';
 import ServerDedicated from '../../components/Dedicated/ServerDedicated';
 import Layout from '../../components/Layout/Layout';
-import { pageProps } from './../_app';
+import { IPageProps } from './../_app';
 
-export interface IndexProps extends pageProps {
-  dedicated: {
-    status: boolean;
-    countries: { code: string; name: string }[];
-  };
+interface IProps extends IPageProps {
+  status: boolean;
+  countries: { code: string; name: string; is_recommended: boolean }[];
 }
 
-export interface IndexState {}
-
-class Index extends React.Component<IndexProps, IndexState> {
-  constructor(props: IndexProps) {
-    super(props);
-    this.state = {};
-  }
-
+class Index extends React.Component<IProps> {
   render() {
     return (
       <div dir="rtl">
@@ -28,12 +19,8 @@ class Index extends React.Component<IndexProps, IndexState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Layout
-          postsForFooter={this.props.postsForFooter}
-          domainsForNavbar={this.props.domainsForNavbar}
-          licensesForNavbar={this.props.licensesForNavbar}
-        >
-          <ServerDedicated dedicated={this.props.dedicated} />
+        <Layout header={this.props.header} footer={this.props.footer}>
+          <ServerDedicated countries={this.props.countries} />
         </Layout>
       </div>
     );
@@ -49,14 +36,14 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const dedicatedRes = await fetch(
-    `${process.env.SCHEMA}://${process.env.DOMAIN}/fa/server/dedicated?ajax=1`
+  const respone = await fetch(
+    `${process.env.SITE_URL}/${locale}/server/dedicated?ajax=1`
   );
-  const dedicated = await dedicatedRes.json();
+  const data = await respone.json();
 
   return {
     props: {
-      dedicated,
+      ...data,
     },
   };
 }

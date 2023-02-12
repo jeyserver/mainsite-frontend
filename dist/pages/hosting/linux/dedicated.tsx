@@ -2,43 +2,38 @@ import * as React from 'react';
 import Head from 'next/head';
 import DedicatedHosting from '../../../components/HostsPricing/DedicatedHosting/DedicatedHosting';
 import Layout from '../../../components/Layout/Layout';
-import { pageProps } from '../../_app';
+import { IPageProps } from '../../_app';
+import { IHostPlan } from '../../../helper/types/products/Host/plan';
 
-export interface IndexProps extends pageProps {
-  dedicatedHosts: any;
-  navData: any;
+interface IProps extends IPageProps {
+  plans: IHostPlan[];
 }
 
-export interface IndexState {
+interface IState {
   appIsScrolling: boolean;
 }
 
-let appIsScrollingTimeout;
-
-class Index extends React.Component<IndexProps, IndexState> {
-  constructor(props: IndexProps) {
+class Index extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
     this.state = {
       appIsScrolling: false,
     };
-    this.switchAppIsScrolling = this.switchAppIsScrolling.bind(this);
   }
 
-  switchAppIsScrolling() {
-    clearTimeout(appIsScrollingTimeout);
-    this.setState((prev) => {
-      return { appIsScrolling: true };
-    });
+  appIsScrollingTimeout = null;
 
-    appIsScrollingTimeout = setTimeout(() => {
-      this.setState((prev) => {
-        return { appIsScrolling: false };
-      });
+  switchAppIsScrolling() {
+    clearTimeout(this.appIsScrollingTimeout);
+    this.setState({ appIsScrolling: true });
+
+    this.appIsScrollingTimeout = setTimeout(() => {
+      this.setState({ appIsScrolling: false });
     }, 1000);
   }
 
   componentWillUnmount() {
-    clearTimeout(appIsScrollingTimeout);
+    clearTimeout(this.appIsScrollingTimeout);
   }
 
   render() {
@@ -51,16 +46,14 @@ class Index extends React.Component<IndexProps, IndexState> {
         </Head>
 
         <Layout
-          postsForFooter={this.props.postsForFooter}
+          header={this.props.header}
+          footer={this.props.footer}
           appIsScrolling={this.state.appIsScrolling}
-          domainsForNavbar={this.props.domainsForNavbar}
-          licensesForNavbar={this.props.licensesForNavbar}
         >
           <DedicatedHosting
-            dedicatedHosts={this.props.dedicatedHosts}
+            plans={this.props.plans}
             appIsScrolling={this.state.appIsScrolling}
-            switchAppIsScrolling={this.switchAppIsScrolling}
-            navData={this.props.navData}
+            switchAppIsScrolling={() => this.switchAppIsScrolling()}
           />
         </Layout>
       </div>
@@ -77,20 +70,14 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const dedicatedHostsRes = await fetch(
-    `https://jsonblob.com/api/jsonBlob/b3d20436-e15f-11eb-9c37-a73fdfee3f75`
+  const respone = await fetch(
+    `${process.env.SITE_URL}/${locale}/hosting/linux/dedicated?ajax=1`
   );
-  const dedicatedHosts = await dedicatedHostsRes.json();
-
-  const navDataRes = await fetch(
-    'https://jsonblob.com/api/jsonBlob/14b7037a-e155-11eb-9c37-51d866f9d6a7'
-  );
-  const navData = await navDataRes.json();
+  const data = await respone.json();
 
   return {
     props: {
-      dedicatedHosts,
-      navData,
+      ...data,
     },
   };
 }

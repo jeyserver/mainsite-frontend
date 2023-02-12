@@ -1,0 +1,31 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  > div {
+    > div {
+      display: flex;
+      flex-direction: row;
+      > span {
+        height: min-content;
+        font-size: 13px !important;
+        > i {
+          font-size: 13px;
+          transform: scaleX(-1);
+        }
+        .emptyIcon {
+          color: #888;
+        }
+      }
+    }
+  }
+
+  .unlimited {
+    font-size: 13px;
+    white-space: nowrap;
+    line-height: 25px;
+    text-align: center;
+    font-family: BKoodakBold;
+    color: #798f0e;
+  }
+}

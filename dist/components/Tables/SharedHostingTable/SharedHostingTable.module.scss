@@ -3,12 +3,15 @@
     text-align: center;
     margin-bottom: 10px;
     line-height: 24px;
-    letter-spacing: 1px;
     margin-top: 0;
     font-size: 15px;
     font-weight: 400;
     font-family: BKoodakBold;
     color: #313131;
+  }
+
+  .countryName {
+    margin-right: 10px;
   }
 
   .divider {
@@ -261,6 +264,7 @@
                 font-size: 13px !important;
                 > i {
                   font-size: 13px;
+                  transform: scaleX(-1);
                 }
                 .emptyIcon {
                   color: #888;

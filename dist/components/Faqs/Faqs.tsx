@@ -4,79 +4,79 @@ import { Col, Container, Row } from 'react-bootstrap';
 import PagesHeader from '../PagesHeader/PagesHeader';
 import styles from './Faqs.module.scss';
 
-export interface FaqsProps {
+interface IProps {
   appIsScrolling: boolean;
   switchAppIsScrolling: () => void;
 }
 
-export interface FaqsState {
+interface IState {
   isNavFixed: boolean;
 }
 
-class Faqs extends React.Component<FaqsProps, FaqsState> {
-  constructor(props: FaqsProps) {
+class Faqs extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
     this.state = {
       isNavFixed: false,
     };
   }
+  lastScrollTop = 0;
 
-  componentDidMount() {
-    let lastScrollTop = 0;
-
+  onScroll() {
     const nav = document.querySelector('#faqs-nav') as HTMLDivElement;
 
     const mainNavLinks = document.querySelectorAll('#faqs-nav li a');
 
-    window.addEventListener(
-      'scroll',
-      () => {
-        var st = window.pageYOffset || document.documentElement.scrollTop;
-        if (st > lastScrollTop) {
-          // downscroll code
-          nav.style.top = '0px';
-        } else {
-          // upscroll code
-          if (!this.props.appIsScrolling) {
-            nav.style.top = '80px';
+    var st = window.pageYOffset || document.documentElement.scrollTop;
+    if (st > this.lastScrollTop) {
+      // downscroll code
+      nav.style.top = '0px';
+    } else {
+      // upscroll code
+      if (!this.props.appIsScrolling) {
+        nav.style.top = '80px';
+      } else {
+        nav.style.top = '0px';
+      }
+    }
+
+    let fromTop = window.scrollY - 120;
+
+    if (fromTop > 280) {
+      nav.style.position = 'fixed';
+      this.setState({ isNavFixed: true });
+    } else {
+      nav.style.position = 'static';
+      this.setState({ isNavFixed: false });
+    }
+
+    mainNavLinks.forEach((link: any) => {
+      if (link.hash) {
+        let section = document.querySelector(link.hash);
+
+        if (section) {
+          if (
+            section.offsetTop - 10 <= fromTop &&
+            section.offsetTop + section.offsetHeight > fromTop
+          ) {
+            link.dataset.active = 'true';
           } else {
-            nav.style.top = '0px';
+            link.dataset.active = 'false';
           }
         }
+      }
+    });
 
-        let fromTop = window.scrollY - 120;
+    this.lastScrollTop = st <= 0 ? 0 : st;
+  }
 
-        if (fromTop > 280) {
-          nav.style.position = 'fixed';
-          this.setState({ isNavFixed: true });
-        } else {
-          nav.style.position = 'static';
-          this.setState({ isNavFixed: false });
-        }
-
-        mainNavLinks.forEach((link: any) => {
-          if (link.hash) {
-            let section = document.querySelector(link.hash);
-
-            if (section) {
-              if (
-                section.offsetTop - 10 <= fromTop &&
-                section.offsetTop + section.offsetHeight > fromTop
-              ) {
-                link.dataset.active = 'true';
-              } else {
-                link.dataset.active = 'false';
-              }
-            }
-          }
-        });
-
-        lastScrollTop = st <= 0 ? 0 : st;
-      },
-      false
-    );
-
+  componentDidMount() {
+    window.addEventListener('scroll', () => this.onScroll(), false);
     this.props.switchAppIsScrolling();
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('scroll', () => this.onScroll(), false);
   }
 
   render() {

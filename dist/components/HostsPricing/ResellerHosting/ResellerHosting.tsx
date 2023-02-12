@@ -6,40 +6,53 @@ import Facilities from '../Facilities/Facilities';
 import ResellerHostingTable from './ResellerHostingTable/ResellerHostingTable';
 import styles from '../PageInfoStyles.module.scss';
 import HostFaq from '../HostFaq/HostFaq';
+import { IHostPlan } from '../../../helper/types/products/Host/plan';
+import hosts from '../../../lib/products/host';
 
-export interface ResellerHostingProps {
-  resellerHosts: any;
-  navData: any;
+interface IProps {
+  plans: IHostPlan[];
   appIsScrolling: boolean;
   switchAppIsScrolling: () => void;
 }
 
-export interface ResellerHostingState {
-  isNavFixed: boolean;
+interface IState {
+  sepratedPlansByLicence: IHostPlan[][];
 }
 
-let lastScrollTop = 0;
-
-class ResellerHosting extends React.Component<
-  ResellerHostingProps,
-  ResellerHostingState
-> {
-  constructor(props: ResellerHostingProps) {
+class ResellerHosting extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
     this.state = {
-      isNavFixed: false,
+      sepratedPlansByLicence: Object.values(
+        this.props.plans.reduce((accumulator, currentValue) => {
+          const co = `${currentValue.cp}_${currentValue.country.code}`;
+
+          if (accumulator && accumulator[co]) {
+            accumulator[co] = [...accumulator[co], currentValue];
+          } else {
+            accumulator[co] = [currentValue];
+          }
+
+          return accumulator;
+        }, {})
+      ),
     };
     this.onScroll = this.onScroll.bind(this);
   }
+
+  lastScrollTop = 0;
 
   onScroll() {
     const nav = document.querySelector('#reseller-nav') as HTMLDivElement;
 
     const mainNavLinks = document.querySelectorAll('#reseller-nav li a');
+    const emptySpaceForNav = document.querySelector(
+      '#emptySpaceForNav'
+    ) as HTMLDivElement;
 
     let st = window.pageYOffset || document.documentElement.scrollTop;
 
-    if (st > lastScrollTop) {
+    if (st > this.lastScrollTop) {
       // downscroll code
       nav.style.top = '0px';
     } else {
@@ -56,11 +69,11 @@ class ResellerHosting extends React.Component<
     if (fromTop > 750) {
       nav.style.position = 'fixed';
       nav.style.margin = '0';
-      this.setState({ isNavFixed: true });
+      emptySpaceForNav.style.display = 'block';
     } else {
       nav.style.position = 'static';
       nav.style.margin = '30px 0';
-      this.setState({ isNavFixed: false });
+      emptySpaceForNav.style.display = 'none';
     }
 
     mainNavLinks.forEach((link: any) => {
@@ -80,12 +93,11 @@ class ResellerHosting extends React.Component<
       }
     });
 
-    lastScrollTop = st <= 0 ? 0 : st;
+    this.lastScrollTop = st <= 0 ? 0 : st;
   }
 
   componentDidMount() {
     window.addEventListener('scroll', this.onScroll, false);
-
     this.props.switchAppIsScrolling();
   }
 
@@ -173,29 +185,26 @@ class ResellerHosting extends React.Component<
           </div>
         </Container>
         <Container>
-          {this.state.isNavFixed && (
-            <div
-              style={{
-                height:
-                  document.querySelector<HTMLDivElement>('#reseller-nav')
-                    .clientHeight,
-              }}
-              className={styles.emptySpaceForNav}
-            ></div>
-          )}
+          <div
+            style={{
+              height: '55px',
+            }}
+            id="emptySpaceForNav"
+            className={styles.emptySpaceForNav}
+          ></div>
 
           <Row className={styles.stickyNav} id="reseller-nav">
             <Col xs={12} className={styles.mnavigation}>
               <ul className={styles.nav}>
-                {this.props.resellerHosts.map((panels, index) => (
-                  <li key={panels.country_name_en} data-main="true">
+                {hosts.reseller_hosts.map((panel, index) => (
+                  <li key={panel.link} data-main="true">
                     <a
-                      href={`#${panels.country_name_en}`}
+                      href={`#${panel.link}`}
                       onClick={() => {
                         this.props.switchAppIsScrolling();
                       }}
                     >
-                      نمایندگی هاست {panels.license_fa} {panels.country_name_fa}
+                      نمایندگی هاست {panel.title}
                     </a>
                   </li>
                 ))}
@@ -223,9 +232,9 @@ class ResellerHosting extends React.Component<
         <Container>
           <Row>
             <Col>
-              {this.props.resellerHosts.map((panels, index) => (
+              {this.state.sepratedPlansByLicence.map((plans, index) => (
                 <div key={index}>
-                  <ResellerHostingTable data={panels} />
+                  <ResellerHostingTable plans={plans} />
                   <div className={styles.tableBottomSpace}></div>
                 </div>
               ))}

@@ -3,31 +3,20 @@ import { Button } from 'react-bootstrap';
 import { Col, Nav, Tab, Table } from 'react-bootstrap';
 import Link from 'next/link';
 import styles from './DomainTypes.module.scss';
+import { ITld } from '../../../pages/_app';
+import { IOptions } from '../../../pages/domain';
+import { connect } from 'react-redux';
+import { RootState } from '../../../store';
+import formatPriceWithCurrency from '../../../helper/formatPriceWithCurrency';
 
-type items = {
-  id: number;
-  tld: string;
-  new: number;
-  renew: number;
-  transfer: number;
-}[];
-
-export interface DomainTypesProps {
-  domainsData: {
-    status: boolean;
-    items: items;
-  };
-  famousAndTrendyDomains: string[];
+interface IProps {
+  tlds: ITld[];
+  commercialDomains: string[];
+  options: IOptions;
+  currencies: RootState['currencies'];
 }
 
-export interface DomainTypesState {}
-
-class DomainTypes extends React.Component<DomainTypesProps, DomainTypesState> {
-  constructor(props: DomainTypesProps) {
-    super(props);
-    this.state = {};
-  }
-
+class DomainTypes extends React.Component<IProps> {
   getDomains(
     type:
       | 'commercial-domains'
@@ -35,42 +24,25 @@ class DomainTypes extends React.Component<DomainTypesProps, DomainTypesState> {
       | 'national-domains'
       | 'service-domains'
       | 'country-domains'
-  ): items {
+  ): ITld[] {
     switch (type) {
       case 'commercial-domains':
-        return this.props.domainsData.items.filter((domain) =>
-          this.props.famousAndTrendyDomains.some((i) => i === domain.tld)
+        return this.props.tlds.filter((domain) =>
+          this.props.commercialDomains.some((i) => i === domain.tld)
         );
       case 'cheap-domains':
-        return this.props.domainsData.items.filter(
-          (domain) => domain.new < 15000
+        return this.props.tlds.filter(
+          (domain) => domain.new < this.props.options.cheep_border
         );
       case 'national-domains':
-        return [
-          this.props.domainsData.items.find((domain) => domain.tld === 'ir'),
-        ];
+        return [this.props.tlds.find((domain) => domain.tld === 'ir')];
       case 'service-domains':
-        return this.props.domainsData.items.filter(
-          (domain) => domain.tld.length > 2
-        );
+        return this.props.tlds.filter((domain) => domain.tld.length > 2);
       case 'country-domains':
-        return this.props.domainsData.items.filter(
-          (domain) => domain.tld.length === 2
-        );
+        return this.props.tlds.filter((domain) => domain.tld.length === 2);
       default:
         return [];
     }
-  }
-
-  addCommas(num: number) {
-    let str = num.toString().split('.');
-    if (str[0].length >= 5) {
-      str[0] = str[0].replace(/(\d)(?=(\d{3})+$)/g, '$1,');
-    }
-    if (str[1] && str[1].length >= 5) {
-      str[1] = str[1].replace(/(\d{3})/g, '$1 ');
-    }
-    return str.join('.');
   }
 
   render() {
@@ -138,11 +110,35 @@ class DomainTypes extends React.Component<DomainTypesProps, DomainTypesState> {
                     {this.getDomains(domain).map((domain) => (
                       <tr key={domain.id}>
                         <td>{domain.tld}</td>
-                        <td>{this.addCommas(domain.new)} تومان</td>
-                        <td>{this.addCommas(domain.renew)} تومان</td>
+                        <td>
+                          {domain.new ? (
+                            formatPriceWithCurrency(
+                              this.props.currencies.items,
+                              domain.currency,
+                              domain.new
+                            )
+                          ) : (
+                            <i className="fas fa-times"></i>
+                          )}
+                        </td>
+                        <td>
+                          {domain.renew ? (
+                            formatPriceWithCurrency(
+                              this.props.currencies.items,
+                              domain.currency,
+                              domain.renew
+                            )
+                          ) : (
+                            <i className="fas fa-times"></i>
+                          )}
+                        </td>
                         <td>
                           {domain.transfer ? (
-                            this.addCommas(domain.transfer) + ' تومان'
+                            formatPriceWithCurrency(
+                              this.props.currencies.items,
+                              domain.currency,
+                              domain.transfer
+                            )
                           ) : (
                             <i className="fas fa-times"></i>
                           )}
@@ -167,4 +163,8 @@ class DomainTypes extends React.Component<DomainTypesProps, DomainTypesState> {
   }
 }
 
-export default DomainTypes;
+export default connect((state: RootState) => {
+  return {
+    currencies: state.currencies,
+  };
+})(DomainTypes);

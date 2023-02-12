@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Container, Dropdown, Row, Col } from 'react-bootstrap';
 import styles from './License.module.scss';
 import { ILicense } from '../../../../pages/_app';
-import formatPriceWithCurrency from '../../../../helper/formatPriceWithCurrency';
+import { formatPriceWithCurrency } from '../../../../store/Currencies';
 import { connect } from 'react-redux';
 import { RootState } from '../../../../store';
 
@@ -290,7 +290,7 @@ class License extends React.Component<LicenseProps, LicenseState> {
       this.props.licenses.reduce((accumulator, currentValue) => {
         if (
           (!accumulator[currentValue.registrar] ||
-            currentValue.price > accumulator[currentValue.registrar].price) &&
+            currentValue.price < accumulator[currentValue.registrar].price) &&
           currentValue.status === 1
         )
           accumulator[currentValue.registrar] = currentValue;
@@ -342,7 +342,7 @@ class License extends React.Component<LicenseProps, LicenseState> {
                           <span>
                             از{' '}
                             {formatPriceWithCurrency(
-                              this.props.currencies.items,
+                              this.props.currencies,
                               license.currency,
                               license.price
                             )}{' '}

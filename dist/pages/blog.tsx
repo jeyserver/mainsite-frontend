@@ -1,21 +1,32 @@
 import * as React from 'react';
 import Head from 'next/head';
-import BlogPosts from '../components/Blog/BlogPosts/BlogPosts';
+import MainPage from '../components/Blog/MainPage/MainPage';
 import Layout from '../components/Layout/Layout';
-import { pageProps } from './_app';
+import { IPageProps } from './_app';
+import IPost from '../helper/types/blog/Post';
+import ICategory from '../helper/types/blog/Category';
+import IPopularPost from '../helper/types/blog/PopularPost';
 
-export interface IndexProps extends pageProps {
-  posts: any;
-  categories: any;
+export interface ISeriesPosts {
+  linux: IPopularPost[];
+  control_panels: IPopularPost[];
+  wordpress: IPopularPost[];
 }
 
-export interface IndexState {}
+interface IProps extends IPageProps {
+  status: boolean;
+  items: IPost[];
+  items_per_page: number;
+  current_page: number;
+  total_items: number;
+  categories: ICategory[];
+  popular_posts: IPopularPost[];
+  archives: { date: number; posts: number }[];
+  blog_newsletter_group_token: string;
+  series_posts: ISeriesPosts;
+}
 
-class Index extends React.Component<IndexProps, IndexState> {
-  constructor(props: IndexProps) {
-    super(props);
-    this.state = {};
-  }
+class Index extends React.Component<IProps> {
   render() {
     return (
       <div dir="rtl" id="blog">
@@ -25,14 +36,13 @@ class Index extends React.Component<IndexProps, IndexState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Layout
-          postsForFooter={this.props.postsForFooter}
-          domainsForNavbar={this.props.domainsForNavbar}
-          licensesForNavbar={this.props.licensesForNavbar}
-        >
-          <BlogPosts
-            posts={this.props.posts}
+        <Layout header={this.props.header} footer={this.props.footer}>
+          <MainPage
+            recentPosts={this.props.items}
+            popularPosts={this.props.popular_posts}
             categories={this.props.categories}
+            seriesPosts={this.props.series_posts}
+            newsletterToken={this.props.blog_newsletter_group_token}
           />
         </Layout>
       </div>
@@ -49,20 +59,12 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const postsRes = await fetch(
-    'https://jsonblob.com/api/jsonBlob/d8eccd84-d821-11eb-9f33-07821a14b37b'
-  );
-  const postsData = await postsRes.json();
-
-  const categoriesRes = await fetch(
-    'https://jsonblob.com/api/jsonBlob/7bc3650b-d8c2-11eb-8f97-fba7e85c29a8'
-  );
-  const categoriesData = await categoriesRes.json();
+  const respone = await fetch(`${process.env.SITE_URL}/${locale}/blog?ajax=1`);
+  const data = await respone.json();
 
   return {
     props: {
-      posts: postsData,
-      categories: categoriesData.categories,
+      ...data,
     },
   };
 }

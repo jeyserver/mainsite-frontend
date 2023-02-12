@@ -1,19 +1,37 @@
 import * as React from 'react';
 import Head from 'next/head';
-import HostingConfigure from '../../../../components/OrderDomain/HostingConfigure/HostingConfigure';
+import HostingConfigure from '../../../../components/Order/OrderDomain/HostingConfigure/HostingConfigure';
 import Layout from '../../../../components/Layout/Layout';
-import { pageProps } from '../../../_app';
+import { IPageProps } from '../../../_app';
+import IHostProduct from '../../../../helper/types/cart/host';
+import IDomainProduct from '../../../../helper/types/cart/domain';
+import backend from '../../../../axios-config';
+import { connect } from 'react-redux';
+import { RootState } from '../../../../store';
 
-export interface IndexProps extends pageProps {
-  hostingCartItems: any;
+interface IProps extends IPageProps {
+  products: IHostProduct[] | IDomainProduct[];
+  cart: RootState['cart'];
 }
 
-export interface IndexState {}
+interface IState {
+  products: any;
+}
 
-class Index extends React.Component<IndexProps, IndexState> {
-  constructor(props: IndexProps) {
+class Index extends React.Component<IProps, IState> {
+  constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      products: [],
+    };
+  }
+
+  componentDidMount() {
+    backend(`/order/hosting/configure?cart=${this.props.cart.id}&ajax=1`)
+      .then((res) => {
+        this.setState({ products: res.data.products });
+      })
+      .catch(() => {});
   }
 
   render() {
@@ -25,12 +43,11 @@ class Index extends React.Component<IndexProps, IndexState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Layout
-          postsForFooter={this.props.postsForFooter}
-          domainsForNavbar={this.props.domainsForNavbar}
-          licensesForNavbar={this.props.licensesForNavbar}
-        >
-          <HostingConfigure hostingCartItems={this.props.hostingCartItems} />
+        <Layout header={this.props.header} footer={this.props.footer}>
+          <HostingConfigure
+            domains={this.state.products.filter((i) => i.product === 'domain')}
+            hosts={this.state.products.filter((i) => i.product === 'host')}
+          />
         </Layout>
       </div>
     );
@@ -46,14 +63,14 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const hostingCartItemsRes = await fetch(
-    `https://jsonblob.com/api/jsonBlob/6b49c8d2-e7b0-11eb-971c-85fdd4ff3087`
-  );
-  const hostingCartItems = await hostingCartItemsRes.json();
+  const respone = await fetch(`${process.env.SITE_URL}/${locale}?ajax=1`);
+  const data = await respone.json();
 
   return {
-    props: { hostingCartItems },
+    props: { ...data },
   };
 }
 
-export default Index;
+export default connect((state: RootState) => {
+  return { cart: state.cart };
+})(Index);

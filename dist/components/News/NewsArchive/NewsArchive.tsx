@@ -3,17 +3,11 @@ import moment from 'jalali-moment';
 import Link from 'next/link';
 import styles from './NewsArchive.module.scss';
 
-export interface NewsArchiveProps {
-  newsArchive: number[];
+interface IProps {
+  archives: { [T: string]: number };
 }
 
-export interface NewsArchiveState {}
-
-class NewsArchive extends React.Component<NewsArchiveProps, NewsArchiveState> {
-  constructor(props: NewsArchiveProps) {
-    super(props);
-    this.state = {};
-  }
+class NewsArchive extends React.Component<IProps> {
   render() {
     return (
       <div className={styles.archiveWrapper}>
@@ -24,13 +18,13 @@ class NewsArchive extends React.Component<NewsArchiveProps, NewsArchiveState> {
           </div>
         </div>
         <ul className={styles.archiveList}>
-          {this.props.newsArchive.map((time) => (
+          {Object.values(this.props.archives).map((time) => (
             <Link
               href={`/news/archive/${moment(time * 1000)
                 .locale('fa')
                 .format('YYYY')}/${moment(time * 1000)
                 .locale('fa')
-                .format('DD')}`}
+                .format('MM')}`}
               key={time}
             >
               <a>

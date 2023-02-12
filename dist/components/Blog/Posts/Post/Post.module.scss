@@ -1,0 +1,177 @@
+.post {
+  padding-top: 35px;
+  padding-bottom: 35px;
+  border-bottom: 1px solid #dddddd;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .title {
+    font-size: 18px;
+    font-family: IRANSans;
+    display: block;
+
+    color: #000000;
+
+    margin-bottom: 18px;
+  }
+
+  .postInfo {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+
+    .authorWrapper {
+      margin-left: 22px;
+
+      > span {
+        color: #474747;
+        font-size: 12px;
+        font-family: IRANSans;
+        > i {
+          margin-left: 5px;
+        }
+      }
+      > a {
+        color: #3dc4e4;
+        font-size: 12px;
+        font-family: IRANSans;
+      }
+    }
+    .timeWrapper {
+      display: flex;
+      align-items: center;
+
+      font-size: 12px;
+      font-family: IRANSans;
+
+      color: #474747;
+
+      > i {
+        margin-left: 5px;
+      }
+    }
+  }
+
+  .postImage {
+    width: 100%;
+  }
+
+  .postCategories {
+    margin-top: 25px;
+    margin-bottom: 15px;
+
+    > span {
+      font-size: 12px;
+      font-family: IRANSans;
+
+      color: #222222;
+
+      margin-left: 8px;
+    }
+
+    > a {
+      font-size: 12px;
+      font-family: IRANSans;
+
+      color: #3dc4e4;
+    }
+  }
+
+  .largeSummary {
+    font-size: 13px;
+    font-family: IRANSans;
+
+    color: #4b4b4b;
+
+    img {
+      display: none !important;
+    }
+  }
+
+  .postLinkWrapper {
+    display: flex;
+    justify-content: flex-end;
+
+    .postLink {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      font-size: 12px;
+      font-family: IRANSans;
+
+      color: #3dc4e4;
+      border: 1px solid #3dc4e4;
+
+      width: 85px;
+      height: 32px;
+      margin-top: 20px;
+
+      transition-property: background-color, color;
+      transition-duration: 0.2s;
+
+      &:hover {
+        background-color: #3dc4e4;
+        color: #ffffff;
+      }
+    }
+  }
+}
+
+/* ----------------------------- DARK -----------------------------*/
+
+.post.dark {
+  border-bottom: 1px solid #dddddd;
+
+  .title {
+    color: #fffcfc;
+  }
+
+  .postInfo {
+    .authorWrapper {
+      > span {
+        color: #fffcfc;
+        i {
+          color: #7c7c7c;
+        }
+      }
+      > a {
+        color: #3dc4e4;
+      }
+    }
+    .timeWrapper {
+      color: #fffcfc;
+      i {
+        color: #7c7c7c;
+      }
+    }
+  }
+
+  .postCategories {
+    > span {
+      color: #fffcfc;
+    }
+
+    > a {
+      color: #3dc4e4;
+    }
+  }
+
+  .largeSummary {
+    color: #fffcfc;
+  }
+
+  .postLinkWrapper {
+    .postLink {
+      color: #3dc4e4;
+      border: 1px solid #3dc4e4;
+
+      &:hover {
+        background-color: #3dc4e4;
+        color: #ffffff;
+      }
+    }
+  }
+}

@@ -1,18 +1,10 @@
 import * as React from 'react';
 import Head from 'next/head';
-import TermComponent from '../components/Terms/Terms';
+import Terms from '../components/Terms/Terms';
 import Layout from '../components/Layout/Layout';
-import { pageProps } from './_app';
+import { IPageProps } from './_app';
 
-export interface IndexProps extends pageProps {}
-
-export interface IndexState {}
-
-class Index extends React.Component<IndexProps, IndexState> {
-  constructor(props: IndexProps) {
-    super(props);
-    this.state = {};
-  }
+class Index extends React.Component<IPageProps> {
   render() {
     return (
       <div dir="rtl">
@@ -22,12 +14,8 @@ class Index extends React.Component<IndexProps, IndexState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Layout
-          postsForFooter={this.props.postsForFooter}
-          domainsForNavbar={this.props.domainsForNavbar}
-          licensesForNavbar={this.props.licensesForNavbar}
-        >
-          <TermComponent />
+        <Layout header={this.props.header} footer={this.props.footer}>
+          <Terms />
         </Layout>
       </div>
     );
@@ -43,8 +31,11 @@ export async function getServerSideProps(context) {
     };
   }
 
+  const respone = await fetch(`${process.env.SITE_URL}/${locale}/terms?ajax=1`);
+  const data = await respone.json();
+
   return {
-    props: {},
+    props: { ...data },
   };
 }
 

@@ -1,10 +1,10 @@
 import * as React from 'react';
 import Head from 'next/head';
-import BankAccountsComponent from '../components/BankAccounts/BankAccounts';
+import BankAccounts from '../components/BankAccounts/BankAccounts';
 import Layout from '../components/Layout/Layout';
-import { pageProps } from './_app';
+import { IPageProps } from './_app';
 
-interface bankAccount {
+export interface IBankAccount {
   id: number;
   title: string;
   owner: string;
@@ -13,17 +13,11 @@ interface bankAccount {
   sheba: string;
 }
 
-export interface IndexProps extends pageProps {
-  bankaccounts: bankAccount[];
+interface IProps extends IPageProps {
+  bankaccounts: IBankAccount[];
 }
 
-export interface IndexState {}
-
-class Index extends React.Component<IndexProps, IndexState> {
-  constructor(props: IndexProps) {
-    super(props);
-    this.state = {};
-  }
+class Index extends React.Component<IProps> {
   render() {
     return (
       <div dir="rtl">
@@ -33,12 +27,8 @@ class Index extends React.Component<IndexProps, IndexState> {
           <link rel="icon" href="/favicon.ico" />
         </Head>
 
-        <Layout
-          postsForFooter={this.props.postsForFooter}
-          domainsForNavbar={this.props.domainsForNavbar}
-          licensesForNavbar={this.props.licensesForNavbar}
-        >
-          <BankAccountsComponent bankAccounts={this.props.bankaccounts} />
+        <Layout header={this.props.header} footer={this.props.footer}>
+          <BankAccounts bankAccounts={this.props.bankaccounts} />
         </Layout>
       </div>
     );
@@ -54,16 +44,15 @@ export async function getServerSideProps(context) {
     };
   }
 
-  const bankaccountsRes = await fetch(
-    `${process.env.SCHEMA}://${process.env.DOMAIN}/fa/bankaccounts?ajax=1`
+  const respone = await fetch(
+    `${process.env.SITE_URL}/${locale}/bankaccounts?ajax=1`
   );
-  const bankaccounts = await bankaccountsRes.json();
+  const data = await respone.json();
 
   return {
     props: {
-      bankaccounts: Object.entries(bankaccounts.accounts).map(
-        (value) => value[1]
-      ),
+      bankaccounts: Object.entries(data.accounts).map((value) => value[1]),
+      ...data,
     },
   };
 }

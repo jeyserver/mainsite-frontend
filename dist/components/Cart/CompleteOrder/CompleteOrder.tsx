@@ -1,36 +1,28 @@
 import classNames from 'classnames';
 import * as React from 'react';
 import { Container, Col, Row, Form, Button } from 'react-bootstrap';
-import { countriesType } from '../../../pages/order/cart/complete';
-import OrderSteps from '../../OrderDedicatedServer/OrderSteps/OrderSteps';
+import OrderSteps from '../../Order/OrderDedicatedServer/OrderSteps/OrderSteps';
 import PagesHeader from '../../PagesHeader/PagesHeader';
 import styles from './CompleteOrder.module.scss';
 import SigninForm from './SigninForm/SigninForm';
 import SignupForm from './SignupForm/SignupForm';
 
-export interface CompleteOrderProps {
-  countries: countriesType;
-  defaultCountrySelected: string;
+interface IProps {}
+
+interface IState {
+  authMethod: 'signup' | 'signin';
 }
 
-export interface CompleteOrderState {
-  loginMethod: 'signup' | 'signin';
-}
-
-class CompleteOrder extends React.Component<
-  CompleteOrderProps,
-  CompleteOrderState
-> {
-  constructor(props: CompleteOrderProps) {
+class CompleteOrder extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
     this.state = {
-      loginMethod: 'signup',
+      authMethod: 'signup',
     };
-    this.changeLoginMethod = this.changeLoginMethod.bind(this);
   }
 
-  changeLoginMethod(e) {
-    this.setState({ loginMethod: e.target.value });
+  changeAuthMethod(e: React.ChangeEvent<HTMLInputElement>) {
+    this.setState({ authMethod: e.target.value });
   }
 
   render() {
@@ -56,7 +48,7 @@ class CompleteOrder extends React.Component<
                             type="radio"
                             name="dologin"
                             defaultValue="signup"
-                            onChange={this.changeLoginMethod}
+                            onChange={(e) => this.changeAuthMethod(e)}
                             defaultChecked
                           />
                           مشتری جدید هستم | ثبت نام
@@ -68,7 +60,7 @@ class CompleteOrder extends React.Component<
                             type="radio"
                             name="dologin"
                             defaultValue="signin"
-                            onChange={this.changeLoginMethod}
+                            onChange={(e) => this.changeAuthMethod(e)}
                           />
                           قبلا ثبت نام کرده ام | ورود
                         </label>
@@ -79,36 +71,26 @@ class CompleteOrder extends React.Component<
                     <Row
                       className={classNames(
                         {
-                          [styles.show]: this.state.loginMethod === 'signin',
-                          [styles.hidden]: this.state.loginMethod === 'signup',
+                          [styles.show]: this.state.authMethod === 'signin',
+                          [styles.hidden]: this.state.authMethod === 'signup',
                           [styles.signin]: true,
                         },
                         'justify-content-center'
                       )}
                     >
                       <Col md={8} className="d-flex justify-content-center">
-                        <SigninForm
-                          countries={this.props.countries}
-                          defaultCountrySelected={
-                            this.props.defaultCountrySelected
-                          }
-                        />
+                        <SigninForm />
                       </Col>
                     </Row>
                     <Row
                       className={classNames({
-                        [styles.show]: this.state.loginMethod === 'signup',
-                        [styles.hidden]: this.state.loginMethod === 'signin',
+                        [styles.show]: this.state.authMethod === 'signup',
+                        [styles.hidden]: this.state.authMethod === 'signin',
                         [styles.signup]: true,
                       })}
                     >
                       <Col md={12}>
-                        <SignupForm
-                          countries={this.props.countries}
-                          defaultCountrySelected={
-                            this.props.defaultCountrySelected
-                          }
-                        />
+                        <SignupForm />
                       </Col>
                     </Row>
                   </Row>

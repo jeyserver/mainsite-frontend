@@ -1,58 +1,85 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { deleteFromCart } from '../../../../redux/actions';
-import { cart } from '../../../../redux/reducers/cartReducer';
 import { Spinner } from 'react-bootstrap';
-import { formatPrice } from '../../../helper/formatPrice';
 import styles from '../productRow.module.scss';
+import { formatPriceWithCurrency } from '../../../../store/Currencies';
+import { AsyncThunkAction, RootState } from '../../../../store';
+import { deleteItem } from '../../../../store/Cart';
+import { NotificationManager } from 'react-notifications';
+import ILicenseProduct from '../../../../helper/types/cart/license';
 
-export interface LicenseRowProps {
-  data: any;
-  deleteFromCart: (id: number) => void;
-  cart: cart;
+interface IProps {
+  data: ILicenseProduct;
+  deleteItem: AsyncThunkAction<{ status: boolean }, number>;
+  currencies: RootState['currencies'];
 }
 
-export interface LicenseRowState {}
+interface IState {
+  loading: boolean;
+}
 
-class LicenseRow extends React.Component<LicenseRowProps, LicenseRowState> {
-  constructor(props: LicenseRowProps) {
+class LicenseRow extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
-    this.state = {};
+    this.state = {
+      loading: false,
+    };
+  }
+  async deleteItem() {
+    this.setState({ loading: true });
+
+    try {
+      await this.props.deleteItem(this.props.data.id).unwrap();
+    } catch (error) {
+      NotificationManager.error(
+        'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
+        'خطا'
+      );
+    } finally {
+      this.setState({ loading: false });
+    }
   }
 
   render() {
-    const { id, title, period, discout, price, currency, first_month_cost } =
-      this.props.data;
-
+    const product = this.props.data;
     return (
       <>
         <td>
-          <span>لایسنس {title}</span>
+          <span>لایسنس {product.plan.title}</span>
         </td>
         <td className={styles.noper}>
-          {first_month_cost !== '-'
-            ? formatPrice(first_month_cost)
+          {product.plan.setup !== 0
+            ? formatPriceWithCurrency(
+                this.props.currencies,
+                product.plan.currency,
+                product.plan.setup
+              )
             : 'هزینه راه‌اندازی اولیه (اولین ماه)'}
         </td>
+        <td>برای {Math.floor(product.price / product.plan.price)} ماه</td>
         <td>
-          برای {period.value} {period.type === 'monthly' ? 'ماه' : 'سال'}{' '}
+          {product.price
+            ? `${formatPriceWithCurrency(
+                this.props.currencies,
+                product.currency,
+                product.discount
+              )}`
+            : `0 ${this.props.currencies.active.title}`}
         </td>
         <td>
-          {discout
-            ? `${formatPrice(discout)} ${currency.title}`
-            : `0 ${currency.title}`}
-        </td>
-        <td>
-          {formatPrice(price)} {currency.title}
+          {formatPriceWithCurrency(
+            this.props.currencies,
+            product.currency,
+            product.price
+          )}
         </td>
         <td>
           <button
             className={styles.deleteBtn}
-            onClick={() => this.props.deleteFromCart(id)}
+            disabled={this.state.loading}
+            onClick={() => this.deleteItem()}
           >
-            {this.props.cart.itemsInLoading.some(
-              (productId) => productId === id
-            ) ? (
+            {this.state.loading ? (
               <Spinner animation="border" size="sm" />
             ) : (
               'حذف'
@@ -64,10 +91,11 @@ class LicenseRow extends React.Component<LicenseRowProps, LicenseRowState> {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    cart: state.cart,
-  };
-};
-
-export default connect(mapStateToProps, { deleteFromCart })(LicenseRow);
+export default connect(
+  (state: RootState) => {
+    return {
+      currencies: state.currencies,
+    };
+  },
+  { deleteItem }
+)(LicenseRow);

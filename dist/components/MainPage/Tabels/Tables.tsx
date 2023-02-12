@@ -1,24 +1,35 @@
 import * as React from 'react';
 import { Col, Tab, Row, Nav } from 'react-bootstrap';
-import SharedHostingTab from './SharedHostingTab/SharedHostingTab';
+import SharedHostingTable from '../../Tables/SharedHostingTable/SharedHostingTable';
 import styles from './Tables.module.scss';
-import VpsServerTab from './VpsServerTab/VpsServerTab';
+import VpsServerTable from '../../Tables/VpsServerTable/VpsServerTable';
 import ServerDedicatedTab from './ServerDedicatedTab/ServerDedicatedTab';
-import VpsNav from './VpsServerTab/VpsNav/VpsNav';
+import VpsNav from './VpsNav/VpsNav';
+import { ITablesData } from '../../../pages';
+import { IVPSPlan } from '../../../helper/types/products/VPS/plan';
 
-export interface TablesProps {
-  tablesData: any;
+interface IProps {
+  tablesData: ITablesData;
 }
 
-export interface TablesState { }
-
-class Tables extends React.Component<TablesProps, TablesState> {
-  constructor(props: TablesProps) {
-    super(props);
-    this.state = {};
-  }
-
+class Tables extends React.Component<IProps> {
   render() {
+    const vpsPlans = this.props.tablesData.servers.vps.reduce(
+      (accumulator, currentValue) => {
+        if (accumulator && accumulator[currentValue.country.name]) {
+          accumulator[currentValue.country.name] = [
+            ...accumulator[currentValue.country.name],
+            currentValue,
+          ];
+        } else {
+          accumulator[currentValue.country.name] = [currentValue];
+        }
+
+        return accumulator;
+      },
+      {}
+    );
+
     return (
       <div>
         <Tab.Container defaultActiveKey="tab-server-vps">
@@ -77,27 +88,28 @@ class Tables extends React.Component<TablesProps, TablesState> {
 
           <Tab.Content style={{ marginBottom: '5em' }}>
             <Tab.Pane eventKey="tab-hosting-linux">
-              <SharedHostingTab
-                data={this.props.tablesData.linuxHosts[0]}
+              <SharedHostingTable
+                data={this.props.tablesData.hosts.linux}
                 type="linux"
+                homePageTable={true}
               />
             </Tab.Pane>
             <Tab.Pane eventKey="tab-hosting-windows">
-              <SharedHostingTab
-                data={this.props.tablesData.linuxHosts[0]}
+              <SharedHostingTable
+                data={this.props.tablesData.hosts.windows}
                 type="windows"
-                isOrderBtnHidden={true}
+                homePageTable={true}
               />
             </Tab.Pane>
             <Tab.Pane eventKey="tab-server-vps">
-              <VpsNav data={this.props.tablesData.vps.navData} />
-              {this.props.tablesData.vps.tableData.map((data) => (
-                <VpsServerTab data={data} type={data.type} />
+              <VpsNav />
+              {Object.values(vpsPlans).map((data: IVPSPlan[], index) => (
+                <VpsServerTable data={data} key={index} homePageTable={true} />
               ))}
             </Tab.Pane>
             <Tab.Pane eventKey="tab-server-dedicated">
               <ServerDedicatedTab
-                data={this.props.tablesData.dedicatedServers[0]}
+                data={this.props.tablesData.servers.dedicated}
               />
             </Tab.Pane>
           </Tab.Content>

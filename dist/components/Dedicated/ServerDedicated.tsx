@@ -1,27 +1,14 @@
 import * as React from 'react';
 import { Container, Row, Col } from 'react-bootstrap';
-import CountryCard from './CountryCard/CountryCard';
 import Link from 'next/link';
+import CountryCard from './CountryCard/CountryCard';
 import styles from './ServerDedicated.module.scss';
 
-export interface ServerDedicatedProps {
-  dedicated: {
-    status: boolean;
-    countries: { code: string; name: string }[];
-  };
+interface IProps {
+  countries: { code: string; name: string; is_recommended: boolean }[];
 }
 
-export interface ServerDedicatedState {}
-
-class ServerDedicated extends React.Component<
-  ServerDedicatedProps,
-  ServerDedicatedState
-> {
-  constructor(props: ServerDedicatedProps) {
-    super(props);
-    this.state = {};
-  }
-
+class ServerDedicated extends React.Component<IProps> {
   render() {
     return (
       <div>
@@ -53,24 +40,9 @@ class ServerDedicated extends React.Component<
                 <Link href="/licenses/directadmin">
                   <a title="خرید لایسنس دایرکت ادمین">DirectAdmin</a>
                 </Link>{' '}
-                ،{' '}
-                <Link href="">
-                  <a>Plesk</a>
-                </Link>{' '}
-                و حتی کنترل پنل های رایگانی همچون{' '}
-                <Link href="">
-                  <a>Virtualmin</a>
-                </Link>{' '}
-                ،{' '}
-                <Link href="">
-                  <a>Kloxo</a>
-                </Link>{' '}
-                و یا{' '}
-                <Link href="">
-                  <a>WebSitePanel</a>
-                </Link>{' '}
-                که شاید از لحاظ طیف امکانات از پنل های پریمیوم هم گسترده تر
-                باشند
+                ، <a>Plesk</a> و حتی کنترل پنل های رایگانی همچون{' '}
+                <a>Virtualmin</a> ، <a>Kloxo</a> و یا <a>WebSitePanel</a> که
+                شاید از لحاظ طیف امکانات از پنل های پریمیوم هم گسترده تر باشند
               </p>
               <p>&nbsp;</p>
               <p>
@@ -88,13 +60,13 @@ class ServerDedicated extends React.Component<
                 ما در جی سرور از 6 نقطه جهان اقدام به فروش سرور میکنیم که هر
                 کدام دارای شرایط خاصی هستند پس اگر در انتخاب سرور یا مرکز داده
                 تردید دارید چه خوب است که{' '}
-                <Link href="/content">
+                <Link href="/contact">
                   <a>با ما تماس بگیرید</a>
                 </Link>{' '}
                 تا بهترین گزینه را به شما پیشنهاد بدهیم. <br />
               </p>
               <Row>
-                {this.props.dedicated.countries.map((country) => (
+                {this.props.countries.map((country) => (
                   <Col md={4} key={country.code}>
                     <CountryCard country={country} />
                   </Col>

@@ -1,248 +1,282 @@
 import * as React from 'react';
-import axios from 'axios';
 import classNames from 'classnames';
-import { Row, Col, Form, Button, Spinner } from 'react-bootstrap';
-import { countriesType } from '../../../../pages/order/cart/complete';
+import {
+  Row,
+  Col,
+  Button,
+  Spinner,
+  FormGroup,
+  FormLabel,
+} from 'react-bootstrap';
 import { ReactPhonenumber } from '../../../ReactPhonenumber/ReactPhonenumber';
 import { NotificationManager } from 'react-notifications';
 import styles from './SignupForm.module.scss';
 import { connect } from 'react-redux';
-import { signUp } from '../../../../redux/actions';
+import {
+  completeWithRegister,
+  ICompleteRegister,
+} from '../../../../store/Cart';
+import { AsyncThunkAction } from '../../../../store';
+import { Formik, FormikHelpers, ErrorMessage, Field, Form } from 'formik';
+import * as Yup from 'yup';
+import showErrorMsg from '../../../../helper/showErrorMsg';
+import { countries, defaultCode } from '../../../../lib/countriesForCellphone';
+import { NextRouter, withRouter } from 'next/router';
 
-type error = 'data_validation' | 'data_duplicate';
-
-const showError = (errorMsg: error) => {
-  if (errorMsg === 'data_duplicate') {
-    return 'داده وارد شده تکراری است';
-  } else if (errorMsg === 'data_validation') {
-    return 'داده وارد شده معتبر نیست';
-  }
-};
-
-export interface SignupFormProps {
-  countries: countriesType;
-  defaultCountrySelected: string;
-  signUp: (signUpDetails: any) => void;
+interface IProps {
+  completeWithRegister: AsyncThunkAction<any, ICompleteRegister>;
+  router: NextRouter;
 }
 
-export interface SignupFormState {
-  firstNameError: error;
-  lastNameError: error;
-  emailError: error;
-  phonenumberError: error;
-  passwordError: error;
-  password2Error: error;
-  formValidated: boolean;
-  submitBtnLoading: boolean;
+interface IState {
+  cellphone: { code: string; number: string };
+  showCellPhoneError: boolean;
 }
 
-class SignupForm extends React.Component<SignupFormProps, SignupFormState> {
-  constructor(props: SignupFormProps) {
+interface IInputs {
+  name: string;
+  lastname: string;
+  email: string;
+  cellphone: string;
+  password: string;
+  password2: string;
+  acceptedTerms: boolean;
+}
+
+class SignupForm extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
     this.state = {
-      firstNameError: 'data_validation',
-      lastNameError: 'data_validation',
-      emailError: 'data_validation',
-      phonenumberError: 'data_validation',
-      passwordError: 'data_validation',
-      password2Error: 'data_validation',
-      formValidated: false,
-      submitBtnLoading: false,
+      cellphone: { code: '', number: '' },
+      showCellPhoneError: false,
     };
-    this.onSubmitForm = this.onSubmitForm.bind(this);
   }
 
-  changePhoneNumber() {}
+  changePhoneNumber(
+    phoneNumber: string,
+    selected: { code: string; name: string; dialingCode: string },
+    phoneNumberInputValue: string
+  ) {
+    this.setState({
+      cellphone: { code: selected.code, number: phoneNumberInputValue },
+      showCellPhoneError: false,
+    });
+  }
 
-  onSubmitForm(e: React.FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const form = e.currentTarget;
-
-    if (form.checkValidity() === false) {
-      e.stopPropagation();
-    } else {
-      this.setState({ submitBtnLoading: true });
-
-      axios
-        .get(
-          `https://jsonblob.com/api/jsonBlob/57cf67c8-eb0b-11eb-8813-cda002dae790`
-        )
-        .then((respone) => {
-          this.setState({ submitBtnLoading: false });
-          // this.props.signUp()
-
-          // if (respone.data.status) {
-          //   this.setState({ submitBtnLoading: false });
-          //   // this.props.router.push('');
-          // } else if (!respone.data.status) {
-          //   respone.data.error.forEach((errorItem) => {
-          //     if (errorItem.input === 'name') {
-          //       form.firstName.value = '';
-          //       this.setState({ firstNameError: errorItem.code });
-          //     } else if (errorItem.input === 'lastName') {
-          //       form.lastName.value = '';
-          //       this.setState({ lastNameError: errorItem.code });
-          //     } else if (errorItem.input === 'email') {
-          //       form.email.value = '';
-          //       this.setState({ emailError: errorItem.code });
-          //     } else if (errorItem.input === 'cellphone[number]') {
-          //       form.credential.value = '';
-          //       this.setState({ phonenumberError: errorItem.code });
-          //     } else if (errorItem.input === 'password') {
-          //       form.password1.value = '';
-          //       this.setState({ passwordError: errorItem.code });
-          //     } else if (errorItem.input === 'password2') {
-          //       form.password2.value = '';
-          //       this.setState({ password2Error: errorItem.code });
-          //     }
-          //   });
-          //   this.setState({ submitBtnLoading: false });
-          // }
+  async onSubmit(
+    values: IInputs,
+    { setSubmitting, setErrors }: FormikHelpers<IInputs>
+  ) {
+    try {
+      const res = await this.props
+        .completeWithRegister({
+          name: values.name,
+          lastname: values.lastname,
+          email: values.email,
+          cellphone: this.state.cellphone,
+          password: values.password,
+          password2: values.password2,
         })
-        .catch((error) => {
-          this.setState({ submitBtnLoading: false });
-
-          NotificationManager.error(
-            'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
-            'خطا'
-          );
+        .unwrap();
+      if (res.data.status) {
+        if (res.data.redirect) {
+          this.props.router.push(res.data.redirect);
+        }
+      } else {
+        res.data.error.map((error) => {
+          setErrors({ [error.input]: showErrorMsg(error.code) });
+          if (error.input === 'cellphone') {
+            this.setState({ showCellPhoneError: true });
+          }
         });
+      }
+    } catch (error) {
+      NotificationManager.error(
+        'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
+        'خطا'
+      );
+    } finally {
+      setSubmitting(false);
     }
-
-    this.setState({ formValidated: true });
   }
 
   render() {
     return (
-      <Form
-        className={styles.signupForm}
-        onSubmit={(e) => this.onSubmitForm(e)}
-        noValidate
-        validated={this.state.formValidated}
+      <Formik
+        initialValues={{
+          name: '',
+          lastname: '',
+          email: '',
+          cellphone: '-',
+          password: '',
+          password2: '',
+          acceptedTerms: false,
+        }}
+        validationSchema={Yup.object({
+          name: Yup.string().required('داده وارد شده معتبر نیست'),
+          lastname: Yup.string().required('داده وارد شده معتبر نیست'),
+          email: Yup.string()
+            .email('داده وارد شده معتبر نیست')
+            .required('داده وارد شده معتبر نیست'),
+          cellphone: Yup.string().required('داده وارد شده معتبر نیست'),
+          password: Yup.string().required('داده وارد شده معتبر نیست'),
+          password2: Yup.string()
+            .required('داده وارد شده معتبر نیست')
+            .oneOf([Yup.ref('password')], 'گذرواژه با تکرار آن یکسان نیست'),
+          acceptedTerms: Yup.boolean()
+            .required('داده وارد شده معتبر نیست')
+            .oneOf([true], 'داده وارد شده معتبر نیست'),
+        })}
+        onSubmit={(values, helpers) => this.onSubmit(values, helpers)}
       >
-        <Row>
-          <Col md={6}>
-            <Form.Group className={styles.formGroup} controlId="firstname">
-              <Form.Label>نام*</Form.Label>
-              <Form.Control
-                type="text"
-                name="firstname"
-                required
-                placeholder="حسین"
-              />
-              <Form.Control.Feedback type="invalid">
-                {showError(this.state.firstNameError)}
-              </Form.Control.Feedback>
-            </Form.Group>
-          </Col>
-          <Col md={6}>
-            <Form.Group className={styles.formGroup} controlId="lastname">
-              <Form.Label>نام خانوادگی*</Form.Label>
-              <Form.Control
-                type="text"
-                name="lastname"
-                required
-                placeholder="امیری"
-              />
-              <Form.Control.Feedback type="invalid">
-                {showError(this.state.lastNameError)}
-              </Form.Control.Feedback>
-            </Form.Group>
-          </Col>
-        </Row>
-        <Row>
-          <Col md={6}>
-            <Form.Group className={styles.formGroup} controlId="email">
-              <Form.Label>ایمیل*</Form.Label>
-              <Form.Control
-                type="email"
-                name="email"
-                required
-                placeholder="username@example.com"
-              />
-              <Form.Control.Feedback type="invalid">
-                {showError(this.state.emailError)}
-              </Form.Control.Feedback>
-            </Form.Group>
-          </Col>
-          <Col md={6}>
-            <Form.Group
-              className={classNames(styles.formGroup, styles.phoneNumber)}
-              controlId="passwordss1"
-            >
-              <Form.Label>شماره همراه*</Form.Label>
-              <div className="phonenumber-input-wrapper">
-                <ReactPhonenumber
-                  countries={this.props.countries}
-                  onChange={this.changePhoneNumber}
-                  defaultCode={this.props.defaultCountrySelected}
-                  isSelectHide={false}
-                  className="phoneNumberEmail"
-                  selectName="signUpForm"
-                  options={{ dir: 'rtl' }}
-                  errorCode={this.state.phonenumberError}
-                />
-              </div>
-            </Form.Group>
-          </Col>
-        </Row>
-        <Row>
-          <Col md={6}>
-            <Form.Group className={styles.formGroup} controlId="password">
-              <Form.Label>گذرواژه*</Form.Label>
-              <Form.Control type="password" name="password1" required />
-              <Form.Control.Feedback type="invalid">
-                {showError(this.state.passwordError)}
-              </Form.Control.Feedback>
-            </Form.Group>
-          </Col>
-          <Col md={6}>
-            <Form.Group className={styles.formGroup} controlId="password2">
-              <Form.Label>تکرار گذرواژه*</Form.Label>
-              <Form.Control type="password" name="password2" required />
-              <Form.Control.Feedback type="invalid">
-                {showError(this.state.password2Error)}
-              </Form.Control.Feedback>
-            </Form.Group>
-          </Col>
-        </Row>
-        <Row>
-          <Col xs={12}>
-            <Form.Group>
-              <label className={styles.termsCheckBox}>
-                <input type="checkbox" name="tos" required defaultValue={1} />
-                <a target="_blank" href="/terms">
-                  شرایط سرویس
-                </a>
-                را خواندم و موافق هستم.
-                <Form.Control.Feedback type="invalid">
-                  لطفا این قسمت را تایید کنید
-                </Form.Control.Feedback>
-              </label>
-            </Form.Group>
-          </Col>
-        </Row>
-        <Row>
-          <Col xs={12}>
-            <Button
-              className={styles.submitBtn}
-              type="submit"
-              disabled={this.state.submitBtnLoading}
-            >
-              {this.state.submitBtnLoading ? (
-                <>
-                  <Spinner animation="border" size="sm" />
-                  <span>لطفا صبر کنید</span>
-                </>
-              ) : (
-                'تکمیل سفارش'
-              )}
-            </Button>
-          </Col>
-        </Row>
-      </Form>
+        {(formik) => (
+          <Form className={styles.signupForm}>
+            <Row>
+              <Col md={6}>
+                <FormGroup className={styles.formGroup}>
+                  <FormLabel>نام*</FormLabel>
+                  <Field
+                    type="text"
+                    name="name"
+                    placeholder="حسین"
+                    className="form-control"
+                  />
+                  <div className="form-err-msg">
+                    <ErrorMessage name="name" />
+                  </div>
+                </FormGroup>
+              </Col>
+              <Col md={6}>
+                <FormGroup className={styles.formGroup}>
+                  <FormLabel>نام خانوادگی*</FormLabel>
+                  <Field
+                    type="text"
+                    name="lastname"
+                    placeholder="امیری"
+                    className="form-control"
+                  />
+                  <div className="form-err-msg">
+                    <ErrorMessage name="lastname" />
+                  </div>
+                </FormGroup>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={6}>
+                <FormGroup className={styles.formGroup}>
+                  <FormLabel>ایمیل*</FormLabel>
+                  <Field
+                    type="email"
+                    name="email"
+                    placeholder="username@example.com"
+                    className="form-control"
+                  />
+                  <div className="form-err-msg">
+                    <ErrorMessage name="email" />
+                  </div>
+                </FormGroup>
+              </Col>
+              <Col md={6}>
+                <FormGroup
+                  className={classNames(styles.formGroup, styles.phoneNumber)}
+                >
+                  <FormLabel>شماره همراه*</FormLabel>
+                  <div className="phonenumber-input-wrapper">
+                    <ReactPhonenumber
+                      countries={countries}
+                      onChange={(
+                        phoneNumber,
+                        selected,
+                        phoneNumberInputValue
+                      ) =>
+                        this.changePhoneNumber(
+                          phoneNumber,
+                          selected,
+                          phoneNumberInputValue
+                        )
+                      }
+                      defaultCode={defaultCode}
+                      isSelectHide={false}
+                      className="phoneNumberEmail"
+                      selectName="signUpForm"
+                      options={{ dir: 'rtl' }}
+                    />
+                  </div>
+                  {this.state.showCellPhoneError && (
+                    <div>
+                      <ErrorMessage name="cellphone" />
+                    </div>
+                  )}
+                </FormGroup>
+              </Col>
+            </Row>
+            <Row>
+              <Col md={6}>
+                <FormGroup className={styles.formGroup}>
+                  <FormLabel>گذرواژه*</FormLabel>
+                  <Field
+                    type="password"
+                    name="password"
+                    className="form-control"
+                  />
+                  <div className="form-err-msg">
+                    <ErrorMessage name="password" />
+                  </div>
+                </FormGroup>
+              </Col>
+              <Col md={6}>
+                <FormGroup className={styles.formGroup}>
+                  <FormLabel>تکرار گذرواژه*</FormLabel>
+                  <Field
+                    type="password"
+                    name="password2"
+                    className="form-control"
+                  />
+                  <div className="form-err-msg">
+                    <ErrorMessage name="password2" />
+                  </div>
+                </FormGroup>
+              </Col>
+            </Row>
+            <Row>
+              <Col xs={12}>
+                <FormGroup>
+                  <label className={styles.termsCheckBox}>
+                    <Field type="checkbox" name="acceptedTerms" />
+                    <a target="_blank" href="/terms">
+                      شرایط سرویس
+                    </a>
+                    را خواندم و موافق هستم.
+                    <div className="form-err-msg">
+                      <ErrorMessage name="acceptedTerms" />
+                    </div>
+                  </label>
+                </FormGroup>
+              </Col>
+            </Row>
+            <Row>
+              <Col xs={12}>
+                <Button
+                  type="submit"
+                  className={styles.submitBtn}
+                  disabled={formik.isSubmitting}
+                >
+                  {formik.isSubmitting ? (
+                    <>
+                      <Spinner animation="border" size="sm" />
+                      <span>لطفا صبر کنید</span>
+                    </>
+                  ) : (
+                    'تکمیل سفارش'
+                  )}
+                </Button>
+              </Col>
+            </Row>
+          </Form>
+        )}
+      </Formik>
     );
   }
 }
 
-export default connect(null, { signUp })(SignupForm);
+export default connect(null, { completeWithRegister })(withRouter(SignupForm));

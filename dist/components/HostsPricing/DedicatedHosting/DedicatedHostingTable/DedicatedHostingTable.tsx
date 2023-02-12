@@ -2,51 +2,144 @@ import * as React from 'react';
 import { Row, Col, Table, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import Link from 'next/link';
 import styles from './DedicatedHostingTable.module.scss';
-import ReactStars from 'react-rating-stars-component';
 import classNames from 'classnames';
-import { formatPrice } from '../../../helper/formatPrice';
+import { IHostPlan } from '../../../../helper/types/products/Host/plan';
+import translateCountryNameToPersian from '../../../../helper/translateCountryNameToPersian';
+import translateHostPanel from '../../../../helper/translators/translateHostPanel';
+import { formatPriceWithCurrency } from '../../../../store/Currencies';
+import { connect } from 'react-redux';
+import { RootState } from '../../../../store';
+import StarredCell from '../../TablesUtils/StarredCell';
+import BackupsCell from '../../TablesUtils/BackupsCell';
+import { formatSpace } from '../../../../helper/formatSpace';
+import { ICurrency } from '../../../../pages/_app';
 
-export interface DedicatedHostingTableProps {
-  data: any;
+interface IHostPlanWithVariants extends IHostPlan {
+  variants: {
+    id: string;
+    country: {
+      name: string;
+      code: string;
+    };
+    panel: {
+      name: string;
+      price: number;
+      currency: ICurrency;
+    };
+  }[];
 }
 
-export interface DedicatedHostingTableState {
+interface IProps {
+  plans: IHostPlan[];
+  currencies: RootState['currencies'];
+}
+
+interface IState {
   isMoreInfoOpen: boolean;
+  plans: IHostPlanWithVariants[];
 }
 
-class DedicatedHostingTable extends React.Component<
-  DedicatedHostingTableProps,
-  DedicatedHostingTableState
-> {
-  constructor(props: DedicatedHostingTableProps) {
+class DedicatedHostingTable extends React.Component<IProps, IState> {
+  constructor(props: IProps) {
     super(props);
-    this.state = { isMoreInfoOpen: false };
-    this.toggleMoreInfo = this.toggleMoreInfo.bind(this);
+    this.state = {
+      isMoreInfoOpen: false,
+      plans: Object.values(
+        this.props.plans.reduce((accumulator, currentValue) => {
+          const co = currentValue.title
+            .replace('دایرکت ادمین', '')
+            .replace('سی پنل', '');
+
+          if (accumulator && accumulator[co]) {
+            accumulator[co] = {
+              ...accumulator[co],
+              variants: [
+                ...accumulator[co].variants,
+                {
+                  id: currentValue.id,
+                  panel: {
+                    name: currentValue.cp,
+                    price: currentValue.price,
+                    currency: currentValue.currency,
+                  },
+                },
+              ],
+            };
+          } else {
+            accumulator[co] = {
+              ...currentValue,
+              variants: [
+                {
+                  id: currentValue.id,
+                  panel: {
+                    name: currentValue.cp,
+                    price: currentValue.price,
+                    currency: currentValue.currency,
+                  },
+                },
+              ],
+            };
+          }
+
+          return accumulator;
+        }, {})
+      ),
+    };
   }
 
-  toggleMoreInfo() {
-    this.setState((prev) => {
-      return { isMoreInfoOpen: !prev.isMoreInfoOpen };
-    });
+  getCpuModel(planId: number): string {
+    switch (planId) {
+      case 171:
+      case 181:
+        return 'Intel Core i7-4770 4c/8t';
+      case 175:
+      case 185:
+        return 'Intel Xeon E5-1650 6c/12t';
+      case 174:
+      case 184:
+        return 'Intel Core™ i7-8700 6c/12t';
+      case 172:
+      case 173:
+      case 182:
+      case 183:
+        return 'Intel Core™ i7-6700 4c/8t';
+      case 176:
+      case 186:
+        return 'Intel Xeon E3-1225v2 4c/4t';
+      case 177:
+      case 187:
+        return 'Intel I7-4790K 4c/8t';
+      case 178:
+      case 188:
+        return 'Intel Xeon E3-1245v2 4c/8t';
+      case 179:
+      case 189:
+        return 'Intel Xeon E5-1630v3 4c/8t';
+      case 180:
+      case 190:
+        return 'Intel Xeon-D 1540 8c/16t';
+      default:
+        return '';
+    }
   }
 
   render() {
+    const maximumRam = Math.max(...this.state.plans.map((host) => host.ram));
+
     return (
-      <Row id={this.props.data.country_name_en} className={styles.tableWrapper}>
+      <Row
+        id={this.props.plans[0].country.name}
+        className={styles.tableWrapper}
+      >
         <Col xs={12}>
           <div className={styles.tittleLine}>
-            <h5>هاست میزبانی اختصاصی {this.props.data.country_name_fa}</h5>
+            <h5>
+              هاست میزبانی اختصاصی{' '}
+              {translateCountryNameToPersian(this.props.plans[0].country.code)}
+            </h5>
             <div className={styles.divider}>
               <div />
             </div>
-            {this.props.data.info && (
-              <div
-                className={styles.content}
-                dangerouslySetInnerHTML={{
-                  __html: this.props.data.info,
-                }}
-              ></div>
-            )}
           </div>
           <Table className={styles.table}>
             <thead>
@@ -117,17 +210,18 @@ class DedicatedHostingTable extends React.Component<
                   className={classNames({
                     [styles.jHidden]: this.state.isMoreInfoOpen,
                   })}
-                  style={{ lineHeight: '75px' }}
+                  style={
+                    this.props.plans.some((i) => i.backups.length > 0) && {
+                      lineHeight: '75px',
+                    }
+                  }
                 >
                   دوره های بکاپ گیری
                 </th>
                 <OverlayTrigger
                   placement="top"
                   overlay={
-                    <Tooltip
-                      id={`${this.props.data.country_name_en}-tooltip`}
-                      className={styles.tooltip}
-                    >
+                    <Tooltip id={`-tooltip`} className={styles.tooltip}>
                       درصد استفاده از پردازشگر
                     </Tooltip>
                   }
@@ -137,29 +231,32 @@ class DedicatedHostingTable extends React.Component<
                 <OverlayTrigger
                   placement="top"
                   overlay={
-                    <Tooltip
-                      id={`${this.props.data.country_name_en}-tooltip`}
-                      className={styles.tooltip}
-                    >
+                    <Tooltip id={`-tooltip`} className={styles.tooltip}>
                       حافظه موقت
                     </Tooltip>
                   }
                 >
                   <th style={{ lineHeight: '50px' }}>Ram</th>
                 </OverlayTrigger>
+                <th>آی پی اختصاصی</th>
                 <th>وب سرور</th>
-                <th>هارد سرور</th>
                 <th style={{ lineHeight: '50px' }}>هزینه راه اندازی</th>
-                {this.props.data.panels[0].host_panel.map((panel) => (
-                  <th style={{ lineHeight: '25px' }} key={panel}>
-                    قیمت <br /> کنترل پنل {panel}
-                  </th>
-                ))}
+                {this.state.plans[0] &&
+                  this.state.plans[0].variants.reverse().map((variant) => (
+                    <th style={{ lineHeight: '25px' }} key={variant.panel.name}>
+                      قیمت <br /> کنترل پنل{' '}
+                      {translateHostPanel(variant.panel.name)}
+                    </th>
+                  ))}
                 <th className="text-center" style={{ lineHeight: '73px' }}>
                   <button
                     type="button"
                     className={styles.moreInfoBtn}
-                    onClick={this.toggleMoreInfo}
+                    onClick={() => {
+                      this.setState((prev) => {
+                        return { isMoreInfoOpen: !prev.isMoreInfoOpen };
+                      });
+                    }}
                   >
                     اطلاعات بیشتر{' '}
                   </button>
@@ -167,257 +264,261 @@ class DedicatedHostingTable extends React.Component<
               </tr>
             </thead>
             <tbody>
-              {this.props.data.panels.map((panel) => (
-                <tr key={panel.id}>
-                  <td>{panel.title}</td>
-                  <td>{panel.space}</td>
-                  <td>
-                    {panel.bandwidth === '-' ? (
-                      <span className={styles.jUnlimited}>بدون محدودیت</span>
-                    ) : (
-                      panel.bandwidth
-                    )}
-                  </td>
-                  <td>
-                    {panel.host_panel.map((panel) => (
-                      <div key={panel}>{panel}</div>
-                    ))}
-                  </td>
-                  <td
-                    className={classNames({
-                      [styles.check]: panel.ssl,
-                    })}
-                  >
-                    {panel.ssl ? (
-                      <i className="far fa-check-square"></i>
-                    ) : (
-                      <i className="fa fa-times fa-lg" />
-                    )}
-                  </td>
-                  <td
-                    className={classNames(styles.jHidden, {
-                      [styles.open]: this.state.isMoreInfoOpen,
-                    })}
-                  >
-                    {panel.park_domains === '-' ? (
-                      <span className={styles.jUnlimited}>بدون محدودیت</span>
-                    ) : (
-                      `${panel.park_domains} عدد`
-                    )}
-                  </td>
-                  <td>
-                    {panel.additional_sites === '-' ? (
-                      <span className={styles.jUnlimited}>بدون محدودیت</span>
-                    ) : (
-                      `${panel.additional_sites} عدد`
-                    )}
-                  </td>
-                  <td
-                    className={classNames(styles.jHidden, {
-                      [styles.open]: this.state.isMoreInfoOpen,
-                    })}
-                  >
-                    {panel.subdomains === '-' ? (
-                      <span className={styles.jUnlimited}>بدون محدودیت</span>
-                    ) : (
-                      `${panel.subdomains} عدد`
-                    )}
-                  </td>
-                  <td
-                    className={classNames(styles.jHidden, {
-                      [styles.open]: this.state.isMoreInfoOpen,
-                    })}
-                  >
-                    {panel.emails === '-' ? (
-                      <span className={styles.jUnlimited}>بدون محدودیت</span>
-                    ) : (
-                      `${panel.emails} عدد`
-                    )}
-                  </td>
-                  <td
-                    className={classNames(styles.jHidden, {
-                      [styles.open]: this.state.isMoreInfoOpen,
-                    })}
-                  >
-                    {panel.ftp === '-' ? (
-                      <span className={styles.jUnlimited}>بدون محدودیت</span>
-                    ) : (
-                      panel.ftp
-                    )}
-                  </td>
-                  <td
-                    className={classNames(styles.jHidden, {
-                      [styles.open]: this.state.isMoreInfoOpen,
-                    })}
-                  >
-                    {panel.database === '-' ? (
-                      <span className={styles.jUnlimited}>بدون محدودیت</span>
-                    ) : (
-                      panel.database
-                    )}
-                  </td>
-                  <td
-                    className={classNames(styles.jHidden, {
-                      [styles.open]: this.state.isMoreInfoOpen,
-                    })}
-                  >
-                    {panel.daily_backup ? (
-                      <i
-                        className={classNames(
-                          'far fa-check-square',
-                          styles.check
-                        )}
-                      ></i>
-                    ) : (
-                      <i className="fa fa-times fa-lg" />
-                    )}
-                  </td>
-                  <td
-                    className={classNames(styles.jHidden, {
-                      [styles.open]: this.state.isMoreInfoOpen,
-                    })}
-                  >
-                    {panel.monthly_backup ? (
-                      <i
-                        className={classNames(
-                          'far fa-check-square',
-                          styles.check
-                        )}
-                      ></i>
-                    ) : (
-                      <i className="fa fa-times fa-lg" />
-                    )}
-                  </td>
-                  <td
-                    className={classNames(styles.jHidden, {
-                      [styles.open]: this.state.isMoreInfoOpen,
-                    })}
-                  >
-                    {panel.annual_backup ? (
-                      <i
-                        className={classNames(
-                          'far fa-check-square',
-                          styles.check
-                        )}
-                      ></i>
-                    ) : (
-                      <i className="fa fa-times fa-lg" />
-                    )}
-                  </td>
-                  <td
-                    className={classNames({
-                      [styles.jHidden]: this.state.isMoreInfoOpen,
-                    })}
-                  >
-                    {panel.daily_backup && (
-                      <div>
-                        <i
-                          className={classNames(
-                            'far fa-check-square',
-                            styles.check
-                          )}
-                        ></i>{' '}
-                        روزانه
-                      </div>
-                    )}
-                    {panel.monthly_backup && (
-                      <div>
-                        <i
-                          className={classNames(
-                            'far fa-check-square',
-                            styles.check
-                          )}
-                        ></i>{' '}
-                        ماهانه
-                      </div>
-                    )}
-                    {panel.annual_backup && (
-                      <div>
-                        <i
-                          className={classNames(
-                            'far fa-check-square',
-                            styles.check
-                          )}
-                        ></i>{' '}
-                        سالیانه
-                      </div>
-                    )}
-                  </td>
-                  <td>
-                    <small>{panel.cpu}</small>
-                  </td>
-                  <td>
-                    {panel.ram.value}
-                    <br />
-                    <div className={styles.scoreWrapper}>
-                      <ReactStars
-                        size={50}
-                        count={5}
-                        value={panel.ram.score}
-                        edit={false}
-                        emptyIcon={
-                          <i
-                            className={classNames(
-                              'far fa-star',
-                              styles.emptyIcon
-                            )}
-                          />
-                        }
-                        filledIcon={<i className="fa fa-star" />}
-                      />
-                    </div>
-                  </td>
-                  <td>{panel.web_server}</td>
-                  <td>{panel.hard_server}</td>
-                  <td>
-                    {formatPrice(panel.price)} {panel.currency.title} ماهیانه
-                    <br />
-                    یکبار پرداخت ماه اول
-                  </td>
-                  <td style={{ height: '67px' }}>
-                    {formatPrice(panel.price)} {panel.currency.title} ماهیانه
-                  </td>
-                  <td style={{ height: '67px' }}>
-                    {formatPrice(panel.price)} {panel.currency.title} ماهیانه
-                  </td>
-                  <td>
-                    <div className={styles.btnsWrapper}>
-                      {this.props.data.licenses.map((license) => (
-                        <Link
-                          key={license.id}
-                          href={`/order/hosting/linux/${license.id}`}
-                        >
-                          <a className={styles.orderLink}>
-                            <OverlayTrigger
-                              placement="top"
-                              overlay={
-                                <Tooltip
-                                  id={`${license.license_en}-tooltip`}
-                                  className={styles.tooltip}
-                                >
-                                  {license.license_en}
-                                </Tooltip>
-                              }
-                            >
-                              <img src={license.img} alt={license.license_en} />
-                            </OverlayTrigger>
-                            <span>{license.license_fa}</span>{' '}
-                          </a>
-                        </Link>
+              {this.state.plans
+                .sort(function (a, b) {
+                  return a.title
+                    .replace('دایرکت ادمین', '')
+                    .replace('سی پنل', '')
+                    .localeCompare(
+                      b.title.replace('دایرکت ادمین', '').replace('سی پنل', '')
+                    );
+                })
+                .map((plan) => (
+                  <tr key={plan.id}>
+                    <td>
+                      {plan.title
+                        .replace('دایرکت ادمین', '')
+                        .replace('سی پنل', '')}
+                    </td>
+                    <td>{formatSpace(plan.space, 'fa', true)} SSD</td>
+                    <td>
+                      {!plan.bandwidth ? (
+                        <span className={styles.jUnlimited}>بدون محدودیت</span>
+                      ) : (
+                        formatSpace(plan.bandwidth, 'fa')
+                      )}
+                    </td>
+                    <td>
+                      {plan.variants.reverse().map((variant) => (
+                        <div key={variant.id}>
+                          {translateHostPanel(variant.panel.name)}
+                        </div>
                       ))}
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                    <td
+                      className={classNames({
+                        [styles.check]: true,
+                      })}
+                    >
+                      <i className="far fa-check-square"></i>
+                      {/* <i className="fa fa-times fa-lg" /> */}
+                    </td>
+                    <td
+                      className={classNames(styles.jHidden, {
+                        [styles.open]: this.state.isMoreInfoOpen,
+                      })}
+                    >
+                      {!plan.parkdomain ? (
+                        <span className={styles.jUnlimited}>بدون محدودیت</span>
+                      ) : (
+                        `${plan.parkdomain} عدد`
+                      )}
+                    </td>
+                    <td>
+                      {!plan.addondomain ? (
+                        <span className={styles.jUnlimited}>بدون محدودیت</span>
+                      ) : (
+                        `${plan.addondomain} عدد`
+                      )}
+                    </td>
+                    <td
+                      className={classNames(styles.jHidden, {
+                        [styles.open]: this.state.isMoreInfoOpen,
+                      })}
+                    >
+                      {!plan.subdomain ? (
+                        <span className={styles.jUnlimited}>بدون محدودیت</span>
+                      ) : (
+                        `${plan.subdomain} عدد`
+                      )}
+                    </td>
+                    <td
+                      className={classNames(styles.jHidden, {
+                        [styles.open]: this.state.isMoreInfoOpen,
+                      })}
+                    >
+                      {!plan.email ? (
+                        <span className={styles.jUnlimited}>بدون محدودیت</span>
+                      ) : (
+                        `${plan.email} عدد`
+                      )}
+                    </td>
+                    <td
+                      className={classNames(styles.jHidden, {
+                        [styles.open]: this.state.isMoreInfoOpen,
+                      })}
+                    >
+                      {!plan.ftp ? (
+                        <span className={styles.jUnlimited}>بدون محدودیت</span>
+                      ) : (
+                        `${plan.ftp} عدد`
+                      )}
+                    </td>
+                    <td
+                      className={classNames(styles.jHidden, {
+                        [styles.open]: this.state.isMoreInfoOpen,
+                      })}
+                    >
+                      {!plan.dbs ? (
+                        <span className={styles.jUnlimited}>بدون محدودیت</span>
+                      ) : (
+                        `${plan.dbs} عدد`
+                      )}
+                    </td>
+                    <td
+                      className={classNames(styles.jHidden, {
+                        [styles.open]: this.state.isMoreInfoOpen,
+                      })}
+                    >
+                      {plan.backups[2] ? (
+                        <i
+                          className={classNames(
+                            'far fa-check-square',
+                            styles.check
+                          )}
+                        ></i>
+                      ) : (
+                        <i className="fa fa-times fa-lg" />
+                      )}
+                    </td>
+                    <td
+                      className={classNames(styles.jHidden, {
+                        [styles.open]: this.state.isMoreInfoOpen,
+                      })}
+                    >
+                      {plan.backups[1] ? (
+                        <i
+                          className={classNames(
+                            'far fa-check-square',
+                            styles.check
+                          )}
+                        ></i>
+                      ) : (
+                        <i className="fa fa-times fa-lg" />
+                      )}
+                    </td>
+                    <td
+                      className={classNames(styles.jHidden, {
+                        [styles.open]: this.state.isMoreInfoOpen,
+                      })}
+                    >
+                      {plan.backups[0] ? (
+                        <i
+                          className={classNames(
+                            'far fa-check-square',
+                            styles.check
+                          )}
+                        ></i>
+                      ) : (
+                        <i className="fa fa-times fa-lg" />
+                      )}
+                    </td>
+                    <td
+                      className={classNames({
+                        [styles.jHidden]: this.state.isMoreInfoOpen,
+                      })}
+                      style={{
+                        height:
+                          this.props.plans.some((i) => i.backups.length > 0) &&
+                          !this.state.isMoreInfoOpen &&
+                          '92px',
+                      }}
+                    >
+                      <BackupsCell backups={plan.backups} />
+                    </td>
+                    <td>
+                      <small>{this.getCpuModel(plan.id)}</small>
+                    </td>
+                    {plan.ram ? (
+                      <StarredCell
+                        text={formatSpace(plan.ram, 'fa')}
+                        star={(plan.ram / maximumRam) * 5}
+                      />
+                    ) : (
+                      <StarredCell text={null} star={5} />
+                    )}
+                    <td>
+                      <i
+                        className={classNames(
+                          'far fa-check-square',
+                          styles.check
+                        )}
+                      ></i>
+                    </td>
+                    <td>Apache + Nginx</td>
+                    <td>
+                      {formatPriceWithCurrency(
+                        this.props.currencies,
+                        plan.currency,
+                        plan.setup
+                      )}
+                      <br />
+                      یکبار پرداخت ماه اول
+                    </td>
+
+                    {plan.variants.reverse().map((variant) => (
+                      <td key={variant.panel.name} style={{ height: '67px' }}>
+                        {formatPriceWithCurrency(
+                          this.props.currencies,
+                          variant.panel.currency,
+                          variant.panel.price
+                        )}{' '}
+                        ماهیانه
+                        <br />
+                        {plan.country.code === 'DE' &&
+                          `${formatPriceWithCurrency(
+                            this.props.currencies,
+                            variant.panel.currency,
+                            variant.panel.price * 12
+                          )} سالیانه`}
+                        <br />
+                      </td>
+                    ))}
+
+                    <td>
+                      <div className={styles.btnsWrapper}>
+                        {plan.variants.map((variant) => (
+                          <Link
+                            key={variant.id}
+                            href={`/order/hosting/linux/${variant.id}`}
+                          >
+                            <a className={styles.orderLink}>
+                              <OverlayTrigger
+                                placement="top"
+                                overlay={
+                                  <Tooltip
+                                    id={`${variant.panel.name}-tooltip`}
+                                    className={styles.tooltip}
+                                  >
+                                    {variant.panel.name}
+                                  </Tooltip>
+                                }
+                              >
+                                <img
+                                  src={`/images/${variant.panel.name}.png`}
+                                  alt={variant.panel.name}
+                                />
+                              </OverlayTrigger>
+                              <span>
+                                {translateHostPanel(variant.panel.name)}
+                              </span>{' '}
+                            </a>
+                          </Link>
+                        ))}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </Table>
-          {this.props.data.table_ps && (
-            <div>*** {this.props.data.table_ps}</div>
-          )}
         </Col>
       </Row>
     );
   }
 }
 
-export default DedicatedHostingTable;
+export default connect((state: RootState) => {
+  return {
+    currencies: state.currencies,
+  };
+})(DedicatedHostingTable);

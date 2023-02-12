@@ -1,17 +1,17 @@
 const hosts = {
   professional_linux_shared_hosts: [
     {
-      title: 'سی پنل آلمان',
-      link: 'linux_professional_DE_cpanel',
+      title: 'سی پنل فرانسه',
+      link: 'linux_professional_FR_cpanel',
     },
     {
-      title: 'دایرکت ادمین آلمان',
-      link: 'linux_professional_DE_directadmin',
+      title: 'دایرکت ادمین فرانسه',
+      link: 'linux_professional_FR_directadmin',
     },
-    {
+    /* {
       title: 'سی پنل ایران',
       link: 'linux_professional_IR_cpanel',
-    },
+    }, */
     {
       title: 'دایرکت ادمین ایران',
       link: 'linux_professional_IR_directadmin',
@@ -29,12 +29,12 @@ const hosts = {
   ],
   standard_linux_shared_hosts: [
     {
-      title: 'سی‌پنل آلمان',
-      link: 'linux_standard_DE_cpanel',
+      title: 'سی‌پنل فرانسه',
+      link: 'linux_standard_FR_cpanel',
     },
     {
-      title: 'دایرکت‌ادمین آلمان',
-      link: 'linux_standard_DE_directadmin',
+      title: 'دایرکت‌ادمین فرانسه',
+      link: 'linux_standard_FR_directadmin',
     },
     {
       title: 'سی‌پنل ایران',
@@ -93,12 +93,12 @@ const hosts = {
   ],
   reseller_hosts: [
     {
-      title: 'سی‌پنل آلمان',
-      link: 'cpanel_DE',
+      title: 'سی‌پنل فرانسه',
+      link: 'cpanel_FR',
     },
     {
-      title: 'دایرکت ادمین آلمان',
-      link: 'directadmin_DE',
+      title: 'دایرکت ادمین فرانسه',
+      link: 'directadmin_FR',
     },
     {
       title: 'دایرکت ادمین ایران',

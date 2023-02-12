@@ -75,6 +75,7 @@ class SharedHosting extends React.Component<IProps, IState> {
       let section = document.querySelector(link.hash);
 
       if (
+        section &&
         section.offsetTop - 20 <= fromTop &&
         section.offsetTop + section.offsetHeight > fromTop
       ) {
@@ -138,7 +139,7 @@ class SharedHosting extends React.Component<IProps, IState> {
           </Row>
 
           {this.props.page === 'linux_standard' ||
-          this.props.page === 'linux_professional' ? (
+            this.props.page === 'linux_professional' ? (
             <Row className={styles.properties}>
               <Col md={2}>
                 <Image src="/images/transfer_100x100.png" />
@@ -162,11 +163,10 @@ class SharedHosting extends React.Component<IProps, IState> {
               {this.state.plans.map((panels: IHostPlan[], index) => (
                 <div
                   key={index}
-                  id={`${this.props.page}_${panels[0].country.code}${
-                    this.props.page.search('linux') > -1
+                  id={`${this.props.page}_${panels[0].country.code}${this.props.page.search('linux') > -1
                       ? `_${panels[0].cp}`
                       : ''
-                  }`}
+                    }`}
                   className={styles.tableWrapper}
                 >
                   <SharedHostingTable
@@ -189,7 +189,7 @@ class SharedHosting extends React.Component<IProps, IState> {
           </Row>
           <Row>
             {this.props.page === 'linux_professional' ||
-            this.props.page === 'linux_standard' ? (
+              this.props.page === 'linux_standard' ? (
               <>
                 <Facilities />
                 <HostFaq />

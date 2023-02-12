@@ -6,6 +6,8 @@ import auth from './Auth';
 import language from './Language';
 import domain from './Domain';
 import cart from './Cart';
+import theme from './Theme';
+
 
 export const store = configureStore({
   reducer: persistReducer(
@@ -16,7 +18,8 @@ export const store = configureStore({
       language,
       domain,
       cart,
-    })
+      theme,
+    }),
   ),
 });
 

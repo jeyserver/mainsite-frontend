@@ -10,9 +10,18 @@ import { IHostPlan } from '../helper/types/products/Host/plan';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 
-interface IProps extends IPageProps {
-  hosts: { linux: IHostPlan[]; windows: IHostPlan[] };
-  servers: { vps: IVPSPlan[]; dedicated: IDedicatedPlan[] };
+export interface IServices {
+  hosts: {
+    linux: IHostPlan[];
+    windows: IHostPlan[];
+  };
+  servers: {
+    vps: IVPSPlan[];
+    dedicated: IDedicatedPlan[];
+  };
+}
+
+interface IProps extends IServices, IPageProps {
 }
 
 class Index extends React.Component<IProps> {

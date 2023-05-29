@@ -9,6 +9,7 @@ import { formatPriceWithCurrency } from '../../../../store/Currencies';
 import { RootState } from '../../../../store';
 import { connect } from 'react-redux';
 import { IDedicatedPlan } from '../../../../helper/types/products/Dedicated/plan';
+import classNames from 'classnames';
 
 interface IProps {
   data: IDedicatedPlan[];
@@ -43,8 +44,8 @@ class ServerDedicatedTab extends React.Component<IProps> {
           <tbody>
             {this.props.data.map((panel) => (
               <tr key={panel.id}>
-                <td>{panel.title}</td>
-                <td>{formatHards(panel.hard)}</td>
+                <td><b>{panel.title}</b></td>
+                <td><b>{formatHards(panel.hard)}</b></td>
                 <td>{panel.cpu.speed} گیگاهرتز</td>
                 <td>{formatSpaceInPersian(panel.ram)}</td>
                 <td>
@@ -71,35 +72,35 @@ class ServerDedicatedTab extends React.Component<IProps> {
 
                 <td>
                   <div className={styles.btnsWrapper}>
-                    <Link href={`/server/dedicated/${panel.id}`}>
-                      <a className={styles.moreInfoLink}>اطلاعات بیشتر</a>
-                    </Link>
-                    {!panel.sold_out ? (
-                      <Link href={`/order/server/dedicated/${panel.id}`}>
-                        <a className={styles.orderLink}>
-                          <i className="fas fa-shopping-cart"></i>
-                          <span>سفارش</span>
-                        </a>
+                    <p className="text-center">
+                      <Link href={`/server/dedicated/${panel.id}`}>
+                        <Button variant="default">اطلاعات بیشتر</Button>
                       </Link>
-                    ) : (
-                      <OverlayTrigger
-                        overlay={
-                          <Tooltip
-                            id="tooltip-disabled"
-                            className={styles.tooltip}
-                          >
-                            این پلن در حال حاظر برای فروش فعال نمیباشد
-                          </Tooltip>
-                        }
-                      >
-                        <span className={styles.tooltipWrapper}>
-                          <Button className={styles.orderLink} disabled>
-                            <i className="fas fa-shopping-cart"></i>
-                            سفارش{' '}
-                          </Button>
-                        </span>
-                      </OverlayTrigger>
-                    )}
+                    </p>
+                  {!panel.sold_out ? (
+                    <Link href={`/order/server/dedicated/${panel.id}`}>
+                      <Button variant="info" className="text-light" block>
+                        <i className="fas fa-shopping-cart align-middle"></i> {' '}
+                        <span>سفارش</span>
+                      </Button>
+                    </Link>
+                  ) : (
+                    <OverlayTrigger
+                      overlay={
+                        <Tooltip
+                          id="tooltip-disabled"
+                          className={styles.tooltip}
+                        >
+                          این پلن در حال حاظر برای فروش فعال نمیباشد
+                        </Tooltip>
+                      }
+                    >
+                      <Button variant="info" className="text-light" disabled block>
+                        <i className="fas fa-shopping-cart align-middle"></i> {' '}
+                        <span>سفارش</span>
+                      </Button>
+                    </OverlayTrigger>
+                  )}
                   </div>
                 </td>
               </tr>

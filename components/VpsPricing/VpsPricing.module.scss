@@ -182,6 +182,66 @@
   }
 }
 
+.tab-title {
+  display: block;
+  text-decoration: none;
+  background-color: #f8f8f8;
+  padding: 0 20px;
+  border: 1px solid #ededed;
+  border-radius: 4px;
+  color: #4b4b4b !important;
+  font-family: IRANSans;
+  box-shadow: 0 2px 7px rgba(0,0,0,.1);
+  transition: all .3s ease-in-out;
+
+  &:hover {
+    border: 1px solid #d50c2d;
+  }
+
+  &.active {
+    border: 2px solid #d50c2d;
+    background-color: #fff;
+  }
+
+  .h3 {
+    font-family: IRANSans;
+    letter-spacing: 0;
+    font-size: 18px;
+    line-height: 50px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+  }
+}
+
+.locations {
+  margin-top: 40px;
+
+  a {
+    display: block;
+    text-decoration: none;
+    background-color: #f8f8f8;
+    padding: 0 20px;
+    border: 1px solid #ededed;
+    border-radius: 4px;
+    color: #4b4b4b !important;
+    font-family: IRANSans;
+    box-shadow: 0 2px 7px rgb(0 0 0 / 10%);
+    transition: all .3s ease-in-out;
+    margin-bottom: 2em;
+
+
+    &:hover {
+      border: 1px solid #d50c2d;
+    }
+
+    .h4 {
+      margin-top: 10px;
+      margin-bottom: 10px;
+      font-size: 18px;
+    }
+  }
+}
+
 .tables {
   > div {
     padding-top: 60px;

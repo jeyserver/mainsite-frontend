@@ -6,6 +6,10 @@ const translateCountryNameToPersian = (code) => {
       return 'آلمان';
     case 'IR':
       return 'ایران';
+    case 'FI':
+      return 'فنلاند';
+    case 'US':
+      return 'آمریکا';
     default:
       return '';
   }

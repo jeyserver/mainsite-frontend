@@ -28,30 +28,6 @@ class VpsServerTab extends React.Component<IProps, IState> {
     this.state = { isMoreInfoOpen: false };
   }
 
-  getVpsPlanType = (title) => {
-    if (title.search('اقتصادی') > -1) {
-      return {
-        fa: 'اقتصادی',
-        en: 'economic',
-      };
-    } else if (title.search('حرفه ای') > -1) {
-      return {
-        en: 'professional',
-        fa: 'حرفه ای',
-      };
-    } else if (title.search('حجیم') > -1) {
-      return {
-        en: 'storage',
-        fa: 'حجیم',
-      };
-    } else {
-      return {
-        en: '',
-        fa: '',
-      };
-    }
-  };
-
   render() {
     return (
       <div>
@@ -63,8 +39,6 @@ class VpsServerTab extends React.Component<IProps, IState> {
                   [styles.pageTitle]: !this.props.homePageTable,
                 })}
               >
-                سرور مجازی {this.getVpsPlanType(this.props.data[0].title).fa}
-                <br />
                 <CountryFlagTooltip country={this.props.data[0].country} />
                 {translateCountryNameToPersian(this.props.data[0].country.code)}
               </h5>
@@ -72,39 +46,6 @@ class VpsServerTab extends React.Component<IProps, IState> {
                 <div />
               </div>
             </div>
-
-            {this.props.data[0].country.name === 'France' &&
-              this.getVpsPlanType(this.props.data[0].title).fa === 'حجیم' && (
-                <div>
-                  <p>
-                    اگر میخواهید سرور دانلود راه اندازی کنید یا وب سایتتان فایل
-                    های سنگین دارد، این سرور های مجازی بهترین انتخاب شما خواهد
-                    بود.در این سرور ها هم میتوانید لینوکس و هم ویندوز نصب کنید.
-                  </p>
-                  <p>
-                    سرور های دانلود فرانسه از آپتایم و سرعت پورت بسیار بالا و با
-                    کیفیتی برخوردار هستند و ما برای مجازی سازی از VMWare استفاده
-                    میکنیم؛ بنابراین دسترسی کنسول به این سرور مجازی به راحتی و
-                    با درخواست شما قابل ارائه است.
-                  </p>
-                  <p>
-                    این سرویس ها بر روی هارد های پرسرعت و جدید با تکنولوژی RAID
-                    میزبانی خواهند شد تا امنیت اطلاعات شما حفظ شود.
-                  </p>
-                  <p>
-                    تمامی سرور های دانلود آنی تحویل داده خواهد شد و امکان تغییر
-                    سیستم عامل آن ها خودکار از و از طریق پنل کاربری جی سرور صورت
-                    میگیرد.
-                  </p>
-                  <p>
-                    اگر این سرور ها را به عنوان هاست دانلود استفاده میکنید، ما
-                    استفاده از وب سرور انجین ایکس را به شما پیشنهاد میکنیم.
-                    همچنین در صورت نیاز به کانفیگ سرور لطفا با پشتیبانی ۲۴ ساعته
-                    ما ارتباط برقرار کنید تا همکاران ما به سرعت خدمات مورد نیاز
-                    شما را فراهم کنند.
-                  </p>
-                </div>
-              )}
           </>
         )}
 
@@ -137,11 +78,10 @@ class VpsServerTab extends React.Component<IProps, IState> {
               >
                 دسترسی کنسول
               </th>
-              <th
-                className={classNames(styles.jHidden, {
-                  [styles.open]: this.state.isMoreInfoOpen,
-                })}
-              >
+              <th>
+                موقعیت
+              </th>
+              <th>
                 نصب خودکار سیستم عامل
               </th>
               <th
@@ -151,7 +91,11 @@ class VpsServerTab extends React.Component<IProps, IState> {
               >
                 گراف پهنای باند
               </th>
-              <th>مانیتورینگ</th>
+              <th
+                className={classNames(styles.jHidden, {
+                  [styles.open]: this.state.isMoreInfoOpen,
+                })}
+              >مانیتورینگ</th>
               <th>پشتیبانی</th>
               <th>قیمت</th>
               <th className="text-center" style={{ lineHeight: '34px' }}>
@@ -172,14 +116,12 @@ class VpsServerTab extends React.Component<IProps, IState> {
           <tbody>
             {this.props.data.map((plan) => (
               <tr key={plan.id}>
-                <td>{plan.title}</td>
+                <td><b>{plan.title}</b></td>
                 <td>
                   {formatSpace(plan.hard, 'fa')}{' '}
-                  {this.getVpsPlanType(plan.title).en === 'professional'
-                    ? 'SSD'
-                    : 'SATA'}
+                  <b>NVMe</b>
                 </td>
-                <td>{plan.cpu} مگاهرتز</td>
+                <td>{plan.cpu / 3500} هسته</td>
                 <td>{formatSpace(plan.ram, 'fa')}</td>
                 <td>
                   {plan.bandwidth ? (
@@ -238,6 +180,9 @@ class VpsServerTab extends React.Component<IProps, IState> {
                   )}
                 >
                   <i className="fa fa-check fa-lg" />
+                </td>
+                <td>
+                    <b>{plan.location.city}</b>
                 </td>
                 <td className={classNames({ [styles.check]: true })}>
                   <i className="fa fa-check fa-lg" />

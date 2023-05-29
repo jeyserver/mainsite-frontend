@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Dropdown, Container, Row, Col } from 'react-bootstrap';
 import styles from './Server.module.scss';
 import classNames from 'classnames';
+import 'flag-icon-css/css/flag-icon.min.css';
 
 interface IProps {
   changeShowDropDown: () => void;
@@ -29,7 +30,7 @@ class Server extends React.Component<IProps> {
                     <a>
                       <h4 className={classNames(styles.title, 'serverTitle')}>
                         <i className="fas fa-cubes"></i>
-                        سرور مجازی
+                        سرور مجازی ابری
                       </h4>
                     </a>
                   </Link>
@@ -42,12 +43,12 @@ class Server extends React.Component<IProps> {
                         xl={4}
                         className="d-flex align-items-cenetr justify-content-center"
                       >
-                        <Link href="/server/vps/professional">
+                        <Link href="/server/vps/cloud#server_vps_cloud_de">
                           <a className={styles.professionalServerBtn}>
                             <div className={styles.iconWrapper}>
-                              <i className="fas fa-microchip"></i>
+                              <i className="flag-icon flag-icon-de"></i>
                             </div>
-                            <div>سرور‌های حرفه‌ای</div>
+                            <div>سرور‌های ابری آلمان</div>
                           </a>
                         </Link>
                       </Col>
@@ -58,12 +59,12 @@ class Server extends React.Component<IProps> {
                         xl={4}
                         className="d-flex align-items-cenetr justify-content-center"
                       >
-                        <Link href="/server/vps/economic">
+                        <Link href="/server/vps/cloud#server_vps_cloud_fi">
                           <a className={styles.economicServerBtn}>
                             <div className={styles.iconWrapper}>
-                              <i className="far fa-money-bill-alt"></i>
+                              <i className="flag-icon flag-icon-fi"></i>
                             </div>
-                            <div>سرور‌های اقتصادی</div>
+                            <div>سرور‌های ابری فنلاند</div>
                           </a>
                         </Link>
                       </Col>
@@ -74,12 +75,12 @@ class Server extends React.Component<IProps> {
                         xl={4}
                         className="d-flex align-items-cenetr justify-content-center"
                       >
-                        <Link href="/server/vps/storage">
+                        <Link href="/server/vps/cloud#server_vps_cloud_us">
                           <a className={styles.largeServerBtn}>
                             <div className={styles.iconWrapper}>
-                              <i className="far fa-hdd"></i>
+                              <i className="flag-icon flag-icon-us"></i>
                             </div>
-                            <div>سرور‌های حجیم</div>
+                            <div>سرور‌های ابری آمریکا</div>
                           </a>
                         </Link>
                       </Col>

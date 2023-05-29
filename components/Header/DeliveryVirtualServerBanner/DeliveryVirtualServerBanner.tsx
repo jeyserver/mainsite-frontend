@@ -28,18 +28,18 @@ class DeliveryVirtualServerBanner extends React.Component<
               </li>
               <li>
                 <i className="fas fa-check-square"></i>
-                <span> نصب دستی و سفارشی توسط شما</span>
+                <span> امکان نصب سیستم عامل ویندوز به صورت سفارشی</span>
               </li>
-              <li>
+              {/* <li>
                 <i className="fas fa-check-square"></i>
                 <span>نصب هر سیستم عامل دلخواه دیگر</span>
-              </li>
-              <li>
+              </li> */}
+              {/* <li>
                 <i className="fas fa-check-square"></i>
                 <span>دسترسی VNC</span>
-              </li>
+              </li> */}
             </ul>
-            <Link href="/server/vps">
+            <Link href="/server/vps/cloud">
               <a className={styles.linkBuyVirtualServers}>
                 <i className="far fa-hand-point-up"></i>
                 <span> خرید یک سرور مجازی جدید</span>

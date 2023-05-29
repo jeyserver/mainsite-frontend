@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Link from 'next/link';
-import { Image } from 'react-bootstrap';
+import { Button, Image } from 'react-bootstrap';
 import styles from './OVHBanner.module.scss';
 
 export interface OVHBannerProps {}
@@ -34,7 +34,9 @@ class OVHBanner extends React.Component<OVHBannerProps, OVHBannerState> {
             </ul>
             <div>
               <Link href="#">
-                <a className={styles.showPannelsBtn}>مشاهده پلن ها</a>
+                <Button className={styles.showPannelsBtn} disabled>
+                  به زودی
+                </Button>
               </Link>
             </div>
           </div>

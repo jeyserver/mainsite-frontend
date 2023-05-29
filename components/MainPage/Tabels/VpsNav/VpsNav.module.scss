@@ -1,120 +1,52 @@
-.vpsNav,
-.vpsNavOnMobile {
+.vpsNav {
   list-style: none;
   padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
   background: #f8f8f8;
   border-radius: 3px;
   margin-bottom: 25px;
   margin-top: 50px;
+  color: #313131;
+  font-size: 13px;
+  line-height: 20px;
+  direction: rtl;
+  font-family: IRANSans;
+  box-sizing: border-box;
 
   > li {
-    margin-right: 2px;
-    line-height: 2.75;
     color: #4b4b4b;
-    font-size: 12px;
-    font-family: BYekan;
-    padding: 10px 5px 10px 0;
+    font-size: 13px;
+    line-height: 20px;
+    direction: rtl;
+    font-family: IRANSans;
+    list-style: none;
+    box-sizing: border-box;
+    position: relative;
+    display: block;
+    float: right;
 
-    &:nth-child(1) {
-      color: #a94442;
-    }
-    &:nth-child(3) {
-      color: #8a6d3b;
-    }
-    &:nth-child(5) {
-      color: #a94442;
-    }
-    &:nth-child(6) {
-      color: #8a6d3b;
-    }
-  }
-}
-
-.vpsNav {
-  @media screen and (max-width: 767px) {
-    display: none;
-  }
-}
-
-.vpsNavOnMobile {
-  display: none;
-
-  @media screen and (max-width: 767px) {
-    display: flex;
-    flex-direction: column;
-  }
-
-  > li {
-    width: 100%;
-
-    > div {
-      width: 100%;
-      > button {
-        width: 100%;
-      }
+    @media screen and (max-width: 785px) {
+      float: unset;
+      text-align: center;
     }
 
     > a {
-      width: 100%;
-      display: block;
-      text-align: center;
-      color: #4b4b4b;
-    }
-  }
-
-  .dropdownToggle {
-    background-color: transparent;
-    padding: 0;
-    margin: 0;
-    color: #4b4b4b;
-    border: none;
-    font-size: 12px;
-    font-family: BYekan;
-
-    &:focus,
-    &[aria-expanded='true'] {
-      box-shadow: none !important;
+      direction: rtl;
+      list-style: none;
+      box-sizing: border-box;
       background-color: transparent;
-      color: #4b4b4b;
-    }
-
-    &::after {
-      vertical-align: middle;
-    }
-  }
-
-  .dropdownMenu {
-    display: flex;
-    flex-direction: column;
-    right: 0 !important;
-    left: 0 !important;
-    width: 100%;
-
-    background: #f8f8f8;
-    box-shadow: 0 12px 12px rgba(0, 0, 0, 0.175);
-    border: none;
-
-    a {
+      text-decoration: none;
+      position: relative;
       display: block;
-      clear: both;
-      font-weight: 400;
-      white-space: nowrap;
+      border-radius: 4px;
       margin-right: 2px;
       line-height: 2.75;
       color: #4b4b4b;
       font-size: 12px;
-      font-family: BYekan;
-      background: #f8f8f8;
-      padding: 3px 20px;
+      padding: 10px 9px 10px 0;
+      font-family: IRANSans;
 
-      &:nth-child(1) {
-        color: #a94442;
-      }
-      &:nth-child(3) {
-        color: #8a6d3b;
+      &:hover {
+        color: #4b4b4b;
       }
     }
   }

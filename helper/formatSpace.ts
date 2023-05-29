@@ -10,16 +10,15 @@ export const formatSpaceInEnglish = (size, decimals = 2) => {
   );
 };
 
-export const formatSpaceInPersian = (size, decimals = 2) => {
+export const formatSpaceInPersian = (size: number, decimals: number = 2, base: number = 1024) => {
   if (size === 0) return '';
 
-  const k = 1024;
   const dm = decimals < 0 ? 0 : decimals;
   const sizes = ['مگابایت', 'گیگابایت', 'ترابایت'];
 
-  const i = Math.floor(Math.log(size) / Math.log(k));
+  const i = Math.floor(Math.log(size) / Math.log(base));
 
-  return parseFloat((size / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+  return parseFloat((size / Math.pow(base, i)).toFixed(dm)) + ' ' + sizes[i];
 };
 
 export const formatSpace = (

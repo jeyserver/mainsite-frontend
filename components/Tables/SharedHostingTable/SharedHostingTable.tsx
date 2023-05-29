@@ -42,10 +42,6 @@ class SharedHostingTable extends React.Component<IProps, IState> {
         return 'لینوکس حرفه ای';
       case 'linux-standard':
         return 'لینوکس ساده';
-      case 'windows-standard':
-        return 'ویندوز معمولی';
-      case 'windows-professional':
-        return 'ویندوز حرفه ای';
       default:
         return '';
     }
@@ -60,7 +56,7 @@ class SharedHostingTable extends React.Component<IProps, IState> {
     );
 
     return (
-      <div>
+      <div className={styles['services-section']}>
         {!this.props.homePageTable && this.props.subType && (
           <div className={styles.title}>
             <h5>
@@ -223,7 +219,7 @@ class SharedHostingTable extends React.Component<IProps, IState> {
             {this.props.data.map((plan) => (
               <tr key={plan.id}>
                 <td>{plan.title}</td>
-                <td>{formatSpaceInPersian(plan.space)}</td>
+                <td>{formatSpaceInPersian(plan.space, undefined, 1000)}</td>
                 <td>
                   {plan.bandwidth ? (
                     formatSpaceInPersian(plan.bandwidth)
@@ -413,9 +409,9 @@ class SharedHostingTable extends React.Component<IProps, IState> {
                     <StarredCell text={null} star={5} />
                   ))}
                 <td>
-                  {this.props.type === 'linux' ? 'Apache + Nginx' : 'IIS'}
+                  <b>{plan.cp === 'cpanel' ? 'LiteSpeed' : 'OpenLiteSpeed'}</b>
                 </td>
-                <td>SSD</td>
+                <td><b>SSD</b></td>
                 <td>
                   <div>
                     {formatPriceWithCurrency(

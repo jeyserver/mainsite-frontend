@@ -34,5 +34,5 @@ export const formatSpace = (
 
   const i = Math.floor(Math.log(size) / Math.log(thresh));
 
-  return parseFloat((size / Math.pow(thresh, i)).toFixed(fix)) + sizes[i];
+  return parseFloat((size / Math.pow(thresh, i)).toFixed(fix)) + ' ' + sizes[i];
 };

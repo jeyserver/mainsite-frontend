@@ -11,7 +11,7 @@ import IAddon, { AddonType } from '../../../helper/types/products/VPS/addon';
 import ILicense from '../../../helper/types/products/License/plan';
 import { IHostPlan } from '../../../helper/types/products/Host/plan';
 import IOS from '../../../helper/types/products/VPS/os';
-import { Formik, FormikHelpers, Form, Field, ErrorMessage } from 'formik';
+import { Formik, FormikHelpers, Form, Field, ErrorMessage, FormikErrors } from 'formik';
 import { formatSpace } from '../../../helper/formatSpace';
 import translateCountryNameToPersian from '../../../helper/translateCountryNameToPersian';
 import { NotificationManager } from 'react-notifications';
@@ -37,7 +37,7 @@ interface IProps {
   addVPSToCart: AsyncThunkAction<any, IAddVPS>;
 }
 
-interface OrderVPSState {
+interface IState {
   backup: string;
   license: string;
   os: IOS;
@@ -56,7 +56,7 @@ interface IInputs {
   os: string;
 }
 
-class OrderVPS extends React.Component<IProps, OrderVPSState> {
+class OrderVPS extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.state = {
@@ -112,7 +112,6 @@ class OrderVPS extends React.Component<IProps, OrderVPSState> {
         }
       }
     } catch (error) {
-      console.log('error', error);
       NotificationManager.error(
         'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
         'خطا'
@@ -124,6 +123,14 @@ class OrderVPS extends React.Component<IProps, OrderVPSState> {
 
   getRam(ram: string) {
     return parseInt(ram.replace(/^\D+/g, '').match(/\d+/)[0]);
+  }
+
+  getInputValidationState(errors: FormikErrors<IInputs>, input: string): string | null {
+    if (typeof errors[input] !== undefined) {
+      return 'error';
+    }
+
+    return null;
   }
 
   render() {
@@ -153,7 +160,7 @@ class OrderVPS extends React.Component<IProps, OrderVPSState> {
                   onSubmit={(values, helpers) => this.onSubmit(values, helpers)}
                 >
                   {(formik) => (
-                    <Form>
+                    <Form noValidate>
                       <div className={styles.service}>
                         <h2 className={styles.title}>
                           پیکربندی
@@ -281,7 +288,11 @@ class OrderVPS extends React.Component<IProps, OrderVPSState> {
                             <Col sm={6} className="mb-2">
                               <FormGroup>
                                 <FormLabel>دوره پرداخت:</FormLabel>
-                                <FormControl as="select" name="period">
+                                <FormControl
+                                  as="select"
+                                  name="period"
+                                  isInvalid={formik.errors.period}
+                                >
                                   <option value="1">
                                     برای 1 ماه قیمت :‌{' '}
                                     {formatPriceWithCurrency(
@@ -291,12 +302,20 @@ class OrderVPS extends React.Component<IProps, OrderVPSState> {
                                     )}
                                   </option>
                                 </FormControl>
+                                <FormControl.Feedback type="invalid">{formik.errors.period}</FormControl.Feedback>
                               </FormGroup>
                             </Col>
                             <Col sm={6} className="mb-2">
                               <FormGroup>
                                 <FormLabel>سیستم عامل:</FormLabel>
-                                <FormControl as="select" name="os" onChange={(e) => this.onChangeOs(e)} value={this.state.os?.id} className="ltr">
+                                <FormControl
+                                  as="select"
+                                  name="os"
+                                  onChange={(e) => this.onChangeOs(e)}
+                                  value={this.state.os?.id}
+                                  className="ltr"
+                                  isInvalid={formik.errors.os}
+                                >
                                   <optgroup label="linux">
                                     {this.props.oses
                                       .filter((i) => i.base === 'linux')
@@ -307,6 +326,7 @@ class OrderVPS extends React.Component<IProps, OrderVPSState> {
                                       ))}
                                   </optgroup>
                                 </FormControl>
+                                <FormControl.Feedback type="invalid">{formik.errors.os}</FormControl.Feedback>
                               </FormGroup>
                             </Col>
                           </Row>
@@ -328,7 +348,13 @@ class OrderVPS extends React.Component<IProps, OrderVPSState> {
                             </Col>
                             <Col sm={8}>
                               <FormGroup>
-                                <FormControl as="select" name="license" onChange={(e) => this.onChangeField(e, 'license') } value={this.state.license}>
+                                <FormControl
+                                  as="select"
+                                  name="license"
+                                  onChange={(e) => this.onChangeField(e, 'license') }
+                                  value={this.state.license}
+                                  isInvalid={formik.errors.license}
+                                >
                                   <option value="">لازم ندارم</option>
                                 {this.props.licenses.map((license) => (
                                   <option
@@ -344,6 +370,8 @@ class OrderVPS extends React.Component<IProps, OrderVPSState> {
                                   </option>
                                 ))}
                                 </FormControl>
+
+                                <FormControl.Feedback type="invalid">{formik.errors.license}</FormControl.Feedback>
                               </FormGroup>
                             </Col>
                           </Row>
@@ -366,7 +394,13 @@ class OrderVPS extends React.Component<IProps, OrderVPSState> {
                             </Col>
                             <Col sm={8}>
                               <FormGroup>
-                                <FormControl as="select" name="backup" onChange={(e) => this.onChangeField(e, 'backup') } value={this.state.backup}>
+                                <FormControl
+                                  as="select"
+                                  name="backup"
+                                  onChange={(e) => this.onChangeField(e, 'backup') }
+                                  value={this.state.backup}
+                                  isInvalid={formik.errors.backup}
+                                >
                                   <option value="">لازم ندارم</option>
                                 {this.props.hosts.map((host) => (
                                   <option value={host.id} key={host.id}>
@@ -381,6 +415,7 @@ class OrderVPS extends React.Component<IProps, OrderVPSState> {
                                   </option>
                                 ))}
                                 </FormControl>
+                                <FormControl.Feedback type="invalid">{formik.errors.backup}</FormControl.Feedback>
                               </FormGroup>
                             </Col>
                           </Row>
@@ -406,8 +441,10 @@ class OrderVPS extends React.Component<IProps, OrderVPSState> {
                                     });
                                   }}
                                   value={this.state.domain}
+                                  isInvalid={formik.errors.domain}
                                 >
                                 </FormControl>
+                                <FormControl.Feedback type="invalid">{formik.errors.domain}</FormControl.Feedback>
                               </FormGroup>
                             </Col>
                           </Row>
@@ -420,7 +457,11 @@ class OrderVPS extends React.Component<IProps, OrderVPSState> {
                             </Col>
                             <Col sm={8}>
                               <FormGroup>
-                                <FormControl as="select" name="ram">
+                                <FormControl
+                                  as="select"
+                                  name="ram"
+                                  isInvalid={formik.errors.ram}
+                                >
                                   <option>
                                     {formatSpace(this.props.plan.ram, 'fa')}
                                   </option>
@@ -448,6 +489,7 @@ class OrderVPS extends React.Component<IProps, OrderVPSState> {
                                       </option>
                                     ))}
                                 </FormControl>
+                                <FormControl.Feedback type="invalid">{formik.errors.ram}</FormControl.Feedback>
                               </FormGroup>
                             </Col>
                           </Row>
@@ -460,10 +502,15 @@ class OrderVPS extends React.Component<IProps, OrderVPSState> {
                             </Col>
                             <Col sm={8}>
                               <FormGroup>
-                                <FormControl as="select" name="ip">
+                                <FormControl
+                                  as="select"
+                                  name="ip"
+                                  isInvalid={formik.errors.ip}
+                                >
                                   <option value="">1 عدد</option>
                                 </FormControl>
                               </FormGroup>
+                              <FormControl.Feedback type="invalid">{formik.errors.ip}</FormControl.Feedback>
                             </Col>
                           </Row>
 
@@ -475,7 +522,11 @@ class OrderVPS extends React.Component<IProps, OrderVPSState> {
                             </Col>
                             <Col sm={8}>
                               <FormGroup>
-                                <FormControl as="select" name="ip">
+                                <FormControl
+                                  as="select"
+                                  name="hard"
+                                  isInvalid={formik.errors.hard}
+                                >
                                   <option>
                                     {formatSpace(this.props.plan.hard, 'fa')}{' '}
                                     {getHardType(this.props.plan.hardtype)}
@@ -497,6 +548,7 @@ class OrderVPS extends React.Component<IProps, OrderVPSState> {
                                       </option>
                                     ))}
                                 </FormControl>
+                                <FormControl.Feedback type="invalid">{formik.errors.hard}</FormControl.Feedback>
                               </FormGroup>
                             </Col>
                           </Row>

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Container, Row, Col, Button } from 'react-bootstrap';
+import { Container, Row, Col, Button, FormLabel, FormGroup, FormControl } from 'react-bootstrap';
 import PagesHeader from '../../PagesHeader/PagesHeader';
 import OrderSteps from './OrderSteps/OrderSteps';
 import styles from './OrderVPS.module.scss';
@@ -11,7 +11,7 @@ import IAddon, { AddonType } from '../../../helper/types/products/VPS/addon';
 import ILicense from '../../../helper/types/products/License/plan';
 import { IHostPlan } from '../../../helper/types/products/Host/plan';
 import IOS from '../../../helper/types/products/VPS/os';
-import { Formik, FormikHelpers, Form, Field, ErrorMessage } from 'formik';
+import { Formik, FormikHelpers, Form, Field, ErrorMessage, FormikErrors } from 'formik';
 import { formatSpace } from '../../../helper/formatSpace';
 import translateCountryNameToPersian from '../../../helper/translateCountryNameToPersian';
 import { NotificationManager } from 'react-notifications';
@@ -24,7 +24,6 @@ import { NextRouter, withRouter } from 'next/router';
 import {
   addVPS as addVPSToCart,
   IAddVPS,
-  setItems as setCartItems,
 } from '../../../store/Cart';
 
 interface IProps {
@@ -35,11 +34,10 @@ interface IProps {
   oses: IOS[];
   currencies: RootState['currencies'];
   router: NextRouter;
-  setCartItems: typeof setCartItems;
   addVPSToCart: AsyncThunkAction<any, IAddVPS>;
 }
 
-interface OrderVPSState {
+interface IState {
   backup: string;
   license: string;
   os: IOS;
@@ -58,12 +56,12 @@ interface IInputs {
   os: string;
 }
 
-class OrderVPS extends React.Component<IProps, OrderVPSState> {
+class OrderVPS extends React.Component<IProps, IState> {
   constructor(props: IProps) {
     super(props);
     this.state = {
       backup: '',
-      os: this.props.oses.find((i) => i.base === 'windows'),
+      os: this.props.oses[0],
       license: '',
       domain: '',
       showDomainAlert: false,
@@ -71,13 +69,13 @@ class OrderVPS extends React.Component<IProps, OrderVPSState> {
   }
 
   onChangeField(
-    e: React.ChangeEvent<HTMLInputElement>,
+    e: React.ChangeEvent<FormControlElement>,
     field: 'backup' | 'license' | 'domain'
   ) {
-    this.setState({ [field]: e.target.value });
+    this.setState({ [field]: e.target.value } as any);
   }
 
-  onChangeOs(e: React.ChangeEvent<HTMLInputElement>) {
+  onChangeOs(e: React.ChangeEvent<FormControlElement>) {
     const selected = this.props.oses.find(
       (i) => i.id === Number(e.target.value)
     );
@@ -127,6 +125,14 @@ class OrderVPS extends React.Component<IProps, OrderVPSState> {
     return parseInt(ram.replace(/^\D+/g, '').match(/\d+/)[0]);
   }
 
+  getInputValidationState(errors: FormikErrors<IInputs>, input: string): string | null {
+    if (typeof errors[input] !== undefined) {
+      return 'error';
+    }
+
+    return null;
+  }
+
   render() {
     return (
       <section>
@@ -154,88 +160,178 @@ class OrderVPS extends React.Component<IProps, OrderVPSState> {
                   onSubmit={(values, helpers) => this.onSubmit(values, helpers)}
                 >
                   {(formik) => (
-                    <Form>
+                    <Form noValidate>
                       <div className={styles.service}>
                         <h2 className={styles.title}>
-                          {this.props.plan.title}
+                          پیکربندی
                         </h2>
-                        <div className={styles.info}>
-                          {this.state.showDomainAlert && (
-                            <Alert
-                              variant="danger"
-                              onClose={() =>
-                                this.setState({ showDomainAlert: false })
-                              }
-                              className={styles.backupDangerAlert}
-                              dismissible
-                            >
-                              <Alert.Heading>
-                                <i className="fas fa-times-circle"></i>
-                                <span>خطا</span>
-                              </Alert.Heading>
-                              <p>
-                                لطفا برای ایجاد فضای بکاپ، آدرس دامنه خود را
-                                وارد نمایید.
-                              </p>
-                            </Alert>
-                          )}
-
-                          <p>{this.props.plan.title}</p>
-                          <div>
-                            <div>
-                              هارد {formatSpace(this.props.plan.hard, 'fa')}
-                              SATA
-                            </div>
-                            <div>
-                              ترافیک{' '}
-                              {!this.props.plan.bandwidth ? (
-                                <span className={styles.unlimited}>
-                                  بدون محدودیت
-                                </span>
-                              ) : (
-                                formatSpace(this.props.plan.bandwidth, 'fa')
-                              )}
-                            </div>
-                            <div>پردازشگر {this.props.plan.cpu} مگاهرتز</div>
-                            <div>
-                              حافظه موقت{' '}
-                              {formatSpace(this.props.plan.ram, 'fa')}
-                            </div>
-                            <div>
-                              <span className={styles.location}>
-                                موقعیت{' '}
-                                {translateCountryNameToPersian(
-                                  this.props.plan.country.code
-                                )}
-                              </span>
-                              <CountryFlagTooltip
-                                country={this.props.plan.country}
-                              />
-                            </div>
+                        <div className={styles['configuration-container']}>
+                          <div className={styles.info}>
+                            {this.state.showDomainAlert && (
+                              <Alert
+                                variant="danger"
+                                onClose={() =>
+                                  this.setState({ showDomainAlert: false })
+                                }
+                                className={styles.backupDangerAlert}
+                                dismissible
+                              >
+                                <Alert.Heading>
+                                  <i className="fas fa-times-circle"></i>
+                                  <span>خطا</span>
+                                </Alert.Heading>
+                                <p>
+                                  لطفا برای ایجاد فضای بکاپ، آدرس دامنه خود را
+                                  وارد نمایید.
+                                </p>
+                              </Alert>
+                            )}
                           </div>
-                        </div>
-
-                        <Row className={styles.paymentPeriodRow}>
-                          <Col md={4}>دوره پرداخت:</Col>
-                          <Col md={8}>
-                            <Field as="select" name="period">
-                              <option value="1">
-                                برای 1 ماه قیمت :‌{' '}
-                                {formatPriceWithCurrency(
-                                  this.props.currencies,
-                                  this.props.plan.currency,
-                                  this.props.plan.price
+                          <h3 className={styles.h3}>مشخصات پلن انتخاب شده:</h3>
+                          <Row className={styles['panel-info']}>
+                            <Col sm={6}>
+                              <Row className={styles['row-label']}>
+                                <Col sm={5}>
+                                  <FormLabel>
+                                    <i className="align-middle fa fa-server" aria-hidden="true"></i> {' '}
+                                    پلن:
+                                  </FormLabel>
+                                </Col>
+                                <Col xs={7}><strong>{this.props.plan.title}</strong></Col>
+                              </Row>
+                              <Row className={styles['row-label']}>
+                                <Col xs={5}>
+                                  <FormLabel>
+                                    <i className="align-middle fa fa-hdd" aria-hidden="true"></i> {' '}
+                                    هارد:
+                                  </FormLabel>
+                                </Col>
+                                <Col xs={7}>
+                                  {formatSpace(this.props.plan.hard, 'fa')} {' '}
+                                  <b>NVMe</b>
+                                </Col>
+                              </Row>
+                              <Row className={styles['row-label']}>
+                                <Col xs={5}>
+                                  <FormLabel>
+                                    <i className="align-middle fa fa-exchange-alt" aria-hidden="true"></i> {' '}
+                                    ترافیک:
+                                  </FormLabel>
+                                </Col>
+                                <Col xs={7}>
+                                {!this.props.plan.bandwidth ? (
+                                  <span className={styles.unlimited}>
+                                    بدون محدودیت
+                                  </span>
+                                ) : (
+                                  formatSpace(this.props.plan.bandwidth, 'fa')
                                 )}
-                              </option>
-                            </Field>
-                            <div className="form-err-msg">
-                              <ErrorMessage name="period" />
-                            </div>
-                          </Col>
-                        </Row>
+                                </Col>
+                              </Row>
+                              <Row className={styles['row-label']}>
+                                <Col xs={5}>
+                                  <FormLabel>
+                                    <i className="align-middle fa fa-globe" aria-hidden="true"></i> {' '}
+                                    موقعیت:
+                                  </FormLabel>
+                                </Col>
+                                <Col xs={7}>
+                                  <span className={`flag-icon flag-icon-${this.props.plan.country.code.toLowerCase()}`}></span> {' '}
+                                  {translateCountryNameToPersian(
+                                    this.props.plan.country.code
+                                  )} {' '}
+                                  - {' '}
+                                  {this.props.plan.location.city}
+                                </Col>
+                              </Row>
+                            </Col>
+                            <Col sm={6}>
+                              <Row className={styles['row-label']}>
+                                <Col xs={5}>
+                                  <FormLabel>
+                                    <i className="align-middle fa fa-microchip" aria-hidden="true"></i> {' '}
+                                    پردازشگر:
+                                  </FormLabel>
+                                </Col>
+                                <Col xs={7}>{this.props.plan.cpu / 3500} هسته</Col>
+                              </Row>
+                              <Row className={styles['row-label']}>
+                                <Col xs={5}>
+                                  <FormLabel>
+                                    <i className="align-middle fa fa-chart-pie" aria-hidden="true"></i> {' '}
+                                    حافظه موقت:
+                                  </FormLabel>
+                                </Col>
+                                <Col xs={7}>{formatSpace(this.props.plan.ram, 'fa')}</Col>
+                              </Row>
+                              <Row className={styles['row-label']}>
+                                <Col xs={5}>
+                                  <FormLabel>
+                                    <i className="align-middle fa fa-signal" aria-hidden="true"></i> {' '}
+                                    نوع شبکه:
+                                  </FormLabel>
+                                </Col>
+                                <Col xs={7}>آدرس IPV4</Col>
+                              </Row>
+                              <Row className={styles['row-label']}>
+                                <Col xs={5}>
+                                  <FormLabel>
+                                    <i className="align-middle fa fa-fire" aria-hidden="true"></i> {' '}
+                                    فایروال:
+                                  </FormLabel>
+                                </Col>
+                                <Col xs={7}>پیش فرض</Col>
+                              </Row>
+                            </Col>
+                          </Row>
+                          <Row className={styles['row-label']}>
+                            <Col sm={6} className="mb-2">
+                              <FormGroup>
+                                <FormLabel>دوره پرداخت:</FormLabel>
+                                <FormControl
+                                  as="select"
+                                  name="period"
+                                  isInvalid={formik.errors.period}
+                                >
+                                  <option value="1">
+                                    برای 1 ماه قیمت :‌{' '}
+                                    {formatPriceWithCurrency(
+                                      this.props.currencies,
+                                      this.props.plan.currency,
+                                      this.props.plan.price
+                                    )}
+                                  </option>
+                                </FormControl>
+                                <FormControl.Feedback type="invalid">{formik.errors.period}</FormControl.Feedback>
+                              </FormGroup>
+                            </Col>
+                            <Col sm={6} className="mb-2">
+                              <FormGroup>
+                                <FormLabel>سیستم عامل:</FormLabel>
+                                <FormControl
+                                  as="select"
+                                  name="os"
+                                  onChange={(e) => this.onChangeOs(e)}
+                                  value={this.state.os?.id}
+                                  className="ltr"
+                                  isInvalid={formik.errors.os}
+                                >
+                                  <optgroup label="linux">
+                                    {this.props.oses
+                                      .filter((i) => i.base === 'linux')
+                                      .map((os) => (
+                                        <option value={os.id} key={os.id}>
+                                          {os.title}
+                                        </option>
+                                      ))}
+                                  </optgroup>
+                                </FormControl>
+                                <FormControl.Feedback type="invalid">{formik.errors.os}</FormControl.Feedback>
+                              </FormGroup>
+                            </Col>
+                          </Row>
 
-                        <Row className={styles.additionalFeatures}>
-                          <p>
+                          <p className="h5 mt-2">
                             <strong>انتخاب های قابل پیکربندی</strong>
                           </p>
                           <p>
@@ -244,272 +340,236 @@ class OrderVPS extends React.Component<IProps, OrderVPSState> {
                             نمایید
                           </p>
 
-                          <br />
-                          <div className={styles.rowsWrapper}>
-                            <div className={styles.rows}>
-                              <div className={styles.row}>
-                                <div>لایسنس</div>
-                                <div>
-                                  <Field
-                                    as="select"
-                                    onChange={(e) =>
-                                      this.onChangeField(e, 'license')
-                                    }
-                                    value={this.state.license}
-                                    name="license"
+                          <Row className={classNames(styles['row-label'], 'mb-3')}>
+                            <Col sm={4}>
+                              <FormLabel>
+                                لایسنس
+                              </FormLabel>
+                            </Col>
+                            <Col sm={8}>
+                              <FormGroup>
+                                <FormControl
+                                  as="select"
+                                  name="license"
+                                  onChange={(e) => this.onChangeField(e, 'license') }
+                                  value={this.state.license}
+                                  isInvalid={formik.errors.license}
+                                >
+                                  <option value="">لازم ندارم</option>
+                                {this.props.licenses.map((license) => (
+                                  <option
+                                    value={license.id}
+                                    key={license.id}
                                   >
-                                    <option value="">لازم ندارم</option>
-                                    {this.props.licenses.map((license) => (
-                                      <option
-                                        value={license.id}
-                                        key={license.id}
-                                      >
-                                        {license.title} قیمت:{' '}
-                                        {formatPriceWithCurrency(
-                                          this.props.currencies,
-                                          license.currency,
-                                          license.price
-                                        )}
-                                      </option>
-                                    ))}
-                                  </Field>
-                                  <div className="form-err-msg">
-                                    <ErrorMessage name="license" />
-                                  </div>
-                                </div>
-                              </div>
+                                    {license.title} قیمت:{' '}
+                                    {formatPriceWithCurrency(
+                                      this.props.currencies,
+                                      license.currency,
+                                      license.price
+                                    )}
+                                  </option>
+                                ))}
+                                </FormControl>
 
-                              <div className={styles.row}>
-                                <div>فضای بکاپ</div>
-                                <div>
-                                  <Field
-                                    as="select"
-                                    name="backup"
-                                    onChange={(e) =>
-                                      this.onChangeField(e, 'backup')
-                                    }
-                                    value={this.state.backup}
-                                    className="form-control"
-                                  >
-                                    <option value="-">لازم ندارم</option>
-                                    {this.props.hosts.map((host) => (
-                                      <option value={host.id} key={host.id}>
-                                        {formatSpace(host.space, 'en', true)} ،
-                                        قیمت :{' '}
+                                <FormControl.Feedback type="invalid">{formik.errors.license}</FormControl.Feedback>
+                              </FormGroup>
+                            </Col>
+                          </Row>
+
+                          <Alert
+                            variant='danger'
+                            className={classNames('text-center', {
+                              ['d-none']: this.state.os?.base !== 'windows' || this.state.license === '',
+                            })}
+                          >
+                            توجه داشته باشید که لایسنس ها مربوط به برنامه هایی
+                            هستند که فقط بر روی سیستم عامل های لینوکس نصب میشوند
+                          </Alert>
+
+                          <Row className={classNames(styles['row-label'], 'mb-3')}>
+                            <Col sm={4}>
+                              <FormLabel>
+                                فضای بکاپ
+                              </FormLabel>
+                            </Col>
+                            <Col sm={8}>
+                              <FormGroup>
+                                <FormControl
+                                  as="select"
+                                  name="backup"
+                                  onChange={(e) => this.onChangeField(e, 'backup') }
+                                  value={this.state.backup}
+                                  isInvalid={formik.errors.backup}
+                                >
+                                  <option value="">لازم ندارم</option>
+                                {this.props.hosts.map((host) => (
+                                  <option value={host.id} key={host.id}>
+                                    {formatSpace(host.space, 'en', true)} ،
+                                    قیمت :{' '}
+                                    {formatPriceWithCurrency(
+                                      this.props.currencies,
+                                      host.currency,
+                                      host.price
+                                    )}{' '}
+                                    ماهیانه
+                                  </option>
+                                ))}
+                                </FormControl>
+                                <FormControl.Feedback type="invalid">{formik.errors.backup}</FormControl.Feedback>
+                              </FormGroup>
+                            </Col>
+                          </Row>
+
+                          <Row className={classNames(styles['row-label'], 'mb-3', {
+                            ['d-none']: this.state.backup === '',
+                          })}>
+                            <Col sm={4}>
+                              <FormLabel>
+                                دامنه هاست بکاپ
+                              </FormLabel>
+                            </Col>
+                            <Col sm={8}>
+                              <FormGroup>
+                                <FormControl
+                                  type="text"
+                                  className='ltr'
+                                  name="domain"
+                                  onChange={(e) => {
+                                    this.onChangeField(e, 'domain');
+                                    this.setState({
+                                      showDomainAlert: false,
+                                    });
+                                  }}
+                                  value={this.state.domain}
+                                  isInvalid={formik.errors.domain}
+                                >
+                                </FormControl>
+                                <FormControl.Feedback type="invalid">{formik.errors.domain}</FormControl.Feedback>
+                              </FormGroup>
+                            </Col>
+                          </Row>
+
+                          <Row className={classNames(styles['row-label'], 'mb-3')}>
+                            <Col sm={4}>
+                              <FormLabel>
+                                حافظه موقت
+                              </FormLabel>
+                            </Col>
+                            <Col sm={8}>
+                              <FormGroup>
+                                <FormControl
+                                  as="select"
+                                  name="ram"
+                                  isInvalid={formik.errors.ram}
+                                >
+                                  <option>
+                                    {formatSpace(this.props.plan.ram, 'fa')}
+                                  </option>
+                                  {this.props.addons
+                                    .filter(
+                                      (addon) =>
+                                        addon.addon.type === AddonType.Ram
+                                    )
+                                    .map((ram) => (
+                                      <option value={ram.id} key={ram.id}>
+                                        {formatSpace(
+                                          this.props.plan.ram +
+                                            this.getRam(ram.addon.title),
+                                          'fa',
+                                          false,
+                                          2
+                                        )}{' '}
+                                        قیمت{' '}
                                         {formatPriceWithCurrency(
                                           this.props.currencies,
-                                          host.currency,
-                                          host.price
+                                          ram.currency,
+                                          ram.price
                                         )}{' '}
                                         ماهیانه
                                       </option>
                                     ))}
-                                  </Field>
-                                  <div className="form-err-msg">
-                                    <ErrorMessage name="backup" />
-                                  </div>
-                                </div>
-                              </div>
+                                </FormControl>
+                                <FormControl.Feedback type="invalid">{formik.errors.ram}</FormControl.Feedback>
+                              </FormGroup>
+                            </Col>
+                          </Row>
 
-                              <div
-                                className={classNames(styles.row, {
-                                  [styles.hidden]: this.state.backup === '',
-                                })}
-                              >
-                                <div>دامنه هاست بکاپ</div>
-                                <div>
-                                  {this.state.backup !== '-' && (
-                                    <>
-                                      <Field
-                                        type="text"
-                                        name="domain"
-                                        className="form-control"
-                                        onChange={(e) => {
-                                          this.onChangeField(e, 'domain');
-                                          this.setState({
-                                            showDomainAlert: false,
-                                          });
-                                        }}
-                                        value={this.state.domain}
-                                      />
-                                      <div className="form-err-msg">
-                                        <ErrorMessage name="domain" />
-                                      </div>
-                                    </>
-                                  )}
-                                </div>
-                              </div>
+                          <Row className={classNames(styles['row-label'], 'mb-3')}>
+                            <Col sm={4}>
+                              <FormLabel>
+                                آي پي
+                              </FormLabel>
+                            </Col>
+                            <Col sm={8}>
+                              <FormGroup>
+                                <FormControl
+                                  as="select"
+                                  name="ip"
+                                  isInvalid={formik.errors.ip}
+                                >
+                                  <option value="">1 عدد</option>
+                                </FormControl>
+                              </FormGroup>
+                              <FormControl.Feedback type="invalid">{formik.errors.ip}</FormControl.Feedback>
+                            </Col>
+                          </Row>
 
-                              <div className={styles.row}>
-                                <div>حافظه موقت</div>
-                                <div>
-                                  <Field
-                                    as="select"
-                                    name="ram"
-                                    className="form-control"
-                                  >
-                                    <option>
-                                      {formatSpace(this.props.plan.ram, 'fa')}
-                                    </option>
-                                    {this.props.addons
-                                      .filter(
-                                        (addon) =>
-                                          addon.addon.type === AddonType.Ram
-                                      )
-                                      .map((ram) => (
-                                        <option value={ram.id} key={ram.id}>
-                                          {formatSpace(
-                                            this.props.plan.ram +
-                                              this.getRam(ram.addon.title),
-                                            'fa',
-                                            false,
-                                            2
-                                          )}{' '}
-                                          قیمت{' '}
-                                          {formatPriceWithCurrency(
-                                            this.props.currencies,
-                                            ram.currency,
-                                            ram.price
-                                          )}{' '}
-                                          ماهیانه
-                                        </option>
-                                      ))}
-                                  </Field>
-                                </div>
-                              </div>
+                          <Row className={classNames(styles['row-label'], 'mb-3')}>
+                            <Col sm={4}>
+                              <FormLabel>
+                                هارد
+                              </FormLabel>
+                            </Col>
+                            <Col sm={8}>
+                              <FormGroup>
+                                <FormControl
+                                  as="select"
+                                  name="hard"
+                                  isInvalid={formik.errors.hard}
+                                >
+                                  <option>
+                                    {formatSpace(this.props.plan.hard, 'fa')}{' '}
+                                    {getHardType(this.props.plan.hardtype)}
+                                  </option>
 
-                              <div className={styles.row}>
-                                <div>آي پي</div>
-                                <div>
-                                  <Field as="select" name="ip">
-                                    <option value="">1 عدد</option>
-                                    {Array(3)
-                                      .fill('')
-                                      .map((ip, index) => (
-                                        <option
-                                          value={index + 1}
-                                          key={index + 1}
-                                        >
-                                          {index + 2} عدد یک ماه قیمت{' '}
-                                          {formatPriceWithCurrency(
-                                            this.props.currencies,
-                                            this.props.plan.currency,
-                                            this.props.plan.addonip *
-                                              (index + 1)
-                                          )}
-                                        </option>
-                                      ))}
-                                  </Field>
-                                  <div className="form-err-msg">
-                                    <ErrorMessage name="ip" />
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div className={styles.row}>
-                                <div>هارد</div>
-                                <div>
-                                  <Field
-                                    as="select"
-                                    name="hard"
-                                    className="form-control"
-                                  >
-                                    <option>
-                                      {formatSpace(this.props.plan.hard, 'fa')}{' '}
-                                      {getHardType(this.props.plan.hardtype)}
-                                    </option>
-
-                                    {this.props.addons
-                                      .filter(
-                                        (addon) =>
-                                          addon.addon.type === AddonType.Hard
-                                      )
-                                      .map((hard) => (
-                                        <option value={hard.id} key={hard.id}>
-                                          {hard.addon.title} اضافی یک ماه قیمت{' '}
-                                          {formatPriceWithCurrency(
-                                            this.props.currencies,
-                                            hard.currency,
-                                            hard.price
-                                          )}
-                                        </option>
-                                      ))}
-                                  </Field>
-                                  <div className="form-err-msg">
-                                    <ErrorMessage name="hard" />
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </Row>
-
-                        <div className={styles.moreInfoSection}>
-                          <p>
-                            <strong>اطلاعات لازم دیگر</strong>
-                          </p>
-                          <p>
-                            این سرویس/محصول نیاز به بعضی اطلاعات اضافی از شما
-                            دارد تا ما بتوانیم پروسه ی سفارش شما را تکمیل نماییم
-                          </p>
-                          <div className={styles.osRow}>
-                            <div>سیستم عامل </div>
-                            <div>
-                              <Field
-                                as="select"
-                                name="os"
-                                onChange={(e) => this.onChangeOs(e)}
-                                value={this.state.os.id}
-                              >
-                                <optgroup label="Windows">
-                                  {this.props.oses
-                                    .filter((i) => i.base === 'windows')
-                                    .map((os) => (
-                                      <option value={os.id} key={os.id}>
-                                        {os.title}
+                                  {this.props.addons
+                                    .filter(
+                                      (addon) =>
+                                        addon.addon.type === AddonType.Hard
+                                    )
+                                    .map((hard) => (
+                                      <option value={hard.id} key={hard.id}>
+                                        {hard.addon.title} اضافی یک ماه قیمت{' '}
+                                        {formatPriceWithCurrency(
+                                          this.props.currencies,
+                                          hard.currency,
+                                          hard.price
+                                        )}
                                       </option>
                                     ))}
-                                </optgroup>
-                                <optgroup label="linux">
-                                  {this.props.oses
-                                    .filter((i) => i.base === 'linux')
-                                    .map((os) => (
-                                      <option value={os.id} key={os.id}>
-                                        {os.title}
-                                      </option>
-                                    ))}
-                                </optgroup>
-                              </Field>
-                            </div>
-                          </div>
-                        </div>
+                                </FormControl>
+                                <FormControl.Feedback type="invalid">{formik.errors.hard}</FormControl.Feedback>
+                              </FormGroup>
+                            </Col>
+                          </Row>
 
-                        <div
-                          className={classNames(styles.alert, {
-                            [styles.show]:
-                              this.state.os.base === 'windows' &&
-                              this.state.license !== '-',
-                          })}
-                        >
-                          توجه داشته باشید که لایسنس ها مربوط به برنامه هایی
-                          هستند که فقط بر روی سیستم عامل های لینوکس نصب میشوند
+                          <Row className="justify-content-center">
+                            <Col md={6}>
+                              <Button
+                                variant='success'
+                                type="submit"
+                                disabled={formik.isSubmitting}
+                                block
+                              >
+                                {formik.isSubmitting ? (
+                                  <i className="fas fa-spinner"></i>
+                                ) : (
+                                  'ادامه'
+                                )}
+                              </Button>
+                            </Col>
+                          </Row>
                         </div>
-
-                        <Row className="justify-content-center">
-                          <Col md={6}>
-                            <Button
-                              className={styles.nextStepBtn}
-                              type="submit"
-                              disabled={formik.isSubmitting}
-                            >
-                              {formik.isSubmitting ? (
-                                <i className="fas fa-spinner"></i>
-                              ) : (
-                                'ادامه'
-                              )}
-                            </Button>
-                          </Col>
-                        </Row>
                       </div>
                     </Form>
                   )}
@@ -527,5 +587,5 @@ export default connect(
   (state: RootState) => {
     return { currencies: state.currencies };
   },
-  { setCartItems, addVPSToCart }
+  { addVPSToCart }
 )(withRouter(OrderVPS));

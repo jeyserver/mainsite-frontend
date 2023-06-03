@@ -75,8 +75,31 @@ export const addVPS = createAsyncThunk(
   'addVPS',
   async (arg: IAddVPS, thunkApi) => {
     const store = thunkApi.getState() as RootState;
+
+    const items = {
+      cart: store.cart.id,
+      period: arg.period,
+      license: arg.license,
+      backup: arg.backup,
+      domain: arg.domain,
+      ram: arg.ram,
+      os: arg.os,
+      hard: arg.hard,
+      ip: arg.ip,
+    };
+    const data = new FormData();
+
+    for (const key in items) {
+      if (items[key] === undefined) {
+        continue;
+      }
+
+      data.append(key, items[key]);
+    }
+
     return await backend.post(
-      `/order/server/vps/${arg.id}?cart=${store.cart.id}&period=${arg.period}&license=${arg.license}&backup=${arg.backup}&domain=${arg.domain}&ram=${arg.ram}&os=${arg.os}&hard=${arg.hard}&ip=${arg.ip}&ajax=1`
+      `/order/server/vps/${arg.id}?ajax=1`,
+      data
     );
   }
 );

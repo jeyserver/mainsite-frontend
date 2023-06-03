@@ -36,7 +36,6 @@ class VpsRow extends React.Component<iProps, VpsRowState> {
         'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
         'خطا'
       );
-    } finally {
       this.setState({ loading: false });
     }
   }

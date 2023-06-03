@@ -217,6 +217,7 @@ interface ICartItem {
   currency: ICurrency;
   product: string;
   plan: any;
+  type: string;
 }
 
 interface IState {

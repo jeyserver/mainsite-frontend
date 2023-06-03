@@ -84,7 +84,6 @@ class Review extends React.Component<IProps, ReviewState> {
         'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
         'خطا'
       );
-    } finally {
       this.setState({ clearCartLoading: false });
     }
   }
@@ -152,7 +151,9 @@ class Review extends React.Component<IProps, ReviewState> {
                       </tr>
                     </thead>
                     <tbody className="text-align">
-                      {this.props.cart.items.map((cartItem) => {
+                      {this.props.cart.items.filter((item) => {
+                        return 'domain' !== item.product || 'owndomain' !== item.type;
+                      }).map((cartItem) => {
                         return (
                           <tr key={cartItem.id}>
                             {this.renderRow(cartItem.product, cartItem)}

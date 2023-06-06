@@ -93,14 +93,6 @@ class Hosting extends React.Component<IProps> {
                           </h3>
                         </a>
                       </Link>
-                      <Link href="/reseller/hosting/linux">
-                        <a>
-                          <h3 className={styles.midleTitle}>
-                            <i className="fas fa-university"></i>
-                            <span>نمایندگی هاست اشتراکی</span>
-                          </h3>
-                        </a>
-                      </Link>
                     </div>
                   </Col>
                 </Row>

@@ -40,22 +40,6 @@ class Hosting extends React.Component<IProps> {
                         </Link>
                       </li>
                     </ul>
-                    <h3 className={styles.title}>
-                      <i className="fab fa-windows"></i>
-                      <span>هاست اشتراکی ویندوز</span>
-                    </h3>
-                    <ul className={styles.list}>
-                      <li>
-                        <Link href="/hosting/windows/standard">
-                          <a>هاست اشتراکی ویندوز ساده</a>
-                        </Link>
-                      </li>
-                      <li>
-                        <Link href="/hosting/windows/professional">
-                          <a>هاست اشتراکی ویندوز حرفه ای</a>
-                        </Link>
-                      </li>
-                    </ul>
                   </Col>
                   <Col xs={12} md={6} className={styles.mildleCol}>
                     <div>

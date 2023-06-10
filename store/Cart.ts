@@ -27,16 +27,38 @@ export const addDomain = createAsyncThunk(
       .map((i) => `&period[${i[0]}]=${i[1]}`)
       .join('');
 
+    const data = new FormData();
+    data.append('cart', store.cart.id);
+    data.append('domainoption', arg.domainoption);
+
+    if (arg.hostPlan) {
+      data.append('hostPlan', arg.hostPlan);
+    }
+
+    if (arg.name) {
+      data.append('name', arg.name);
+    }
+
+    if (arg.tld) {
+      data.append('tld', arg.tld.toString());
+    }
+
+    if (arg.period) {
+      console.error(arg.period);
+      for (const domain in arg.period) {
+        data.append(`period[${domain}]`, (arg.period[domain] || 1).toString())
+      }
+    }
+
+    if (arg.domains) {
+      for (const domain of arg.domains) {
+        data.append(`domains[${domain}]`, domain);
+      }
+    }
+
     return await backend.post(
-      `/order/domain?cart=${store.cart.id}${
-        arg.hostPlan ? `&hostPlan=${arg.hostPlan}` : ''
-      }&domainoption=${arg.domainoption}${arg.name ? `&name=${arg.name}` : ''}${
-        arg.tld ? `&tld=${arg.tld}` : ''
-      }${
-        arg.domains
-          ? arg.domains.map((i) => `&domains[${i}]=${i}`).join('')
-          : ''
-      }${arg.period ? period : ''}&ajax=1`
+      `/order/domain?ajax=1`,
+      data
     );
   }
 );

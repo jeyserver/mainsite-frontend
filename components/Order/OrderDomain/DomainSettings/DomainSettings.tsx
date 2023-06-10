@@ -24,7 +24,7 @@ interface IProps {
   domain: RootState['domain'];
 }
 
-interface IDomain {
+export interface IDomain {
   available: boolean;
   name: string;
   tld: ITld;
@@ -114,7 +114,7 @@ class DomainSettings extends React.Component<IProps, IState> {
   }
 
   componentDidMount() {
-    if (this.props.domain.selected) {
+    if (this.props.domain.selected && this.props.domain.selected.name && this.props.domain.selected.tld) {
       this.setState({ recommendedDomainsLoading: true });
 
       const { name, tld } = this.props.domain.selected;
@@ -248,20 +248,6 @@ class DomainSettings extends React.Component<IProps, IState> {
               )}
             </Form.Group>
           </Col>
-
-          <Row
-            className={classNames(styles.alertOwnDomain, {
-              [styles.show]: this.state.domainoption === 'owndomain',
-            })}
-          >
-            <Col xs={12}>
-              <div className={styles.alert}>
-                <span>
-                  پسوند دامنه را بدون نقطه در قسمت پسوند دامنه وارد کنید
-                </span>
-              </div>
-            </Col>
-          </Row>
 
           <CheckDomainForm
             tlds={this.props.data.tlds}

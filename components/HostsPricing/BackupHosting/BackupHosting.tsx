@@ -58,7 +58,6 @@ class BackupHosting extends React.Component<IProps, BackupHostingState> {
     } else {
       // upscroll code
       if (!this.props.appIsScrolling) {
-        console.log('backup');
         nav.style.top = '80px';
       } else {
         nav.style.top = '0px';

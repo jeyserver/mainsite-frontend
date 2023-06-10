@@ -35,8 +35,7 @@ class LicenseRow extends React.Component<IProps, IState> {
         'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
         'خطا'
       );
-    } finally {
-      this.setState({ loading: false });
+        this.setState({ loading: false });
     }
   }
 

@@ -7,6 +7,8 @@ import { IPageProps } from './../../_app';
 import { setCart as setCart } from '../../../store/Cart';
 import { RootState } from '../../../store';
 import backend from '../../../axios-config';
+import { NextPageContext } from 'next';
+import router from 'next/router';
 
 interface IProps extends IPageProps {
   setCart: typeof setCart;
@@ -22,7 +24,9 @@ class Index extends React.Component<IProps> {
           has_active_discount_code: res.data.has_active_discount_code,
         });
       }
-    );
+    ).catch(() => {
+      router.push('/');
+    });
   }
 
   render() {
@@ -42,7 +46,7 @@ class Index extends React.Component<IProps> {
   }
 }
 
-export async function getServerSideProps(context) {
+export async function getServerSideProps(context: NextPageContext) {
   const locale = context.locale;
 
   if (locale !== 'fa') {

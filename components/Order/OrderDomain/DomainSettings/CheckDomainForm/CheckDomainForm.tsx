@@ -44,12 +44,13 @@ interface IState {
   unAvailableDomainException: boolean;
   domainName: string;
   tld: string | number;
+  customTld: string;
 }
 
 interface IInputs {
   name: string;
   tld: number | string;
-  postfix: string;
+  customTld: string;
 }
 
 class CheckDomainForm extends React.Component<IProps, IState> {
@@ -57,8 +58,9 @@ class CheckDomainForm extends React.Component<IProps, IState> {
     super(props);
     this.state = {
       unAvailableDomainException: false,
-      domainName: this.props.default.name,
+      domainName: this.props.default.name ? this.format(this.props.default.name, true) : undefined,
       tld: this.props.default.tld,
+      customTld: undefined,
     };
   }
 
@@ -67,12 +69,24 @@ class CheckDomainForm extends React.Component<IProps, IState> {
       (prevProps.default &&
         this.props.default.name !== prevProps.default.name) ||
       (prevProps.default && this.props.default.tld !== prevProps.default.tld)
-    ) {
+     ) {
       this.setState({
-        domainName: this.props.default.name,
-        tld: this.props.default.tld,
+        domainName: this.props.default.name ? this.format(this.props.default.name, true) : undefined,
+        tld: this.props.default.tld || undefined,
       });
     }
+  }
+
+  format(val: string, removeEnd: boolean) {
+    if (val.startsWith('.')) {
+      val = val.substring(1);
+    }
+
+    if (removeEnd && val.endsWith('.')) {
+      val = val.substring(0, val.length - 1);
+    }
+
+    return val && val.length > 0 ? val.trim().toLowerCase() : undefined;
   }
 
   async onSubmit(
@@ -83,91 +97,76 @@ class CheckDomainForm extends React.Component<IProps, IState> {
       this.setState({ unAvailableDomainException: false });
     }
 
-    if (this.props.selectedDomains.length > 0) {
-      try {
-        const res = await this.props
-          .addDomainToCart({
-            domainoption: this.props.domainoption,
-            domains: this.props.selectedDomains.map(
-              (i) => `${i.name}.${i.tld.tld}`
-            ),
-            name: this.state.domainName,
-            tld:
-              this.props.domainoption === 'owndomain'
-                ? values.postfix
-                : this.state.tld,
-            period: this.props.periods,
-            hostPlan: this.props.hostPlan,
-          })
-          .unwrap();
+    if (
+      !this.state.domainName ||
+      (this.props.domainoption === 'owndomain' && !this.state.customTld)
+    ) {
+      setErrors({ name: 'داده وارد شده معتبر نیست.' });
+
+      return;
+    }
+
+    try {
+      const res = await this.props
+        .addDomainToCart({
+          domainoption: this.props.domainoption,
+          domains: this.props.selectedDomains.map(
+            (i) => this.format(`${i.name}.${i.tld.tld}`, true)
+          ),
+          name: this.format(this.state.domainName, true),
+          tld:
+            this.props.domainoption === 'owndomain'
+              ? this.format(this.state.customTld, true)
+              : this.state.tld,
+          period: this.props.periods,
+          hostPlan: this.props.hostPlan,
+        })
+        .unwrap();
+
+      if (res.data.status) {
         if (res.data.redirect) {
           this.props.router.push(res.data.redirect);
-        }
-      } catch (error) {
-        NotificationManager.error(
-          'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
-          'خطا'
-        );
-      } finally {
-        setSubmitting(false);
-      }
-    } else {
-      try {
-        const res = await this.props
-          .addDomainToCart({
-            domainoption: this.props.domainoption,
-            tld:
-              this.props.domainoption === 'owndomain'
-                ? values.postfix
-                : this.state.tld,
-            name: this.state.domainName,
-            hostPlan: this.props.hostPlan,
-            domains: '',
-            period: '',
-          })
-          .unwrap();
-
-        if (res.data.status) {
-          if (res.data.redirect) {
-            this.props.router.push(res.data.redirect);
-          } else {
-            if (res.data.ordered.available) {
-              this.props.setSelectedDomains([res.data.ordered]);
-            }
-            // recomendeds
-            const recomendeds = [res.data.ordered, ...res.data.recomendeds];
-            this.props.setRecommendedDomains(recomendeds);
-            // periods
-            const periods = recomendeds.reduce((prev, cur) => {
-              return { ...prev, [`${cur.name}.${cur.tld.tld}`]: 1 };
-            }, {});
-            this.props.setPeriods(periods);
-          }
         } else {
-          res.data.error.map((error) => {
-            setErrors({ [error.input]: showErrorMsg(error.code) });
-          });
-          if (res.data.error[0].code === 'unAvailableDomainException') {
-            this.setState({ unAvailableDomainException: true });
+          if (res.data.ordered.available) {
+            this.props.setSelectedDomains([res.data.ordered]);
           }
+          // recomendeds
+          const recomendeds = [res.data.ordered, ...res.data.recomendeds];
+          this.props.setRecommendedDomains(recomendeds);
+          // periods
+          const periods = recomendeds.reduce((prev, cur) => {
+            return { ...prev, [`${cur.name}.${cur.tld.tld}`]: 1 };
+          }, {});
+          this.props.setPeriods(periods);
         }
-      } catch (error) {
-        NotificationManager.error(
-          'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
-          'خطا'
-        );
-      } finally {
-        setSubmitting(false);
+      } else {
+        res.data.error.map((error) => {
+          setErrors({ [error.input]: showErrorMsg(error.code) });
+        });
+        if (res.data.error[0].code === 'unAvailableDomainException') {
+          this.setState({ unAvailableDomainException: true });
+        }
       }
+    } catch (error) {
+      NotificationManager.error(
+        'ارتباط با سامانه بدرستی انجام نشد، لطفا مجددا تلاش کنید.',
+        'خطا'
+      );
+    } finally {
+      setSubmitting(false);
     }
   }
 
   onChangeDomainName(e) {
-    this.setState({ domainName: e.target.value });
+    this.setState({ domainName: this.format(e.target.value, 'blur' === e.type) });
   }
 
   onChangeTld(e) {
     this.setState({ tld: e.target.value });
+  }
+
+  onChangeTLDName(e) {
+    this.setState({ customTld: this.format(e.target.value, 'blur' === e.type) });
   }
 
   render() {
@@ -179,7 +178,7 @@ class CheckDomainForm extends React.Component<IProps, IState> {
         initialValues={{
           name: this.state.domainName,
           tld: this.state.tld,
-          postfix: '',
+          customTld: this.state.customTld,
         }}
         onSubmit={(values, helpers) => this.onSubmit(values, helpers)}
       >
@@ -194,19 +193,29 @@ class CheckDomainForm extends React.Component<IProps, IState> {
                       (formik.errors.name || formik.errors.tld),
                   })}
                 >
+                  <InputGroup.Prepend className={styles.prefix}>
+                    www.
+                  </InputGroup.Prepend>
+                  <Field
+                    type="text"
+                    placeholder="Your Domain"
+                    name="name"
+                    className="form-control"
+                    value={this.state.domainName}
+                    onChange={(e: Event) => this.onChangeDomainName(e)}
+                    onBlur={(e: Event) => this.onChangeDomainName(e)}
+                  />
                   {this.props.domainoption === 'owndomain' ? (
                     <div className={styles.suffix}>
                       <Field
                         type="text"
                         placeholder="پسوند"
-                        name="postfix"
+                        name="customTld"
                         className={classNames('form-control', styles.tldInput)}
+                        onChange={(e: Event) => this.onChangeTLDName(e)}
+                        value={this.state.customTld}
+                        onBlur={(e: Event) => this.onChangeTLDName(e)}
                       />
-                      <div className={styles.hint}>
-                        <div className={styles.text}>بدون نقطه وارد کنید</div>
-                        <div className={styles.flashLine}></div>
-                        <i className="fas fa-caret-down"></i>
-                      </div>
                     </div>
                   ) : (
                     <Field
@@ -278,18 +287,6 @@ class CheckDomainForm extends React.Component<IProps, IState> {
                       </optgroup>
                     </Field>
                   )}
-                  <Field
-                    type="text"
-                    placeholder="Your Domain"
-                    name="name"
-                    className="form-control"
-                    defaultValue={this.props.default.name}
-                    onChange={(e) => this.onChangeDomainName(e)}
-                    value={this.state.domainName}
-                  />
-                  <InputGroup.Prepend className={styles.prefix}>
-                    www.
-                  </InputGroup.Prepend>
                 </InputGroup>
 
                 <div className={styles.invalidMsg}>

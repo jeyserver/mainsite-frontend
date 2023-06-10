@@ -43,7 +43,7 @@ class Index extends React.Component<IProps> {
               tlds: this.props.tlds,
               hostPlan: this.props.hostPlan,
               transferOption: false,
-              cheepBorder: 200000,
+              cheepBorder: 5,
               commercialDomains,
             }}
           />

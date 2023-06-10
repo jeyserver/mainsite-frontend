@@ -58,7 +58,6 @@ class DownloadHosting extends React.Component<IProps, IState> {
     } else {
       // upscroll code
       if (!this.props.appIsScrolling) {
-        console.log('file');
         nav.style.top = '80px';
       } else {
         nav.style.top = '0px';

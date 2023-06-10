@@ -110,7 +110,7 @@ const domainSlice = createSlice({
       );
     });
     builder.addCase(deleteDomain.rejected, (state, action) => {
-      console.log(action.payload);
+      // console.log(action.payload);
     });
     builder.addCase(getForConfigureDomains.fulfilled, (state, action) => {
       state.forConfigure = action.payload.data.products;

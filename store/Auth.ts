@@ -10,5 +10,5 @@ const authSlice = createSlice({
   extraReducers: {},
 });
 
-export const {} = authSlice.actions;
+
 export default authSlice.reducer;

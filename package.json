@@ -20,7 +20,7 @@
     "jalali-moment": "^3.3.10",
     "js-cookie": "^2.2.1",
     "moment": "^2.29.1",
-    "next": "10.2.3",
+    "next": "11",
     "next-redux-wrapper": "^6.0.2",
     "nextjs-progressbar": "^0.0.11",
     "nprogress": "^0.2.0",

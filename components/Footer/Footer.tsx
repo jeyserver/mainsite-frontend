@@ -95,12 +95,12 @@ class Footer extends React.Component<IProps, IState> {
                   {this.props.posts.slice(0, 5).map((post) => (
                     <li key={post.permalink}>
                       <Link href={`/blog/${post.permalink}`}>
-                        <a>
-                          <i className="far fa-edit"></i>
-                          <span
-                            dangerouslySetInnerHTML={{ __html: post.title }}
-                          ></span>
-                        </a>
+
+                        <i className="far fa-edit"></i>
+                        <span
+                          dangerouslySetInnerHTML={{ __html: post.title }}
+                        ></span>
+
                       </Link>
                     </li>
                   ))}
@@ -199,11 +199,11 @@ class Footer extends React.Component<IProps, IState> {
                 <div className={styles.rightSide}>
                   <span>کلیه حقوق مادی و معنوی این سایت محفوظ می باشد.</span>
                   <Link href="/terms">
-                    <a> قوانین</a>
+                     قوانین
                   </Link>{' '}
                   |{' '}
                   <Link href="/policy">
-                    <a>خط مشی ها</a>
+                    خط مشی ها
                   </Link>
                 </div>
               </Col>
@@ -215,34 +215,26 @@ class Footer extends React.Component<IProps, IState> {
                 <ul className={styles.bottomLinksList} id="footer-page-links">
                   <li>
                     <Link href="/blog">
-                      <a>
-                        <i className="fas fa-circle"></i>
-                        بلاگ جی سرور
-                      </a>
+
+                      <i className="fas fa-circle"></i>بلاگ جی سرور
                     </Link>
                   </li>
                   <li>
                     <Link href="/profile">
-                      <a>
-                        <i className="fas fa-circle"></i>
-                        پنل کاربری
-                      </a>
+
+                      <i className="fas fa-circle"></i>پنل کاربری
                     </Link>
                   </li>
                   <li>
                     <Link href="/news">
-                      <a>
-                        <i className="fas fa-circle"></i>
-                        اخبار
-                      </a>
+
+                      <i className="fas fa-circle"></i>اخبار
                     </Link>
                   </li>
                   <li>
                     <Link href="/faqs">
-                      <a>
-                        <i className="fas fa-circle"></i>
-                        سوالات متداول
-                      </a>
+
+                      <i className="fas fa-circle"></i>سوالات متداول
                     </Link>
                   </li>
                 </ul>

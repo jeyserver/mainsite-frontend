@@ -39,11 +39,11 @@ class DeliveryVirtualServerBanner extends React.Component<
                 <span>دسترسی VNC</span>
               </li> */}
             </ul>
-            <Link href="/server/vps/cloud">
-              <a className={styles.linkBuyVirtualServers}>
-                <i className="far fa-hand-point-up"></i>
-                <span> خرید یک سرور مجازی جدید</span>
-              </a>
+            <Link href="/server/vps/cloud" className={styles.linkBuyVirtualServers}>
+
+              <i className="far fa-hand-point-up"></i>
+              <span> خرید یک سرور مجازی جدید</span>
+
             </Link>
           </div>
           <div className={styles.robotImgWrapper}>

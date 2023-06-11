@@ -9,9 +9,9 @@ class HostFaq extends React.Component {
       <Col>
         <div className={styles.title}>
           <Link href="/hosting/faq">
-            <a>
-              <h5>سوالات متداول هاست میزبانی</h5>
-            </a>
+
+            <h5>سوالات متداول هاست میزبانی</h5>
+
           </Link>
           <div className={styles.divider}>
             <div />
@@ -168,8 +168,8 @@ class HostFaq extends React.Component {
         </div>
         <div>
           <Col>
-            <Link href="/hosting/faq#hostingfaq-contact">
-              <a className={styles.moreQLink}>هنوز سوالی دارید‌؟ بپرسید !</a>
+            <Link href="/hosting/faq#hostingfaq-contact" className={styles.moreQLink}>
+              هنوز سوالی دارید‌؟ بپرسید !
             </Link>
           </Col>
         </div>

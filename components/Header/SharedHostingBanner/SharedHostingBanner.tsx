@@ -24,17 +24,17 @@ class SharedHostingBanner extends React.Component<
             <h4>ایده آل برای تازه وارد ها</h4>
             <p>نصاب یک کلیکی وردپرس و بازیابی بک‌آپ ها بصورت خودکار</p>
             <div className={styles.btns}>
-              <Link href="/hosting/linux/professional">
-                <a className={styles.professionalLink}>
-                  <span>برای حرفه ای ها </span>
-                  <i className="fas fa-user-secret"></i>
-                </a>
+              <Link href="/hosting/linux/professional" className={styles.professionalLink}>
+
+                <span>برای حرفه ای ها </span>
+                <i className="fas fa-user-secret"></i>
+
               </Link>
-              <Link href="/hosting/linux/standard">
-                <a className={styles.newcomersLink}>
-                  <span>برای تازه وارد‌ها</span>
-                  <i className="far fa-hand-point-up"></i>
-                </a>
+              <Link href="/hosting/linux/standard" className={styles.newcomersLink}>
+
+                <span>برای تازه وارد‌ها</span>
+                <i className="far fa-hand-point-up"></i>
+
               </Link>
             </div>
           </div>

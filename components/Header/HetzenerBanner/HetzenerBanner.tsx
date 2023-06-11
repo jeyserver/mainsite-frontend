@@ -41,8 +41,8 @@ class HetzenerBanner extends React.Component<
             <Image src="/images/hetzener/server.png" alt="" />
             <Image src="/images/hetzener/big-cloud.png" alt="" />
             <Image src="/images/hetzener/small-cloud.png" alt="" />
-            <Link href="/server/vps/cloud">
-              <a className={styles.showPannelsBtn}>مشاهده پلن ها</a>
+            <Link href="/server/vps/cloud" className={styles.showPannelsBtn}>
+              مشاهده پلن ها
             </Link>
           </div>
         </div>

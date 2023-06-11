@@ -20,11 +20,9 @@ class AutomaticBackupBanner extends React.Component<
         <div className={styles.textContainer}>
           <h2>بکاپ اتوماتیک</h2>
           <h3>امنیت اطلاعات سازمان خود را بیمه کنید</h3>
-          <Link href="/hosting/linux/professional">
-            <a className={styles.btn}>
-              <i className="fa fa-rocket" aria-hidden="true"></i>
-              خرید هاست میزبانی
-            </a>
+          <Link href="/hosting/linux/professional" className={styles.btn}>
+
+            <i className="fa fa-rocket" aria-hidden="true"></i>خرید هاست میزبانی
           </Link>
         </div>
         <div className={styles.images}>

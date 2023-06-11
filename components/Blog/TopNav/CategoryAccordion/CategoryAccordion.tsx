@@ -41,7 +41,7 @@ class CategoryAccordion extends React.Component<IProps, IState> {
           onClick={() => this.setState({ isOpen: !this.state.isOpen })}
         >
           <Link href={`/blog/category/${this.props.category.permalink}`}>
-            <a>{this.props.category.title}</a>
+            {this.props.category.title}
           </Link>
           {this.props.categories.filter(
             (category) => category.parent === this.props.category.id

@@ -145,9 +145,9 @@ class DomainTypes extends React.Component<IProps> {
                         </td>
                         <td>
                           <Link href={`/order/domain/${domain.tld}`}>
-                            <a>
-                              <Button className={styles.orderBtn}>سفارش</Button>
-                            </a>
+
+                            <Button className={styles.orderBtn}>سفارش</Button>
+
                           </Link>
                         </td>
                       </tr>

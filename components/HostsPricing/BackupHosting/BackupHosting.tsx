@@ -213,7 +213,7 @@ class BackupHosting extends React.Component<IProps, BackupHostingState> {
                 {hosts.download_hosts.map((host) => (
                   <li key={host.title}>
                     <Link href={`/hosting/file#${host.link}`}>
-                      <a>هاست دانلود {host.title}</a>
+                      هاست دانلود{host.title}
                     </Link>
                   </li>
                 ))}

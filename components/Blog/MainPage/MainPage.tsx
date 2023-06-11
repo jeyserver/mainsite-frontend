@@ -55,11 +55,11 @@ class MainPage extends React.Component<IProps> {
                     ﺑﺎ اﺳﺘﻔﺎده از ﻃﺮاﺣﺎن ﮔﺮاﻓﯿﮏ اﺳﺖ. ﭼﺎﭘﮕﺮﻫﺎ و ﻣﺘﻮن ﺑﻠﮑﻪ روزﻧﺎﻣﻪ
                     می باشد.
                   </p>
-                  <Link href="/blog/category/linux">
-                    <a className={styles.link}>
-                      <span>آموزش‌های لینوکس</span>
-                      <i className="fas fa-long-arrow-alt-left"></i>
-                    </a>
+                  <Link href="/blog/category/linux" className={styles.link}>
+
+                    <span>آموزش‌های لینوکس</span>
+                    <i className="fas fa-long-arrow-alt-left"></i>
+
                   </Link>
                 </div>
               </Col>
@@ -103,11 +103,11 @@ class MainPage extends React.Component<IProps> {
                     ﺑﺎ اﺳﺘﻔﺎده از ﻃﺮاﺣﺎن ﮔﺮاﻓﯿﮏ اﺳﺖ. ﭼﺎﭘﮕﺮﻫﺎ و ﻣﺘﻮن ﺑﻠﮑﻪ روزﻧﺎﻣﻪ
                     می باشد.
                   </p>
-                  <Link href="/blog/category/linux">
-                    <a className={styles.link}>
-                      <span>آموزش های برنامه نویسی</span>
-                      <i className="fas fa-long-arrow-alt-left"></i>
-                    </a>
+                  <Link href="/blog/category/linux" className={styles.link}>
+
+                    <span>آموزش های برنامه نویسی</span>
+                    <i className="fas fa-long-arrow-alt-left"></i>
+
                   </Link>
                 </div>
               </Col>

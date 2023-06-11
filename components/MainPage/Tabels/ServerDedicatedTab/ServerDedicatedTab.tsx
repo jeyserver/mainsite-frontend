@@ -73,12 +73,12 @@ class ServerDedicatedTab extends React.Component<IProps> {
                 <td>
                   <div className={styles.btnsWrapper}>
                     <p className="text-center">
-                      <Link href={`/server/dedicated/${panel.id}`}>
+                      <Link href={`/server/dedicated/${panel.id}`} legacyBehavior>
                         <Button variant="default">اطلاعات بیشتر</Button>
                       </Link>
                     </p>
                   {!panel.sold_out ? (
-                    <Link href={`/order/server/dedicated/${panel.id}`}>
+                    <Link href={`/order/server/dedicated/${panel.id}`} legacyBehavior>
                       <Button variant="info" className="text-light" block>
                         <i className="fas fa-shopping-cart align-middle"></i> {' '}
                         <span>سفارش</span>

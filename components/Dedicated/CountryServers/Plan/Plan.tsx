@@ -22,7 +22,7 @@ class Plan extends React.Component<IProps> {
         <Col md={2} className={styles.planTitle}>
           <div>
             <Link href={`/server/dedicated/${this.props.plan.id}`}>
-              <a>{this.props.plan.title}</a>
+              {this.props.plan.title}
             </Link>
           </div>
         </Col>
@@ -109,19 +109,19 @@ class Plan extends React.Component<IProps> {
         </Col>
         <Col md={2} className={styles.planAction}>
           <div>
-            <Link href={`/server/dedicated/${this.props.plan.id}`}>
-              <a className={styles.moreInfoBtn}>
-                <i className="btn-ico fa fa-info"></i>
-                اطلاعات بیشتر
-              </a>
+            <Link
+              href={`/server/dedicated/${this.props.plan.id}`}
+              className={styles.moreInfoBtn}>
+
+              <i className="btn-ico fa fa-info"></i>اطلاعات بیشتر
             </Link>
             {!this.props.plan.sold_out ? (
-              <Link href={`/order/server/dedicated/${this.props.plan.id}`}>
-                <a className={styles.orderBtn}>
-                  <i className="btn-ico fa fa-shopping-cart"></i>
-                  سفارش
-                </a>
-              </Link>
+              (<Link
+                href={`/order/server/dedicated/${this.props.plan.id}`}
+                className={styles.orderBtn}>
+
+                <i className="btn-ico fa fa-shopping-cart"></i>سفارش
+              </Link>)
             ) : (
               <OverlayTrigger
                 overlay={

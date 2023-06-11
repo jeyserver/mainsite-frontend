@@ -76,18 +76,18 @@ class TopNav extends React.Component<IProps, IState> {
         {this.props.categories
           .filter((c) => c.parent === category.id)
           .map((subCategory) => (
-            <Link
+            (<Link
               href={`/blog/category/${subCategory.permalink}`}
               key={subCategory.id}
-            >
-              <a className={styles.linkInside}>
-                <i className="fas fa-angle-left"></i>
-                {subCategory.title}
-                {this.props.categories.some(
-                  (i) => i.parent === subCategory.id
-                ) && this.categoryMenu(subCategory)}
-              </a>
-            </Link>
+              className={styles.linkInside}>
+
+              <i className="fas fa-angle-left"></i>
+              {subCategory.title}
+              {this.props.categories.some(
+                (i) => i.parent === subCategory.id
+              ) && this.categoryMenu(subCategory)}
+
+            </Link>)
           ))}
       </span>
     );
@@ -112,7 +112,7 @@ class TopNav extends React.Component<IProps, IState> {
                 return (
                   <span key={category.id}>
                     <Link href={`/blog/category/${category.permalink}`}>
-                      <a>{category.title}</a>
+                      {category.title}
                     </Link>
                     <i className="fas fa-chevron-left"></i>
                   </span>
@@ -121,7 +121,7 @@ class TopNav extends React.Component<IProps, IState> {
                 return (
                   <span key={category.id}>
                     <Link href={`/blog/category/${category.permalink}`}>
-                      <a>{category.title}</a>
+                      {category.title}
                     </Link>
                   </span>
                 );
@@ -208,7 +208,7 @@ class TopNav extends React.Component<IProps, IState> {
                           }
                         >
                           <Link href={`/blog/category/${category.permalink}`}>
-                            <a>{category.title}</a>
+                            {category.title}
                           </Link>
                           <div
                             className={classNames(styles.mainMenu, 'mainMenu')}
@@ -223,8 +223,8 @@ class TopNav extends React.Component<IProps, IState> {
                         <Link
                           href={`/blog/category/${category.permalink}`}
                           key={category.id}
-                        >
-                          <a className={styles.link}>{category.title}</a>
+                          className={styles.link}>
+                          {category.title}
                         </Link>
                       );
                     }

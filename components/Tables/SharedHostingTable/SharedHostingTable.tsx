@@ -424,26 +424,26 @@ class SharedHostingTable extends React.Component<IProps, IState> {
                 </td>
                 <td>
                   {this.props.homePageTable && plan.is_available && (
-                    <Link
+                    (<Link
                       href={`/order/hosting/${this.props.type}/${plan.id}`}
-                    >
-                      <a className={styles.orderLink}>
-                        <CountryFlagTooltip country={plan.country} />
-                        <span>سفارش</span>{' '}
-                      </a>
-                    </Link>
+                      className={styles.orderLink}>
+
+                      <CountryFlagTooltip country={plan.country} />
+                      <span>سفارش</span>{' '}
+
+                    </Link>)
                   )}
 
                   {!this.props.homePageTable &&
                     (plan.is_available ? (
-                      <Link
+                      (<Link
                         href={`/order/hosting/${this.props.type}/${plan.id}`}
-                      >
-                        <a className={styles.orderLink}>
-                          <CountryFlagTooltip country={plan.country} />
-                          <span>سفارش</span>{' '}
-                        </a>
-                      </Link>
+                        className={styles.orderLink}>
+
+                        <CountryFlagTooltip country={plan.country} />
+                        <span>سفارش</span>{' '}
+
+                      </Link>)
                     ) : (
                       <OverlayTrigger
                         overlay={

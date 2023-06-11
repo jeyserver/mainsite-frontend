@@ -163,8 +163,8 @@ class Domain extends React.Component<IProps, IState> {
               <Col xs={12} md={4}>
                 <div className="d-flex flex-column justify-content-between mt-4">
                   <div className="d-flex align-items-center justify-content-between">
-                    <Link href="/domain">
-                      <a className={styles.tableTitle}>تعرفه ثبت دامنه</a>
+                    <Link href="/domain" className={styles.tableTitle}>
+                      تعرفه ثبت دامنه
                     </Link>
                     <OverlayTrigger
                       placement="top"
@@ -179,9 +179,9 @@ class Domain extends React.Component<IProps, IState> {
                     >
                       <button className={styles.moreBtn}>
                         <Link href="/domain">
-                          <a>
-                            <div>بیشتر</div>
-                          </a>
+
+                          <div>بیشتر</div>
+
                         </Link>
                       </button>
                     </OverlayTrigger>

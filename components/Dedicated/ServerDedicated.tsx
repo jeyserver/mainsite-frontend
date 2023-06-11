@@ -33,12 +33,12 @@ class ServerDedicated extends React.Component<IProps> {
               <p>
                 اگر از تنظیمات پیچیده سیستم عامل ها میترسید لطفا کار را به کنترل
                 پنل های تجاری و رایگان بسپارید ، کنترل پنل های تجاری همچون{' '}
-                <Link href="/licenses/cpanel">
-                  <a title="خرید لایسنس سی پنل">Cpanel/Whm</a>
+                <Link href="/licenses/cpanel" title="خرید لایسنس سی پنل">
+                  Cpanel/Whm
                 </Link>{' '}
                 ،{' '}
-                <Link href="/licenses/directadmin">
-                  <a title="خرید لایسنس دایرکت ادمین">DirectAdmin</a>
+                <Link href="/licenses/directadmin" title="خرید لایسنس دایرکت ادمین">
+                  DirectAdmin
                 </Link>{' '}
                 ، <a>Plesk</a> و حتی کنترل پنل های رایگانی همچون{' '}
                 <a>Virtualmin</a> ، <a>Kloxo</a> و یا <a>WebSitePanel</a> که
@@ -51,7 +51,7 @@ class ServerDedicated extends React.Component<IProps> {
                 مشتریان خود فضای بک آپ در سرور دیگری بصورت رایگان واگذار میکند
                 که در{' '}
                 <Link href="">
-                  <a>اینجا</a>
+                  اینجا
                 </Link>{' '}
                 کمی عمیق تر به این موضوع نگاهی انداختیم که بد نیست شما هم
                 بخوانید!
@@ -61,7 +61,7 @@ class ServerDedicated extends React.Component<IProps> {
                 کدام دارای شرایط خاصی هستند پس اگر در انتخاب سرور یا مرکز داده
                 تردید دارید چه خوب است که{' '}
                 <Link href="/contact">
-                  <a>با ما تماس بگیرید</a>
+                  با ما تماس بگیرید
                 </Link>{' '}
                 تا بهترین گزینه را به شما پیشنهاد بدهیم. <br />
               </p>

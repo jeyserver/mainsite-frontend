@@ -85,17 +85,13 @@ class MainNavbar extends React.Component<IProps, IState> {
                   licenses={this.props.licenses}
                 />
                 <Support changeShowDropDown={this.changeShowDropDown} />
-                <Link href="/jobs">
-                  <a className={styles.jobsLinkOnNav}>
-                    <i className="fas fa-briefcase"></i>
-                    فرصت‌های شغلی
-                  </a>
+                <Link href="/jobs" className={styles.jobsLinkOnNav}>
+
+                  <i className="fas fa-briefcase"></i>فرصت‌های شغلی
                 </Link>
-                <Link href="/contact">
-                  <a className={styles.contactUsLink}>
-                    <i className="fas fa-phone-alt"></i>
-                    تماس با ما
-                  </a>
+                <Link href="/contact" className={styles.contactUsLink}>
+
+                  <i className="fas fa-phone-alt"></i>تماس با ما
                 </Link>
               </div>
               <button
@@ -104,11 +100,11 @@ class MainNavbar extends React.Component<IProps, IState> {
                 style={{ left: this.state.isMenuOpen ? 0 : '-100%' }}
               ></button>
             </div>
-            <Link href="/jobs">
-              <a className={styles.jobTitlesBtn}>
-                <i className="fas fa-briefcase"></i>
-                <span>فرصت‌های شغلی</span>
-              </a>
+            <Link href="/jobs" className={styles.jobTitlesBtn}>
+
+              <i className="fas fa-briefcase"></i>
+              <span>فرصت‌های شغلی</span>
+
             </Link>
             <Button
               variant="light"

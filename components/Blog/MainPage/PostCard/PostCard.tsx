@@ -18,9 +18,9 @@ class PostCard extends React.Component<PostCardProps> {
       <div className={styles.postCard}>
         <div className={styles.postImageWrapper}>
           <Link href={`/blog/${permalink}`}>
-            <a>
-              <Image src={image} alt={title} className={styles.image} />
-            </a>
+
+            <Image src={image} alt={title} className={styles.image} />
+
           </Link>
 
           <div className={styles.visit}>
@@ -30,30 +30,30 @@ class PostCard extends React.Component<PostCardProps> {
         </div>
         <div className={styles.content}>
           <Link href={`/blog/${permalink}`}>
-            <a>
-              <h3 className={styles.title}>{this.props.post.title}</h3>
-              <div className={styles.time}>
-                <i className="far fa-calendar-alt"></i>
-                <span>
-                  {moment(date * 1000)
-                    .locale('fa')
-                    .format('D MMM YYYY')}
-                </span>
-              </div>
-              {this.props.post.description && (
-                <div
-                  className={styles.summary}
-                  dangerouslySetInnerHTML={{
-                    __html: this.props.post.description,
-                  }}
-                ></div>
-              )}
-            </a>
+
+            <h3 className={styles.title}>{this.props.post.title}</h3>
+            <div className={styles.time}>
+              <i className="far fa-calendar-alt"></i>
+              <span>
+                {moment(date * 1000)
+                  .locale('fa')
+                  .format('D MMM YYYY')}
+              </span>
+            </div>
+            {this.props.post.description && (
+              <div
+                className={styles.summary}
+                dangerouslySetInnerHTML={{
+                  __html: this.props.post.description,
+                }}
+              ></div>
+            )}
+
           </Link>
 
           <div className={styles.linkWrapper}>
-            <Link href={`/blog/${permalink}`}>
-              <a className={styles.postLink}>ادامه مطلب</a>
+            <Link href={`/blog/${permalink}`} className={styles.postLink}>
+              ادامه مطلب
             </Link>
           </div>
         </div>

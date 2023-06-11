@@ -21,8 +21,8 @@ class Post extends React.Component<IProps> {
           [styles.dark]: this.props.theme.current === 'dark',
         })}
       >
-        <Link href={`/blog/${this.props.post.permalink}`}>
-          <a className={styles.title}>{this.props.post.title}</a>
+        <Link href={`/blog/${this.props.post.permalink}`} className={styles.title}>
+          {this.props.post.title}
         </Link>
         <div className={styles.postInfo}>
           <div className={styles.authorWrapper}>
@@ -31,7 +31,7 @@ class Post extends React.Component<IProps> {
               <span>نویسنده: </span>
             </span>
             <Link href={`/blog/author/${this.props.post.author.id}`}>
-              <a>{`${this.props.post.author.name} ${this.props.post.author.lastname}`}</a>
+              {`${this.props.post.author.name} ${this.props.post.author.lastname}`}
             </Link>
           </div>
           <div className={styles.timeWrapper}>
@@ -51,17 +51,17 @@ class Post extends React.Component<IProps> {
                   href={`/blog/category/${category.permalink}`}
                   key={category.id}
                 >
-                  <a>{category.title}</a>
+                  {category.title}
                 </Link>
               );
             } else {
               return (
-                <Link
+                (<Link
                   href={`/blog/category/${category.permalink}`}
                   key={category.id}
                 >
-                  <a>{category.title}، </a>
-                </Link>
+                  {category.title}،
+                </Link>)
               );
             }
           })}
@@ -72,8 +72,8 @@ class Post extends React.Component<IProps> {
           dangerouslySetInnerHTML={{ __html: this.props.post.content }}
         ></div>
         <div className={styles.postLinkWrapper}>
-          <Link href={`/blog/${this.props.post.permalink}`}>
-            <a className={styles.postLink}>ادامه مطلب</a>
+          <Link href={`/blog/${this.props.post.permalink}`} className={styles.postLink}>
+            ادامه مطلب
           </Link>
         </div>
       </div>

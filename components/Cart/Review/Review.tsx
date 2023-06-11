@@ -223,8 +223,8 @@ class Review extends React.Component<IProps, ReviewState> {
                 <Row className="justify-content-center">
                   <Col md={6}>
                     <div className={styles.btnGroup}>
-                      <Link href="/order/cart/complete">
-                        <a className={styles.completeOrder}>تکمیل سفارش</a>
+                      <Link href="/order/cart/complete" className={styles.completeOrder}>
+                        تکمیل سفارش
                       </Link>
 
                       <button

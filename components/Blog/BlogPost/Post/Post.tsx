@@ -94,7 +94,7 @@ class Post extends React.Component<IProps> {
               <span>نویسنده: </span>
             </span>
             <Link href={`/blog/author/${author.id}`}>
-              <a>{`${author.name} ${author.lastname}`}</a>
+              {`${author.name} ${author.lastname}`}
             </Link>
           </div>
           <div className={styles.timeWrapper}>
@@ -117,17 +117,17 @@ class Post extends React.Component<IProps> {
                   href={`/blog/category/${category.permalink}`}
                   key={category.id}
                 >
-                  <a>{category.title}</a>
+                  {category.title}
                 </Link>
               );
             } else {
               return (
-                <Link
+                (<Link
                   href={`/blog/category/${category.permalink}`}
                   key={category.id}
                 >
-                  <a>{category.title}، </a>
-                </Link>
+                  {category.title}،
+                </Link>)
               );
             }
           })}
@@ -171,14 +171,14 @@ class Post extends React.Component<IProps> {
                 if (index === this.props.post.categories.length - 1) {
                   return (
                     <Link href={`/blog/tag/${tag.permalink}`} key={tag.id}>
-                      <a>{tag.title}</a>
+                      {tag.title}
                     </Link>
                   );
                 } else {
                   return (
-                    <Link href={`/blog/tag/${tag.permalink}`} key={tag.id}>
-                      <a>{tag.title}، </a>
-                    </Link>
+                    (<Link href={`/blog/tag/${tag.permalink}`} key={tag.id}>
+                      {tag.title}،
+                    </Link>)
                   );
                 }
               })}

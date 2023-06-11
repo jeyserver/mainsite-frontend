@@ -39,8 +39,8 @@ class DomainBlog extends React.Component<IProps> {
                       <h5 className={styles.cardTitle}>{post.title}</h5>
                       <p className={styles.cardText}>{post.description}</p>
                     </div>
-                    <Link href={`/blog/${post.permalink}}`}>
-                      <a className={styles.cardBtn}>بیشتر بخوانید</a>
+                    <Link href={`/blog/${post.permalink}}`} className={styles.cardBtn}>
+                      بیشتر بخوانید
                     </Link>
                   </div>
                 </Col>

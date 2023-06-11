@@ -176,12 +176,12 @@ class DedicatedHosting extends React.Component<IProps, IState> {
                       align="right"
                     >
                       {hosts.linux_vps_hosts.map((host) => (
-                        <Link
+                        (<Link
                           key={host.link}
                           href={`/hosting/linux/vps#${host.link}`}
                         >
-                          <a>هاست نیمه اختصاصی {host.title}</a>
-                        </Link>
+                          هاست نیمه اختصاصی{host.title}
+                        </Link>)
                       ))}
                     </Dropdown.Menu>
                   </Dropdown>
@@ -196,12 +196,12 @@ class DedicatedHosting extends React.Component<IProps, IState> {
                       align="right"
                     >
                       {hosts.professional_linux_shared_hosts.map((host) => (
-                        <Link
+                        (<Link
                           key={host.link}
                           href={`/hosting/linux/professional#${host.link}`}
                         >
-                          <a>هاست اشتراکی حرفه ای {host.title}</a>
-                        </Link>
+                          هاست اشتراکی حرفه ای{host.title}
+                        </Link>)
                       ))}
                     </Dropdown.Menu>
                   </Dropdown>
@@ -216,12 +216,12 @@ class DedicatedHosting extends React.Component<IProps, IState> {
                       align="right"
                     >
                       {hosts.standard_linux_shared_hosts.map((host) => (
-                        <Link
+                        (<Link
                           key={host.link}
                           href={`/hosting/linux/professional#${host.link}`}
                         >
-                          <a>هاست اشتراکی ساده {host.title}</a>
-                        </Link>
+                          هاست اشتراکی ساده{host.title}
+                        </Link>)
                       ))}
                     </Dropdown.Menu>
                   </Dropdown>

@@ -26,34 +26,34 @@ class Support extends React.Component<IProps> {
               <Col xs={12} md={3}>
                 <div className={styles.linksWrapper}>
                   <Link href="/blog">
-                    <a>
-                      <i className="far fa-edit"></i>
-                      <span>وبلاگ</span>
-                    </a>
+
+                    <i className="far fa-edit"></i>
+                    <span>وبلاگ</span>
+
                   </Link>
                   <Link href="/news">
-                    <a>
-                      <i className="fas fa-rss"></i>
-                      <span>اخبار</span>
-                    </a>
+
+                    <i className="fas fa-rss"></i>
+                    <span>اخبار</span>
+
                   </Link>
                   <Link href="/faqs">
-                    <a>
-                      <i className="fas fa-question-circle"></i>
-                      <span>سوالات متداول</span>
-                    </a>
+
+                    <i className="fas fa-question-circle"></i>
+                    <span>سوالات متداول</span>
+
                   </Link>
                   <Link href="/bankaccounts">
-                    <a>
-                      <i className="fas fa-university"></i>
-                      <span>شماره حساب ها</span>
-                    </a>
+
+                    <i className="fas fa-university"></i>
+                    <span>شماره حساب ها</span>
+
                   </Link>
                   <Link href="/server-status">
-                    <a>
-                      <i className="fas fa-chart-area"></i>
-                      <span>وضعیت سرور ها</span>
-                    </a>
+
+                    <i className="fas fa-chart-area"></i>
+                    <span>وضعیت سرور ها</span>
+
                   </Link>
                 </div>
               </Col>
@@ -61,10 +61,10 @@ class Support extends React.Component<IProps> {
                 <div className={styles.userPanelInfo}>
                   <h3>
                     <Link href="/userpanel">
-                      <a>
-                        <i className="fas fa-user"></i>
-                        <span>پنل کاربری</span>
-                      </a>
+
+                      <i className="fas fa-user"></i>
+                      <span>پنل کاربری</span>
+
                     </Link>
                   </h3>
                   <p>
@@ -81,18 +81,18 @@ class Support extends React.Component<IProps> {
                       className={styles.loginBtn}
                     >
                       <Link href="/userpanel/login">
-                        <a>
-                          <i className="fas fa-sign-in-alt"></i>
-                          <span>ورود به سامانه</span>
-                        </a>
+
+                        <i className="fas fa-sign-in-alt"></i>
+                        <span>ورود به سامانه</span>
+
                       </Link>
                     </Button>
                     <Button variant="warning" className={styles.registerBtn}>
                       <Link href="/userpanel/register">
-                        <a>
-                          <i className="fas fa-user-plus"></i>
-                          <span>ثبت نام در سامانه</span>
-                        </a>
+
+                        <i className="fas fa-user-plus"></i>
+                        <span>ثبت نام در سامانه</span>
+
                       </Link>
                     </Button>
                   </div>

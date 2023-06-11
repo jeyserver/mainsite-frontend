@@ -163,8 +163,8 @@ class CountryPlan extends React.Component<IProps> {
                           ) : (
                             <Link
                               href={`/order/server/dedicated/${this.props.plan.id}`}
-                            >
-                              <a className={styles.orderLink}>سفارش</a>
+                              className={styles.orderLink}>
+                              سفارش
                             </Link>
                           )}
                         </p>
@@ -196,39 +196,37 @@ class CountryPlan extends React.Component<IProps> {
                         <ul className={styles.list}>
                           <li>
                             <Link href="/hosting/backup">
-                              <a>
-                                <i className="fa fa-database fa-5x"></i>{' '}
-                                <span> فضای بکاپ </span>
-                              </a>
+
+                              <i className="fa fa-database fa-5x"></i>{' '}
+                              <span> فضای بکاپ </span>
+
                             </Link>
                           </li>
 
                           <li>
                             <Link href={`/licenses/directadmin`}>
-                              <a>
-                                <div>
-                                  <img
-                                    src={`/images/directadmin.png`}
-                                    alt="directadmin"
-                                  />
-                                </div>
 
-                                <span>لایسنس دایرکت ادمین</span>
-                              </a>
+                              <div>
+                                <img
+                                  src={`/images/directadmin.png`}
+                                  alt="directadmin"
+                                />
+                              </div>
+                              <span>لایسنس دایرکت ادمین</span>
+
                             </Link>
                           </li>
                           <li>
                             <Link href={`/licenses/cpanel`}>
-                              <a>
-                                <div>
-                                  <img
-                                    src={`/images/cpanel.png`}
-                                    alt="cpanel"
-                                  />
-                                </div>
 
-                                <span>لایسنس دایرکت ادمین</span>
-                              </a>
+                              <div>
+                                <img
+                                  src={`/images/cpanel.png`}
+                                  alt="cpanel"
+                                />
+                              </div>
+                              <span>لایسنس دایرکت ادمین</span>
+
                             </Link>
                           </li>
                         </ul>

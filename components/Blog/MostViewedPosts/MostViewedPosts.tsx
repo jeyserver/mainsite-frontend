@@ -29,19 +29,18 @@ class MostViewedPosts extends React.Component<IProps> {
           <Row className={styles.row}>
             {this.props.posts.map((post) => (
               <Col xs={12} md={6} lg={3} key={post.id}>
-                <Link href={`/blog/${post.permalink}`}>
-                  <a className={styles.post}>
-                    <Image src={post.image} />
+                <Link href={`/blog/${post.permalink}`} className={styles.post}>
 
-                    <div className={styles.content}>
-                      <h3 className={styles.time}>
-                        {moment(post.date * 1000)
-                          .locale('fa')
-                          .format('DD MMM YYYY')}
-                      </h3>
-                      <div className={styles.title}>{post.title}</div>
-                    </div>
-                  </a>
+                  <Image src={post.image} />
+                  <div className={styles.content}>
+                    <h3 className={styles.time}>
+                      {moment(post.date * 1000)
+                        .locale('fa')
+                        .format('DD MMM YYYY')}
+                    </h3>
+                    <div className={styles.title}>{post.title}</div>
+                  </div>
+
                 </Link>
               </Col>
             ))}

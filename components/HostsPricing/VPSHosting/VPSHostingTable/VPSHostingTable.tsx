@@ -419,15 +419,15 @@ class SharedHostingTable extends React.Component<IProps, IState> {
                   <td>
                     <div className={styles.btnsWrapper}>
                       {plan.counties.map((country) => (
-                        <Link
+                        (<Link
                           key={country.name}
                           href={`/order/hosting/linux/${country.id}`}
-                        >
-                          <a className={styles.orderLink}>
-                            <CountryFlagTooltip country={country} />
-                            <span>سفارش</span>{' '}
-                          </a>
-                        </Link>
+                          className={styles.orderLink}>
+
+                          <CountryFlagTooltip country={country} />
+                          <span>سفارش</span>{' '}
+
+                        </Link>)
                       ))}
                       {/* {plan.counties.map((country) =>
                         country.isAvailable ? (

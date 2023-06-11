@@ -155,8 +155,8 @@ class License extends React.Component<IProps> {
                         </li>
 
                         <li>
-                          <Link href={`/order/licenses/${plan.id}`}>
-                            <a className={styles.orderLink}>سفارش</a>
+                          <Link href={`/order/licenses/${plan.id}`} className={styles.orderLink}>
+                            سفارش
                           </Link>
                         </li>
                       </ul>

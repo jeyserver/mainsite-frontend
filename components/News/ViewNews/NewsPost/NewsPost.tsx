@@ -15,16 +15,18 @@ class NewsPost extends React.Component<IProps> {
       <React.Fragment>
         <h3 className={styles.portfolioTittle}>
           <Link href={`/news/view/${this.props.post.id}`}>
-            <a>{this.props.post.title}</a>
+            {this.props.post.title}
           </Link>
         </h3>
 
         <div className={styles.metaTag}>
-          <Link href={`/news/author/${this.props.post.author.id}`}>
-            <a className={styles.user}>
-              <i className="fa fa-user" />{' '}
-              {`${this.props.post.author.name} ${this.props.post.author.lastname}`}
-            </a>
+          <Link
+            href={`/news/author/${this.props.post.author.id}`}
+            className={styles.user}>
+
+            <i className="fa fa-user" />{' '}
+            {`${this.props.post.author.name} ${this.props.post.author.lastname}`}
+
           </Link>
           <span className={styles.blueLine}>/</span>
           <Link
@@ -33,13 +35,13 @@ class NewsPost extends React.Component<IProps> {
               .format('YYYY')}/${moment(this.props.post.date * 1000)
               .locale('fa')
               .format('MM')}`}
-          >
-            <a className={styles.date}>
-              <i className="far fa-calendar-alt"></i>{' '}
-              {moment(this.props.post.date * 1000)
-                .locale('fa')
-                .format('dddd D MMM YYYY')}
-            </a>
+            className={styles.date}>
+
+            <i className="far fa-calendar-alt"></i>{' '}
+            {moment(this.props.post.date * 1000)
+              .locale('fa')
+              .format('dddd D MMM YYYY')}
+
           </Link>
           <span className={styles.blueLine}>/</span>
           <i className="far fa-comment"></i>{' '}

@@ -33,7 +33,7 @@ class OVHBanner extends React.Component<OVHBannerProps, OVHBannerState> {
               <li>کاملا مقرون به صرفه</li>
             </ul>
             <div>
-              <Link href="#">
+              <Link href="#" legacyBehavior>
                 <Button className={styles.showPannelsBtn} disabled>
                   به زودی
                 </Button>

@@ -105,20 +105,20 @@ class Recommended extends React.Component<IProps> {
                   </td>
                   <td>
                     <div>
-                      <Link href={`/server/dedicated/${recommended.id}`}>
-                        <a className={styles.moreInfoLink}>اطلاعات بیشتر</a>
+                      <Link
+                        href={`/server/dedicated/${recommended.id}`}
+                        className={styles.moreInfoLink}>
+                        اطلاعات بیشتر
                       </Link>
                     </div>
                     <div>
                       {!recommended.sold_out ? (
-                        <Link
+                        (<Link
                           href={`/order/server/dedicated/${recommended.id}`}
-                        >
-                          <a className={styles.orderLink}>
-                            <i className="btn-ico fa fa-shopping-cart"></i>
-                            سفارش
-                          </a>
-                        </Link>
+                          className={styles.orderLink}>
+
+                          <i className="btn-ico fa fa-shopping-cart"></i>سفارش
+                        </Link>)
                       ) : (
                         <OverlayTrigger
                           overlay={

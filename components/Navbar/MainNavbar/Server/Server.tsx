@@ -27,12 +27,12 @@ class Server extends React.Component<IProps> {
               <Col xs={12} md={6}>
                 <div className={styles.rightSide}>
                   <Link href="/server/vps">
-                    <a>
-                      <h4 className={classNames(styles.title, 'serverTitle')}>
-                        <i className="fas fa-cubes"></i>
-                        سرور مجازی ابری
-                      </h4>
-                    </a>
+
+                    <h4 className={classNames(styles.title, 'serverTitle')}>
+                      <i className="fas fa-cubes"></i>
+                      سرور مجازی ابری
+                    </h4>
+
                   </Link>
                   <Container fluid className={styles.serverLinksContainer}>
                     <Row>
@@ -43,13 +43,15 @@ class Server extends React.Component<IProps> {
                         xl={4}
                         className="d-flex align-items-cenetr justify-content-center"
                       >
-                        <Link href="/server/vps/cloud#server_vps_cloud_de">
-                          <a className={styles.professionalServerBtn}>
-                            <div className={styles.iconWrapper}>
-                              <i className="flag-icon flag-icon-de"></i>
-                            </div>
-                            <div>سرور‌های ابری آلمان</div>
-                          </a>
+                        <Link
+                          href="/server/vps/cloud#server_vps_cloud_de"
+                          className={styles.professionalServerBtn}>
+
+                          <div className={styles.iconWrapper}>
+                            <i className="flag-icon flag-icon-de"></i>
+                          </div>
+                          <div>سرور‌های ابری آلمان</div>
+
                         </Link>
                       </Col>
                       <Col
@@ -59,13 +61,15 @@ class Server extends React.Component<IProps> {
                         xl={4}
                         className="d-flex align-items-cenetr justify-content-center"
                       >
-                        <Link href="/server/vps/cloud#server_vps_cloud_fi">
-                          <a className={styles.economicServerBtn}>
-                            <div className={styles.iconWrapper}>
-                              <i className="flag-icon flag-icon-fi"></i>
-                            </div>
-                            <div>سرور‌های ابری فنلاند</div>
-                          </a>
+                        <Link
+                          href="/server/vps/cloud#server_vps_cloud_fi"
+                          className={styles.economicServerBtn}>
+
+                          <div className={styles.iconWrapper}>
+                            <i className="flag-icon flag-icon-fi"></i>
+                          </div>
+                          <div>سرور‌های ابری فنلاند</div>
+
                         </Link>
                       </Col>
                       <Col
@@ -75,13 +79,15 @@ class Server extends React.Component<IProps> {
                         xl={4}
                         className="d-flex align-items-cenetr justify-content-center"
                       >
-                        <Link href="/server/vps/cloud#server_vps_cloud_us">
-                          <a className={styles.largeServerBtn}>
-                            <div className={styles.iconWrapper}>
-                              <i className="flag-icon flag-icon-us"></i>
-                            </div>
-                            <div>سرور‌های ابری آمریکا</div>
-                          </a>
+                        <Link
+                          href="/server/vps/cloud#server_vps_cloud_us"
+                          className={styles.largeServerBtn}>
+
+                          <div className={styles.iconWrapper}>
+                            <i className="flag-icon flag-icon-us"></i>
+                          </div>
+                          <div>سرور‌های ابری آمریکا</div>
+
                         </Link>
                       </Col>
                     </Row>
@@ -90,70 +96,68 @@ class Server extends React.Component<IProps> {
               </Col>
               <Col xs={12} md={6}>
                 <div className={classNames(styles.leftSide, 'serverLeftSide')}>
-                  <Link href="#">
+                  <Link href="#" legacyBehavior>
                     <div className={styles.title}>
                       <Link href="/server/dedicated">
-                        <a>
-                          <i className="fas fa-server"></i>
-                          سرور اختصاصی
-                        </a>
+
+                        <i className="fas fa-server"></i>سرور اختصاصی
                       </Link>
                     </div>
                   </Link>
                   <div className={styles.countries}>
-                    <Link href="/server/dedicated/iran">
-                      <a className={styles.countryBox}>
-                        <Image
-                          src="/images/countries/Iran.png"
-                          width={32}
-                          height={32}
-                        />
-                      </a>
+                    <Link href="/server/dedicated/iran" className={styles.countryBox}>
+
+                      <Image
+                        src="/images/countries/Iran.png"
+                        width={32}
+                        height={32}
+                      />
+
                     </Link>
-                    <Link href="/server/dedicated/france">
-                      <a className={styles.countryBox}>
-                        <Image
-                          src="/images/countries/France.png"
-                          width={32}
-                          height={32}
-                        />
-                      </a>
+                    <Link href="/server/dedicated/france" className={styles.countryBox}>
+
+                      <Image
+                        src="/images/countries/France.png"
+                        width={32}
+                        height={32}
+                      />
+
                     </Link>
-                    <Link href="/server/dedicated/germany">
-                      <a className={styles.countryBox}>
-                        <Image
-                          src="/images/countries/Germany.png"
-                          width={32}
-                          height={32}
-                        />
-                      </a>
+                    <Link href="/server/dedicated/germany" className={styles.countryBox}>
+
+                      <Image
+                        src="/images/countries/Germany.png"
+                        width={32}
+                        height={32}
+                      />
+
                     </Link>
-                    <Link href="/server/dedicated/netherlands">
-                      <a className={styles.countryBox}>
-                        <Image
-                          src="/images/countries/Netherlands.png"
-                          width={32}
-                          height={32}
-                        />
-                      </a>
+                    <Link href="/server/dedicated/netherlands" className={styles.countryBox}>
+
+                      <Image
+                        src="/images/countries/Netherlands.png"
+                        width={32}
+                        height={32}
+                      />
+
                     </Link>
-                    <Link href="/server/dedicated/canada">
-                      <a className={styles.countryBox}>
-                        <Image
-                          src="/images/countries/Canada.png"
-                          width={32}
-                          height={32}
-                        />
-                      </a>
+                    <Link href="/server/dedicated/canada" className={styles.countryBox}>
+
+                      <Image
+                        src="/images/countries/Canada.png"
+                        width={32}
+                        height={32}
+                      />
+
                     </Link>
-                    <Link href="/server/dedicated/finland">
-                      <a className={styles.countryBox}>
-                        <Image
-                          src="/images/countries/Finland.png"
-                          width={32}
-                          height={32}
-                        />
-                      </a>
+                    <Link href="/server/dedicated/finland" className={styles.countryBox}>
+
+                      <Image
+                        src="/images/countries/Finland.png"
+                        width={32}
+                        height={32}
+                      />
+
                     </Link>
                   </div>
                   <p>

@@ -138,7 +138,7 @@ class DownloadHosting extends React.Component<IProps, IState> {
                     استفاده از دیتابیس Mysql در این نوع از سرویس ها
                     وجودندارد.برای راه اندازی وب سایت و نصب اسکریپت سرویس های{' '}
                     <Link href="/hosting/linux/professional">
-                      <a>هاست لینوکس</a>
+                      هاست لینوکس
                     </Link>{' '}
                     جی سرور استفاده کنید.
                   </p>
@@ -206,7 +206,7 @@ class DownloadHosting extends React.Component<IProps, IState> {
                 {hosts.backup_hosts.map((host) => (
                   <li key={host.link}>
                     <Link href={`/hosting/backup#${host.link}`}>
-                      <a>هاست پشتیبان {host.title}</a>
+                      هاست پشتیبان{host.title}
                     </Link>
                   </li>
                 ))}

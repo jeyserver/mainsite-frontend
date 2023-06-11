@@ -19,11 +19,10 @@ class VpsNav extends React.Component {
                   <Link
                     href={`/server/vps/${type}#server_vps_${type}_${country.code.toLowerCase()}`}
                   >
-                    <a>
-                      <span className={`flag-icon flag-icon-${country.code.toLowerCase()}`}></span>
-                      {' '}
-                      سرور مجازی ابری {country.name_fa}
-                    </a>
+
+                    <span className={`flag-icon flag-icon-${country.code.toLowerCase()}`}></span>
+                    {' '}سرور مجازی ابری{country.name_fa}
+
                   </Link>
                 </li>
               ));

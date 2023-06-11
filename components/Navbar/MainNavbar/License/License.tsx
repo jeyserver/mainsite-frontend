@@ -314,43 +314,41 @@ class License extends React.Component<LicenseProps, LicenseState> {
               <Col xs={12} md={6} className="px-0">
                 <div className={styles.btnsWrapper}>
                   {licensesWithLowestPrice.map((license: ILicense) => (
-                    <Link
+                    (<Link
                       href={`/licenses/${renderLicenseTitle(
                         license.registrar
                       ).toLowerCase()}`}
                       key={license.registrar}
-                    >
-                      <a
-                        className={classNames(styles.btn, 'license-btn')}
-                        onMouseEnter={() => {
-                          this.handleChangeHoveredLicense(
-                            renderLicenseTitle(license.registrar)
-                          );
-                        }}
-                        onClick={() => {
-                          this.props.changeShowDropDown();
-                          this.props.changeShowMenu();
-                          document.querySelector('body').click();
-                        }}
-                        data-active={
-                          this.state.hoveredLicense ===
+                      className={classNames(styles.btn, 'license-btn')}
+                      onMouseEnter={() => {
+                        this.handleChangeHoveredLicense(
                           renderLicenseTitle(license.registrar)
-                        }
-                      >
-                        {renderLicenseImageAndTilte(license.registrar)}
-                        <div>
-                          <span>
-                            از{' '}
-                            {formatPriceWithCurrency(
-                              this.props.currencies,
-                              license.currency,
-                              license.price
-                            )}{' '}
-                          </span>
-                          <span>{renderPeriod(license.pp)}</span>
-                        </div>
-                      </a>
-                    </Link>
+                        );
+                      }}
+                      onClick={() => {
+                        this.props.changeShowDropDown();
+                        this.props.changeShowMenu();
+                        document.querySelector('body').click();
+                      }}
+                      data-active={
+                        this.state.hoveredLicense ===
+                        renderLicenseTitle(license.registrar)
+                      }>
+
+                      {renderLicenseImageAndTilte(license.registrar)}
+                      <div>
+                        <span>
+                          از{' '}
+                          {formatPriceWithCurrency(
+                            this.props.currencies,
+                            license.currency,
+                            license.price
+                          )}{' '}
+                        </span>
+                        <span>{renderPeriod(license.pp)}</span>
+                      </div>
+
+                    </Link>)
                   ))}
                 </div>
               </Col>

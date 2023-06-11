@@ -24,23 +24,23 @@ class MostViewedNews extends React.Component<IProps> {
             {this.props.popularPosts.map((news) => (
               <li key={news.id}>
                 <div>
-                  <Link href={`/news/view/${news.id}`}>
-                    <a className={styles.blogImg}>
-                      <Image src={news.image} alt={news.title} />
+                  <Link href={`/news/view/${news.id}`} className={styles.blogImg}>
+
+                    <Image src={news.image} alt={news.title} />
+                    <div>
                       <div>
-                        <div>
-                          {moment(news.date * 1000)
-                            .locale('fa')
-                            .format('DD MMM YYYY')}
-                        </div>
+                        {moment(news.date * 1000)
+                          .locale('fa')
+                          .format('DD MMM YYYY')}
                       </div>
-                    </a>
+                    </div>
+
                   </Link>
 
                   <div className={styles.blogWrapper}>
                     <h5>
                       <Link href={`/news/view/${news.id}`}>
-                        <a>{news.title}</a>
+                        {news.title}
                       </Link>
                     </h5>
                     <p>

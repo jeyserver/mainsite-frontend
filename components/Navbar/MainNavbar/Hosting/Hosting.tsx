@@ -31,12 +31,12 @@ class Hosting extends React.Component<IProps> {
                     <ul className={styles.list}>
                       <li>
                         <Link href="/hosting/linux/standard">
-                          <a>هاست اشتراکی لینوکس ساده</a>
+                          هاست اشتراکی لینوکس ساده
                         </Link>
                       </li>
                       <li>
                         <Link href="/hosting/linux/professional">
-                          <a>هاست اشتراکی لینوکس حرفه ای</a>
+                          هاست اشتراکی لینوکس حرفه ای
                         </Link>
                       </li>
                     </ul>
@@ -44,38 +44,38 @@ class Hosting extends React.Component<IProps> {
                   <Col xs={12} md={6} className={styles.mildleCol}>
                     <div>
                       <Link href="/hosting/linux/vps">
-                        <a>
-                          <h3
-                            className={`${styles.midleTitle} ${styles.firstTitle}`}
-                          >
-                            <i className="fas fa-cubes"></i>
-                            <span>هاست نیمه اختصاصی لینوکس</span>
-                          </h3>
-                        </a>
+
+                        <h3
+                          className={`${styles.midleTitle} ${styles.firstTitle}`}
+                        >
+                          <i className="fas fa-cubes"></i>
+                          <span>هاست نیمه اختصاصی لینوکس</span>
+                        </h3>
+
                       </Link>
                       <Link href="/hosting/linux/dedicated">
-                        <a>
-                          <h3 className={styles.midleTitle}>
-                            <i className="fas fa-server"></i>
-                            <span>هاست اختصاصی لینوکس</span>
-                          </h3>
-                        </a>
+
+                        <h3 className={styles.midleTitle}>
+                          <i className="fas fa-server"></i>
+                          <span>هاست اختصاصی لینوکس</span>
+                        </h3>
+
                       </Link>
                       <Link href="/hosting/file">
-                        <a>
-                          <h3 className={styles.midleTitle}>
-                            <i className="fas fa-download"></i>
-                            <span>هاست دانلود</span>
-                          </h3>
-                        </a>
+
+                        <h3 className={styles.midleTitle}>
+                          <i className="fas fa-download"></i>
+                          <span>هاست دانلود</span>
+                        </h3>
+
                       </Link>
                       <Link href="/hosting/backup">
-                        <a>
-                          <h3 className={styles.midleTitle}>
-                            <i className="fas fa-database"></i>
-                            <span>هاست پشتیبان</span>
-                          </h3>
-                        </a>
+
+                        <h3 className={styles.midleTitle}>
+                          <i className="fas fa-database"></i>
+                          <span>هاست پشتیبان</span>
+                        </h3>
+
                       </Link>
                     </div>
                   </Col>

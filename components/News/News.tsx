@@ -51,19 +51,19 @@ class News extends React.Component<IProps> {
                         <Col md={9}>
                           <div className={styles.mediaBody}>
                             <Link href={`/news/view/${post.id}`}>
-                              <a>
-                                <h4 className={styles.mediaHeading}>
-                                  {post.title}
-                                </h4>
-                              </a>
+
+                              <h4 className={styles.mediaHeading}>
+                                {post.title}
+                              </h4>
+
                             </Link>
                             <ul className={styles.list}>
                               <li>
                                 <Link href={`/news/author/${post.author.id}`}>
-                                  <a>
-                                    <i className="fa fa-user" />{' '}
-                                    {`${post.author.name} ${post.author.lastname}`}{' '}
-                                  </a>
+
+                                  <i className="fa fa-user" />{' '}
+                                  {`${post.author.name} ${post.author.lastname}`}{' '}
+
                                 </Link>
                               </li>
                               <li>|</li>
@@ -77,12 +77,12 @@ class News extends React.Component<IProps> {
                                     .locale('fa')
                                     .format('MM')}`}
                                 >
-                                  <a>
-                                    <i className="far fa-calendar-alt"></i>{' '}
-                                    {moment(post.date * 1000)
-                                      .locale('fa')
-                                      .format('dddd D MMM YYYY')}
-                                  </a>
+
+                                  <i className="far fa-calendar-alt"></i>{' '}
+                                  {moment(post.date * 1000)
+                                    .locale('fa')
+                                    .format('dddd D MMM YYYY')}
+
                                 </Link>
                               </li>
                               <li>|</li>
@@ -101,7 +101,7 @@ class News extends React.Component<IProps> {
                             <p />
                             <div className={styles.postLinkWrapper}>
                               <Link href={`/news/view/${post.id}`}>
-                                <a>ادامه خبر</a>
+                                ادامه خبر
                               </Link>
                             </div>
                           </div>
@@ -116,10 +116,8 @@ class News extends React.Component<IProps> {
                     {this.props.currentPage !== 1 && (
                       <button className={styles.firstPage}>
                         <Link href={{ query: { ipp: 10, page: 1 } }}>
-                          <a>
-                            <i className="fas fa-angle-double-right"></i>
-                            اولین
-                          </a>
+
+                          <i className="fas fa-angle-double-right"></i>اولین
                         </Link>
                       </button>
                     )}
@@ -140,7 +138,7 @@ class News extends React.Component<IProps> {
                             },
                           }}
                         >
-                          <a>قبلی</a>
+                          قبلی
                         </Link>
                       )}
                     </button>
@@ -165,7 +163,7 @@ class News extends React.Component<IProps> {
                             },
                           }}
                         >
-                          <a>بعدی</a>
+                          بعدی
                         </Link>
                       )}
                     </button>
@@ -177,10 +175,8 @@ class News extends React.Component<IProps> {
                             query: { ipp: 10, page: lastPage },
                           }}
                         >
-                          <a>
-                            اخرین
-                            <i className="fas fa-angle-double-left"></i>
-                          </a>
+                          اخرین<i className="fas fa-angle-double-left"></i>
+
                         </Link>
                       </button>
                     )}

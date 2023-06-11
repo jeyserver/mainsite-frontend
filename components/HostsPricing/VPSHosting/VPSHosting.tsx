@@ -119,17 +119,17 @@ class VPSHosting extends React.Component<IProps, IState> {
                 دیگر هاست های اشتراکی پاسخگوی نیاز آن ها نبوده و مرتبا از
                 پشتیبانان سرویس میزبانی سایتشان شنیده اند که نیاز به{' '}
                 <Link href="/server/vps">
-                  <a>سرور مجازی</a>
+                  سرور مجازی
                 </Link>{' '}
                 یا{' '}
                 <Link href="/server/dedicated">
-                  <a>سرور اختصاصی</a>
+                  سرور اختصاصی
                 </Link>{' '}
                 دارند.
               </p>
               <p>
                 <Link href="/hosting/linux/professional">
-                  <a>هاست اشتراکی</a>
+                  هاست اشتراکی
                 </Link>{' '}
                 یک شیوه ارزان قیمت برای میزبانی وب سایت های تازه تاسیس است، اما
                 زمانی که وب سایتتان به اندازه کافی معروف شد و موفقیت کسب کرد
@@ -145,7 +145,7 @@ class VPSHosting extends React.Component<IProps, IState> {
               <p>
                 پیشنهاد{' '}
                 <Link href="/">
-                  <a>جی سرور</a>
+                  جی سرور
                 </Link>{' '}
                 برای شما استفاده از <strong>هاست نیمه اختصاصی</strong> یا{' '}
                 <strong>سرور مجازی مدیریت شده</strong> است.
@@ -160,7 +160,7 @@ class VPSHosting extends React.Component<IProps, IState> {
                 هزینه و خرید لایسنس های مختلف باشید. <strong>نیازی نیست</strong>{' '}
                 در مورد بک آپ گیری و{' '}
                 <Link href="/fa/hosting/backup">
-                  <a>فضای بک آپ</a>
+                  فضای بک آپ
                 </Link>{' '}
                 جداگانه دغدغه خاطر داشته باشید. و از همه مهم تر{' '}
                 <strong>نیازی نیست</strong> بدانید که یک سرور لینوکس چطور کانفیگ
@@ -200,7 +200,7 @@ class VPSHosting extends React.Component<IProps, IState> {
                 ))}
                 <li>
                   <Link href="/hosting/linux/dedicated">
-                    <a>هاست اختصاصی</a>
+                    هاست اختصاصی
                   </Link>
                 </li>
                 <Dropdown className={styles.dropdown}>
@@ -209,12 +209,12 @@ class VPSHosting extends React.Component<IProps, IState> {
                   </Dropdown.Toggle>
                   <Dropdown.Menu className={styles.dropdownMenu} align="right">
                     {hosts.professional_linux_shared_hosts.map((host) => (
-                      <Link
+                      (<Link
                         key={host.link}
                         href={`/hosting/linux/professional#${host.link}`}
                       >
-                        <a>هاست اشتراکی حرفه ای {host.title}</a>
-                      </Link>
+                        هاست اشتراکی حرفه ای{host.title}
+                      </Link>)
                     ))}
                   </Dropdown.Menu>
                 </Dropdown>
@@ -224,12 +224,12 @@ class VPSHosting extends React.Component<IProps, IState> {
                   </Dropdown.Toggle>
                   <Dropdown.Menu className={styles.dropdownMenu} align="right">
                     {hosts.standard_linux_shared_hosts.map((host) => (
-                      <Link
+                      (<Link
                         key={host.link}
                         href={`/hosting/linux/professional#${host.link}`}
                       >
-                        <a>هاست اشتراکی ساده {host.title}</a>
-                      </Link>
+                        هاست اشتراکی ساده{host.title}
+                      </Link>)
                     ))}
                   </Dropdown.Menu>
                 </Dropdown>

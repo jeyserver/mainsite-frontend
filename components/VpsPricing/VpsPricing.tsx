@@ -290,23 +290,27 @@ class VpsPricing extends React.Component<IProps> {
               </Row>
               <Row id="servers">
                 <Col sm={6} xs={12}>
-                  <Link href="/server/vps/cloud#servers">
-                    <a className={classNames(styles['tab-title'], {
+                  <Link
+                    href="/server/vps/cloud#servers"
+                    className={classNames(styles['tab-title'], {
                       [styles.active]: this.props.router.pathname === '/server/vps/cloud',
                     })}>
-                      <h3 className={styles.h3}>استاندارد</h3>
-                      <p>مناسب برای اجرای برنامه های بدون بار پردازشی زیاد، میزبانی وب سایت، اجرای برنامه های کاربردی و یا استفاده شخصی.</p>
-                    </a>
+
+                    <h3 className={styles.h3}>استاندارد</h3>
+                    <p>مناسب برای اجرای برنامه های بدون بار پردازشی زیاد، میزبانی وب سایت، اجرای برنامه های کاربردی و یا استفاده شخصی.</p>
+
                   </Link>
                 </Col>
                 <Col sm={6} xs={12}>
-                  <Link href="/server/vps/cloud/dedicated#servers">
-                    <a className={classNames(styles['tab-title'], {
+                  <Link
+                    href="/server/vps/cloud/dedicated#servers"
+                    className={classNames(styles['tab-title'], {
                       [styles.active]: this.props.router.pathname === '/server/vps/cloud/dedicated',
                     })}>
-                      <h3 className={styles.h3}>اختصاصی</h3>
-                      <p>مناسب برای اجرای برنامه های پردازشی، میزبانی وب سایت های پربازدید، رمزگزاری ویدئو، یادگیری ماشین یا محاسبات تحقیقاتی.</p>
-                    </a>
+
+                    <h3 className={styles.h3}>اختصاصی</h3>
+                    <p>مناسب برای اجرای برنامه های پردازشی، میزبانی وب سایت های پربازدید، رمزگزاری ویدئو، یادگیری ماشین یا محاسبات تحقیقاتی.</p>
+
                   </Link>
                 </Col>
               </Row>

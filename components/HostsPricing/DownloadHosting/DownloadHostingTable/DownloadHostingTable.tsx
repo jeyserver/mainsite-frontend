@@ -405,12 +405,12 @@ class DownloadHostingTable extends React.Component<IProps, IState> {
                   </td>
                   <td>
                     {plan.is_available ? (
-                      <Link href={`/order/hosting/linux/${plan.id}`}>
-                        <a className={styles.orderLink}>
-                          <CountryFlagTooltip country={plan.country} />
-                          <span>سفارش</span>{' '}
-                        </a>
-                      </Link>
+                      (<Link href={`/order/hosting/linux/${plan.id}`} className={styles.orderLink}>
+
+                        <CountryFlagTooltip country={plan.country} />
+                        <span>سفارش</span>{' '}
+
+                      </Link>)
                     ) : (
                       <OverlayTrigger
                         overlay={

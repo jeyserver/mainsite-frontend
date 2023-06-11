@@ -89,7 +89,7 @@ export const getPageInfo = (type: page) => {
           <p>
             درصورتی که سایت پربازدیدی دارید حتما از صفحه{' '}
             <Link href="/hosting/linux/professional">
-              <a>هاست حرفه ای لینوکس</a>
+              هاست حرفه ای لینوکس
             </Link>{' '}
             بازدید بفرمائید
           </p>
@@ -264,12 +264,12 @@ export const renderTopNav = (
               </Dropdown.Toggle>
               <Dropdown.Menu className={styles.dropdownMenu} align="right">
                 {hosts.standard_linux_shared_hosts.map((host) => (
-                  <Link
+                  (<Link
                     key={host.link}
                     href={`/hosting/linux/standard#${host.link}`}
                   >
-                    <a>هاست اشتراکی ساده {host.title}</a>
-                  </Link>
+                    هاست اشتراکی ساده{host.title}
+                  </Link>)
                 ))}
               </Dropdown.Menu>
             </Dropdown>
@@ -281,19 +281,19 @@ export const renderTopNav = (
               </Dropdown.Toggle>
               <Dropdown.Menu className={styles.dropdownMenu} align="right">
                 {hosts.linux_vps_hosts.map((host) => (
-                  <Link
+                  (<Link
                     key={host.link}
                     href={`/hosting/linux/vps#${host.link}`}
                   >
-                    <a>هاست نیمه اختصاصی {host.title}</a>
-                  </Link>
+                    هاست نیمه اختصاصی{host.title}
+                  </Link>)
                 ))}
               </Dropdown.Menu>
             </Dropdown>
           </li>
           <li>
             <Link href="/hosting/linux/dedicated">
-              <a>هاست اختصاصی</a>
+              هاست اختصاصی
             </Link>
           </li>
         </ul>
@@ -318,12 +318,12 @@ export const renderTopNav = (
               </Dropdown.Toggle>
               <Dropdown.Menu className={styles.dropdownMenu} align="right">
                 {hosts.professional_linux_shared_hosts.map((host) => (
-                  <Link
+                  (<Link
                     key={host.link}
                     href={`/hosting/linux/professional#${host.link}`}
                   >
-                    <a>هاست اشتراکی حرفه ای {host.title}</a>
-                  </Link>
+                    هاست اشتراکی حرفه ای{host.title}
+                  </Link>)
                 ))}
               </Dropdown.Menu>
             </Dropdown>
@@ -335,19 +335,19 @@ export const renderTopNav = (
               </Dropdown.Toggle>
               <Dropdown.Menu className={styles.dropdownMenu} align="right">
                 {hosts.linux_vps_hosts.map((host) => (
-                  <Link
+                  (<Link
                     key={host.link}
                     href={`/hosting/linux/vps#${host.link}`}
                   >
-                    <a>هاست نیمه اختصاصی {host.title}</a>
-                  </Link>
+                    هاست نیمه اختصاصی{host.title}
+                  </Link>)
                 ))}
               </Dropdown.Menu>
             </Dropdown>
           </li>
           <li>
             <Link href="/hosting/linux/dedicated">
-              <a>هاست اختصاصی</a>
+              هاست اختصاصی
             </Link>
           </li>
         </ul>
@@ -372,12 +372,12 @@ export const renderTopNav = (
               </Dropdown.Toggle>
               <Dropdown.Menu className={styles.dropdownMenu} align="right">
                 {hosts.standard_linux_shared_hosts.map((host) => (
-                  <Link
+                  (<Link
                     key={host.link}
                     href={`/hosting/linux/standard#${host.link}`}
                   >
-                    <a>هاست اشتراکی ساده {host.title}</a>
-                  </Link>
+                    هاست اشتراکی ساده{host.title}
+                  </Link>)
                 ))}
               </Dropdown.Menu>
             </Dropdown>
@@ -389,12 +389,12 @@ export const renderTopNav = (
               </Dropdown.Toggle>
               <Dropdown.Menu className={styles.dropdownMenu} align="right">
                 {hosts.professional_linux_shared_hosts.map((host) => (
-                  <Link
+                  (<Link
                     key={host.link}
                     href={`/hosting/linux/professional#${host.link}`}
                   >
-                    <a>هاست اشتراکی حرفه ای {host.title}</a>
-                  </Link>
+                    هاست اشتراکی حرفه ای{host.title}
+                  </Link>)
                 ))}
               </Dropdown.Menu>
             </Dropdown>
@@ -406,12 +406,12 @@ export const renderTopNav = (
               </Dropdown.Toggle>
               <Dropdown.Menu className={styles.dropdownMenu} align="right">
                 {hosts.linux_vps_hosts.map((host) => (
-                  <Link
+                  (<Link
                     key={host.link}
                     href={`/hosting/linux/vps#${host.link}`}
                   >
-                    <a>هاست نیمه اختصاصی {host.title}</a>
-                  </Link>
+                    هاست نیمه اختصاصی{host.title}
+                  </Link>)
                 ))}
               </Dropdown.Menu>
             </Dropdown>
@@ -438,12 +438,12 @@ export const renderTopNav = (
               </Dropdown.Toggle>
               <Dropdown.Menu className={styles.dropdownMenu} align="right">
                 {hosts.standard_linux_shared_hosts.map((host) => (
-                  <Link
+                  (<Link
                     key={host.link}
                     href={`/hosting/linux/professional#${host.link}`}
                   >
-                    <a>هاست اشتراکی ساده {host.title}</a>
-                  </Link>
+                    هاست اشتراکی ساده{host.title}
+                  </Link>)
                 ))}
               </Dropdown.Menu>
             </Dropdown>
@@ -455,12 +455,12 @@ export const renderTopNav = (
               </Dropdown.Toggle>
               <Dropdown.Menu className={styles.dropdownMenu} align="right">
                 {hosts.professional_linux_shared_hosts.map((host) => (
-                  <Link
+                  (<Link
                     key={host.link}
                     href={`/hosting/linux/professional#${host.link}`}
                   >
-                    <a>هاست اشتراکی حرفه ای {host.title}</a>
-                  </Link>
+                    هاست اشتراکی حرفه ای{host.title}
+                  </Link>)
                 ))}
               </Dropdown.Menu>
             </Dropdown>
@@ -472,12 +472,12 @@ export const renderTopNav = (
               </Dropdown.Toggle>
               <Dropdown.Menu className={styles.dropdownMenu} align="right">
                 {hosts.linux_vps_hosts.map((host) => (
-                  <Link
+                  (<Link
                     key={host.link}
                     href={`/hosting/linux/vps#${host.link}`}
                   >
-                    <a>هاست نیمه اختصاصی {host.title}</a>
-                  </Link>
+                    هاست نیمه اختصاصی{host.title}
+                  </Link>)
                 ))}
               </Dropdown.Menu>
             </Dropdown>

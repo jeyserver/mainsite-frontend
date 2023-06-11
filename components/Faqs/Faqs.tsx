@@ -96,7 +96,7 @@ class Faqs extends React.Component<IProps, IState> {
                     شدنشان پاسخ بدهیم!البته ممکن است تعدادی از سوال ها را جا
                     انداخته باشیم!چه خوب است که از طریق{' '}
                     <Link href="/contact">
-                      <a>فرم تماس با ما</a>
+                      فرم تماس با ما
                     </Link>{' '}
                     آن هارا یاد آوری کنید تا به اینجا اضافه شوند.{' '}
                   </div>
@@ -146,9 +146,9 @@ class Faqs extends React.Component<IProps, IState> {
                   <Col xs={12}>
                     <div className={styles.faqTittle}>
                       <Link href="/hosting/faq">
-                        <a>
-                          <h5>سوالات متداول هاست میزبانی</h5>
-                        </a>
+
+                        <h5>سوالات متداول هاست میزبانی</h5>
+
                       </Link>
 
                       <div className={styles.divider}>
@@ -189,7 +189,7 @@ class Faqs extends React.Component<IProps, IState> {
                             و برای همگان قابل دسترسی کنید. هاست ها انواع مختلفی
                             دارند مانند هاست لینوکس،هاست ویندوز،هاست دانلود و...
                             <Link href="/hosting/linux/professional">
-                              <a>قیمت انواع هاست ها</a>
+                              قیمت انواع هاست ها
                             </Link>
                           </p>
                         </Col>
@@ -423,9 +423,9 @@ class Faqs extends React.Component<IProps, IState> {
                   <Col xs={12}>
                     <div className={styles.faqTittle}>
                       <Link href="/hosting/faq">
-                        <a>
-                          <h5>سوالات متداول دامنه</h5>
-                        </a>
+
+                        <h5>سوالات متداول دامنه</h5>
+
                       </Link>
                       <div className={styles.divider}>
                         <div />
@@ -446,7 +446,7 @@ class Faqs extends React.Component<IProps, IState> {
                             و درصورتی که تا قبل از آن کسی آن دامنه را فعال نکرده
                             باشد میتوانید با پرداخت هزینه ای آن را خریداری کنید.{' '}
                             <Link href="/domain">
-                              <a>قیمت ثبت دامنه</a>
+                              قیمت ثبت دامنه
                             </Link>
                           </p>
                         </Col>

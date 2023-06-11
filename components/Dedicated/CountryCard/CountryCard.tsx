@@ -40,8 +40,8 @@ class CountryCard extends React.Component<IProps> {
             </p>
           </li>
         </ul>
-        <Link href={countries[this.props.country.code].link}>
-          <a className={styles.link}>لیست محصولات </a>
+        <Link href={countries[this.props.country.code].link} className={styles.link}>
+          لیست محصولات 
         </Link>
       </div>
     );

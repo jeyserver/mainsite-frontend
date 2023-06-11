@@ -478,32 +478,32 @@ class DedicatedHostingTable extends React.Component<IProps, IState> {
                     <td>
                       <div className={styles.btnsWrapper}>
                         {plan.variants.map((variant) => (
-                          <Link
+                          (<Link
                             key={variant.id}
                             href={`/order/hosting/linux/${variant.id}`}
-                          >
-                            <a className={styles.orderLink}>
-                              <OverlayTrigger
-                                placement="top"
-                                overlay={
-                                  <Tooltip
-                                    id={`${variant.panel.name}-tooltip`}
-                                    className={styles.tooltip}
-                                  >
-                                    {variant.panel.name}
-                                  </Tooltip>
-                                }
-                              >
-                                <img
-                                  src={`/images/${variant.panel.name}.png`}
-                                  alt={variant.panel.name}
-                                />
-                              </OverlayTrigger>
-                              <span>
-                                {translateHostPanel(variant.panel.name)}
-                              </span>{' '}
-                            </a>
-                          </Link>
+                            className={styles.orderLink}>
+
+                            <OverlayTrigger
+                              placement="top"
+                              overlay={
+                                <Tooltip
+                                  id={`${variant.panel.name}-tooltip`}
+                                  className={styles.tooltip}
+                                >
+                                  {variant.panel.name}
+                                </Tooltip>
+                              }
+                            >
+                              <img
+                                src={`/images/${variant.panel.name}.png`}
+                                alt={variant.panel.name}
+                              />
+                            </OverlayTrigger>
+                            <span>
+                              {translateHostPanel(variant.panel.name)}
+                            </span>{' '}
+
+                          </Link>)
                         ))}
                       </div>
                     </td>

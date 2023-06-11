@@ -99,15 +99,15 @@ class NewsletterForm extends React.Component<IProps> {
         </Formik>
 
         <div className={styles.linkWrapper}>
-          <Link href="#">
-            <a className={styles.link}>
-              <span className={styles.iconWrapper}>
-                <i className="fab fa-instagram"></i>
-              </span>
-              <span className={styles.text}>
-                ما را در اینستاگرام دنبال کنید!
-              </span>
-            </a>
+          <Link href="#" className={styles.link}>
+
+            <span className={styles.iconWrapper}>
+              <i className="fab fa-instagram"></i>
+            </span>
+            <span className={styles.text}>
+              ما را در اینستاگرام دنبال کنید!
+            </span>
+
           </Link>
         </div>
       </div>

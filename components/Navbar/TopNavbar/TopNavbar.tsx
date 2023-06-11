@@ -45,16 +45,16 @@ class TopNavbar extends React.Component<IProps> {
             <div className={styles.leftItems}>
               {this.props.isLoggedIn ? (
                 <>
-                  <Link href={`#${this.props.user.name}`}>
-                    <a className={styles.authLink}>
-                      <img
-                        src="/images/user.svg"
-                        width="25px"
-                        height="25px"
-                        className="me-1"
-                      />
-                      <span>{this.props.user.name}</span>
-                    </a>
+                  <Link href={`#${this.props.user.name}`} className={styles.authLink}>
+
+                    <img
+                      src="/images/user.svg"
+                      width="25px"
+                      height="25px"
+                      className="me-1"
+                    />
+                    <span>{this.props.user.name}</span>
+
                   </Link>
                   <button className={styles.authLink}>
                     <i className="fas fa-sign-out-alt"></i>
@@ -63,17 +63,17 @@ class TopNavbar extends React.Component<IProps> {
                 </>
               ) : (
                 <>
-                  <Link href="/userpanel/login">
-                    <a className={styles.authLink}>
-                      <i className="fas fa-sign-in-alt"></i>
-                      <span>ورود</span>
-                    </a>
+                  <Link href="/userpanel/login" className={styles.authLink}>
+
+                    <i className="fas fa-sign-in-alt"></i>
+                    <span>ورود</span>
+
                   </Link>
-                  <Link href="/userpanel/register">
-                    <a className={styles.authLink}>
-                      <i className="fas fa-user-plus"></i>
-                      <span>ثبت نام</span>
-                    </a>
+                  <Link href="/userpanel/register" className={styles.authLink}>
+
+                    <i className="fas fa-user-plus"></i>
+                    <span>ثبت نام</span>
+
                   </Link>
                 </>
               )}

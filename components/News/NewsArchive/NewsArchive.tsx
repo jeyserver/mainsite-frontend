@@ -19,7 +19,7 @@ class NewsArchive extends React.Component<IProps> {
         </div>
         <ul className={styles.archiveList}>
           {Object.values(this.props.archives).map((time) => (
-            <Link
+            (<Link
               href={`/news/archive/${moment(time * 1000)
                 .locale('fa')
                 .format('YYYY')}/${moment(time * 1000)
@@ -27,14 +27,14 @@ class NewsArchive extends React.Component<IProps> {
                 .format('MM')}`}
               key={time}
             >
-              <a>
-                <li>
-                  {moment(time * 1000)
-                    .locale('fa')
-                    .format('MMM YYYY')}
-                </li>
-              </a>
-            </Link>
+
+              <li>
+                {moment(time * 1000)
+                  .locale('fa')
+                  .format('MMM YYYY')}
+              </li>
+
+            </Link>)
           ))}
         </ul>
       </div>

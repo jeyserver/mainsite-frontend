@@ -1,7 +1,6 @@
 import * as React from 'react';
 import $ from 'jquery';
 import { createUseStyles } from 'react-jss';
-import { v4 as uuidv4 } from 'uuid';
 import 'select2/dist/js/select2.min.js';
 import { Form } from 'react-bootstrap';
 import classNames from 'classnames';
@@ -120,8 +119,6 @@ export const ReactPhonenumber: React.FC<Props> = ({
           .dialingCode
       : countries[0].dialingCode
   );
-
-  const [randomId, setRandomId] = React.useState<string>(uuidv4());
 
   const classes = useStyles();
 

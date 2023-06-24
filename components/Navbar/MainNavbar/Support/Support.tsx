@@ -103,7 +103,7 @@ class Support extends React.Component<IProps> {
                 md={4}
                 className="pe-0 d-none d-md-flex align-items-md-end justify-content-md-end"
               >
-                <Image width={289} height={250} src="/images/learn-menu.png" />
+                <Image width={289} height={250} src="/images/learn-menu.png" alt="پشتیبانی جی سرور" />
               </Col>
             </Row>
           </Container>

@@ -111,6 +111,7 @@ class Server extends React.Component<IProps> {
                         src="/images/countries/Iran.png"
                         width={32}
                         height={32}
+                        alt='پرچم جمهوری اسلامی'
                       />
 
                     </Link>
@@ -120,6 +121,7 @@ class Server extends React.Component<IProps> {
                         src="/images/countries/France.png"
                         width={32}
                         height={32}
+                        alt='پرچم کشور فرانسه'
                       />
 
                     </Link>
@@ -129,6 +131,7 @@ class Server extends React.Component<IProps> {
                         src="/images/countries/Germany.png"
                         width={32}
                         height={32}
+                        alt='پرچم کشور آلمان'
                       />
 
                     </Link>
@@ -138,6 +141,7 @@ class Server extends React.Component<IProps> {
                         src="/images/countries/Netherlands.png"
                         width={32}
                         height={32}
+                        alt='پرچم کشور هلند'
                       />
 
                     </Link>
@@ -147,6 +151,7 @@ class Server extends React.Component<IProps> {
                         src="/images/countries/Canada.png"
                         width={32}
                         height={32}
+                        alt='پرچم کشور کانادا'
                       />
 
                     </Link>
@@ -156,6 +161,7 @@ class Server extends React.Component<IProps> {
                         src="/images/countries/Finland.png"
                         width={32}
                         height={32}
+                        alt='پرچم کشور فنلاند'
                       />
 
                     </Link>

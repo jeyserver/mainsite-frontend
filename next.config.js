@@ -15,9 +15,10 @@ module.exports = {
     localeDetection: false,
   },
   env: {
-    DOMAIN: 'www.jeyserver.com',
+    DOMAIN: 'www.jeyserver.jey',
     SCHEMA: 'https',
-    SITE_URL: 'https://www.jeyserver.com',
-    BACKEND_UPSTREAM: 'https://www.jeyserver.com',
+    SITE_URL: 'http://www.jeyserver.jey',
+    BACKEND_UPSTREAM: 'http://www.jeyserver.jey',
+    EXPIRE_CART_TIME: 3600,
   },
 };

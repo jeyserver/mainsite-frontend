@@ -9,8 +9,7 @@ const languageSlice = createSlice({
     setLanguage: (state, action) => {
       state.locale = action.payload;
     },
-  },
-  extraReducers: {},
+  }
 });
 
 export const { setLanguage } = languageSlice.actions;

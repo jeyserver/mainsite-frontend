@@ -67,7 +67,7 @@ class MainNavbar extends React.Component<IProps, IState> {
           <div className="d-flex align-items-center justify-content-between">
             <div className="d-flex align-items-center">
               <a href="/">
-                <Image src="/logo-header.png" width={171} height={35} />
+                <Image src="/logo-header.png" width={171} height={35} alt='لوگو جی سرور' />
               </a>
               <div
                 className={styles.navItemWrapper}

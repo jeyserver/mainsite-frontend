@@ -1,12 +1,21 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
-import { persistStore, persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage';
+import storage from './Storage';
 import currencies from './Currencies';
 import auth from './Auth';
 import language from './Language';
 import domain from './Domain';
 import cart from './Cart';
 import theme from './Theme';
+import {
+  persistStore,
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from 'redux-persist'
 
 
 export const store = configureStore({
@@ -21,6 +30,12 @@ export const store = configureStore({
       theme,
     }),
   ),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }),
 });
 
 export const persistor = persistStore(store);

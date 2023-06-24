@@ -15,8 +15,7 @@ const themeSlice = createSlice({
         document.querySelector('html').dataset.theme = 'light';
       }
     },
-  },
-  extraReducers: {},
+  }
 });
 
 export const { toggleTheme } = themeSlice.actions;

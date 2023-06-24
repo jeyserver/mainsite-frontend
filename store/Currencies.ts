@@ -16,8 +16,7 @@ const currenciesSlice = createSlice({
         state.active = action.payload.find((currency) => currency.active);
       }
     },
-  },
-  extraReducers: {},
+  }
 });
 
 export const { setCurrencies } = currenciesSlice.actions;
